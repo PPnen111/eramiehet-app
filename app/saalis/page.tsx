@@ -54,12 +54,16 @@ export default async function SaalisPage() {
 
   if (!user) redirect('/login')
 
-  const { data: membership } = await supabase
+  const { data: membership, error: membershipError } = await supabase
     .from('club_members')
     .select('club_id, role')
     .eq('profile_id', user.id)
     .eq('status', 'active')
     .single()
+
+  console.log('DEBUG user.id:', user.id)
+  console.log('DEBUG membership:', membership)
+  console.log('DEBUG membershipError:', membershipError)
 
   if (!membership) {
     return (
