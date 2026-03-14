@@ -88,3 +88,44 @@ create policy "See own club members" on public.club_members
 -- Club members: voi lisätä itsensä seuraan
 create policy "Insert own membership" on public.club_members
   for insert with check (profile_id = auth.uid());
+
+-- =====================================================
+-- Saalisilmoitukset
+-- =====================================================
+create table public.saalis (
+  id uuid default gen_random_uuid() primary key,
+  club_id uuid references public.clubs(id) on delete cascade,
+  profile_id uuid references public.profiles(id) on delete cascade,
+  reporter_name text,
+  elain text not null,
+  maara integer default 1,
+  sukupuoli text check (sukupuoli in ('uros', 'naaras', 'tuntematon')) default 'tuntematon',
+  ika_luokka text check (ika_luokka in ('vasa', 'nuori', 'aikuinen', 'tuntematon')) default 'tuntematon',
+  paikka text,
+  kuvaus text,
+  pvm date not null default current_date,
+  created_at timestamptz default now()
+);
+
+alter table public.saalis enable row level security;
+
+create policy "Club members see saalis" on public.saalis
+  for select using (
+    club_id in (
+      select club_id from public.club_members where profile_id = auth.uid()
+    )
+  );
+
+create policy "Insert own saalis" on public.saalis
+  for insert with check (profile_id = auth.uid());
+
+create policy "Delete own or admin saalis" on public.saalis
+  for delete using (
+    profile_id = auth.uid()
+    or exists (
+      select 1 from public.club_members
+      where profile_id = auth.uid()
+      and club_id = saalis.club_id
+      and role in ('admin', 'board_member')
+    )
+  );
