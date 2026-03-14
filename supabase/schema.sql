@@ -148,3 +148,154 @@ create policy "Delete own or admin saalis" on public.saalis
       and role in ('admin', 'board_member')
     )
   );
+
+-- =====================================================
+-- Mökkivaraukset (Eräkartano)
+-- =====================================================
+create table public.bookings (
+  id uuid default gen_random_uuid() primary key,
+  club_id uuid references public.clubs(id) on delete cascade,
+  profile_id uuid references public.profiles(id) on delete cascade,
+  booker_name text,
+  starts_on date not null,
+  ends_on date not null,
+  note text,
+  created_at timestamptz default now(),
+  constraint ends_after_starts check (ends_on >= starts_on)
+);
+
+alter table public.bookings enable row level security;
+
+create policy "Club members see bookings" on public.bookings
+  for select using (
+    club_id in (
+      select club_id from public.club_members
+      where profile_id = auth.uid() and status = 'active'
+    )
+  );
+
+create policy "Insert own booking" on public.bookings
+  for insert with check (profile_id = auth.uid());
+
+create policy "Delete own or admin booking" on public.bookings
+  for delete using (
+    profile_id = auth.uid()
+    or exists (
+      select 1 from public.club_members
+      where profile_id = auth.uid()
+      and club_id = bookings.club_id
+      and role in ('admin', 'board_member')
+    )
+  );
+
+-- =====================================================
+-- Maksut
+-- =====================================================
+create table public.payments (
+  id uuid default gen_random_uuid() primary key,
+  club_id uuid references public.clubs(id) on delete cascade,
+  profile_id uuid references public.profiles(id) on delete cascade,
+  description text not null,
+  amount_cents integer not null,
+  due_date date,
+  paid_at timestamptz,
+  status text check (status in ('paid', 'pending', 'overdue')) default 'pending',
+  created_at timestamptz default now()
+);
+
+alter table public.payments enable row level security;
+
+create policy "See own payments" on public.payments
+  for select using (
+    profile_id = auth.uid()
+    or exists (
+      select 1 from public.club_members
+      where profile_id = auth.uid()
+      and club_id = payments.club_id
+      and role in ('admin', 'board_member')
+    )
+  );
+
+create policy "Admin inserts payments" on public.payments
+  for insert with check (
+    exists (
+      select 1 from public.club_members
+      where profile_id = auth.uid()
+      and club_id = payments.club_id
+      and role in ('admin', 'board_member')
+    )
+  );
+
+create policy "Admin updates payments" on public.payments
+  for update using (
+    exists (
+      select 1 from public.club_members
+      where profile_id = auth.uid()
+      and club_id = payments.club_id
+      and role in ('admin', 'board_member')
+    )
+  );
+
+-- =====================================================
+-- Dokumentit
+-- =====================================================
+create table public.documents (
+  id uuid default gen_random_uuid() primary key,
+  club_id uuid references public.clubs(id) on delete cascade,
+  uploaded_by uuid references public.profiles(id) on delete set null,
+  name text not null,
+  category text not null default 'muu',
+  storage_path text not null,
+  created_at timestamptz default now()
+);
+
+alter table public.documents enable row level security;
+
+create policy "Club members see documents" on public.documents
+  for select using (
+    club_id in (
+      select club_id from public.club_members
+      where profile_id = auth.uid() and status = 'active'
+    )
+  );
+
+create policy "Admin inserts documents" on public.documents
+  for insert with check (
+    exists (
+      select 1 from public.club_members
+      where profile_id = auth.uid()
+      and club_id = documents.club_id
+      and role in ('admin', 'board_member')
+    )
+  );
+
+create policy "Admin deletes documents" on public.documents
+  for delete using (
+    exists (
+      select 1 from public.club_members
+      where profile_id = auth.uid()
+      and club_id = documents.club_id
+      and role in ('admin', 'board_member')
+    )
+  );
+
+-- Club members: admin voi muokata jäsentietoja
+create policy "Admin updates club members" on public.club_members
+  for update using (
+    exists (
+      select 1 from public.club_members cm2
+      where cm2.profile_id = auth.uid()
+      and cm2.club_id = club_members.club_id
+      and cm2.role in ('admin', 'board_member')
+    )
+  );
+
+create policy "Admin deletes club members" on public.club_members
+  for delete using (
+    exists (
+      select 1 from public.club_members cm2
+      where cm2.profile_id = auth.uid()
+      and cm2.club_id = club_members.club_id
+      and cm2.role in ('admin', 'board_member')
+    )
+  );
