@@ -1,5 +1,5 @@
 -- =====================================================
--- Kyyjärven Erämiehet – Supabase tietokantarakenne
+-- Metsästysseuran sovellus – Supabase tietokantarakenne
 -- Aja tämä Supabase → SQL Editor → Run
 -- =====================================================
 
@@ -28,30 +28,49 @@ create table public.club_members (
   unique(profile_id, club_id)
 );
 
--- 4. Seed: Kyyjärven Erämiehet -seura
-insert into public.clubs (name) values ('Kyyjärven Erämiehet');
+-- 4. Seed: esimerkki seuran luomisesta (EI ajeta tuotannossa)
+-- insert into public.clubs (name) values ('Kyyjärven Erämiehet');
 
 -- =====================================================
--- Trigger: luo profile ja lisää seuraan automaattisesti
+-- Trigger: luo profile ja käsittele seuraonboarding
 -- =====================================================
+-- Onboarding-logiikka raw_user_meta_data-kentän perusteella:
+--
+--   club_name  → luo uusi seura tällä nimellä, käyttäjä saa roolin 'admin'
+--   club_id    → liitä käyttäjä olemassa olevaan seuraan, rooli 'member', status 'pending'
+--   (ei kumpikaan) → luo vain profiili, ei seurayhteyttä
+--
+-- Esimerkki SignUp-kutsussa:
+--   options: { data: { full_name: 'Matti', club_name: 'Uusi Seura ry' } }
+--   options: { data: { full_name: 'Matti', club_id: '<uuid>' } }
+
 create or replace function public.handle_new_user()
 returns trigger as $$
 declare
   v_club_id uuid;
+  v_club_name text;
+  v_member_count integer;
 begin
   -- Luo profiili
   insert into public.profiles (id, full_name)
   values (new.id, new.raw_user_meta_data->>'full_name');
 
-  -- Lisää Kyyjärven Erämiehet -seuraan automaattisesti
-  select id into v_club_id
-  from public.clubs
-  where name = 'Kyyjärven Erämiehet'
-  limit 1;
+  v_club_name := new.raw_user_meta_data->>'club_name';
+  v_club_id   := (new.raw_user_meta_data->>'club_id')::uuid;
 
-  if v_club_id is not null then
+  if v_club_name is not null then
+    -- Uusi seura: rekisteröijä saa admin-roolin
+    insert into public.clubs (name)
+    values (v_club_name)
+    returning id into v_club_id;
+
     insert into public.club_members (profile_id, club_id, role, status)
-    values (new.id, v_club_id, 'member', 'active');
+    values (new.id, v_club_id, 'admin', 'active');
+
+  elsif v_club_id is not null then
+    -- Liittyminen olemassa olevaan seuraan: jää pending-tilaan (admin hyväksyy)
+    insert into public.club_members (profile_id, club_id, role, status)
+    values (new.id, v_club_id, 'member', 'pending');
   end if;
 
   return new;

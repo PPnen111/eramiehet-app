@@ -8,7 +8,7 @@ export default function Home() {
           Metsästysseuran sovellus
         </p>
         <h1 className="mb-4 text-4xl font-bold">
-          Kyyjärven<br />Erämiehet
+          Metsästysseuran<br />sovellus
         </h1>
         <p className="mb-10 text-base text-green-100">
           Yksi paikka jäsenille, tapahtumille, maksuille ja eräkartanon varauksille.

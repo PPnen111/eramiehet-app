@@ -58,8 +58,7 @@ export default function LoginPage() {
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">Erämiesten App</h1>
-          <p className="mt-2 text-sm text-green-300">Kyyjärven Erämiehet</p>
+          <h1 className="text-3xl font-bold text-white">Metsästysseuran sovellus</h1>
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-xl">
