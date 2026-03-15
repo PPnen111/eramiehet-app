@@ -7,45 +7,45 @@ type DocRow = {
   name: string
   category: string
   storage_path: string
-  created_at: string
 }
 
 const categoryLabel: Record<string, string> = {
-  saannot: 'Säännöt',
-  poytakirjat: 'Pöytäkirjat',
-  ohjeet: 'Ohjeet',
-  tiedotteet: 'Tiedotteet',
+  seura_saannot: 'Seuran säännöt',
+  hirviseurue: 'Hirviseurue',
+  peurajaosto: 'Peurajaosto',
+  karhujaosto: 'Karhujaosto',
+  vuosikokous: 'Vuosikokous',
+  kesakokous: 'Kesäkokous',
   muu: 'Muut',
 }
 
-const categoryOrder = ['saannot', 'poytakirjat', 'ohjeet', 'tiedotteet', 'muu']
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI')
-}
+const categoryOrder = [
+  'seura_saannot',
+  'hirviseurue',
+  'peurajaosto',
+  'karhujaosto',
+  'vuosikokous',
+  'kesakokous',
+  'muu',
+]
 
 export default async function MetsastajillePage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: mem } = await supabase
-    .from('club_members')
+  const { data: profile } = await supabase
+    .from('profiles')
     .select('club_id')
-    .eq('profile_id', user.id)
-    .eq('status', 'active')
+    .eq('id', user.id)
     .single()
 
-  if (!mem) {
+  if (!profile) {
     return (
       <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
         <div className="mx-auto max-w-2xl space-y-4">
-          <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
-            ← Takaisin
-          </Link>
-          <p className="text-green-300">Et kuulu mihinkään seuraan.</p>
+          <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
+          <p className="text-green-300">Profiilia ei löydy.</p>
         </div>
       </main>
     )
@@ -53,9 +53,9 @@ export default async function MetsastajillePage() {
 
   const { data: raw } = await supabase
     .from('documents')
-    .select('id, name, category, storage_path, created_at')
-    .eq('club_id', mem.club_id)
-    .order('created_at', { ascending: false })
+    .select('id, name, category, storage_path')
+    .eq('club_id', profile.club_id)
+    .order('name', { ascending: true })
 
   const docs = (raw ?? []) as DocRow[]
 
@@ -68,22 +68,17 @@ export default async function MetsastajillePage() {
     })
   )
 
-  const grouped = docsWithUrls.reduce<Record<string, typeof docsWithUrls>>(
-    (acc, doc) => {
-      const cat = doc.category in categoryLabel ? doc.category : 'muu'
-      if (!acc[cat]) acc[cat] = []
-      acc[cat].push(doc)
-      return acc
-    },
-    {}
-  )
+  const grouped = docsWithUrls.reduce<Record<string, typeof docsWithUrls>>((acc, doc) => {
+    const cat = doc.category in categoryLabel ? doc.category : 'muu'
+    if (!acc[cat]) acc[cat] = []
+    acc[cat].push(doc)
+    return acc
+  }, {})
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
-          ← Takaisin
-        </Link>
+        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
         <h1 className="text-2xl font-bold text-white">Metsästäjille</h1>
 
         {docsWithUrls.length === 0 && (
@@ -104,10 +99,7 @@ export default async function MetsastajillePage() {
                     key={doc.id}
                     className="flex items-center justify-between rounded-xl border border-green-800 bg-white/5 px-4 py-3"
                   >
-                    <div>
-                      <p className="font-medium text-white">{doc.name}</p>
-                      <p className="text-xs text-green-500">{formatDate(doc.created_at)}</p>
-                    </div>
+                    <p className="font-medium text-white">{doc.name}</p>
                     {doc.url ? (
                       <a
                         href={doc.url}

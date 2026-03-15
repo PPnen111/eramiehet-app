@@ -42,6 +42,12 @@ const modules = [
   },
 ]
 
+const roleLabel: Record<string, string> = {
+  admin: 'Ylläpitäjä',
+  board_member: 'Johtokunta',
+  member: 'Jäsen',
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
 
@@ -49,35 +55,16 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/login')
-  }
+  if (!user) redirect('/login')
 
-  // Hae profiili
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name')
+    .select('full_name, role, member_status')
     .eq('id', user.id)
     .single()
 
-  // Hae seurarooli
-  const { data: membership } = await supabase
-    .from('club_members')
-    .select('role, status, clubs(name)')
-    .eq('profile_id', user.id)
-    .eq('status', 'active')
-    .single()
-
   const displayName = profile?.full_name ?? user.email
-  const clubs = membership?.clubs
-  const clubName = Array.isArray(clubs) ? (clubs[0]?.name ?? null) : ((clubs as unknown as { name: string } | null)?.name ?? null)
-  const role = membership?.role ?? null
-
-  const roleLabel: Record<string, string> = {
-    admin: 'Ylläpitäjä',
-    board_member: 'Johtokunta',
-    member: 'Jäsen',
-  }
+  const role = profile?.role ?? null
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
@@ -87,9 +74,6 @@ export default async function DashboardPage() {
           <div>
             <p className="text-sm text-green-400">Tervetuloa</p>
             <h1 className="text-2xl font-bold text-white">{displayName}</h1>
-            {clubName && (
-              <p className="mt-1 text-sm text-green-300">{clubName}</p>
-            )}
             {role && (
               <span className="mt-2 inline-block rounded-full bg-green-800 px-2.5 py-0.5 text-xs font-medium text-green-200">
                 {roleLabel[role] ?? role}

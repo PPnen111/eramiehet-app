@@ -3,9 +3,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/browser'
 
-type Member = {
+type MemberOption = {
   id: string
-  profiles: { id: string; full_name: string | null } | null
+  full_name: string | null
 }
 
 type Payment = {
@@ -14,8 +14,8 @@ type Payment = {
   description: string
   amount_cents: number
   due_date: string | null
-  status: string
   paid_at: string | null
+  status: string
   profiles: { full_name: string | null } | null
 }
 
@@ -39,7 +39,7 @@ interface Props {
 
 export default function TabPayments({ clubId }: Props) {
   const supabase = createClient()
-  const [members, setMembers] = useState<Member[]>([])
+  const [members, setMembers] = useState<MemberOption[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
@@ -54,17 +54,17 @@ export default function TabPayments({ clubId }: Props) {
     setLoading(true)
     const [{ data: mData }, { data: pData }] = await Promise.all([
       supabase
-        .from('club_members')
-        .select('id, profiles(id, full_name)')
+        .from('profiles')
+        .select('id, full_name')
         .eq('club_id', clubId)
-        .eq('status', 'active'),
+        .eq('member_status', 'active'),
       supabase
         .from('payments')
-        .select('id, profile_id, description, amount_cents, due_date, status, paid_at, profiles(full_name)')
+        .select('id, profile_id, description, amount_cents, due_date, paid_at, status, profiles(full_name)')
         .eq('club_id', clubId)
-        .order('created_at', { ascending: false }),
+        .order('due_date', { ascending: false, nullsFirst: false }),
     ])
-    setMembers((mData ?? []) as unknown as Member[])
+    setMembers((mData ?? []) as MemberOption[])
     setPayments((pData ?? []) as unknown as Payment[])
     setLoading(false)
   }, [clubId, supabase])
@@ -93,10 +93,7 @@ export default function TabPayments({ clubId }: Props) {
     e.preventDefault()
     setFormError('')
     const cents = Math.round(parseFloat(amountEur.replace(',', '.')) * 100)
-    if (isNaN(cents) || cents <= 0) {
-      setFormError('Tarkista summa.')
-      return
-    }
+    if (isNaN(cents) || cents <= 0) { setFormError('Tarkista summa.'); return }
     const { error } = await supabase.from('payments').insert({
       club_id: clubId,
       profile_id: targetId,
@@ -122,7 +119,6 @@ export default function TabPayments({ clubId }: Props) {
 
   return (
     <div className="space-y-5">
-      {/* Add payment */}
       {!formOpen ? (
         <button
           onClick={() => setFormOpen(true)}
@@ -144,9 +140,7 @@ export default function TabPayments({ clubId }: Props) {
               >
                 <option value="">Valitse jäsen...</option>
                 {members.map((m) => (
-                  <option key={m.id} value={m.profiles?.id ?? ''}>
-                    {m.profiles?.full_name ?? m.id}
-                  </option>
+                  <option key={m.id} value={m.id}>{m.full_name ?? m.id}</option>
                 ))}
               </select>
             </div>
@@ -185,15 +179,10 @@ export default function TabPayments({ clubId }: Props) {
               </div>
             </div>
             {formError && (
-              <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">
-                {formError}
-              </p>
+              <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{formError}</p>
             )}
             <div className="flex gap-2">
-              <button
-                type="submit"
-                className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white"
-              >
+              <button type="submit" className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white">
                 Tallenna
               </button>
               <button
@@ -208,23 +197,20 @@ export default function TabPayments({ clubId }: Props) {
         </div>
       )}
 
-      {/* Payment list */}
       {payments.length === 0 ? (
         <p className="text-sm text-green-600">Ei maksuja.</p>
       ) : (
         <div className="space-y-2">
           {payments.map((p) => {
             const cfg = statusConfig[p.status] ?? statusConfig.pending
+            const profileName = (p.profiles as unknown as { full_name: string | null } | null)?.full_name
             return (
-              <div
-                key={p.id}
-                className="rounded-xl border border-green-800 bg-white/5 p-3"
-              >
+              <div key={p.id} className="rounded-xl border border-green-800 bg-white/5 p-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="truncate font-medium text-white">{p.description}</p>
                     <p className="text-xs text-green-400">
-                      {p.profiles?.full_name ?? '—'}
+                      {profileName ?? '—'}
                       {p.due_date && ` · eräpäivä ${formatDate(p.due_date)}`}
                     </p>
                   </div>

@@ -8,20 +8,17 @@ type Document = {
   name: string
   category: string
   storage_path: string
-  created_at: string
 }
 
 const CATEGORIES = [
-  { value: 'saannot', label: 'Säännöt' },
-  { value: 'poytakirjat', label: 'Pöytäkirjat' },
-  { value: 'ohjeet', label: 'Ohjeet' },
-  { value: 'tiedotteet', label: 'Tiedotteet' },
-  { value: 'muu', label: 'Muu' },
+  { value: 'seura_saannot', label: 'Seuran säännöt' },
+  { value: 'hirviseurue', label: 'Hirviseurue' },
+  { value: 'peurajaosto', label: 'Peurajaosto' },
+  { value: 'karhujaosto', label: 'Karhujaosto' },
+  { value: 'vuosikokous', label: 'Vuosikokous' },
+  { value: 'kesakokous', label: 'Kesäkokous' },
+  { value: 'muu', label: 'Muut' },
 ]
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI')
-}
 
 interface Props {
   clubId: string
@@ -34,7 +31,7 @@ export default function TabDocuments({ clubId }: Props) {
   const [busy, setBusy] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [name, setName] = useState('')
-  const [category, setCategory] = useState('muu')
+  const [category, setCategory] = useState('seura_saannot')
   const [file, setFile] = useState<File | null>(null)
   const [formError, setFormError] = useState('')
   const [formOpen, setFormOpen] = useState(false)
@@ -43,9 +40,9 @@ export default function TabDocuments({ clubId }: Props) {
     setLoading(true)
     const { data } = await supabase
       .from('documents')
-      .select('id, name, category, storage_path, created_at')
+      .select('id, name, category, storage_path')
       .eq('club_id', clubId)
-      .order('created_at', { ascending: false })
+      .order('name', { ascending: true })
     setDocs((data ?? []) as Document[])
     setLoading(false)
   }, [clubId, supabase])
@@ -85,7 +82,7 @@ export default function TabDocuments({ clubId }: Props) {
     }
 
     setName('')
-    setCategory('muu')
+    setCategory('seura_saannot')
     setFile(null)
     setFormOpen(false)
     setUploading(false)
@@ -139,9 +136,7 @@ export default function TabDocuments({ clubId }: Props) {
                 className="w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
               >
                 {CATEGORIES.map((c) => (
-                  <option key={c.value} value={c.value}>
-                    {c.label}
-                  </option>
+                  <option key={c.value} value={c.value}>{c.label}</option>
                 ))}
               </select>
             </div>
@@ -155,9 +150,7 @@ export default function TabDocuments({ clubId }: Props) {
               />
             </div>
             {formError && (
-              <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">
-                {formError}
-              </p>
+              <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{formError}</p>
             )}
             <div className="flex gap-2">
               <button
@@ -192,8 +185,6 @@ export default function TabDocuments({ clubId }: Props) {
                 <p className="truncate font-medium text-white">{doc.name}</p>
                 <p className="text-xs text-green-500">
                   {CATEGORIES.find((c) => c.value === doc.category)?.label ?? doc.category}
-                  {' · '}
-                  {formatDate(doc.created_at)}
                 </p>
               </div>
               <button

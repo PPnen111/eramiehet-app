@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/browser'
 
 export default function LoginPage() {
@@ -171,6 +172,12 @@ export default function LoginPage() {
               {message}
             </p>
           )}
+
+          <p className="mt-4 text-center text-sm text-neutral-500">
+            <Link href="/rekisteroidy" className="font-medium text-green-700 hover:text-green-600">
+              Rekisteröi uusi seura
+            </Link>
+          </p>
         </div>
       </div>
     </main>
