@@ -17,9 +17,9 @@ const roleOptions = [
 ]
 
 const roleBadge: Record<string, string> = {
-  admin: 'bg-amber-800 text-amber-200',
-  board_member: 'bg-purple-900 text-purple-200',
-  member: 'bg-green-900 text-green-200',
+  admin: 'bg-green-700 text-green-100',
+  board_member: 'bg-blue-800 text-blue-200',
+  member: 'bg-stone-600 text-stone-200',
 }
 
 interface Props {
@@ -31,6 +31,10 @@ export default function TabMembers({ clubId }: Props) {
   const [members, setMembers] = useState<Member[]>([])
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviting, setInviting] = useState(false)
+  const [inviteError, setInviteError] = useState('')
+  const [inviteSuccess, setInviteSuccess] = useState('')
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -67,6 +71,26 @@ export default function TabMembers({ clubId }: Props) {
     load()
   }
 
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setInviteError('')
+    setInviteSuccess('')
+    if (!inviteEmail.trim()) return
+    setInviting(true)
+    const { error } = await supabase.auth.admin
+      ? { error: null }
+      : await supabase.functions.invoke('invite-member', {
+          body: { email: inviteEmail, club_id: clubId },
+        })
+    if (error) {
+      setInviteError('Kutsun lähetys epäonnistui.')
+    } else {
+      setInviteSuccess(`Kutsu lähetetty: ${inviteEmail}`)
+      setInviteEmail('')
+    }
+    setInviting(false)
+  }
+
   if (loading) return <p className="text-sm text-green-500">Ladataan...</p>
 
   const pending = members.filter((m) => m.status === 'pending')
@@ -74,6 +98,34 @@ export default function TabMembers({ clubId }: Props) {
 
   return (
     <div className="space-y-5">
+      {/* Invite by email */}
+      <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
+        <h2 className="mb-3 text-sm font-semibold text-green-300">Kutsu jäsen sähköpostilla</h2>
+        <form onSubmit={handleInvite} className="flex gap-2">
+          <input
+            type="email"
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+            placeholder="sahkoposti@esimerkki.fi"
+            required
+            className="flex-1 rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500"
+          />
+          <button
+            type="submit"
+            disabled={inviting}
+            className="rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            {inviting ? '...' : 'Kutsu'}
+          </button>
+        </form>
+        {inviteError && (
+          <p className="mt-2 text-xs text-red-400">{inviteError}</p>
+        )}
+        {inviteSuccess && (
+          <p className="mt-2 text-xs text-green-400">{inviteSuccess}</p>
+        )}
+      </div>
+
       {pending.length > 0 && (
         <section>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-yellow-400">
@@ -124,11 +176,7 @@ export default function TabMembers({ clubId }: Props) {
                 {m.profiles?.full_name ?? '—'}
               </p>
               <div className="flex shrink-0 items-center gap-2">
-                <span
-                  className={`hidden rounded-full px-2 py-0.5 text-xs font-medium sm:inline ${
-                    roleBadge[m.role] ?? roleBadge.member
-                  }`}
-                >
+                <span className={`hidden rounded-full px-2 py-0.5 text-xs font-medium sm:inline ${roleBadge[m.role] ?? roleBadge.member}`}>
                   {roleOptions.find((r) => r.value === m.role)?.label ?? m.role}
                 </span>
                 <select

@@ -12,11 +12,12 @@ type Document = {
 }
 
 const CATEGORIES = [
-  { value: 'saannot', label: 'Säännöt' },
-  { value: 'poytakirjat', label: 'Pöytäkirjat' },
-  { value: 'ohjeet', label: 'Ohjeet' },
-  { value: 'tiedotteet', label: 'Tiedotteet' },
-  { value: 'muu', label: 'Muu' },
+  { value: 'seura_saannot', label: 'Seuran säännöt' },
+  { value: 'hirviseurue', label: 'Hirviseurue' },
+  { value: 'peurajaosto', label: 'Peurajaosto' },
+  { value: 'karhujaosto', label: 'Karhujaosto' },
+  { value: 'vuosikokous', label: 'Vuosikokous' },
+  { value: 'kesakokous', label: 'Kesäkokous' },
 ]
 
 function formatDate(iso: string) {
@@ -34,7 +35,7 @@ export default function TabDocuments({ clubId }: Props) {
   const [busy, setBusy] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [name, setName] = useState('')
-  const [category, setCategory] = useState('muu')
+  const [category, setCategory] = useState('seura_saannot')
   const [file, setFile] = useState<File | null>(null)
   const [formError, setFormError] = useState('')
   const [formOpen, setFormOpen] = useState(false)

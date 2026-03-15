@@ -4,11 +4,11 @@ import { createClient } from '@/lib/supabase/server'
 
 type Payment = {
   id: string
-  description: string
-  amount_cents: number
-  due_date: string | null
-  status: string
+  payment_type: string
+  amount: number
+  due_at: string | null
   paid_at: string | null
+  status: string
 }
 
 const statusConfig: Record<string, { label: string; cls: string }> = {
@@ -21,8 +21,8 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('fi-FI')
 }
 
-function formatEuros(cents: number) {
-  return (cents / 100).toLocaleString('fi-FI', { style: 'currency', currency: 'EUR' })
+function formatEuros(amount: number) {
+  return amount.toLocaleString('fi-FI', { style: 'currency', currency: 'EUR' })
 }
 
 export default async function MaksutPage() {
@@ -54,13 +54,14 @@ export default async function MaksutPage() {
 
   const { data: raw } = await supabase
     .from('payments')
-    .select('id, description, amount_cents, due_date, status, paid_at')
+    .select('id, payment_type, amount, due_at, paid_at, status')
     .eq('profile_id', user.id)
-    .order('due_date', { ascending: false })
+    .order('due_at', { ascending: false })
 
   const payments = (raw ?? []) as Payment[]
   const unpaid = payments.filter((p) => p.status !== 'paid')
   const paid = payments.filter((p) => p.status === 'paid')
+  const totalUnpaid = unpaid.reduce((sum, p) => sum + (p.amount ?? 0), 0)
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
@@ -69,6 +70,13 @@ export default async function MaksutPage() {
           ← Takaisin
         </Link>
         <h1 className="text-2xl font-bold text-white">Maksut</h1>
+
+        {unpaid.length > 0 && (
+          <div className="rounded-2xl border border-yellow-800 bg-yellow-900/20 px-4 py-3">
+            <p className="text-sm text-yellow-300">Avoimet maksut yhteensä</p>
+            <p className="text-2xl font-bold text-white">{formatEuros(totalUnpaid)}</p>
+          </div>
+        )}
 
         {payments.length === 0 && (
           <p className="text-sm text-green-600">Ei maksuja.</p>
@@ -89,20 +97,16 @@ export default async function MaksutPage() {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="font-medium text-white">{p.description}</p>
-                        {p.due_date && (
+                        <p className="font-medium text-white">{p.payment_type}</p>
+                        {p.due_at && (
                           <p className="mt-0.5 text-sm text-green-400">
-                            Eräpäivä: {formatDate(p.due_date)}
+                            Eräpäivä: {formatDate(p.due_at)}
                           </p>
                         )}
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="font-semibold text-white">
-                          {formatEuros(p.amount_cents)}
-                        </p>
-                        <span
-                          className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${cfg.cls}`}
-                        >
+                        <p className="font-semibold text-white">{formatEuros(p.amount)}</p>
+                        <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${cfg.cls}`}>
                           {cfg.label}
                         </span>
                       </div>
@@ -127,7 +131,7 @@ export default async function MaksutPage() {
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="font-medium text-white">{p.description}</p>
+                      <p className="font-medium text-white">{p.payment_type}</p>
                       {p.paid_at && (
                         <p className="text-xs text-green-500">
                           Maksettu {formatDate(p.paid_at)}
@@ -135,7 +139,7 @@ export default async function MaksutPage() {
                       )}
                     </div>
                     <p className="shrink-0 font-semibold text-green-400">
-                      {formatEuros(p.amount_cents)}
+                      {formatEuros(p.amount)}
                     </p>
                   </div>
                 </div>

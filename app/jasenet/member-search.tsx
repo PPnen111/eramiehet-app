@@ -10,9 +10,9 @@ const roleLabel: Record<string, string> = {
 }
 
 const roleBadge: Record<string, string> = {
-  admin: 'bg-amber-800 text-amber-200',
-  board_member: 'bg-purple-900 text-purple-200',
-  member: 'bg-green-900 text-green-200',
+  admin: 'bg-green-700 text-green-100',
+  board_member: 'bg-blue-800 text-blue-200',
+  member: 'bg-stone-600 text-stone-200',
 }
 
 const statusLabel: Record<string, string> = {
@@ -25,6 +25,10 @@ const statusBadge: Record<string, string> = {
   active: 'bg-green-800/60 text-green-300',
   inactive: 'bg-stone-700 text-stone-300',
   pending: 'bg-yellow-900 text-yellow-200',
+}
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('fi-FI')
 }
 
 interface Props {
@@ -91,20 +95,28 @@ function MemberList({ items }: { items: MemberRow[] }) {
       {items.map((m) => (
         <div
           key={m.id}
-          className="flex items-center justify-between rounded-xl border border-green-800 bg-white/5 px-4 py-3"
+          className="rounded-xl border border-green-800 bg-white/5 px-4 py-3"
         >
-          <p className="font-medium text-white">{m.profiles?.full_name ?? '—'}</p>
-          <div className="flex gap-2">
-            <span
-              className={`rounded-full px-2 py-0.5 text-xs font-medium ${roleBadge[m.role] ?? roleBadge.member}`}
-            >
-              {roleLabel[m.role] ?? m.role}
-            </span>
-            <span
-              className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadge[m.status] ?? statusBadge.pending}`}
-            >
-              {statusLabel[m.status] ?? m.status}
-            </span>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="font-medium text-white">{m.profiles?.full_name ?? '—'}</p>
+              {m.profiles?.phone && (
+                <p className="mt-0.5 text-xs text-green-400">{m.profiles.phone}</p>
+              )}
+              {m.profiles?.join_date && (
+                <p className="mt-0.5 text-xs text-green-600">
+                  Liittynyt {formatDate(m.profiles.join_date)}
+                </p>
+              )}
+            </div>
+            <div className="flex shrink-0 flex-col items-end gap-1">
+              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${roleBadge[m.role] ?? roleBadge.member}`}>
+                {roleLabel[m.role] ?? m.role}
+              </span>
+              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadge[m.status] ?? statusBadge.pending}`}>
+                {statusLabel[m.status] ?? m.status}
+              </span>
+            </div>
           </div>
         </div>
       ))}

@@ -7,7 +7,12 @@ export type MemberRow = {
   id: string
   role: string
   status: string
-  profiles: { id: string; full_name: string | null } | null
+  profiles: {
+    id: string
+    full_name: string | null
+    phone: string | null
+    join_date: string | null
+  } | null
 }
 
 export default async function JasenetPage() {
@@ -41,7 +46,7 @@ export default async function JasenetPage() {
 
   const { data: raw } = await supabase
     .from('club_members')
-    .select('id, role, status, profiles(id, full_name)')
+    .select('id, role, status, profiles(id, full_name, phone, join_date)')
     .eq('club_id', mem.club_id)
     .order('created_at', { ascending: true })
 

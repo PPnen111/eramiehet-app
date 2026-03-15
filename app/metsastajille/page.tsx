@@ -11,14 +11,22 @@ type DocRow = {
 }
 
 const categoryLabel: Record<string, string> = {
-  saannot: 'Säännöt',
-  poytakirjat: 'Pöytäkirjat',
-  ohjeet: 'Ohjeet',
-  tiedotteet: 'Tiedotteet',
-  muu: 'Muut',
+  seura_saannot: 'Seuran säännöt',
+  hirviseurue: 'Hirviseurue',
+  peurajaosto: 'Peurajaosto',
+  karhujaosto: 'Karhujaosto',
+  vuosikokous: 'Vuosikokous',
+  kesakokous: 'Kesäkokous',
 }
 
-const categoryOrder = ['saannot', 'poytakirjat', 'ohjeet', 'tiedotteet', 'muu']
+const categoryOrder = [
+  'seura_saannot',
+  'hirviseurue',
+  'peurajaosto',
+  'karhujaosto',
+  'vuosikokous',
+  'kesakokous',
+]
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('fi-FI')
@@ -70,7 +78,7 @@ export default async function MetsastajillePage() {
 
   const grouped = docsWithUrls.reduce<Record<string, typeof docsWithUrls>>(
     (acc, doc) => {
-      const cat = doc.category in categoryLabel ? doc.category : 'muu'
+      const cat = doc.category in categoryLabel ? doc.category : 'seura_saannot'
       if (!acc[cat]) acc[cat] = []
       acc[cat].push(doc)
       return acc
