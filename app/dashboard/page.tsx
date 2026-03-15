@@ -69,7 +69,8 @@ export default async function DashboardPage() {
     .single()
 
   const displayName = profile?.full_name ?? user.email
-  const clubName = (membership?.clubs as { name: string } | null)?.name ?? null
+  const clubs = membership?.clubs
+  const clubName = Array.isArray(clubs) ? (clubs[0]?.name ?? null) : ((clubs as unknown as { name: string } | null)?.name ?? null)
   const role = membership?.role ?? null
 
   const roleLabel: Record<string, string> = {

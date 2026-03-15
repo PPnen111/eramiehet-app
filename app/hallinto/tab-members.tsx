@@ -39,7 +39,7 @@ export default function TabMembers({ clubId }: Props) {
       .select('id, role, status, profiles(id, full_name)')
       .eq('club_id', clubId)
       .order('created_at', { ascending: true })
-    setMembers((data ?? []) as Member[])
+    setMembers((data ?? []) as unknown as Member[])
     setLoading(false)
   }, [clubId, supabase])
 

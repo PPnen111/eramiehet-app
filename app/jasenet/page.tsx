@@ -45,7 +45,7 @@ export default async function JasenetPage() {
     .eq('club_id', mem.club_id)
     .order('created_at', { ascending: true })
 
-  const members = (raw ?? []) as MemberRow[]
+  const members = (raw ?? []) as unknown as MemberRow[]
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">

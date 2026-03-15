@@ -64,8 +64,8 @@ export default function TabPayments({ clubId }: Props) {
         .eq('club_id', clubId)
         .order('created_at', { ascending: false }),
     ])
-    setMembers((mData ?? []) as Member[])
-    setPayments((pData ?? []) as Payment[])
+    setMembers((mData ?? []) as unknown as Member[])
+    setPayments((pData ?? []) as unknown as Payment[])
     setLoading(false)
   }, [clubId, supabase])
 
