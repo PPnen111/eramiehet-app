@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import MemberSearch from './member-search'
 
 export type MemberRow = {
@@ -28,7 +29,10 @@ export default async function JasenetPage() {
     redirect('/dashboard')
   }
 
-  const { data: raw } = await supabase
+  // Use admin client (service role) to bypass RLS — profiles RLS only
+  // allows users to read their own row; admins need all rows in the club.
+  const admin = createAdminClient()
+  const { data: raw } = await admin
     .from('profiles')
     .select('id, full_name, email, phone, role, member_status, join_date')
     .eq('club_id', myProfile.club_id)

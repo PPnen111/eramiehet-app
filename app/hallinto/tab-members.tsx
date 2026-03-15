@@ -1,15 +1,9 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
-
-type ProfileRow = {
-  id: string
-  full_name: string | null
-  email: string | null
-  role: string
-  member_status: string
-}
+import type { AdminMember } from './page'
 
 const roleOptions = [
   { value: 'member', label: 'Jäsen' },
@@ -25,38 +19,24 @@ const statusOptions = [
 
 interface Props {
   clubId: string
+  initialMembers: AdminMember[]
 }
 
-export default function TabMembers({ clubId }: Props) {
+export default function TabMembers({ initialMembers }: Props) {
+  const router = useRouter()
   const supabase = createClient()
-  const [members, setMembers] = useState<ProfileRow[]>([])
-  const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
 
-  const load = useCallback(async () => {
-    setLoading(true)
-    const { data } = await supabase
-      .from('profiles')
-      .select('id, full_name, email, role, member_status')
-      .eq('club_id', clubId)
-      .order('full_name', { ascending: true })
-    setMembers((data ?? []) as ProfileRow[])
-    setLoading(false)
-  }, [clubId, supabase])
-
-  useEffect(() => { load() }, [load])
-
-  const save = async (id: string, patch: Partial<Pick<ProfileRow, 'role' | 'member_status'>>) => {
+  const save = async (id: string, patch: Partial<Pick<AdminMember, 'role' | 'member_status'>>) => {
     setBusy(id)
     await supabase.from('profiles').update(patch).eq('id', id)
     setBusy(null)
-    load()
+    // Refresh so the server re-fetches the updated list via admin client
+    router.refresh()
   }
 
-  if (loading) return <p className="text-sm text-green-500">Ladataan...</p>
-
-  const pending = members.filter((m) => m.member_status === 'pending')
-  const rest = members.filter((m) => m.member_status !== 'pending')
+  const pending = initialMembers.filter((m) => m.member_status === 'pending')
+  const rest = initialMembers.filter((m) => m.member_status !== 'pending')
 
   return (
     <div className="space-y-5">
@@ -80,7 +60,7 @@ export default function TabMembers({ clubId }: Props) {
                   disabled={busy === m.id}
                   className="rounded-lg bg-green-700 px-3 py-1 text-xs font-semibold text-white disabled:opacity-50"
                 >
-                  Hyväksy
+                  {busy === m.id ? '...' : 'Hyväksy'}
                 </button>
               </div>
             ))}
