@@ -5,59 +5,41 @@ import MemberSearch from './member-search'
 
 export type MemberRow = {
   id: string
+  full_name: string | null
+  email: string | null
+  phone: string | null
   role: string
-  status: string
-  profiles: {
-    id: string
-    full_name: string | null
-    phone: string | null
-    join_date: string | null
-  } | null
+  member_status: string
+  join_date: string | null
 }
 
 export default async function JasenetPage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: mem } = await supabase
-    .from('club_members')
-    .select('club_id, role')
-    .eq('profile_id', user.id)
-    .eq('status', 'active')
+  const { data: myProfile } = await supabase
+    .from('profiles')
+    .select('club_id, role, member_status')
+    .eq('id', user.id)
     .single()
 
-  if (!mem || (mem.role !== 'admin' && mem.role !== 'board_member')) {
-    return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
-        <div className="mx-auto max-w-2xl space-y-4">
-          <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
-            ← Takaisin
-          </Link>
-          <p className="text-green-300">
-            Ei käyttöoikeutta. Vain johtokunta ja ylläpitäjä voivat nähdä jäsenluettelon.
-          </p>
-        </div>
-      </main>
-    )
+  if (!myProfile || (myProfile.role !== 'admin' && myProfile.role !== 'board_member')) {
+    redirect('/dashboard')
   }
 
   const { data: raw } = await supabase
-    .from('club_members')
-    .select('id, role, status, profiles(id, full_name, phone, join_date)')
-    .eq('club_id', mem.club_id)
-    .order('created_at', { ascending: true })
+    .from('profiles')
+    .select('id, full_name, email, phone, role, member_status, join_date')
+    .eq('club_id', myProfile.club_id)
+    .order('full_name', { ascending: true })
 
-  const members = (raw ?? []) as unknown as MemberRow[]
+  const members = (raw ?? []) as MemberRow[]
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
-          ← Takaisin
-        </Link>
+        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
         <h1 className="text-2xl font-bold text-white">Jäsenet</h1>
         <MemberSearch members={members} />
       </div>

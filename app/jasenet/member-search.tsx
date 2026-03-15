@@ -18,13 +18,13 @@ const roleBadge: Record<string, string> = {
 const statusLabel: Record<string, string> = {
   active: 'Aktiivinen',
   inactive: 'Ei-aktiivinen',
-  pending: 'Odottaa hyväksyntää',
+  pending: 'Odottaa',
 }
 
 const statusBadge: Record<string, string> = {
-  active: 'bg-green-800/60 text-green-300',
-  inactive: 'bg-stone-700 text-stone-300',
+  active: 'bg-green-800 text-green-200',
   pending: 'bg-yellow-900 text-yellow-200',
+  inactive: 'bg-red-900 text-red-200',
 }
 
 function formatDate(iso: string) {
@@ -38,14 +38,13 @@ interface Props {
 export default function MemberSearch({ members }: Props) {
   const [query, setQuery] = useState('')
 
-  const filtered = members.filter((m) => {
-    const name = m.profiles?.full_name?.toLowerCase() ?? ''
-    return name.includes(query.toLowerCase())
-  })
+  const filtered = members.filter((m) =>
+    (m.full_name ?? '').toLowerCase().includes(query.toLowerCase())
+  )
 
-  const active = filtered.filter((m) => m.status === 'active')
-  const pending = filtered.filter((m) => m.status === 'pending')
-  const inactive = filtered.filter((m) => m.status === 'inactive')
+  const active = filtered.filter((m) => m.member_status === 'active')
+  const pending = filtered.filter((m) => m.member_status === 'pending')
+  const inactive = filtered.filter((m) => m.member_status === 'inactive')
 
   return (
     <div className="space-y-5">
@@ -70,11 +69,10 @@ export default function MemberSearch({ members }: Props) {
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-green-400">
           Aktiiviset ({active.length})
         </h2>
-        {active.length === 0 ? (
-          <p className="text-sm text-green-600">Ei tuloksia.</p>
-        ) : (
-          <MemberList items={active} />
-        )}
+        {active.length === 0
+          ? <p className="text-sm text-green-600">Ei tuloksia.</p>
+          : <MemberList items={active} />
+        }
       </section>
 
       {inactive.length > 0 && (
@@ -93,28 +91,22 @@ function MemberList({ items }: { items: MemberRow[] }) {
   return (
     <div className="space-y-2">
       {items.map((m) => (
-        <div
-          key={m.id}
-          className="rounded-xl border border-green-800 bg-white/5 px-4 py-3"
-        >
+        <div key={m.id} className="rounded-xl border border-green-800 bg-white/5 px-4 py-3">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-medium text-white">{m.profiles?.full_name ?? '—'}</p>
-              {m.profiles?.phone && (
-                <p className="mt-0.5 text-xs text-green-400">{m.profiles.phone}</p>
-              )}
-              {m.profiles?.join_date && (
-                <p className="mt-0.5 text-xs text-green-600">
-                  Liittynyt {formatDate(m.profiles.join_date)}
-                </p>
+              <p className="font-medium text-white">{m.full_name ?? '—'}</p>
+              {m.email && <p className="mt-0.5 text-xs text-green-400">{m.email}</p>}
+              {m.phone && <p className="text-xs text-green-500">{m.phone}</p>}
+              {m.join_date && (
+                <p className="text-xs text-green-600">Liittynyt {formatDate(m.join_date)}</p>
               )}
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1">
               <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${roleBadge[m.role] ?? roleBadge.member}`}>
                 {roleLabel[m.role] ?? m.role}
               </span>
-              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadge[m.status] ?? statusBadge.pending}`}>
-                {statusLabel[m.status] ?? m.status}
+              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadge[m.member_status] ?? statusBadge.pending}`}>
+                {statusLabel[m.member_status] ?? m.member_status}
               </span>
             </div>
           </div>

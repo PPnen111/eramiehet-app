@@ -3,20 +3,19 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/browser'
 
-type Member = {
+type MemberOption = {
   id: string
-  profiles: { id: string; full_name: string | null } | null
+  full_name: string | null
 }
 
 type Payment = {
   id: string
   profile_id: string
-  payment_type: string
-  amount: number
-  due_at: string | null
-  status: string
+  description: string
+  amount_cents: number
+  due_date: string | null
   paid_at: string | null
-  notes: string | null
+  status: string
   profiles: { full_name: string | null } | null
 }
 
@@ -30,8 +29,8 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('fi-FI')
 }
 
-function formatEuros(amount: number) {
-  return amount.toLocaleString('fi-FI', { style: 'currency', currency: 'EUR' })
+function formatEuros(cents: number) {
+  return (cents / 100).toLocaleString('fi-FI', { style: 'currency', currency: 'EUR' })
 }
 
 interface Props {
@@ -40,33 +39,32 @@ interface Props {
 
 export default function TabPayments({ clubId }: Props) {
   const supabase = createClient()
-  const [members, setMembers] = useState<Member[]>([])
+  const [members, setMembers] = useState<MemberOption[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
   const [formOpen, setFormOpen] = useState(false)
   const [targetId, setTargetId] = useState('')
-  const [paymentType, setPaymentType] = useState('')
-  const [amount, setAmount] = useState('')
-  const [dueAt, setDueAt] = useState('')
-  const [notes, setNotes] = useState('')
+  const [description, setDescription] = useState('')
+  const [amountEur, setAmountEur] = useState('')
+  const [dueDate, setDueDate] = useState('')
   const [formError, setFormError] = useState('')
 
   const load = useCallback(async () => {
     setLoading(true)
     const [{ data: mData }, { data: pData }] = await Promise.all([
       supabase
-        .from('club_members')
-        .select('id, profiles(id, full_name)')
+        .from('profiles')
+        .select('id, full_name')
         .eq('club_id', clubId)
-        .eq('status', 'active'),
+        .eq('member_status', 'active'),
       supabase
         .from('payments')
-        .select('id, profile_id, payment_type, amount, due_at, status, paid_at, notes, profiles(full_name)')
+        .select('id, profile_id, description, amount_cents, due_date, paid_at, status, profiles(full_name)')
         .eq('club_id', clubId)
-        .order('created_at', { ascending: false }),
+        .order('due_date', { ascending: false, nullsFirst: false }),
     ])
-    setMembers((mData ?? []) as unknown as Member[])
+    setMembers((mData ?? []) as MemberOption[])
     setPayments((pData ?? []) as unknown as Payment[])
     setLoading(false)
   }, [clubId, supabase])
@@ -94,25 +92,20 @@ export default function TabPayments({ clubId }: Props) {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError('')
-    const amountNum = parseFloat(amount.replace(',', '.'))
-    if (isNaN(amountNum) || amountNum <= 0) {
-      setFormError('Tarkista summa.')
-      return
-    }
+    const cents = Math.round(parseFloat(amountEur.replace(',', '.')) * 100)
+    if (isNaN(cents) || cents <= 0) { setFormError('Tarkista summa.'); return }
     const { error } = await supabase.from('payments').insert({
       club_id: clubId,
       profile_id: targetId,
-      payment_type: paymentType,
-      amount: amountNum,
-      due_at: dueAt || null,
-      notes: notes || null,
+      description,
+      amount_cents: cents,
+      due_date: dueDate || null,
       status: 'pending',
     })
     if (error) { setFormError(error.message); return }
-    setPaymentType('')
-    setAmount('')
-    setDueAt('')
-    setNotes('')
+    setDescription('')
+    setAmountEur('')
+    setDueDate('')
     setTargetId('')
     setFormOpen(false)
     load()
@@ -147,18 +140,16 @@ export default function TabPayments({ clubId }: Props) {
               >
                 <option value="">Valitse jäsen...</option>
                 {members.map((m) => (
-                  <option key={m.id} value={m.profiles?.id ?? ''}>
-                    {m.profiles?.full_name ?? m.id}
-                  </option>
+                  <option key={m.id} value={m.id}>{m.full_name ?? m.id}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className={labelClass}>Maksun tyyppi *</label>
+              <label className={labelClass}>Kuvaus *</label>
               <input
                 type="text"
-                value={paymentType}
-                onChange={(e) => setPaymentType(e.target.value)}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 required
                 placeholder="esim. Jäsenmaksu 2025"
                 className={inputClass}
@@ -170,8 +161,8 @@ export default function TabPayments({ clubId }: Props) {
                 <input
                   type="text"
                   inputMode="decimal"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  value={amountEur}
+                  onChange={(e) => setAmountEur(e.target.value)}
                   required
                   placeholder="0,00"
                   className={inputClass}
@@ -181,31 +172,17 @@ export default function TabPayments({ clubId }: Props) {
                 <label className={labelClass}>Eräpäivä</label>
                 <input
                   type="date"
-                  value={dueAt}
-                  onChange={(e) => setDueAt(e.target.value)}
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
                   className={inputClass}
                 />
               </div>
             </div>
-            <div>
-              <label className={labelClass}>Lisätiedot</label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={2}
-                className={inputClass}
-              />
-            </div>
             {formError && (
-              <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">
-                {formError}
-              </p>
+              <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{formError}</p>
             )}
             <div className="flex gap-2">
-              <button
-                type="submit"
-                className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white"
-              >
+              <button type="submit" className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white">
                 Tallenna
               </button>
               <button
@@ -226,24 +203,19 @@ export default function TabPayments({ clubId }: Props) {
         <div className="space-y-2">
           {payments.map((p) => {
             const cfg = statusConfig[p.status] ?? statusConfig.pending
+            const profileName = (p.profiles as unknown as { full_name: string | null } | null)?.full_name
             return (
-              <div
-                key={p.id}
-                className="rounded-xl border border-green-800 bg-white/5 p-3"
-              >
+              <div key={p.id} className="rounded-xl border border-green-800 bg-white/5 p-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-white">{p.payment_type}</p>
+                    <p className="truncate font-medium text-white">{p.description}</p>
                     <p className="text-xs text-green-400">
-                      {p.profiles?.full_name ?? '—'}
-                      {p.due_at && ` · eräpäivä ${formatDate(p.due_at)}`}
+                      {profileName ?? '—'}
+                      {p.due_date && ` · eräpäivä ${formatDate(p.due_date)}`}
                     </p>
-                    {p.notes && (
-                      <p className="mt-0.5 text-xs text-green-600">{p.notes}</p>
-                    )}
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="font-semibold text-white">{formatEuros(p.amount)}</p>
+                    <p className="font-semibold text-white">{formatEuros(p.amount_cents)}</p>
                     <span className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${cfg.cls}`}>
                       {cfg.label}
                     </span>

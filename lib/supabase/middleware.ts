@@ -37,10 +37,11 @@ export async function updateSession(request: NextRequest) {
     url.pathname.startsWith('/tapahtumat') ||
     url.pathname.startsWith('/jasenet') ||
     url.pathname.startsWith('/dokumentit') ||
+    url.pathname.startsWith('/metsastajille') ||
     url.pathname.startsWith('/saalis') ||
     url.pathname.startsWith('/erakartano') ||
     url.pathname.startsWith('/maksut') ||
-    url.pathname.startsWith('/admin')
+    url.pathname.startsWith('/hallinto')
 
   if (!user && isProtected) {
     url.pathname = '/login'
