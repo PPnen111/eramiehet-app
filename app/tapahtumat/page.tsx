@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { Hammer, Target, Users, Crosshair, MoreHorizontal, CalendarX, Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import DeleteEventButton from './delete-event-button'
 
@@ -17,6 +18,14 @@ const typeBadge: Record<string, string> = {
   kokous: 'bg-purple-900 text-purple-200',
   metsastyspaiva: 'bg-green-900 text-green-200',
   muu: 'bg-stone-700 text-stone-300',
+}
+
+const typeIcon: Record<string, React.ComponentType<{ size?: number }>> = {
+  talkoot: Hammer,
+  ampumaharjoitus: Target,
+  kokous: Users,
+  metsastyspaiva: Crosshair,
+  muu: MoreHorizontal,
 }
 
 function formatDate(iso: string) {
@@ -71,9 +80,10 @@ export default async function TapahtumatPage() {
           {isAdmin && (
             <Link
               href="/tapahtumat/uusi"
-              className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
             >
-              + Luo tapahtuma
+              <Plus size={15} />
+              Luo tapahtuma
             </Link>
           )}
         </div>
@@ -84,7 +94,10 @@ export default async function TapahtumatPage() {
             Tulevat
           </h2>
           {upcoming.length === 0 ? (
-            <p className="text-sm text-green-600">Ei tulevia tapahtumia.</p>
+            <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
+              <CalendarX size={32} className="text-green-700" strokeWidth={1.5} />
+              <p className="text-sm text-green-600">Ei tulevia tapahtumia.</p>
+            </div>
           ) : (
             <div className="space-y-3">
               {upcoming.map((event) => (
@@ -99,13 +112,19 @@ export default async function TapahtumatPage() {
                   />
                   <div className="relative z-10 flex items-start justify-between gap-2">
                     <div>
-                      <span
-                        className={`mb-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
-                          typeBadge[event.type] ?? typeBadge.muu
-                        }`}
-                      >
-                        {typeLabels[event.type] ?? event.type}
-                      </span>
+                      {(() => {
+                        const TypeIcon = typeIcon[event.type] ?? MoreHorizontal
+                        return (
+                          <span
+                            className={`mb-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                              typeBadge[event.type] ?? typeBadge.muu
+                            }`}
+                          >
+                            <TypeIcon size={10} />
+                            {typeLabels[event.type] ?? event.type}
+                          </span>
+                        )
+                      })()}
                       <h3 className="font-semibold text-white">{event.title}</h3>
                       <p className="mt-1 text-sm text-green-300">
                         {formatDate(event.starts_at)}

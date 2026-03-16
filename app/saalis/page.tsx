@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { Target } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { formatDate } from '@/lib/format'
 import NewSaalisForm from './new-saalis-form'
@@ -100,7 +101,10 @@ export default async function SaalisPage() {
             {thisYear}
           </h2>
           {thisYearSaalis.length === 0 ? (
-            <p className="text-sm text-green-600">Ei saalisilmoituksia tänä vuonna.</p>
+            <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
+              <Target size={32} className="text-green-700" strokeWidth={1.5} />
+              <p className="text-sm text-green-600">Ei saalisilmoituksia tänä vuonna.</p>
+            </div>
           ) : (
             <div className="space-y-3">
               {thisYearSaalis.map((s) => (

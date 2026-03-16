@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { CalendarOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { formatDate } from '@/lib/format'
 import BookingForm from './booking-form'
@@ -107,7 +108,10 @@ export default async function ErakartanoPage() {
         />
 
         {bookings.length === 0 ? (
-          <p className="text-sm text-green-600">Ei varauksia.</p>
+          <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
+            <CalendarOff size={32} className="text-green-700" strokeWidth={1.5} />
+            <p className="text-sm text-green-600">Ei varauksia. Tee ensimmäinen varaus!</p>
+          </div>
         ) : (
           <div className="space-y-6">
             {monthKeys.map((key) => (

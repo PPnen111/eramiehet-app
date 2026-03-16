@@ -112,7 +112,7 @@ export default function BookingForm({
   }
 
   return (
-    <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
+    <div className="animate-slide-down rounded-2xl border border-green-800 bg-white/5 p-5">
       <h2 className="mb-4 font-semibold text-white">Uusi varaus</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
