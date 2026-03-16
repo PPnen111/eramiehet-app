@@ -13,6 +13,11 @@ type BookingRow = {
   profiles: { full_name: string | null } | null
 }
 
+type CabinInfoRow = {
+  pricing_text: string | null
+  instructions_text: string | null
+}
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('fi-FI')
 }
@@ -57,6 +62,14 @@ export default async function ErakartanoPage() {
 
   const today = new Date().toISOString().slice(0, 10)
   const isAdmin = profile.role === 'admin' || profile.role === 'board_member'
+
+  const { data: cabinRaw } = await supabase
+    .from('cabin_info')
+    .select('pricing_text, instructions_text')
+    .eq('club_id', profile.club_id)
+    .single()
+
+  const cabinInfo = cabinRaw ? (cabinRaw as unknown as CabinInfoRow) : null
 
   const { data: raw } = await supabase
     .from('bookings')
@@ -142,6 +155,49 @@ export default async function ErakartanoPage() {
             ))}
           </div>
         )}
+        {/* Hinnasto */}
+        <section className="rounded-2xl border border-green-800 bg-white/5 p-5">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <h2 className="font-semibold text-white">Hinnasto</h2>
+            {isAdmin && (
+              <Link
+                href="/erakartano/muokkaa-info"
+                className="text-xs text-green-400 hover:text-green-300"
+              >
+                Muokkaa hinnastoa
+              </Link>
+            )}
+          </div>
+          {cabinInfo?.pricing_text ? (
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-green-300">
+              {cabinInfo.pricing_text}
+            </p>
+          ) : (
+            <p className="text-sm text-green-600">Hinnastoa ei ole asetettu.</p>
+          )}
+        </section>
+
+        {/* Ohjeet */}
+        <section className="rounded-2xl border border-green-800 bg-white/5 p-5">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <h2 className="font-semibold text-white">Ohjeet</h2>
+            {isAdmin && (
+              <Link
+                href="/erakartano/muokkaa-info"
+                className="text-xs text-green-400 hover:text-green-300"
+              >
+                Muokkaa ohjeita
+              </Link>
+            )}
+          </div>
+          {cabinInfo?.instructions_text ? (
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-green-300">
+              {cabinInfo.instructions_text}
+            </p>
+          ) : (
+            <p className="text-sm text-green-600">Ohjeita ei ole asetettu.</p>
+          )}
+        </section>
       </div>
     </main>
   )

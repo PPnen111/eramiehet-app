@@ -5,16 +5,32 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/browser'
 
+type Mode = 'login' | 'signup' | 'reset'
+
 export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  const [mode, setMode] = useState<'login' | 'signup'>('login')
+  const [mode, setMode] = useState<Mode>('login')
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState<'info' | 'success' | 'error'>('info')
   const [loading, setLoading] = useState(false)
+
+  const showMsg = (text: string, type: 'info' | 'success' | 'error' = 'info') => {
+    setMessage(text)
+    setMessageType(type)
+  }
+
+  const switchMode = (next: Mode) => {
+    setMode(next)
+    setMessage('')
+    setEmail('')
+    setPassword('')
+    setFullName('')
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -24,7 +40,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      setMessage(error.message)
+      showMsg(error.message, 'error')
       setLoading(false)
       return
     }
@@ -45,69 +61,92 @@ export default function LoginPage() {
     })
 
     if (error) {
-      setMessage(error.message)
+      showMsg(error.message, 'error')
       setLoading(false)
       return
     }
 
-    setMessage('Rekisteröityminen onnistui. Tarkista sähköpostisi tai kirjaudu sisään.')
+    showMsg('Rekisteröityminen onnistui. Tarkista sähköpostisi tai kirjaudu sisään.', 'success')
     setLoading(false)
     setMode('login')
   }
 
+  const handleReset = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setMessage('')
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+
+    setLoading(false)
+
+    if (error) {
+      showMsg('Sähköpostiosoitetta ei löydy tai lähetys epäonnistui.', 'error')
+      return
+    }
+
+    showMsg('Salasanan palautuslinkki lähetetty sähköpostiisi.', 'success')
+  }
+
+  const inputCls =
+    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700'
+  const labelCls = 'mb-1 block text-sm font-medium text-neutral-700'
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center px-4">
+    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-green-950 to-stone-950 px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-white">Metsästysseuran sovellus</h1>
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-xl">
-          <div className="mb-6 flex gap-2">
-            <button
-              type="button"
-              onClick={() => { setMode('login'); setMessage('') }}
-              className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                mode === 'login' ? 'bg-green-800 text-white' : 'bg-neutral-100 text-neutral-600'
-              }`}
-            >
-              Kirjaudu
-            </button>
-            <button
-              type="button"
-              onClick={() => { setMode('signup'); setMessage('') }}
-              className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                mode === 'signup' ? 'bg-green-800 text-white' : 'bg-neutral-100 text-neutral-600'
-              }`}
-            >
-              Rekisteröidy
-            </button>
-          </div>
+          {/* Tab bar — only for login / signup */}
+          {mode !== 'reset' && (
+            <div className="mb-6 flex gap-2">
+              <button
+                type="button"
+                onClick={() => switchMode('login')}
+                className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  mode === 'login' ? 'bg-green-800 text-white' : 'bg-neutral-100 text-neutral-600'
+                }`}
+              >
+                Kirjaudu
+              </button>
+              <button
+                type="button"
+                onClick={() => switchMode('signup')}
+                className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  mode === 'signup' ? 'bg-green-800 text-white' : 'bg-neutral-100 text-neutral-600'
+                }`}
+              >
+                Rekisteröidy
+              </button>
+            </div>
+          )}
 
-          {mode === 'login' ? (
+          {/* Login form */}
+          {mode === 'login' && (
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-700">
-                  Sähköposti
-                </label>
+                <label className={labelCls}>Sähköposti</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700"
+                  className={inputCls}
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-700">
-                  Salasana
-                </label>
+                <label className={labelCls}>Salasana</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700"
+                  className={inputCls}
                 />
               </div>
               <button
@@ -117,44 +156,50 @@ export default function LoginPage() {
               >
                 {loading ? 'Kirjaudutaan...' : 'Kirjaudu sisään'}
               </button>
+              <p className="text-center text-sm">
+                <button
+                  type="button"
+                  onClick={() => switchMode('reset')}
+                  className="text-green-700 hover:text-green-600 hover:underline"
+                >
+                  Unohditko salasanan?
+                </button>
+              </p>
             </form>
-          ) : (
+          )}
+
+          {/* Signup form */}
+          {mode === 'signup' && (
             <form onSubmit={handleSignup} className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-700">
-                  Nimi
-                </label>
+                <label className={labelCls}>Nimi</label>
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700"
+                  className={inputCls}
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-700">
-                  Sähköposti
-                </label>
+                <label className={labelCls}>Sähköposti</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700"
+                  className={inputCls}
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-700">
-                  Salasana
-                </label>
+                <label className={labelCls}>Salasana</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700"
+                  className={inputCls}
                 />
               </div>
               <button
@@ -167,12 +212,54 @@ export default function LoginPage() {
             </form>
           )}
 
+          {/* Password reset request form */}
+          {mode === 'reset' && (
+            <div>
+              <button
+                type="button"
+                onClick={() => switchMode('login')}
+                className="mb-4 text-sm text-green-700 hover:text-green-600"
+              >
+                ← Takaisin kirjautumiseen
+              </button>
+              <h2 className="mb-4 text-base font-semibold text-neutral-800">Palauta salasana</h2>
+              <form onSubmit={handleReset} className="space-y-4">
+                <div>
+                  <label className={labelCls}>Sähköposti</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="Syötä tilisi sähköpostiosoite"
+                    className={inputCls}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-lg bg-green-800 py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
+                >
+                  {loading ? 'Lähetetään...' : 'Lähetä palautuslinkki'}
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Message */}
           {message && (
-            <p className="mt-4 rounded-lg bg-neutral-100 p-3 text-sm text-neutral-700">
+            <p className={`mt-4 rounded-lg p-3 text-sm ${
+              messageType === 'success'
+                ? 'bg-green-50 text-green-800'
+                : messageType === 'error'
+                ? 'bg-red-50 text-red-700'
+                : 'bg-neutral-100 text-neutral-700'
+            }`}>
               {message}
             </p>
           )}
 
+          {/* Bottom link */}
           <p className="mt-4 text-center text-sm text-neutral-500">
             <Link href="/rekisteroidy" className="font-medium text-green-700 hover:text-green-600">
               Rekisteröi uusi seura

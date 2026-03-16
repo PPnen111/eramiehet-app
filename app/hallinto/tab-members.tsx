@@ -1,15 +1,9 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
-
-type ProfileRow = {
-  id: string
-  full_name: string | null
-  email: string | null
-  role: string
-  member_status: string
-}
+import type { AdminMember } from './page'
 
 const roleOptions = [
   { value: 'member', label: 'Jäsen' },
@@ -23,43 +17,174 @@ const statusOptions = [
   { value: 'inactive', label: 'Ei-aktiivinen' },
 ]
 
-interface Props {
-  clubId: string
+type Invitation = {
+  id: string
+  email: string
+  status: string
+  expires_at: string
+  created_at: string
 }
 
-export default function TabMembers({ clubId }: Props) {
+interface Props {
+  clubId: string
+  initialMembers: AdminMember[]
+}
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('fi-FI')
+}
+
+function InviteStatusBadge({ status, expiresAt }: { status: string; expiresAt: string }) {
+  const isExpired = status === 'pending' && new Date(expiresAt) < new Date()
+
+  if (isExpired || status === 'expired') {
+    return (
+      <span className="rounded-full bg-stone-700 px-2 py-0.5 text-xs font-medium text-stone-300">
+        Vanhentunut
+      </span>
+    )
+  }
+  if (status === 'accepted') {
+    return (
+      <span className="rounded-full bg-green-900 px-2 py-0.5 text-xs font-medium text-green-300">
+        Hyväksytty
+      </span>
+    )
+  }
+  return (
+    <span className="rounded-full bg-yellow-900 px-2 py-0.5 text-xs font-medium text-yellow-300">
+      Odotetaan
+    </span>
+  )
+}
+
+export default function TabMembers({ clubId, initialMembers }: Props) {
+  const router = useRouter()
   const supabase = createClient()
-  const [members, setMembers] = useState<ProfileRow[]>([])
-  const [loading, setLoading] = useState(true)
+
   const [busy, setBusy] = useState<string | null>(null)
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteLoading, setInviteLoading] = useState(false)
+  const [inviteSuccess, setInviteSuccess] = useState('')
+  const [inviteError, setInviteError] = useState('')
+  const [invitations, setInvitations] = useState<Invitation[]>([])
 
-  const load = useCallback(async () => {
-    setLoading(true)
+  const loadInvitations = useCallback(async () => {
     const { data } = await supabase
-      .from('profiles')
-      .select('id, full_name, email, role, member_status')
+      .from('invitations')
+      .select('id, email, status, expires_at, created_at')
       .eq('club_id', clubId)
-      .order('full_name', { ascending: true })
-    setMembers((data ?? []) as ProfileRow[])
-    setLoading(false)
-  }, [clubId, supabase])
+      .order('created_at', { ascending: false })
+      .limit(20)
 
-  useEffect(() => { load() }, [load])
+    if (data) {
+      setInvitations(data as unknown as Invitation[])
+    }
+  }, [supabase, clubId])
 
-  const save = async (id: string, patch: Partial<Pick<ProfileRow, 'role' | 'member_status'>>) => {
+  useEffect(() => {
+    void loadInvitations()
+  }, [loadInvitations])
+
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setInviteError('')
+    setInviteSuccess('')
+    setInviteLoading(true)
+
+    try {
+      const res = await fetch('/api/invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: inviteEmail }),
+      })
+
+      const json = (await res.json()) as { ok?: boolean; error?: string }
+
+      if (!res.ok || !json.ok) {
+        setInviteError(json.error ?? 'Kutsun lähettäminen epäonnistui')
+      } else {
+        setInviteSuccess(`Kutsu lähetetty: ${inviteEmail}`)
+        setInviteEmail('')
+        void loadInvitations()
+      }
+    } catch {
+      setInviteError('Verkkovirhe. Yritä uudelleen.')
+    } finally {
+      setInviteLoading(false)
+    }
+  }
+
+  const save = async (id: string, patch: Partial<Pick<AdminMember, 'role' | 'member_status'>>) => {
     setBusy(id)
     await supabase.from('profiles').update(patch).eq('id', id)
     setBusy(null)
-    load()
+    router.refresh()
   }
 
-  if (loading) return <p className="text-sm text-green-500">Ladataan...</p>
-
-  const pending = members.filter((m) => m.member_status === 'pending')
-  const rest = members.filter((m) => m.member_status !== 'pending')
+  const pending = initialMembers.filter((m) => m.member_status === 'pending')
+  const rest = initialMembers.filter((m) => m.member_status !== 'pending')
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
+      {/* Invitation section */}
+      <section className="rounded-2xl border border-green-800 bg-white/5 p-4">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
+          Lähetä kutsu
+        </h2>
+        <form onSubmit={handleInvite} className="flex gap-2">
+          <input
+            type="email"
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+            required
+            placeholder="sahkoposti@esimerkki.fi"
+            className="min-w-0 flex-1 rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          />
+          <button
+            type="submit"
+            disabled={inviteLoading}
+            className="shrink-0 rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+          >
+            {inviteLoading ? '...' : 'Lähetä kutsu'}
+          </button>
+        </form>
+        {inviteSuccess && (
+          <p className="mt-2 rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">
+            {inviteSuccess}
+          </p>
+        )}
+        {inviteError && (
+          <p className="mt-2 rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">
+            {inviteError}
+          </p>
+        )}
+
+        {/* Pending invitations list */}
+        {invitations.length > 0 && (
+          <div className="mt-4 space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-green-600">
+              Lähetetyt kutsut
+            </p>
+            {invitations.map((inv) => (
+              <div
+                key={inv.id}
+                className="flex items-center justify-between gap-3 rounded-lg border border-green-900 bg-white/[0.03] px-3 py-2"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm text-white">{inv.email}</p>
+                  <p className="text-xs text-green-600">
+                    Lähetetty {formatDate(inv.created_at)}
+                  </p>
+                </div>
+                <InviteStatusBadge status={inv.status} expiresAt={inv.expires_at} />
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Pending member approvals */}
       {pending.length > 0 && (
         <section>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-yellow-400">
@@ -80,7 +205,7 @@ export default function TabMembers({ clubId }: Props) {
                   disabled={busy === m.id}
                   className="rounded-lg bg-green-700 px-3 py-1 text-xs font-semibold text-white disabled:opacity-50"
                 >
-                  Hyväksy
+                  {busy === m.id ? '...' : 'Hyväksy'}
                 </button>
               </div>
             ))}
@@ -88,6 +213,7 @@ export default function TabMembers({ clubId }: Props) {
         </section>
       )}
 
+      {/* Members list */}
       <section>
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
           Jäsenet ({rest.length})

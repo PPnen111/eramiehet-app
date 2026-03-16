@@ -16,16 +16,16 @@ export default function Home() {
 
         <div className="flex flex-col gap-3">
           <Link
-            href="/login"
+            href="/rekisteroidy"
             className="rounded-xl bg-green-700 px-6 py-3.5 text-center text-base font-semibold text-white shadow-lg"
           >
-            Kirjaudu sisään
+            Aloita ilmainen kokeilu
           </Link>
           <Link
             href="/login"
             className="rounded-xl border border-green-700 px-6 py-3.5 text-center text-base font-semibold text-green-300"
           >
-            Luo käyttäjä
+            Kirjaudu sisään
           </Link>
         </div>
       </div>

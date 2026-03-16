@@ -41,7 +41,8 @@ export async function updateSession(request: NextRequest) {
     url.pathname.startsWith('/saalis') ||
     url.pathname.startsWith('/erakartano') ||
     url.pathname.startsWith('/maksut') ||
-    url.pathname.startsWith('/hallinto')
+    url.pathname.startsWith('/hallinto') ||
+    url.pathname.startsWith('/superadmin')
 
   if (!user && isProtected) {
     url.pathname = '/login'

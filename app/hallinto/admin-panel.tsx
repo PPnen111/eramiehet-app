@@ -4,6 +4,7 @@ import { useState } from 'react'
 import TabMembers from './tab-members'
 import TabPayments from './tab-payments'
 import TabDocuments from './tab-documents'
+import type { AdminMember } from './page'
 
 type Tab = 'jasenet' | 'maksut' | 'dokumentit'
 
@@ -15,9 +16,10 @@ const tabs: { id: Tab; label: string }[] = [
 
 interface Props {
   clubId: string
+  initialMembers: AdminMember[]
 }
 
-export default function AdminPanel({ clubId }: Props) {
+export default function AdminPanel({ clubId, initialMembers }: Props) {
   const [active, setActive] = useState<Tab>('jasenet')
 
   return (
@@ -39,7 +41,7 @@ export default function AdminPanel({ clubId }: Props) {
         ))}
       </div>
 
-      {active === 'jasenet' && <TabMembers clubId={clubId} />}
+      {active === 'jasenet' && <TabMembers clubId={clubId} initialMembers={initialMembers} />}
       {active === 'maksut' && <TabPayments clubId={clubId} />}
       {active === 'dokumentit' && <TabDocuments clubId={clubId} />}
     </div>
