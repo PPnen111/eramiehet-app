@@ -52,6 +52,7 @@ const roleLabel: Record<string, string> = {
   admin: 'Ylläpitäjä',
   board_member: 'Johtokunta',
   member: 'Jäsen',
+  superadmin: 'Superadmin',
 }
 
 export default async function DashboardPage() {
@@ -104,6 +105,19 @@ export default async function DashboardPage() {
             Varaa kartano
           </Link>
         </div>
+
+        {/* Superadmin-linkki */}
+        {role === 'superadmin' && (
+          <div className="mb-4">
+            <Link
+              href="/superadmin"
+              className="flex items-center gap-3 rounded-xl border border-yellow-700 bg-yellow-900/20 px-4 py-3 text-sm font-semibold text-yellow-300 hover:bg-yellow-900/40"
+            >
+              <span>⚙️</span>
+              <span>Superadmin-paneeli</span>
+            </Link>
+          </div>
+        )}
 
         {/* Moduulit */}
         <div className="grid grid-cols-2 gap-3">
