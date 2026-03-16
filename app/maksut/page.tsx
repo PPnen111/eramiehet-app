@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { formatDate, formatEuros } from '@/lib/format'
 
 type Payment = {
   id: string
@@ -17,13 +18,6 @@ const statusConfig: Record<string, { label: string; cls: string }> = {
   overdue: { label: 'Myöhässä', cls: 'bg-red-900 text-red-200' },
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI')
-}
-
-function formatEuros(cents: number) {
-  return (cents / 100).toLocaleString('fi-FI', { style: 'currency', currency: 'EUR' })
-}
 
 export default async function MaksutPage() {
   const supabase = await createClient()

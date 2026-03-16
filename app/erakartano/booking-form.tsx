@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
+import { formatDate } from '@/lib/format'
 
 type ExistingBooking = {
   id: string
@@ -26,9 +27,6 @@ function datesOverlap(
   return aStart <= bEnd && aEnd >= bStart
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI')
-}
 
 export default function BookingForm({
   clubId,
@@ -45,6 +43,7 @@ export default function BookingForm({
   const [endsOn, setEndsOn] = useState('')
   const [note, setNote] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -85,8 +84,10 @@ export default function BookingForm({
     setStartsOn('')
     setEndsOn('')
     setNote('')
-    setOpen(false)
     setLoading(false)
+    setOpen(false)
+    setSuccess('Varaus tehty!')
+    setTimeout(() => setSuccess(''), 4000)
     router.refresh()
   }
 
@@ -96,12 +97,17 @@ export default function BookingForm({
 
   if (!open) {
     return (
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white"
-      >
-        + Tee varaus
-      </button>
+      <div className="space-y-2">
+        <button
+          onClick={() => setOpen(true)}
+          className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white"
+        >
+          + Tee varaus
+        </button>
+        {success && (
+          <p className="rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">{success}</p>
+        )}
+      </div>
     )
   }
 

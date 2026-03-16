@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
+import { formatDate } from '@/lib/format'
 import type { AdminMember } from './page'
 
 const roleOptions = [
@@ -30,9 +31,6 @@ interface Props {
   initialMembers: AdminMember[]
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI')
-}
 
 function InviteStatusBadge({ status, expiresAt }: { status: string; expiresAt: string }) {
   const isExpired = status === 'pending' && new Date(expiresAt) < new Date()

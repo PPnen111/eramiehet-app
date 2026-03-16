@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { formatDate } from '@/lib/format'
 import BookingForm from './booking-form'
 import DeleteBookingButton from './delete-booking-button'
 
@@ -18,9 +19,6 @@ type CabinInfoRow = {
   instructions_text: string | null
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI')
-}
 
 function nightCount(starts: string, ends: string): number {
   const diff = new Date(ends).getTime() - new Date(starts).getTime()

@@ -49,10 +49,27 @@ export default function TabDocuments({ clubId }: Props) {
 
   useEffect(() => { load() }, [load])
 
+  const ALLOWED_TYPES = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'image/jpeg',
+    'image/png',
+  ]
+  const MAX_SIZE_MB = 10
+
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError('')
     if (!file) { setFormError('Valitse tiedosto.'); return }
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setFormError('Sallitut tiedostotyypit: PDF, Word, JPG, PNG.')
+      return
+    }
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      setFormError(`Tiedosto on liian suuri. Maksimikoko on ${MAX_SIZE_MB} MB.`)
+      return
+    }
 
     setUploading(true)
     const ext = file.name.split('.').pop() ?? 'bin'

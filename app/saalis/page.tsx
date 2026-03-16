@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { formatDate } from '@/lib/format'
 import NewSaalisForm from './new-saalis-form'
 import DeleteSaalisButton from './delete-saalis-button'
 
@@ -37,13 +38,6 @@ const ikaLabel: Record<string, string> = {
   tuntematon: '',
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI', {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-  })
-}
 
 export default async function SaalisPage() {
   const supabase = await createClient()
@@ -54,18 +48,13 @@ export default async function SaalisPage() {
 
   if (!user) redirect('/login')
 
-  const { data: membership, error: membershipError } = await supabase
-    .from('club_members')
+  const { data: profile } = await supabase
+    .from('profiles')
     .select('club_id, role')
-    .eq('profile_id', user.id)
-    .eq('status', 'active')
+    .eq('id', user.id)
     .single()
 
-  console.log('DEBUG user.id:', user.id)
-  console.log('DEBUG membership:', membership)
-  console.log('DEBUG membershipError:', membershipError)
-
-  if (!membership) {
+  if (!profile) {
     return (
       <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
         <div className="mx-auto max-w-2xl">
@@ -77,12 +66,12 @@ export default async function SaalisPage() {
     )
   }
 
-  const isAdmin = membership.role === 'admin' || membership.role === 'board_member'
+  const isAdmin = profile.role === 'admin' || profile.role === 'board_member'
 
   const { data: saaliset } = await supabase
     .from('saalis')
     .select('id, elain, maara, sukupuoli, ika_luokka, paikka, kuvaus, pvm, profile_id, reporter_name')
-    .eq('club_id', membership.club_id)
+    .eq('club_id', profile.club_id)
     .order('pvm', { ascending: false })
 
   const thisYear = new Date().getFullYear()
@@ -102,7 +91,7 @@ export default async function SaalisPage() {
 
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-2xl font-bold text-white">Saalisilmoitukset</h1>
-          <NewSaalisForm clubId={membership.club_id} profileId={user.id} />
+          <NewSaalisForm clubId={profile.club_id} profileId={user.id} />
         </div>
 
         {/* Tänä vuonna */}
