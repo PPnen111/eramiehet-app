@@ -40,6 +40,12 @@ const modules = [
     href: '/maksut',
     icon: '💳',
   },
+  {
+    title: 'Karttatunnukset',
+    description: 'Karttapalvelujen tunnukset.',
+    href: '/karttatunnukset',
+    icon: '🗺️',
+  },
 ]
 
 const roleLabel: Record<string, string> = {

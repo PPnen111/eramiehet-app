@@ -43,7 +43,15 @@ export default async function JasenetPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
+        <div className="flex items-center justify-between gap-4">
+          <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
+          <Link
+            href="/jasenet/kortti"
+            className="rounded-xl border border-green-700 px-3 py-1.5 text-sm font-medium text-green-300 hover:bg-green-900/30"
+          >
+            Jäsenkortti
+          </Link>
+        </div>
         <h1 className="text-2xl font-bold text-white">Jäsenet</h1>
         <MemberSearch members={members} />
       </div>
