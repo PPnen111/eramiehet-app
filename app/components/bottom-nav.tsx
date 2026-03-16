@@ -2,14 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { House, CalendarDays, Target, Tent, Users } from 'lucide-react'
+import { House, CalendarDays, Target, Tent, CreditCard } from 'lucide-react'
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Koti', icon: House },
   { href: '/tapahtumat', label: 'Tapahtumat', icon: CalendarDays },
   { href: '/saalis', label: 'Saalis', icon: Target },
   { href: '/erakartano', label: 'Kartano', icon: Tent },
-  { href: '/jasenet', label: 'Jäsenet', icon: Users },
+  { href: '/maksut', label: 'Maksut', icon: CreditCard },
 ]
 
 const HIDDEN_PATHS = ['/login', '/rekisteroidy']
