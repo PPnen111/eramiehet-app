@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Erämiehet",
-  description: "Metsästysseuran hallintasovellus",
+  title: "Erämiesten App",
+  description: "Metsästysseuran hallinta helpoksi",
 };
 
 export default function RootLayout({
