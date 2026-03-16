@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import NewEventForm from './new-event-form'
 import DeleteEventButton from './delete-event-button'
 
 const typeLabels: Record<string, string> = {
@@ -39,33 +38,20 @@ export default async function TapahtumatPage() {
 
   if (!user) redirect('/login')
 
-  // Hae jäsenyys
-  const { data: membership } = await supabase
-    .from('club_members')
+  const { data: profile } = await supabase
+    .from('profiles')
     .select('club_id, role')
-    .eq('profile_id', user.id)
-    .eq('status', 'active')
+    .eq('id', user.id)
     .single()
 
-  if (!membership) {
-    return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
-        <div className="mx-auto max-w-2xl">
-          <p className="text-green-300">
-            Sinua ei ole vielä liitetty mihinkään seuraan. Ota yhteyttä johtokuntaan.
-          </p>
-        </div>
-      </main>
-    )
-  }
+  if (!profile) redirect('/login')
 
-  const isAdmin = membership.role === 'admin' || membership.role === 'board_member'
+  const isAdmin = profile.role === 'admin' || profile.role === 'board_member'
 
-  // Hae tapahtumat
   const { data: events } = await supabase
     .from('events')
     .select('id, title, description, type, starts_at')
-    .eq('club_id', membership.club_id)
+    .eq('club_id', profile.club_id)
     .order('starts_at', { ascending: true })
 
   const now = new Date()
@@ -82,7 +68,14 @@ export default async function TapahtumatPage() {
 
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-2xl font-bold text-white">Tapahtumat</h1>
-          {isAdmin && <NewEventForm clubId={membership.club_id} />}
+          {isAdmin && (
+            <Link
+              href="/tapahtumat/uusi"
+              className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600"
+            >
+              + Luo tapahtuma
+            </Link>
+          )}
         </div>
 
         {/* Tulevat */}
@@ -97,9 +90,14 @@ export default async function TapahtumatPage() {
               {upcoming.map((event) => (
                 <div
                   key={event.id}
-                  className="rounded-2xl border border-green-800 bg-white/5 p-4"
+                  className="relative rounded-2xl border border-green-800 bg-white/5 p-4"
                 >
-                  <div className="flex items-start justify-between gap-2">
+                  <Link
+                    href={`/tapahtumat/${event.id}`}
+                    className="absolute inset-0 rounded-2xl"
+                    aria-label={event.title}
+                  />
+                  <div className="relative z-10 flex items-start justify-between gap-2">
                     <div>
                       <span
                         className={`mb-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -131,20 +129,28 @@ export default async function TapahtumatPage() {
               Menneet
             </h2>
             <div className="space-y-2">
-              {past.slice(-5).reverse().map((event) => (
-                <div
-                  key={event.id}
-                  className="rounded-xl border border-green-900 bg-white/[0.03] p-3 opacity-60"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-medium text-white">{event.title}</p>
-                      <p className="text-xs text-green-500">{formatDate(event.starts_at)}</p>
+              {past
+                .slice(-5)
+                .reverse()
+                .map((event) => (
+                  <div
+                    key={event.id}
+                    className="relative rounded-xl border border-green-900 bg-white/[0.03] p-3 opacity-60"
+                  >
+                    <Link
+                      href={`/tapahtumat/${event.id}`}
+                      className="absolute inset-0 rounded-xl"
+                      aria-label={event.title}
+                    />
+                    <div className="relative z-10 flex items-start justify-between">
+                      <div>
+                        <p className="font-medium text-white">{event.title}</p>
+                        <p className="text-xs text-green-500">{formatDate(event.starts_at)}</p>
+                      </div>
+                      {isAdmin && <DeleteEventButton eventId={event.id} />}
                     </div>
-                    {isAdmin && <DeleteEventButton eventId={event.id} />}
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </section>
         )}
