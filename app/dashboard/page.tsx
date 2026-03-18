@@ -9,6 +9,7 @@ import {
   CreditCard,
   Map,
   Settings,
+  Settings2,
   PlusCircle,
   CalendarPlus,
   Shield,
@@ -25,7 +26,7 @@ type ModuleItem = {
   icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
 }
 
-const modules: ModuleItem[] = [
+const COMMON_MODULES: ModuleItem[] = [
   {
     title: 'Tapahtumat',
     description: 'Talkoot, kokoukset, jahdit ja harjoitukset.',
@@ -51,12 +52,6 @@ const modules: ModuleItem[] = [
     icon: Tent,
   },
   {
-    title: 'Jäsenet',
-    description: 'Jäsenrekisteri ja yhteystiedot.',
-    href: '/jasenet',
-    icon: Users,
-  },
-  {
     title: 'Maksut',
     description: 'Jäsenmaksut ja maksutilanne.',
     href: '/maksut',
@@ -67,6 +62,21 @@ const modules: ModuleItem[] = [
     description: 'Karttapalvelujen tunnukset.',
     href: '/karttatunnukset',
     icon: Map,
+  },
+]
+
+const ADMIN_MODULES: ModuleItem[] = [
+  {
+    title: 'Jäsenet',
+    description: 'Jäsenrekisteri ja yhteystiedot.',
+    href: '/jasenet',
+    icon: Users,
+  },
+  {
+    title: 'Hallinto',
+    description: 'Jäsenet, maksut ja dokumentit.',
+    href: '/hallinto',
+    icon: Settings2,
   },
 ]
 
@@ -101,7 +111,12 @@ export default async function DashboardPage() {
 
   const displayName = profile?.full_name ?? user.email
   const role = profile?.role ?? null
+  const isAdmin = role === 'admin' || role === 'board_member'
   const RoleIcon = role ? (roleIcon[role] ?? User) : null
+
+  const modules = isAdmin
+    ? [...COMMON_MODULES, ...ADMIN_MODULES]
+    : COMMON_MODULES
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
