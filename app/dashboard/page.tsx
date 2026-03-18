@@ -15,6 +15,7 @@ import {
   Shield,
   User,
   Star,
+  ArrowLeftRight,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import LogoutButton from './logout-button'
@@ -24,6 +25,11 @@ type ModuleItem = {
   description: string
   href: string
   icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
+}
+
+type MembershipRow = {
+  club_id: string
+  role: string
 }
 
 const COMMON_MODULES: ModuleItem[] = [
@@ -103,14 +109,30 @@ export default async function DashboardPage() {
 
   if (!user) redirect('/login')
 
+  // Fetch profile for display name, active_club_id, and superadmin check
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, role, member_status')
+    .select('full_name, role, active_club_id')
     .eq('id', user.id)
     .single()
 
   const displayName = profile?.full_name ?? user.email
-  const role = profile?.role ?? null
+  const profileRole = (profile as { role: string | null } | null)?.role ?? null
+  const activeClubId = (profile as { active_club_id: string | null } | null)?.active_club_id ?? null
+
+  // Fetch all club memberships to determine role in active club + multi-club state
+  const { data: membershipsData } = await supabase
+    .from('club_members')
+    .select('club_id, role')
+    .eq('profile_id', user.id)
+
+  const memberships = (membershipsData ?? []) as unknown as MembershipRow[]
+  const multipleClubs = memberships.length > 1
+
+  // Role comes from club_members for the active club; fall back to profiles.role for superadmin
+  const activeMembership = memberships.find((m) => m.club_id === activeClubId)
+  const role = profileRole === 'superadmin' ? 'superadmin' : (activeMembership?.role ?? null)
+
   const isAdmin = role === 'admin' || role === 'board_member'
   const RoleIcon = role ? (roleIcon[role] ?? User) : null
 
@@ -135,7 +157,18 @@ export default async function DashboardPage() {
               </span>
             )}
           </div>
-          <LogoutButton />
+          <div className="flex items-center gap-2">
+            {multipleClubs && (
+              <Link
+                href="/vaihda-seura"
+                className="flex items-center gap-1.5 rounded-lg border border-green-700 bg-green-900/40 px-3 py-1.5 text-xs font-medium text-green-300 hover:bg-green-900/70 transition-colors"
+              >
+                <ArrowLeftRight size={13} />
+                Vaihda seuraa
+              </Link>
+            )}
+            <LogoutButton />
+          </div>
         </div>
 
         {/* Pika-toiminnot */}
@@ -157,7 +190,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Superadmin-linkki */}
-        {role === 'superadmin' && (
+        {profileRole === 'superadmin' && (
           <div className="mb-4">
             <Link
               href="/superadmin"
