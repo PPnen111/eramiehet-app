@@ -1,13 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Building2, Users, Mail } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
 
 export default function RekisteroidyPage() {
-  const router = useRouter()
   const supabase = createClient()
 
   const [clubName, setClubName] = useState('')
@@ -42,8 +40,6 @@ export default function RekisteroidyPage() {
 
     setSuccess(true)
     setLoading(false)
-    router.push('/dashboard')
-    router.refresh()
   }
 
   const inputClass =
@@ -77,9 +73,18 @@ export default function RekisteroidyPage() {
             </div>
 
             {success ? (
-              <p className="rounded-lg bg-green-900/60 p-3 text-sm text-green-200">
-                Rekisteröityminen onnistui! Siirrytään sovellukseen…
-              </p>
+              <div className="space-y-3 rounded-lg bg-green-900/60 p-4 text-sm text-green-200">
+                <p className="font-semibold">Rekisteröityminen onnistui!</p>
+                <p className="text-green-400 text-xs">
+                  Tarkista sähköpostisi ja vahvista osoitteesi — sen jälkeen voit kirjautua sisään.
+                </p>
+                <Link
+                  href="/login"
+                  className="block w-full rounded-lg bg-green-700 py-2 text-center text-sm font-semibold text-white hover:bg-green-600"
+                >
+                  Siirry kirjautumiseen →
+                </Link>
+              </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-3">
                 <div>
