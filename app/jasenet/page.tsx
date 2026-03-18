@@ -37,7 +37,7 @@ export default async function JasenetPage() {
   const { data: raw } = await admin
     .from('profiles')
     .select('id, full_name, email, phone, role, member_status, join_date')
-    .eq('club_id', myProfile.club_id)
+    .eq('club_id', myProfile!.club_id)
     .order('full_name', { ascending: true })
 
   const members = (raw ?? []) as MemberRow[]

@@ -41,7 +41,7 @@ export default async function HallintoPage() {
   const { data: raw } = await admin
     .from('profiles')
     .select('id, full_name, email, role, member_status')
-    .eq('club_id', profile.club_id)
+    .eq('club_id', profile!.club_id)
     .order('full_name', { ascending: true })
 
   const initialMembers = (raw ?? []) as AdminMember[]
@@ -51,7 +51,7 @@ export default async function HallintoPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
         <h1 className="text-2xl font-bold text-white">Hallinto</h1>
-        <AdminPanel clubId={profile.club_id} initialMembers={initialMembers} />
+        <AdminPanel clubId={profile!.club_id} initialMembers={initialMembers} />
       </div>
     </main>
   )
