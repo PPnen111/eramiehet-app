@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { cookies } from 'next/headers'
+import { Eye } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -38,6 +40,15 @@ export default async function SuperadminPage() {
     redirect('/dashboard')
   }
 
+  const cookieStore = await cookies()
+  const activePreview = cookieStore.get('preview_role')?.value ?? null
+
+  const previewOptions = [
+    { role: 'admin', label: 'Ylläpitäjä' },
+    { role: 'board_member', label: 'Johtokunta' },
+    { role: 'member', label: 'Jäsen' },
+  ]
+
   const admin = createAdminClient()
 
   // Fetch all clubs and all profiles in parallel
@@ -71,6 +82,44 @@ export default async function SuperadminPage() {
           </p>
           <h1 className="mt-1 text-2xl font-bold text-white">Hallintapaneeli</h1>
         </div>
+
+        {/* Rooliesikatselu */}
+        <section className="rounded-2xl border border-amber-800/50 bg-amber-900/20 p-4">
+          <h2 className="mb-1 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-amber-400">
+            <Eye size={14} />
+            Rooliesikatselu
+          </h2>
+          <p className="mb-3 text-xs text-amber-600">
+            Selaa sovellusta valitun roolin oikeuksilla. Aktiivinen esikatselu näkyy keltaisena bannerina.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {previewOptions.map(({ role, label }) => {
+              const isActive = activePreview === role
+              return (
+                <Link
+                  key={role}
+                  href={`/superadmin/preview?role=${role}`}
+                  className={`rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
+                    isActive
+                      ? 'bg-amber-500 text-amber-950'
+                      : 'border border-amber-700 text-amber-300 hover:bg-amber-900/40'
+                  }`}
+                >
+                  {isActive && '✓ '}
+                  {label}
+                </Link>
+              )
+            })}
+            {activePreview && (
+              <Link
+                href="/superadmin/preview?exit=1"
+                className="rounded-xl border border-green-800 px-4 py-2 text-sm font-semibold text-green-400 hover:bg-green-900/30 transition-colors"
+              >
+                Lopeta esikatselu
+              </Link>
+            )}
+          </div>
+        </section>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
