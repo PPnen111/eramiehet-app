@@ -16,7 +16,6 @@ import {
   Star,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getEffectiveRole, getPreviewRole } from '@/lib/role-preview'
 import LogoutButton from './logout-button'
 
 type ModuleItem = {
@@ -101,9 +100,7 @@ export default async function DashboardPage() {
     .single()
 
   const displayName = profile?.full_name ?? user.email
-  const actualRole = profile?.role ?? null
-  const role = actualRole ? await getEffectiveRole(actualRole) : null
-  const isPreview = actualRole === 'superadmin' && role !== 'superadmin'
+  const role = profile?.role ?? null
   const RoleIcon = role ? (roleIcon[role] ?? User) : null
 
   return (
@@ -144,8 +141,8 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* Superadmin-linkki — piilotetaan esikatselussa */}
-        {role === 'superadmin' && !isPreview && (
+        {/* Superadmin-linkki */}
+        {role === 'superadmin' && (
           <div className="mb-4">
             <Link
               href="/superadmin"
