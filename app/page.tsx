@@ -19,8 +19,14 @@ export default function Home() {
             href="/rekisteroidy"
             className="rounded-xl bg-green-700 px-6 py-3.5 text-center text-base font-semibold text-white shadow-lg"
           >
-            Aloita ilmainen kokeilu
+            Rekisteröi uusi seura
           </Link>
+          <p className="text-center text-xs text-green-500">
+            Liittymässä jo olemassa olevaan seuraan?{' '}
+            <Link href="/liity" className="underline hover:text-green-300">
+              Käytä kutsulinkkiä
+            </Link>
+          </p>
           <Link
             href="/login"
             className="rounded-xl border border-green-700 px-6 py-3.5 text-center text-base font-semibold text-green-300"
