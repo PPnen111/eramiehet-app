@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 type Booking = {
@@ -15,12 +15,26 @@ interface Props {
 
 const WEEKDAYS = ['Ma', 'Ti', 'Ke', 'To', 'Pe', 'La', 'Su']
 
-export default function CabinCalendar({ bookings }: Props) {
-  const today = new Date()
-  const todayStr = today.toISOString().slice(0, 10)
+function localDateStr(d: Date): string {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
 
-  const [year, setYear] = useState(today.getFullYear())
-  const [month, setMonth] = useState(today.getMonth())
+export default function CabinCalendar({ bookings }: Props) {
+  const [year, setYear] = useState(0)
+  const [month, setMonth] = useState(0)
+  const [todayStr, setTodayStr] = useState('')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    const now = new Date()
+    setYear(now.getFullYear())
+    setMonth(now.getMonth())
+    setTodayStr(localDateStr(now))
+    setMounted(true)
+  }, [])
 
   const prevMonth = () => {
     if (month === 0) { setYear((y) => y - 1); setMonth(11) }
@@ -31,9 +45,17 @@ export default function CabinCalendar({ bookings }: Props) {
     else setMonth((m) => m + 1)
   }
 
+  if (!mounted) {
+    return (
+      <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
+        <div className="h-56 animate-pulse rounded-xl bg-white/5" />
+      </div>
+    )
+  }
+
   const firstDay = new Date(year, month, 1)
   const lastDay = new Date(year, month + 1, 0)
-  // Finnish week starts on Monday: getDay() 0=Sun → 6, 1=Mon → 0
+  // Ma=0, Ti=1, ... Su=6  (getDay: 0=Su, 1=Ma, ..., 6=La → shift +6 mod 7)
   const firstDayOfWeek = (firstDay.getDay() + 6) % 7
 
   const monthName = firstDay.toLocaleDateString('fi-FI', { month: 'long', year: 'numeric' })
@@ -41,21 +63,27 @@ export default function CabinCalendar({ bookings }: Props) {
   const cells: (string | null)[] = []
   for (let i = 0; i < firstDayOfWeek; i++) cells.push(null)
   for (let d = 1; d <= lastDay.getDate(); d++) {
-    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
-    cells.push(dateStr)
+    cells.push(`${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`)
   }
 
   function getStatus(dateStr: string): 'booked' | 'today' | 'past' | 'free' {
-    const isBooked = bookings.some((b) => b.starts_on <= dateStr && b.ends_on >= dateStr)
-    if (isBooked) return 'booked'
+    if (bookings.some((b) => b.starts_on <= dateStr && b.ends_on >= dateStr)) return 'booked'
     if (dateStr === todayStr) return 'today'
     if (dateStr < todayStr) return 'past'
     return 'free'
   }
 
+  const base = 'flex h-9 items-center justify-center rounded-lg text-sm select-none'
+  const styles: Record<string, string> = {
+    booked: 'bg-red-900/70 font-semibold text-red-200',
+    today: 'ring-2 ring-green-400 font-semibold text-white',
+    past: 'text-green-800',
+    free: 'text-green-300 hover:bg-white/10 cursor-default',
+  }
+
   return (
     <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-      {/* Otsikkorivi */}
+      {/* Navigointi */}
       <div className="mb-4 flex items-center justify-between">
         <button
           onClick={prevMonth}
@@ -83,22 +111,12 @@ export default function CabinCalendar({ bookings }: Props) {
         ))}
       </div>
 
-      {/* Päivät */}
+      {/* Päiväruudukko */}
       <div className="grid grid-cols-7 gap-0.5">
         {cells.map((dateStr, i) => {
           if (!dateStr) return <div key={`empty-${i}`} />
-
           const status = getStatus(dateStr)
           const day = parseInt(dateStr.slice(8), 10)
-
-          const base = 'flex h-9 items-center justify-center rounded-lg text-sm select-none'
-          const styles: Record<string, string> = {
-            booked: 'bg-red-900/70 font-semibold text-red-200',
-            today:  'ring-2 ring-green-400 font-semibold text-white',
-            past:   'text-green-800',
-            free:   'text-green-300 hover:bg-white/10',
-          }
-
           return (
             <div key={dateStr} className={`${base} ${styles[status]}`}>
               {day}
