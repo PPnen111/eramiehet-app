@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { isBoardOrAbove } from '@/lib/auth'
 import CredentialCard from './credential-card'
 import AddCredentialForm from './add-credential-form'
 
@@ -28,7 +29,7 @@ export default async function KarttatunnuksetPage() {
 
   if (!profile) redirect('/login')
 
-  const isAdmin = profile.role === 'admin' || profile.role === 'board_member'
+  const isAdmin = isBoardOrAbove(profile.role)
 
   const { data: raw } = await supabase
     .from('map_credentials')

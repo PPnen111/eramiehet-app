@@ -1,6 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { isBoardOrAbove } from '@/lib/auth'
 import DeleteEventDetailButton from './delete-button'
 
 const typeLabels: Record<string, string> = {
@@ -81,7 +82,7 @@ export default async function TapahtumaDetailPage({
   // Verify event belongs to user's club
   if (event.club_id !== profile.club_id) notFound()
 
-  const isAdmin = profile.role === 'admin' || profile.role === 'board_member'
+  const isAdmin = isBoardOrAbove(profile.role)
 
   // Fetch creator name if available
   let creatorName: string | null = null

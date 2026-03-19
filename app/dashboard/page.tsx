@@ -18,6 +18,7 @@ import {
   ArrowLeftRight,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { isBoardOrAbove, isSuperAdmin } from '@/lib/auth'
 import LogoutButton from './logout-button'
 
 type ModuleItem = {
@@ -150,11 +151,9 @@ export default async function DashboardPage() {
   const activeMembership = memberships.find((m) => m.club_id === activeClubId)
   const role = profileRole === 'superadmin' ? 'superadmin' : (activeMembership?.role ?? null)
 
-  const isAdmin = role === 'superadmin' || role === 'admin'
-  const isBoardOrAbove = isAdmin || role === 'board_member'
   const RoleIcon = role ? (roleIcon[role] ?? User) : null
 
-  const modules = isBoardOrAbove
+  const modules = isBoardOrAbove(role)
     ? [...COMMON_MODULES, ...ADMIN_MODULES]
     : COMMON_MODULES
 
@@ -211,7 +210,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Superadmin-linkki */}
-        {profileRole === 'superadmin' && (
+        {isSuperAdmin(profileRole) && (
           <div className="mb-4">
             <Link
               href="/superadmin"
