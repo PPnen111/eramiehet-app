@@ -110,15 +110,32 @@ export default async function DashboardPage() {
   if (!user) redirect('/login')
 
   // Fetch profile for display name, active_club_id, and superadmin check
-  const { data: profile } = await supabase
+  const { data: profileData } = await supabase
     .from('profiles')
     .select('full_name, role, active_club_id')
     .eq('id', user.id)
     .single()
 
+  const profile = profileData as {
+    full_name: string | null
+    role: string | null
+    active_club_id: string | null
+  } | null
+
   const displayName = profile?.full_name ?? user.email
-  const profileRole = (profile as { role: string | null } | null)?.role ?? null
-  const activeClubId = (profile as { active_club_id: string | null } | null)?.active_club_id ?? null
+  const profileRole = profile?.role ?? null
+  const activeClubId = profile?.active_club_id ?? null
+
+  // Fetch club name for the active club
+  let clubName: string | null = null
+  if (activeClubId) {
+    const { data: clubData } = await supabase
+      .from('clubs')
+      .select('name')
+      .eq('id', activeClubId)
+      .single()
+    clubName = (clubData as { name: string } | null)?.name ?? null
+  }
 
   // Fetch all club memberships to determine role in active club + multi-club state
   const { data: membershipsData } = await supabase
@@ -129,14 +146,15 @@ export default async function DashboardPage() {
   const memberships = (membershipsData ?? []) as unknown as MembershipRow[]
   const multipleClubs = memberships.length > 1
 
-  // Role comes from club_members for the active club; fall back to profiles.role for superadmin
+  // Role comes from club_members for the active club; superadmin lives on profiles.role
   const activeMembership = memberships.find((m) => m.club_id === activeClubId)
   const role = profileRole === 'superadmin' ? 'superadmin' : (activeMembership?.role ?? null)
 
-  const isAdmin = role === 'admin' || role === 'board_member'
+  const isAdmin = role === 'superadmin' || role === 'admin'
+  const isBoardOrAbove = isAdmin || role === 'board_member'
   const RoleIcon = role ? (roleIcon[role] ?? User) : null
 
-  const modules = isAdmin
+  const modules = isBoardOrAbove
     ? [...COMMON_MODULES, ...ADMIN_MODULES]
     : COMMON_MODULES
 
@@ -150,6 +168,9 @@ export default async function DashboardPage() {
             <h1 className="bg-gradient-to-r from-green-300 to-emerald-200 bg-clip-text text-2xl font-bold text-transparent">
               {displayName}
             </h1>
+            {clubName && (
+              <p className="mt-0.5 text-sm text-green-500">{clubName}</p>
+            )}
             {role && (
               <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-green-800/60 px-2.5 py-0.5 text-xs font-medium text-green-200">
                 {RoleIcon && <RoleIcon size={11} />}
