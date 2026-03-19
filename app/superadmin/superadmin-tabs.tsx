@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import AnalyticsTab from './analytics-tab'
 import InfoTab from './info-tab'
+import LandingTab from './landing-tab'
 import type { Stats, UserRow, EnhancedClub } from './analytics-tab'
 
 interface Props {
@@ -11,7 +12,13 @@ interface Props {
   enhancedClubs: EnhancedClub[]
 }
 
-type Tab = 'analytics' | 'info'
+type Tab = 'analytics' | 'info' | 'landing'
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'analytics', label: 'Analytiikka' },
+  { id: 'info', label: 'Tietoa sovelluksesta' },
+  { id: 'landing', label: 'Landing page' },
+]
 
 export default function SuperadminTabs({ stats, userRows, enhancedClubs }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('analytics')
@@ -20,10 +27,7 @@ export default function SuperadminTabs({ stats, userRows, enhancedClubs }: Props
     <div>
       {/* Tab navigation */}
       <div className="mb-6 flex gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
-        {([
-          { id: 'analytics', label: 'Analytiikka' },
-          { id: 'info', label: 'Tietoa sovelluksesta' },
-        ] as { id: Tab; label: string }[]).map(({ id, label }) => (
+        {TABS.map(({ id, label }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
@@ -39,11 +43,11 @@ export default function SuperadminTabs({ stats, userRows, enhancedClubs }: Props
       </div>
 
       {/* Tab content */}
-      {activeTab === 'analytics' ? (
+      {activeTab === 'analytics' && (
         <AnalyticsTab stats={stats} userRows={userRows} enhancedClubs={enhancedClubs} />
-      ) : (
-        <InfoTab />
       )}
+      {activeTab === 'info' && <InfoTab />}
+      {activeTab === 'landing' && <LandingTab />}
     </div>
   )
 }
