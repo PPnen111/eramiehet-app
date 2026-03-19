@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { CalendarOff } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { formatDate } from '@/lib/format'
+import { isBoardOrAbove } from '@/lib/auth'
 import BookingForm from './booking-form'
 import DeleteBookingButton from './delete-booking-button'
 
@@ -60,7 +61,7 @@ export default async function ErakartanoPage() {
   }
 
   const today = new Date().toISOString().slice(0, 10)
-  const isAdmin = profile.role === 'admin' || profile.role === 'board_member'
+  const isAdmin = isBoardOrAbove(profile.role)
 
   const { data: cabinRaw } = await supabase
     .from('cabin_info')

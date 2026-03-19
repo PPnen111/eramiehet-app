@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isBoardOrAbove } from '@/lib/auth'
 import MemberSearch from './member-search'
 
 export type MemberRow = {
@@ -26,7 +27,7 @@ export default async function JasenetPage() {
     .single()
 
   const effectiveRole = myProfile?.role ?? null
-  if (!effectiveRole || (effectiveRole !== 'admin' && effectiveRole !== 'board_member')) {
+  if (!isBoardOrAbove(effectiveRole)) {
     redirect('/dashboard')
   }
 

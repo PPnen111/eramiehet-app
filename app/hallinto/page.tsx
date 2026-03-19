@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isBoardOrAbove } from '@/lib/auth'
 import AdminPanel from './admin-panel'
 
 export type AdminMember = {
@@ -24,7 +25,7 @@ export default async function HallintoPage() {
     .single()
 
   const effectiveRole = profile?.role ?? null
-  if (!effectiveRole || (effectiveRole !== 'admin' && effectiveRole !== 'board_member')) {
+  if (!isBoardOrAbove(effectiveRole)) {
     return (
       <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
         <div className="mx-auto max-w-2xl space-y-4">

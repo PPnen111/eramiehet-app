@@ -1,6 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { isBoardOrAbove } from '@/lib/auth'
 import EditEventForm from './edit-event-form'
 
 type EventRow = {
@@ -35,7 +36,7 @@ export default async function MuokkaaPage({
     .single()
 
   if (!profile) redirect('/login')
-  if (profile.role === 'member') redirect('/tapahtumat')
+  if (!isBoardOrAbove(profile.role)) redirect('/tapahtumat')
 
   const { data: raw } = await supabase
     .from('events')

@@ -41,7 +41,7 @@ export default function BottomNavClient({ role }: { role: string | null }) {
   if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null
 
   const items =
-    role === 'admin' || role === 'board_member' ? ADMIN_NAV : MEMBER_NAV
+    role === 'superadmin' || role === 'admin' || role === 'board_member' ? ADMIN_NAV : MEMBER_NAV
 
   return (
     <>

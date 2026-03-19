@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { isBoardOrAbove } from '@/lib/auth'
 import CreateEventForm from './create-event-form'
 
 export default async function UusiTapahtumaPage() {
@@ -19,7 +20,7 @@ export default async function UusiTapahtumaPage() {
     .single()
 
   if (!profile) redirect('/login')
-  if (profile.role === 'member') redirect('/tapahtumat')
+  if (!isBoardOrAbove(profile.role)) redirect('/tapahtumat')
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
