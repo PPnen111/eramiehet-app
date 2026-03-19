@@ -6,6 +6,7 @@ import { formatDate } from '@/lib/format'
 import { isBoardOrAbove } from '@/lib/auth'
 import BookingForm from './booking-form'
 import DeleteBookingButton from './delete-booking-button'
+import CabinCalendar from './cabin-calendar'
 
 type BookingRow = {
   id: string
@@ -100,6 +101,8 @@ export default async function ErakartanoPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
         <h1 className="text-2xl font-bold text-white">Eräkartano</h1>
+
+        <CabinCalendar bookings={existingBookings} />
 
         <BookingForm
           clubId={profile.club_id}
