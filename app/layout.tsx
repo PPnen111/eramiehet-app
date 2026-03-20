@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import BottomNav from "./components/bottom-nav";
+import FeedbackButton from "./components/feedback-button";
+
 export const metadata: Metadata = {
   title: "Erämiesten App",
   description: "Metsästysseuran hallinta helpoksi",
@@ -16,6 +18,7 @@ export default function RootLayout({
       <body className="antialiased">
         {children}
         <BottomNav />
+        <FeedbackButton />
       </body>
     </html>
   );

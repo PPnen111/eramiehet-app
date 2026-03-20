@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import SuperadminTabs from './superadmin-tabs'
 import type { EnhancedClub, UserRow } from './analytics-tab'
+import type { FeedbackRow } from './feedback-tab'
 
 type ProfileData = {
   id: string
@@ -16,6 +17,20 @@ type ClubData = {
   id: string
   name: string | null
   created_at: string
+}
+
+type FeedbackRaw = {
+  id: string
+  profile_id: string | null
+  club_id: string | null
+  page: string | null
+  rating: number | null
+  message: string | null
+  category: string | null
+  status: string
+  created_at: string
+  profiles: { full_name: string | null } | null
+  clubs: { name: string | null } | null
 }
 
 function isWithinDays(iso: string | null, days: number): boolean {
@@ -59,10 +74,15 @@ export default async function SuperadminPage() {
     { data: authData },
     { data: profilesRaw },
     { data: clubsRaw },
+    { data: feedbackRaw },
   ] = await Promise.all([
     admin.auth.admin.listUsers({ perPage: 1000 }),
     admin.from('profiles').select('id, club_id, full_name, role'),
     admin.from('clubs').select('id, name, created_at').order('created_at', { ascending: false }),
+    admin
+      .from('feedback')
+      .select('*, profiles(full_name), clubs(name)')
+      .order('created_at', { ascending: false }),
   ])
 
   const authUsers = authData?.users ?? []
@@ -96,7 +116,9 @@ export default async function SuperadminPage() {
     const memberCount = clubProfiles.length
 
     const adminProfile = clubProfiles.find((p) => p.role === 'admin')
-    const adminAuthUser = adminProfile ? authUsers.find((u) => u.id === adminProfile.id) : undefined
+    const adminAuthUser = adminProfile
+      ? authUsers.find((u) => u.id === adminProfile.id)
+      : undefined
 
     const clubAuthUsers = authUsers.filter((u) => {
       const p = profileById.get(u.id)
@@ -119,6 +141,24 @@ export default async function SuperadminPage() {
     }
   })
 
+  const feedbackRows: FeedbackRow[] = ((feedbackRaw ?? []) as unknown as FeedbackRaw[]).map(
+    (r) => ({
+      id: r.id,
+      profile_id: r.profile_id,
+      club_id: r.club_id,
+      page: r.page,
+      rating: r.rating,
+      message: r.message,
+      category: r.category,
+      status: r.status,
+      created_at: r.created_at,
+      full_name: r.profiles?.full_name ?? null,
+      club_name: r.clubs?.name ?? null,
+    })
+  )
+
+  const unreadFeedbackCount = feedbackRows.filter((r) => r.status === 'uusi').length
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
       <div className="mx-auto max-w-6xl space-y-6">
@@ -137,6 +177,8 @@ export default async function SuperadminPage() {
           stats={{ totalClubs, totalUsers, newThisWeek, activeToday }}
           userRows={userRows}
           enhancedClubs={enhancedClubs}
+          feedbackRows={feedbackRows}
+          unreadFeedbackCount={unreadFeedbackCount}
         />
       </div>
     </main>

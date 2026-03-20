@@ -5,41 +5,57 @@ import AnalyticsTab from './analytics-tab'
 import InfoTab from './info-tab'
 import LandingV1 from './landing-v1'
 import LandingV2 from './landing-v2'
+import FeedbackTab from './feedback-tab'
 import type { Stats, UserRow, EnhancedClub } from './analytics-tab'
+import type { FeedbackRow } from './feedback-tab'
 
 interface Props {
   stats: Stats
   userRows: UserRow[]
   enhancedClubs: EnhancedClub[]
+  feedbackRows: FeedbackRow[]
+  unreadFeedbackCount: number
 }
 
-type Tab = 'analytics' | 'info' | 'landing-v1' | 'landing-v2'
+type Tab = 'analytics' | 'info' | 'landing-v1' | 'landing-v2' | 'feedback'
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'analytics', label: 'Analytiikka' },
-  { id: 'info', label: 'Tietoa sovelluksesta' },
-  { id: 'landing-v1', label: 'Landing V1 — Tumma' },
-  { id: 'landing-v2', label: 'Landing V2 — Vaalea' },
-]
-
-export default function SuperadminTabs({ stats, userRows, enhancedClubs }: Props) {
+export default function SuperadminTabs({
+  stats,
+  userRows,
+  enhancedClubs,
+  feedbackRows,
+  unreadFeedbackCount,
+}: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('analytics')
+
+  const TABS: { id: Tab; label: string; badge?: number }[] = [
+    { id: 'analytics', label: 'Analytiikka' },
+    { id: 'feedback', label: 'Palautteet 💬', badge: unreadFeedbackCount },
+    { id: 'info', label: 'Tietoa sovelluksesta' },
+    { id: 'landing-v1', label: 'Landing V1 — Tumma' },
+    { id: 'landing-v2', label: 'Landing V2 — Vaalea' },
+  ]
 
   return (
     <div>
       {/* Tab navigation */}
       <div className="mb-6 flex flex-wrap gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
-        {TABS.map(({ id, label }) => (
+        {TABS.map(({ id, label, badge }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
-            className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+            className={`relative flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
               activeTab === id
                 ? 'bg-green-700 text-white'
                 : 'text-green-400 hover:bg-white/10 hover:text-green-300'
             }`}
           >
             {label}
+            {badge != null && badge > 0 && (
+              <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-yellow-400 px-1 text-xs font-bold text-yellow-900">
+                {badge}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -48,6 +64,7 @@ export default function SuperadminTabs({ stats, userRows, enhancedClubs }: Props
       {activeTab === 'analytics' && (
         <AnalyticsTab stats={stats} userRows={userRows} enhancedClubs={enhancedClubs} />
       )}
+      {activeTab === 'feedback' && <FeedbackTab rows={feedbackRows} />}
       {activeTab === 'info' && <InfoTab />}
       {activeTab === 'landing-v1' && (
         <div className="overflow-hidden rounded-2xl border border-green-800 shadow-2xl">
