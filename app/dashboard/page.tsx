@@ -28,11 +28,6 @@ type ModuleItem = {
   icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
 }
 
-type MembershipRow = {
-  club_id: string
-  role: string
-}
-
 const COMMON_MODULES: ModuleItem[] = [
   {
     title: 'Tapahtumat',
@@ -138,18 +133,8 @@ export default async function DashboardPage() {
     clubName = (clubData as { name: string } | null)?.name ?? null
   }
 
-  // Fetch all club memberships to determine role in active club + multi-club state
-  const { data: membershipsData } = await supabase
-    .from('club_members')
-    .select('club_id, role')
-    .eq('profile_id', user.id)
-
-  const memberships = (membershipsData ?? []) as unknown as MembershipRow[]
-  const multipleClubs = memberships.length > 1
-
-  // Role comes from club_members for the active club; superadmin lives on profiles.role
-  const activeMembership = memberships.find((m) => m.club_id === activeClubId)
-  const role = profileRole === 'superadmin' ? 'superadmin' : (activeMembership?.role ?? null)
+  // Role comes from profiles directly; superadmin lives on profiles.role
+  const role = profileRole === 'superadmin' ? 'superadmin' : profileRole
 
   const RoleIcon = role ? (roleIcon[role] ?? User) : null
 
@@ -178,7 +163,7 @@ export default async function DashboardPage() {
             )}
           </div>
           <div className="flex items-center gap-2">
-            {multipleClubs && (
+            {activeClubId && (
               <Link
                 href="/vaihda-seura"
                 className="flex items-center gap-1.5 rounded-lg border border-green-700 bg-green-900/40 px-3 py-1.5 text-xs font-medium text-green-300 hover:bg-green-900/70 transition-colors"
