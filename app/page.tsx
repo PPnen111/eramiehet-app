@@ -24,7 +24,6 @@ export default function Home() {
 
         {/* Headline */}
         <h1 className="mb-5 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-5xl">
-          Lopeta WhatsApp&#8209;kaaos.<br />
           <span className="text-green-300">Kaikki seuran asiat</span><br />
           yhdessä paikassa.
         </h1>
@@ -34,11 +33,6 @@ export default function Home() {
           Jäsenrekisteri, tapahtumat, saalisilmoitukset,
           eräkartanon varaukset ja maksut –{' '}
           <span className="font-medium text-white">toimii puhelimella metsässä.</span>
-        </p>
-
-        {/* Social proof */}
-        <p className="mb-8 text-sm text-green-400">
-          ✓ Kyyjärven Erämiehet ja muut seurat jo käytössä
         </p>
 
         {/* CTA buttons */}
@@ -86,13 +80,8 @@ export default function Home() {
       {/* TRUST SECTION */}
       <div className="mx-auto max-w-lg px-6 pb-20">
         <div className="h-px bg-green-900 mb-8" />
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {[
-            {
-              icon: '🔒',
-              title: 'Tietoturvallinen',
-              body: 'Jokaisen seuran data on erillään. Suomalainen tietosuoja.',
-            },
             {
               icon: '📱',
               title: 'Toimii metsässä',
