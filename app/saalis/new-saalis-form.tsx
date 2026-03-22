@@ -72,15 +72,9 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
     router.refresh()
   }
 
-  if (!open) {
-    return (
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white"
-      >
-        + Ilmoita saalis
-      </button>
-    )
+  const handleClose = () => {
+    setOpen(false)
+    setError('')
   }
 
   const inputClass =
@@ -90,115 +84,131 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
   const labelClass = 'mb-1 block text-sm text-green-300'
 
   return (
-    <div className="animate-slide-down rounded-2xl border border-green-800 bg-white/5 p-5">
-      <h2 className="mb-4 font-semibold text-white">Uusi saalisilmoitus</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="shrink-0 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white"
+      >
+        + Ilmoita saalis
+      </button>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={labelClass}>Eläin *</label>
-            <select value={elain} onChange={(e) => setElain(e.target.value)} className={selectClass}>
-              {ELAIMET.map((a) => (
-                <option key={a.value} value={a.value}>{a.label}</option>
-              ))}
-            </select>
+      {open && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/70 px-4 py-6 overflow-y-auto"
+          onClick={(e) => { if (e.target === e.currentTarget) handleClose() }}
+        >
+          <div className="w-full max-w-lg rounded-2xl border border-green-800 bg-green-950 p-5 shadow-2xl">
+            <h2 className="mb-4 font-semibold text-white">Uusi saalisilmoitus</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelClass}>Eläin *</label>
+                  <select value={elain} onChange={(e) => setElain(e.target.value)} className={selectClass}>
+                    {ELAIMET.map((a) => (
+                      <option key={a.value} value={a.value}>{a.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={labelClass}>Määrä</label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={maara}
+                    onChange={(e) => setMaara(Number(e.target.value))}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelClass}>Sukupuoli</label>
+                  <select value={sukupuoli} onChange={(e) => setSukupuoli(e.target.value)} className={selectClass}>
+                    <option value="tuntematon">–</option>
+                    <option value="uros">Uros</option>
+                    <option value="naaras">Naaras</option>
+                  </select>
+                </div>
+                <div>
+                  <label className={labelClass}>Ikäluokka</label>
+                  <select value={ikaLuokka} onChange={(e) => setIkaLuokka(e.target.value)} className={selectClass}>
+                    <option value="tuntematon">–</option>
+                    <option value="vasa">Vasa</option>
+                    <option value="nuori">Nuori</option>
+                    <option value="aikuinen">Aikuinen</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className={labelClass}>Päivämäärä *</label>
+                <input
+                  type="date"
+                  value={pvm}
+                  onChange={(e) => setPvm(e.target.value)}
+                  required
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Ilmoittajan nimi</label>
+                <input
+                  type="text"
+                  value={reporterName}
+                  onChange={(e) => setReporterName(e.target.value)}
+                  placeholder="Jätetä tyhjäksi käyttää profiilisi nimeä"
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Paikka</label>
+                <input
+                  type="text"
+                  value={paikka}
+                  onChange={(e) => setPaikka(e.target.value)}
+                  placeholder="esim. Peltometsä"
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Lisätiedot</label>
+                <textarea
+                  value={kuvaus}
+                  onChange={(e) => setKuvaus(e.target.value)}
+                  rows={2}
+                  className={inputClass}
+                />
+              </div>
+
+              {error && (
+                <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>
+              )}
+
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  {loading ? 'Tallennetaan...' : 'Tallenna'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300"
+                >
+                  Peruuta
+                </button>
+              </div>
+            </form>
           </div>
-          <div>
-            <label className={labelClass}>Määrä</label>
-            <input
-              type="number"
-              min={1}
-              value={maara}
-              onChange={(e) => setMaara(Number(e.target.value))}
-              className={inputClass}
-            />
-          </div>
         </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={labelClass}>Sukupuoli</label>
-            <select value={sukupuoli} onChange={(e) => setSukupuoli(e.target.value)} className={selectClass}>
-              <option value="tuntematon">–</option>
-              <option value="uros">Uros</option>
-              <option value="naaras">Naaras</option>
-            </select>
-          </div>
-          <div>
-            <label className={labelClass}>Ikäluokka</label>
-            <select value={ikaLuokka} onChange={(e) => setIkaLuokka(e.target.value)} className={selectClass}>
-              <option value="tuntematon">–</option>
-              <option value="vasa">Vasa</option>
-              <option value="nuori">Nuori</option>
-              <option value="aikuinen">Aikuinen</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label className={labelClass}>Päivämäärä *</label>
-          <input
-            type="date"
-            value={pvm}
-            onChange={(e) => setPvm(e.target.value)}
-            required
-            className={inputClass}
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>Ilmoittajan nimi</label>
-          <input
-            type="text"
-            value={reporterName}
-            onChange={(e) => setReporterName(e.target.value)}
-            placeholder="Jätetä tyhjäksi käyttää profiilisi nimeä"
-            className={inputClass}
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>Paikka</label>
-          <input
-            type="text"
-            value={paikka}
-            onChange={(e) => setPaikka(e.target.value)}
-            placeholder="esim. Peltometsä"
-            className={inputClass}
-          />
-        </div>
-
-        <div>
-          <label className={labelClass}>Lisätiedot</label>
-          <textarea
-            value={kuvaus}
-            onChange={(e) => setKuvaus(e.target.value)}
-            rows={2}
-            className={inputClass}
-          />
-        </div>
-
-        {error && (
-          <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>
-        )}
-
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white disabled:opacity-50"
-          >
-            {loading ? 'Tallennetaan...' : 'Tallenna'}
-          </button>
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300"
-          >
-            Peruuta
-          </button>
-        </div>
-      </form>
-    </div>
+      )}
+    </>
   )
 }
