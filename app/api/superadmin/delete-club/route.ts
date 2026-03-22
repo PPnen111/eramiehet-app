@@ -36,7 +36,8 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Poista ensin kaikki jäsenet' }, { status: 400 })
   }
 
-  const { error } = await admin.rpc('delete_club', { p_club_id: clubId })
+  // Call RPC via the regular client so auth.uid() is set inside the function
+  const { error } = await supabase.rpc('delete_club', { p_club_id: clubId })
 
   if (error) {
     console.error('delete_club error:', error)
