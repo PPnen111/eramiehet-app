@@ -89,10 +89,10 @@ export default function AddCredentialForm({ clubId }: Props) {
               <div>
                 <label className="mb-1 block text-sm text-green-300">URL</label>
                 <input
-                  type="url"
+                  type="text"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="https://..."
+                  placeholder="esim. www.tunnus.fi tai https://tunnus.fi"
                   className={inputClass}
                 />
               </div>
