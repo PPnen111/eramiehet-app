@@ -15,6 +15,7 @@ interface Props {
   enhancedClubs: EnhancedClub[]
   feedbackRows: FeedbackRow[]
   unreadFeedbackCount: number
+  currentUserId: string
 }
 
 type Tab = 'analytics' | 'info' | 'landing-v1' | 'landing-v2' | 'feedback'
@@ -25,6 +26,7 @@ export default function SuperadminTabs({
   enhancedClubs,
   feedbackRows,
   unreadFeedbackCount,
+  currentUserId,
 }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('analytics')
 
@@ -62,7 +64,7 @@ export default function SuperadminTabs({
 
       {/* Tab content */}
       {activeTab === 'analytics' && (
-        <AnalyticsTab stats={stats} userRows={userRows} enhancedClubs={enhancedClubs} />
+        <AnalyticsTab stats={stats} userRows={userRows} enhancedClubs={enhancedClubs} currentUserId={currentUserId} />
       )}
       {activeTab === 'feedback' && <FeedbackTab rows={feedbackRows} />}
       {activeTab === 'info' && <InfoTab />}

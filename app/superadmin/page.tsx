@@ -179,6 +179,7 @@ export default async function SuperadminPage() {
           enhancedClubs={enhancedClubs}
           feedbackRows={feedbackRows}
           unreadFeedbackCount={unreadFeedbackCount}
+          currentUserId={user.id}
         />
       </div>
     </main>
