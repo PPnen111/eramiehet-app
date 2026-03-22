@@ -23,12 +23,13 @@ export async function POST(request: NextRequest) {
   }
 
   const { data, error } = await supabase.rpc('create_club_for_user', {
-    user_id: user.id,
-    club_name: clubName.trim(),
+    p_user_id: user.id,
+    p_club_name: clubName.trim(),
   })
 
   if (error) {
-    return NextResponse.json({ error: 'Seuran luonti epäonnistui' }, { status: 500 })
+    console.error('create_club_for_user RPC error:', error)
+    return NextResponse.json({ error: 'Seuran luonti epäonnistui: ' + error.message }, { status: 500 })
   }
 
   return NextResponse.json(data)
