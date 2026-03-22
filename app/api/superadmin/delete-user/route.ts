@@ -9,13 +9,15 @@ export async function DELETE(request: NextRequest) {
   } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Ei kirjautunut' }, { status: 401 })
 
-  const { data: profileRaw } = await supabase
+  const admin = createAdminClient()
+
+  const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
     .single()
 
-  if ((profileRaw as { role: string } | null)?.role !== 'superadmin') {
+  if (profile?.role !== 'superadmin') {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
 
@@ -27,8 +29,6 @@ export async function DELETE(request: NextRequest) {
   if (userId === user.id) {
     return NextResponse.json({ error: 'Et voi poistaa omaa tiliäsi' }, { status: 400 })
   }
-
-  const admin = createAdminClient()
 
   // Block deletion of superadmin accounts
   const { data: targetProfile } = await admin
