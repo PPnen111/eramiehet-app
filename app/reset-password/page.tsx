@@ -18,9 +18,16 @@ export default function ResetPasswordPage() {
   // Supabase places the recovery token in the URL hash.
   // onAuthStateChange with PASSWORD_RECOVERY fires once the client
   // has exchanged the token for a session.
+  // We also check the current session on mount in case the event
+  // fired before the listener was registered (React hydration race).
   useEffect(() => {
+    // Check if recovery session already exists (token processed before listener registered)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setReady(true)
+    })
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
+      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
         setReady(true)
       }
     })
