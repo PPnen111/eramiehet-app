@@ -59,7 +59,7 @@ export default function LoginPage() {
     setLoading(false)
 
     if (error) {
-      showMsg('Sähköpostiosoitetta ei löydy tai lähetys epäonnistui.', 'error')
+      showMsg(error.message, 'error')
       return
     }
 
