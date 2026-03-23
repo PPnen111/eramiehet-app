@@ -9,7 +9,8 @@ export function invitationSubject(data: InvitationEmailData): string {
 }
 
 export function invitationHtml(data: InvitationEmailData): string {
-  const acceptUrl = `https://eramiehet-app.vercel.app/liity?token=${data.token}`
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://eramiehet-app.vercel.app'
+  const acceptUrl = `${baseUrl}/liity?token=${data.token}`
 
   return `<!DOCTYPE html>
 <html lang="fi">

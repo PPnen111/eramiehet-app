@@ -30,7 +30,7 @@ export function reminderHtml(data: ReminderEmailData): string {
   const badgeText = data.isOverdue ? 'Erääntynyt' : 'Maksu erääntyy pian'
   const intro = data.isOverdue
     ? `Laskullanne on erääntynyt maksu. Pyydämme teitä ystävällisesti hoitamaan sen mahdollisimman pian.`
-    : `Muistutamme, että teillä on maksu, jonka eräpäivä on ${due}. Maksu erääntyi 7 päivän kuluttua.`
+    : `Muistutamme, että teillä on maksu, jonka eräpäivä on ${due}. Maksu erääntyy 7 päivän kuluttua.`
 
   return `<!DOCTYPE html>
 <html lang="fi">

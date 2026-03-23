@@ -5,7 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import { invitationHtml, invitationSubject, type InvitationEmailData } from '@/lib/emails/invitation'
 
-const FROM = 'Erämiesten App <noreply@eramiehet.fi>'
+const FROM = 'Erämiesten App <onboarding@resend.dev>'
 
 type ProfileRow = {
   club_id: string

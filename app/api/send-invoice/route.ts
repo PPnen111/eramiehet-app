@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isBoardOrAbove } from '@/lib/auth'
 import { invoiceHtml, invoiceSubject, type InvoiceEmailData } from '@/lib/emails/invoice'
 
-const FROM = 'Erämiesten App <noreply@eramiehet.fi>'
-// Use onboarding@resend.dev while domain noreply@eramiehet.fi is not yet verified in Resend
+const FROM = 'Erämiesten App <onboarding@resend.dev>'
 
 type PaymentRow = {
   id: string
@@ -26,6 +27,26 @@ type ClubRow = {
 }
 
 export async function POST(req: NextRequest) {
+  // Auth check — caller must be admin or board_member
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return NextResponse.json({ error: 'Kirjautuminen vaaditaan' }, { status: 401 })
+  }
+
+  const { data: callerRaw } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (!isBoardOrAbove((callerRaw as { role?: string } | null)?.role)) {
+    return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
+  }
+
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
     return NextResponse.json({ error: 'RESEND_API_KEY not configured' }, { status: 500 })
