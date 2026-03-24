@@ -16,6 +16,7 @@ import {
   User,
   Star,
   ArrowLeftRight,
+  Pencil,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { isBoardOrAbove, isSuperAdmin } from '@/lib/auth'
@@ -149,9 +150,15 @@ export default async function DashboardPage() {
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
             <p className="text-sm text-green-400">Tervetuloa</p>
-            <h1 className="bg-gradient-to-r from-green-300 to-emerald-200 bg-clip-text text-2xl font-bold text-transparent">
-              {displayName}
-            </h1>
+            <Link
+              href="/profiili"
+              className="group inline-flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+            >
+              <h1 className="bg-gradient-to-r from-green-300 to-emerald-200 bg-clip-text text-2xl font-bold text-transparent">
+                {displayName}
+              </h1>
+              <Pencil size={13} className="text-green-500 group-hover:text-green-300 transition-colors" />
+            </Link>
             {clubName && (
               <p className="mt-0.5 text-sm text-green-500">{clubName}</p>
             )}

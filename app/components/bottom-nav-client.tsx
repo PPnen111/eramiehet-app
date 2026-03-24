@@ -9,6 +9,7 @@ import {
   Tent,
   CreditCard,
   Settings2,
+  UserCircle,
 } from 'lucide-react'
 
 type NavItem = {
@@ -22,15 +23,15 @@ const MEMBER_NAV: NavItem[] = [
   { href: '/tapahtumat', label: 'Tapahtumat', icon: CalendarDays },
   { href: '/saalis', label: 'Saalis', icon: Target },
   { href: '/erakartano', label: 'Kartano', icon: Tent },
-  { href: '/maksut', label: 'Maksut', icon: CreditCard },
+  { href: '/profiili', label: 'Profiili', icon: UserCircle },
 ]
 
 const ADMIN_NAV: NavItem[] = [
   { href: '/dashboard', label: 'Koti', icon: House },
   { href: '/tapahtumat', label: 'Tapahtumat', icon: CalendarDays },
   { href: '/saalis', label: 'Saalis', icon: Target },
-  { href: '/erakartano', label: 'Kartano', icon: Tent },
   { href: '/hallinto', label: 'Hallinto', icon: Settings2 },
+  { href: '/profiili', label: 'Profiili', icon: UserCircle },
 ]
 
 const HIDDEN_PATHS = ['/login', '/rekisteroidy']
