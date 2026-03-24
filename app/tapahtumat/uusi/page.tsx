@@ -15,12 +15,13 @@ export default async function UusiTapahtumaPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('club_id, role')
+    .select('active_club_id, role')
     .eq('id', user.id)
     .single()
 
   if (!profile) redirect('/login')
   if (!isBoardOrAbove(profile.role)) redirect('/tapahtumat')
+  if (!profile.active_club_id) redirect('/dashboard')
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
@@ -29,7 +30,7 @@ export default async function UusiTapahtumaPage() {
           ← Tapahtumat
         </Link>
         <h1 className="text-2xl font-bold text-white">Luo tapahtuma</h1>
-        <CreateEventForm clubId={profile.club_id} userId={user.id} />
+        <CreateEventForm clubId={profile.active_club_id} userId={user.id} />
       </div>
     </main>
   )
