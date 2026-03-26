@@ -38,15 +38,19 @@ export default async function TrialBanner() {
   if (profile.role === 'superadmin') return null
 
   const admin = createAdminClient()
-  const { data: subRaw } = await admin
-    .from('subscriptions')
-    .select('status, trial_ends_at')
-    .eq('club_id', profile.club_id)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single()
-
-  const sub = subRaw as SubscriptionRow | null
+  let sub: SubscriptionRow | null = null
+  try {
+    const { data: subRaw } = await admin
+      .from('subscriptions')
+      .select('status, trial_ends_at')
+      .eq('club_id', profile.club_id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+    sub = subRaw as SubscriptionRow | null
+  } catch {
+    return null
+  }
   if (!sub) return null
   if (sub.status === 'active') return null
 
