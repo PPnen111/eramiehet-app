@@ -124,16 +124,23 @@ export default async function DashboardPage() {
   const profileRole = profile?.role ?? null
   const activeClubId = profile?.active_club_id ?? null
 
-  // Fetch club name for the active club
+  // Fetch club name and created_at for the active club
   let clubName: string | null = null
+  let clubCreatedAt: string | null = null
   if (activeClubId) {
     const { data: clubData } = await supabase
       .from('clubs')
-      .select('name')
+      .select('name, created_at')
       .eq('id', activeClubId)
       .single()
-    clubName = (clubData as { name: string } | null)?.name ?? null
+    const club = clubData as { name: string; created_at: string } | null
+    clubName = club?.name ?? null
+    clubCreatedAt = club?.created_at ?? null
   }
+
+  const isNewClub =
+    clubCreatedAt !== null &&
+    new Date(clubCreatedAt) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 
   // Role comes from profiles directly; superadmin lives on profiles.role
   const role = profileRole === 'superadmin' ? 'superadmin' : profileRole
@@ -212,6 +219,22 @@ export default async function DashboardPage() {
             >
               <Settings size={16} />
               <span>Superadmin-paneeli</span>
+            </Link>
+          </div>
+        )}
+
+        {/* Onboarding card for new clubs */}
+        {role === 'admin' && isNewClub && (
+          <div className="mb-4">
+            <Link
+              href="/onboarding"
+              className="flex items-center justify-between rounded-xl border border-green-600 bg-green-900/30 px-4 py-3 hover:bg-green-900/50 transition-colors"
+            >
+              <div>
+                <p className="text-sm font-semibold text-green-200">Viimeistele käyttöönotto</p>
+                <p className="text-xs text-green-400">Kutsu jäseniä, lisää tapahtumia ja dokumentteja →</p>
+              </div>
+              <ArrowLeftRight size={16} className="shrink-0 text-green-400 rotate-90" />
             </Link>
           </div>
         )}

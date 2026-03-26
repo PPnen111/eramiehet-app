@@ -1,8 +1,39 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
+import { WifiOff, Clock } from 'lucide-react'
+
+const QUEUE_KEY = 'pending_saalis_queue'
+
+type PendingItem = {
+  id: string
+  club_id: string
+  profile_id: string
+  elain: string
+  maara: number
+  sukupuoli: string
+  ika_luokka: string
+  pvm: string
+  paikka: string | null
+  kuvaus: string | null
+  reporter_name: string | null
+  queued_at: string
+}
+
+function readQueue(): PendingItem[] {
+  if (typeof window === 'undefined') return []
+  try {
+    return JSON.parse(localStorage.getItem(QUEUE_KEY) ?? '[]') as PendingItem[]
+  } catch {
+    return []
+  }
+}
+
+function writeQueue(q: PendingItem[]) {
+  localStorage.setItem(QUEUE_KEY, JSON.stringify(q))
+}
 
 const ELAIMET = [
   { value: 'hirvi', label: 'Hirvi' },
@@ -34,11 +65,76 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
   const [kuvaus, setKuvaus] = useState('')
   const [reporterName, setReporterName] = useState('')
   const [error, setError] = useState('')
+  const [pendingCount, setPendingCount] = useState(0)
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'done'>('idle')
+
+  // Sync pending queue when online
+  useEffect(() => {
+    setPendingCount(readQueue().length)
+
+    async function syncQueue() {
+      const queue = readQueue()
+      if (queue.length === 0) return
+      setSyncStatus('syncing')
+      const remaining: PendingItem[] = []
+      for (const item of queue) {
+        const { id: _id, queued_at: _qa, ...insertData } = item
+        const { error: e } = await supabase.from('saalis').insert(insertData)
+        if (e) remaining.push(item)
+      }
+      writeQueue(remaining)
+      setPendingCount(remaining.length)
+      setSyncStatus(remaining.length === 0 ? 'done' : 'idle')
+      if (remaining.length < queue.length) router.refresh()
+    }
+
+    window.addEventListener('online', syncQueue)
+    if (navigator.onLine) syncQueue()
+    return () => window.removeEventListener('online', syncQueue)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  function resetForm() {
+    setElain('hirvi')
+    setMaara(1)
+    setSukupuoli('tuntematon')
+    setIkaLuokka('tuntematon')
+    setPvm(new Date().toISOString().slice(0, 10))
+    setPaikka('')
+    setKuvaus('')
+    setReporterName('')
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
+
+    // Offline: queue for later
+    if (!navigator.onLine) {
+      const item: PendingItem = {
+        id: crypto.randomUUID(),
+        club_id: clubId,
+        profile_id: profileId,
+        elain,
+        maara,
+        sukupuoli,
+        ika_luokka: ikaLuokka,
+        pvm,
+        paikka: paikka || null,
+        kuvaus: kuvaus || null,
+        reporter_name: reporterName || null,
+        queued_at: new Date().toISOString(),
+      }
+      const queue = readQueue()
+      queue.push(item)
+      writeQueue(queue)
+      setPendingCount(queue.length)
+      resetForm()
+      setOpen(false)
+      setLoading(false)
+      return
+    }
 
     const { error: insertError } = await supabase.from('saalis').insert({
       club_id: clubId,
@@ -59,14 +155,7 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
       return
     }
 
-    setElain('hirvi')
-    setMaara(1)
-    setSukupuoli('tuntematon')
-    setIkaLuokka('tuntematon')
-    setPvm(new Date().toISOString().slice(0, 10))
-    setPaikka('')
-    setKuvaus('')
-    setReporterName('')
+    resetForm()
     setOpen(false)
     setLoading(false)
     router.refresh()
@@ -85,12 +174,34 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="shrink-0 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white"
-      >
-        + Ilmoita saalis
-      </button>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setOpen(true)}
+          className="relative shrink-0 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white"
+        >
+          + Ilmoita saalis
+          {pendingCount > 0 && (
+            <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-400 px-1 text-xs font-bold text-amber-900">
+              {pendingCount}
+            </span>
+          )}
+        </button>
+        {pendingCount > 0 && (
+          <span className="flex items-center gap-1 text-xs text-amber-400">
+            <WifiOff size={12} />
+            {pendingCount} jonossa
+          </span>
+        )}
+        {syncStatus === 'syncing' && (
+          <span className="flex items-center gap-1 text-xs text-green-400">
+            <Clock size={12} />
+            Synkronoidaan...
+          </span>
+        )}
+        {syncStatus === 'done' && (
+          <span className="text-xs text-green-400">Synkronoitu ✓</span>
+        )}
+      </div>
 
       {open && (
         <div
@@ -99,6 +210,14 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
         >
           <div className="w-full max-w-lg rounded-2xl border border-green-800 bg-green-950 p-5 shadow-2xl">
             <h2 className="mb-4 font-semibold text-white">Uusi saalisilmoitus</h2>
+            {!navigator?.onLine && (
+              <div className="mb-4 flex items-start gap-2 rounded-lg bg-amber-900/30 border border-amber-700/50 px-3 py-2">
+                <WifiOff size={14} className="mt-0.5 shrink-0 text-amber-400" />
+                <p className="text-xs text-amber-300">
+                  Ei verkkoyhteyttä. Ilmoitus tallennetaan paikallisesti ja lähetetään automaattisesti kun yhteys palaa.
+                </p>
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="space-y-4">
 
               <div className="grid grid-cols-2 gap-3">
@@ -212,3 +331,4 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
     </>
   )
 }
+

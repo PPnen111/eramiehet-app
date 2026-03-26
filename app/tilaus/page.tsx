@@ -9,6 +9,7 @@ const PLANS = [
     id: 'perus',
     name: 'Perus',
     price: 249,
+    monthly: 21,
     description: 'Pienille seuroille',
     features: [
       'Jäsenrekisteri (enintään 30 jäsentä)',
@@ -22,6 +23,7 @@ const PLANS = [
     id: 'standardi',
     name: 'Standardi',
     price: 399,
+    monthly: 33,
     description: 'Suosituin valinta',
     highlight: true,
     features: [
@@ -39,6 +41,7 @@ const PLANS = [
     id: 'pro',
     name: 'Pro',
     price: 599,
+    monthly: 50,
     description: 'Suurille seuroille',
     features: [
       'Rajoittamaton jäsenmäärä',
@@ -111,7 +114,7 @@ export default function TilausPage() {
           </p>
           <h1 className="mt-1 text-2xl font-bold text-white">Valitse tilausvaihtoehto</h1>
           <p className="mt-2 text-sm text-green-400">
-            Hinnat sisältävät alv. Laskutus vuosittain.
+            Laskutus vuosittain. Hinnat sis. alv 0%.
           </p>
         </div>
 
@@ -140,10 +143,12 @@ export default function TilausPage() {
                 <p className="text-lg font-bold text-white">{plan.name}</p>
                 <p className="text-xs text-green-400">{plan.description}</p>
               </div>
-              <div className="mb-4">
+              <div className="mb-1">
                 <span className="text-3xl font-extrabold text-white">{plan.price} €</span>
                 <span className="text-sm text-green-400"> / vuosi</span>
               </div>
+              <p className="mb-0.5 text-sm text-green-400">(noin {plan.monthly} €/kk)</p>
+              <p className="mb-4 text-xs text-green-600">sis. alv 0%</p>
               <ul className="space-y-1.5">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-green-200">

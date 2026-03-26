@@ -161,6 +161,53 @@ export default function Home() {
         </div>
       </div>
 
+      {/* PRICING */}
+      <div className="mx-auto max-w-lg px-6 pb-14">
+        <div className="h-px bg-green-900 mb-10" />
+        <h2 className="mb-2 text-xl font-bold text-white">Hinnoittelu</h2>
+        <p className="mb-8 text-sm text-green-400">30 päivän ilmainen kokeilu. Ei luottokorttia.</p>
+        <div className="flex flex-col gap-4 md:flex-row">
+          {[
+            { name: 'Perus', price: 249, monthly: 21, desc: 'Sopii pienille seuroille. Kaikki perusominaisuudet.' },
+            { name: 'Standardi', price: 399, monthly: 33, desc: 'Suosituin. Lisäksi joukkolaskutus ja CSV-tuonti.', popular: true },
+            { name: 'Pro', price: 599, monthly: 50, desc: 'Suurille seuroille. Prioriteettituki ja lisäominaisuudet.' },
+          ].map((plan) => (
+            <div
+              key={plan.name}
+              className={`flex-1 rounded-2xl border p-5 ${
+                plan.popular
+                  ? 'border-green-500 bg-green-800/40'
+                  : 'border-green-800 bg-white/5'
+              }`}
+            >
+              {plan.popular && (
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-400">
+                  Suosituin
+                </p>
+              )}
+              <h3 className="mb-3 font-bold text-white">{plan.name}</h3>
+              <div className="mb-0.5">
+                <span className="text-3xl font-extrabold text-white">{plan.price} €</span>
+                <span className="text-sm text-green-400"> / vuosi</span>
+              </div>
+              <p className="mb-1 text-sm text-green-400">(noin {plan.monthly} €/kk)</p>
+              <p className="mb-4 text-xs text-green-600">sis. alv 0%</p>
+              <p className="mb-5 text-xs leading-5 text-green-300">{plan.desc}</p>
+              <Link
+                href="/rekisteroidy"
+                className={`block rounded-xl py-2.5 text-center text-sm font-semibold transition-colors ${
+                  plan.popular
+                    ? 'bg-green-500 text-green-950 hover:bg-green-400'
+                    : 'border border-green-700 text-green-300 hover:border-green-500 hover:text-green-200'
+                }`}
+              >
+                Kokeile ilmaiseksi
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* CTA SECTION */}
       <div className="mx-auto max-w-lg px-6 pb-14">
         <div className="h-px bg-green-900 mb-10" />
