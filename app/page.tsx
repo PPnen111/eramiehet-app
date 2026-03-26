@@ -161,32 +161,35 @@ export default function Home() {
         </div>
       </div>
 
-      {/* DEMO SECTION */}
+      {/* CTA SECTION */}
       <div className="mx-auto max-w-lg px-6 pb-14">
         <div className="h-px bg-green-900 mb-10" />
-        <h2 className="mb-4 text-xl font-bold text-white">Kokeile ilmaiseksi</h2>
-        <div className="rounded-2xl border border-green-700 bg-green-900/60 p-6">
-          <p className="mb-5 text-sm leading-relaxed text-green-200">
-            Haluatko nähdä miten sovellus toimii ennen rekisteröitymistä?
+        <div className="rounded-2xl border border-green-700 bg-green-800 p-8 text-center">
+          <h2 className="mb-3 text-2xl font-bold text-white">Kokeile ilmaiseksi 30 päivää</h2>
+          <p className="mb-6 text-sm leading-relaxed text-green-200">
+            Rekisteröi seurasi ja kokeile kaikkia ominaisuuksia 30 päivää ilmaiseksi.
+            Ei luottokorttia. Ei sitoutumista.
           </p>
-          <div className="mb-5 rounded-xl border border-green-700 bg-green-800/60 px-4 py-3 space-y-1.5">
-            <div className="flex items-center gap-3 text-sm">
-              <span className="w-24 text-green-400">Sähköposti</span>
-              <span className="font-mono font-medium text-white">demo@eramiehet.fi</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <span className="w-24 text-green-400">Salasana</span>
-              <span className="font-mono font-medium text-white">demo2026</span>
-            </div>
-          </div>
+          <ul className="mb-7 space-y-2">
+            {[
+              'Käyttövalmis 2 minuutissa',
+              'Kaikki ominaisuudet käytössä heti',
+              'Peruuta milloin tahansa',
+            ].map((item) => (
+              <li key={item} className="flex items-center justify-center gap-2 text-sm text-green-200">
+                <span className="font-bold text-green-400">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
           <Link
-            href="/login"
-            className="block rounded-xl bg-green-500 px-6 py-3 text-center text-sm font-bold text-green-950 hover:bg-green-400 transition-colors"
+            href="/rekisteroidy"
+            className="block rounded-xl bg-green-500 px-6 py-4 text-center text-base font-bold text-green-950 shadow-lg hover:bg-green-400 transition-colors"
           >
-            Avaa demo
+            Rekisteröi seura ilmaiseksi →
           </Link>
-          <p className="mt-3 text-center text-xs text-green-600">
-            Demossa näet oikean sovelluksen esimerkkidatalla.
+          <p className="mt-4 text-xs text-green-500">
+            Yli X metsästysseuraa jo käytössä
           </p>
         </div>
       </div>
