@@ -77,6 +77,120 @@ export default function Home() {
         </div>
       </div>
 
+      {/* HOW IT WORKS */}
+      <div className="mx-auto max-w-lg px-6 pb-14">
+        <div className="h-px bg-green-900 mb-10" />
+        <h2 className="mb-8 text-xl font-bold text-white">Näin se toimii</h2>
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-0">
+          {[
+            {
+              num: '1',
+              icon: '🏢',
+              title: 'Rekisteröi seura',
+              text: 'Luo seurasi tili 2 minuutissa. Sinusta tulee automaattisesti ylläpitäjä.',
+            },
+            {
+              num: '2',
+              icon: '✉️',
+              title: 'Kutsu jäsenet',
+              text: 'Lähetä kutsulinkki sähköpostitse tai tuo jäsenrekisteri CSV-tiedostona.',
+            },
+            {
+              num: '3',
+              icon: '📱',
+              title: 'Käytä metsässä',
+              text: 'Jäsenet kirjautuvat puhelimella. Saalisilmoitus, varaukset ja tapahtumat aina mukana.',
+            },
+          ].map((step, i) => (
+            <div key={step.num} className="flex md:flex-1 md:flex-col">
+              {/* Step content */}
+              <div className="flex gap-4 md:flex-col md:gap-3">
+                <div className="flex shrink-0 flex-col items-center gap-2 md:flex-row">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-green-950">
+                    {step.num}
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p className="mb-0.5 text-lg">{step.icon}</p>
+                  <p className="mb-1 font-semibold text-white">{step.title}</p>
+                  <p className="text-sm leading-relaxed text-green-400">{step.text}</p>
+                </div>
+              </div>
+              {/* Arrow between steps (desktop only) */}
+              {i < 2 && (
+                <div className="hidden md:flex md:w-8 md:shrink-0 md:items-start md:justify-center md:pt-3">
+                  <span className="text-green-700 text-xl">→</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* USE CASE EXAMPLES */}
+      <div className="mx-auto max-w-lg px-6 pb-14">
+        <div className="h-px bg-green-900 mb-10" />
+        <h2 className="mb-6 text-xl font-bold text-white">Käytännön esimerkkejä</h2>
+        <div className="flex flex-col gap-3">
+          {[
+            {
+              icon: '🦌',
+              title: 'Hirvijahdissa',
+              text: 'Matti ampuu hirven. Hän avaa sovelluksen ja ilmoittaa saaliin 30 sekunnissa. Kaikki seuran jäsenet näkevät sen heti.',
+            },
+            {
+              icon: '💳',
+              title: 'Jäsenmaksut',
+              text: 'Puheenjohtaja lähettää jäsenmaksulaskun kaikille 42 jäsenelle yhdellä klikkauksella. Jokainen saa laskun sähköpostiin.',
+            },
+            {
+              icon: '🏕️',
+              title: 'Eräkartano',
+              text: 'Jäsen haluaa varata mökin viikonlopuksi. Hän avaa varauskalenterin ja näkee vapaat päivät heti – ilman WhatsApp-kyselyjä.',
+            },
+          ].map(({ icon, title, text }) => (
+            <div
+              key={title}
+              className="rounded-xl border border-green-800 bg-green-900/50 px-5 py-4"
+            >
+              <p className="mb-1 text-xl">{icon}</p>
+              <p className="mb-1.5 font-semibold text-white">{title}</p>
+              <p className="text-sm leading-relaxed text-green-300">{text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* DEMO SECTION */}
+      <div className="mx-auto max-w-lg px-6 pb-14">
+        <div className="h-px bg-green-900 mb-10" />
+        <h2 className="mb-4 text-xl font-bold text-white">Kokeile ilmaiseksi</h2>
+        <div className="rounded-2xl border border-green-700 bg-green-900/60 p-6">
+          <p className="mb-5 text-sm leading-relaxed text-green-200">
+            Haluatko nähdä miten sovellus toimii ennen rekisteröitymistä?
+          </p>
+          <div className="mb-5 rounded-xl border border-green-700 bg-green-800/60 px-4 py-3 space-y-1.5">
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-24 text-green-400">Sähköposti</span>
+              <span className="font-mono font-medium text-white">demo@eramiehet.fi</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <span className="w-24 text-green-400">Salasana</span>
+              <span className="font-mono font-medium text-white">demo2026</span>
+            </div>
+          </div>
+          <Link
+            href="/login"
+            className="block rounded-xl bg-green-500 px-6 py-3 text-center text-sm font-bold text-green-950 hover:bg-green-400 transition-colors"
+          >
+            Avaa demo
+          </Link>
+          <p className="mt-3 text-center text-xs text-green-600">
+            Demossa näet oikean sovelluksen esimerkkidatalla.
+          </p>
+        </div>
+      </div>
+
       {/* TRUST SECTION */}
       <div className="mx-auto max-w-lg px-6 pb-20">
         <div className="h-px bg-green-900 mb-8" />
