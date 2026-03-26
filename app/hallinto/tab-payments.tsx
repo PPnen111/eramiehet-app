@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate, formatEuros } from '@/lib/format'
 import { generateReferenceNumber } from '@/lib/utils/reference-number'
+import InvoicePreviewModal, { type InvoicePreviewPayment } from '@/app/components/invoice-preview-modal'
 
 const PAYMENT_TYPES = [
   { value: 'jäsenmaksu', label: 'Jäsenmaksu' },
@@ -40,6 +41,7 @@ type Payment = {
   reference_number: string | null
   payment_type: string | null
   payment_method: string | null
+  additional_info: string | null
   profiles: { full_name: string | null } | null
 }
 
@@ -65,10 +67,12 @@ export default function TabPayments({ clubId }: Props) {
 
   const [members, setMembers] = useState<MemberOption[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
+  const [clubName, setClubName] = useState('Metsästysseura')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
   const [invoiceBusy, setInvoiceBusy] = useState<string | null>(null)
   const [toasts, setToasts] = useState<Toast[]>([])
+  const [previewPayment, setPreviewPayment] = useState<Payment | null>(null)
 
   // Form section
   const [formOpen, setFormOpen] = useState(false)
@@ -104,7 +108,7 @@ export default function TabPayments({ clubId }: Props) {
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [{ data: mData }, { data: pData }] = await Promise.all([
+    const [{ data: mData }, { data: pData }, { data: clubData }] = await Promise.all([
       supabase
         .from('profiles')
         .select('id, full_name, email')
@@ -113,13 +117,15 @@ export default function TabPayments({ clubId }: Props) {
       supabase
         .from('payments')
         .select(
-          'id, profile_id, description, amount_cents, due_date, paid_at, status, sent_at, reference_number, payment_type, payment_method, profiles(full_name)'
+          'id, profile_id, description, amount_cents, due_date, paid_at, status, sent_at, reference_number, payment_type, payment_method, additional_info, profiles(full_name)'
         )
         .eq('club_id', clubId)
         .order('due_date', { ascending: false, nullsFirst: false }),
+      supabase.from('clubs').select('name').eq('id', clubId).single(),
     ])
     setMembers((mData ?? []) as unknown as MemberOption[])
     setPayments((pData ?? []) as unknown as Payment[])
+    setClubName((clubData as { name: string } | null)?.name ?? 'Metsästysseura')
     setLoading(false)
   }, [clubId, supabase])
 
@@ -673,6 +679,13 @@ export default function TabPayments({ clubId }: Props) {
                     </button>
                   )}
 
+                  <button
+                    onClick={() => setPreviewPayment(p)}
+                    className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
+                  >
+                    Esikatsele
+                  </button>
+
                   <Link
                     href={`/laskut/${p.id}`}
                     className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
@@ -692,6 +705,18 @@ export default function TabPayments({ clubId }: Props) {
             )
           })}
         </div>
+      )}
+
+      {previewPayment && (
+        <InvoicePreviewModal
+          payment={previewPayment as unknown as InvoicePreviewPayment}
+          memberName={
+            (previewPayment.profiles as unknown as { full_name: string | null } | null)
+              ?.full_name ?? null
+          }
+          clubName={clubName}
+          onClose={() => setPreviewPayment(null)}
+        />
       )}
     </div>
   )
