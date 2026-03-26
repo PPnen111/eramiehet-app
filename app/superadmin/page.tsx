@@ -6,6 +6,7 @@ import SuperadminTabs from './superadmin-tabs'
 import type { EnhancedClub, UserRow } from './analytics-tab'
 import type { FeedbackRow } from './feedback-tab'
 import type { SubscriptionRow } from './subscriptions-tab'
+import type { DailyActivityRow, PageStatRow, UserActivityRow, AggregateStats } from './usage-tab'
 
 type ProfileData = {
   id: string
@@ -17,6 +18,21 @@ type ProfileData = {
 type ClubData = {
   id: string
   name: string | null
+  created_at: string
+}
+
+type ActivityLogRow = {
+  event_type: string
+  profile_id: string | null
+  created_at: string
+}
+
+type PageViewRow = {
+  page: string | null
+}
+
+type LoginRow = {
+  profile_id: string | null
   created_at: string
 }
 
@@ -82,12 +98,23 @@ export default async function SuperadminPage() {
 
   const admin = createAdminClient()
 
+  const now = new Date()
+  const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString()
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
+
   const [
     { data: authData },
     { data: profilesRaw },
     { data: clubsRaw },
     { data: feedbackRaw },
     { data: subscriptionsRaw },
+    { data: activityRaw },
+    { data: pageViewRaw },
+    { data: loginRaw },
+    { count: saalisCount },
+    { count: bookingsCount },
+    { count: eventsCount },
+    { count: sentPaymentsCount },
   ] = await Promise.all([
     admin.auth.admin.listUsers({ perPage: 1000 }),
     admin.from('profiles').select('id, club_id, full_name, role'),
@@ -100,6 +127,25 @@ export default async function SuperadminPage() {
       .from('subscriptions')
       .select('*, clubs(name)')
       .order('created_at', { ascending: false }),
+    admin
+      .from('activity_log')
+      .select('event_type, profile_id, created_at')
+      .gte('created_at', fourteenDaysAgo)
+      .order('created_at', { ascending: false }),
+    admin
+      .from('activity_log')
+      .select('page')
+      .eq('event_type', 'page_view')
+      .gte('created_at', sevenDaysAgo),
+    admin
+      .from('activity_log')
+      .select('profile_id, created_at')
+      .eq('event_type', 'login')
+      .order('created_at', { ascending: false }),
+    admin.from('saalis').select('id', { count: 'exact', head: true }),
+    admin.from('bookings').select('id', { count: 'exact', head: true }),
+    admin.from('events').select('id', { count: 'exact', head: true }),
+    admin.from('payments').select('id', { count: 'exact', head: true }).not('sent_at', 'is', null),
   ])
 
   const authUsers = authData?.users ?? []
@@ -176,6 +222,88 @@ export default async function SuperadminPage() {
 
   const unreadFeedbackCount = feedbackRows.filter((r) => r.status === 'uusi').length
 
+  // ── Usage analytics ──────────────────────────────────────────────────────────
+
+  // Daily activity — group raw rows by date (UTC date string)
+  const activityRows = (activityRaw ?? []) as unknown as ActivityLogRow[]
+  const dailyMap = new Map<string, { logins: Set<string>; page_views: number; unique_users: Set<string> }>()
+  for (const row of activityRows) {
+    const date = row.created_at.slice(0, 10)
+    if (!dailyMap.has(date)) {
+      dailyMap.set(date, { logins: new Set(), page_views: 0, unique_users: new Set() })
+    }
+    const day = dailyMap.get(date)!
+    if (row.event_type === 'login' && row.profile_id) day.logins.add(row.profile_id)
+    if (row.event_type === 'page_view') day.page_views++
+    if (row.profile_id) day.unique_users.add(row.profile_id)
+  }
+  const dailyActivity: DailyActivityRow[] = Array.from(dailyMap.entries())
+    .map(([date, d]) => ({
+      date,
+      logins: d.logins.size,
+      page_views: d.page_views,
+      unique_users: d.unique_users.size,
+    }))
+    .sort((a, b) => b.date.localeCompare(a.date))
+
+  // Page stats — this week
+  const pageViewRows = (pageViewRaw ?? []) as unknown as PageViewRow[]
+  const pageCountMap = new Map<string, number>()
+  for (const row of pageViewRows) {
+    if (!row.page) continue
+    pageCountMap.set(row.page, (pageCountMap.get(row.page) ?? 0) + 1)
+  }
+  const totalPageViews = Array.from(pageCountMap.values()).reduce((sum, n) => sum + n, 0)
+  const pageStats: PageStatRow[] = Array.from(pageCountMap.entries())
+    .map(([page, count]) => ({
+      page,
+      count,
+      percent: totalPageViews > 0 ? Math.round((count / totalPageViews) * 100) : 0,
+    }))
+    .sort((a, b) => b.count - a.count)
+
+  // User login stats — last login + count per user
+  const loginRows = (loginRaw ?? []) as unknown as LoginRow[]
+  const userLoginMap = new Map<string, { last: string; count: number }>()
+  for (const row of loginRows) {
+    if (!row.profile_id) continue
+    const existing = userLoginMap.get(row.profile_id)
+    if (!existing) {
+      userLoginMap.set(row.profile_id, { last: row.created_at, count: 1 })
+    } else {
+      existing.count++
+      // rows are desc ordered so first occurrence is always the latest
+    }
+  }
+  const userActivity: UserActivityRow[] = authUsers
+    .map((u) => {
+      const loginData = userLoginMap.get(u.id)
+      const profile = profileById.get(u.id)
+      const club = profile?.club_id ? clubById.get(profile.club_id) : undefined
+      return {
+        profile_id: u.id,
+        full_name: profile?.full_name ?? null,
+        club_name: club?.name ?? null,
+        last_login: loginData?.last ?? u.last_sign_in_at ?? null,
+        login_count: loginData?.count ?? 0,
+      }
+    })
+    .sort((a, b) => {
+      if (!a.last_login && !b.last_login) return 0
+      if (!a.last_login) return 1
+      if (!b.last_login) return -1
+      return b.last_login.localeCompare(a.last_login)
+    })
+
+  const aggregateStats: AggregateStats = {
+    saalis_count: saalisCount ?? 0,
+    bookings_count: bookingsCount ?? 0,
+    events_count: eventsCount ?? 0,
+    sent_payments_count: sentPaymentsCount ?? 0,
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+
   const subscriptionRows: SubscriptionRow[] = ((subscriptionsRaw ?? []) as unknown as SubscriptionRaw[]).map(
     (s) => ({
       id: s.id,
@@ -211,6 +339,10 @@ export default async function SuperadminPage() {
           unreadFeedbackCount={unreadFeedbackCount}
           currentUserId={user.id}
           subscriptions={subscriptionRows}
+          dailyActivity={dailyActivity}
+          pageStats={pageStats}
+          userActivity={userActivity}
+          aggregateStats={aggregateStats}
         />
       </div>
     </main>

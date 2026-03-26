@@ -7,9 +7,11 @@ import LandingV1 from './landing-v1'
 import LandingV2 from './landing-v2'
 import FeedbackTab from './feedback-tab'
 import SubscriptionsTab from './subscriptions-tab'
+import UsageTab from './usage-tab'
 import type { Stats, UserRow, EnhancedClub } from './analytics-tab'
 import type { FeedbackRow } from './feedback-tab'
 import type { SubscriptionRow } from './subscriptions-tab'
+import type { DailyActivityRow, PageStatRow, UserActivityRow, AggregateStats } from './usage-tab'
 
 interface Props {
   stats: Stats
@@ -19,9 +21,13 @@ interface Props {
   unreadFeedbackCount: number
   currentUserId: string
   subscriptions: SubscriptionRow[]
+  dailyActivity: DailyActivityRow[]
+  pageStats: PageStatRow[]
+  userActivity: UserActivityRow[]
+  aggregateStats: AggregateStats
 }
 
-type Tab = 'analytics' | 'subscriptions' | 'feedback' | 'info' | 'landing-v1' | 'landing-v2'
+type Tab = 'analytics' | 'usage' | 'subscriptions' | 'feedback' | 'info' | 'landing-v1' | 'landing-v2'
 
 export default function SuperadminTabs({
   stats,
@@ -31,11 +37,16 @@ export default function SuperadminTabs({
   unreadFeedbackCount,
   currentUserId,
   subscriptions,
+  dailyActivity,
+  pageStats,
+  userActivity,
+  aggregateStats,
 }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('analytics')
 
   const TABS: { id: Tab; label: string; badge?: number }[] = [
     { id: 'analytics', label: 'Analytiikka' },
+    { id: 'usage', label: 'Käyttöanalyysi 📊' },
     { id: 'subscriptions', label: 'Tilaukset' },
     { id: 'feedback', label: 'Palautteet 💬', badge: unreadFeedbackCount },
     { id: 'info', label: 'Tietoa sovelluksesta' },
@@ -70,6 +81,14 @@ export default function SuperadminTabs({
       {/* Tab content */}
       {activeTab === 'analytics' && (
         <AnalyticsTab stats={stats} userRows={userRows} enhancedClubs={enhancedClubs} currentUserId={currentUserId} />
+      )}
+      {activeTab === 'usage' && (
+        <UsageTab
+          dailyActivity={dailyActivity}
+          pageStats={pageStats}
+          userActivity={userActivity}
+          aggregateStats={aggregateStats}
+        />
       )}
       {activeTab === 'subscriptions' && <SubscriptionsTab subscriptions={subscriptions} />}
       {activeTab === 'feedback' && <FeedbackTab rows={feedbackRows} />}

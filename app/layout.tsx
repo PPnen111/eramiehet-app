@@ -3,6 +3,7 @@ import "./globals.css";
 import BottomNav from "./components/bottom-nav";
 import FeedbackButton from "./components/feedback-button";
 import TrialBanner from "./components/trial-banner";
+import ActivityTracker from "./components/activity-tracker";
 
 export const metadata: Metadata = {
   title: "Erämiesten App",
@@ -17,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="fi">
       <body className="antialiased">
+        <ActivityTracker />
         <TrialBanner />
         {children}
         <BottomNav />

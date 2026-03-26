@@ -21,6 +21,7 @@ import {
 import { createClient } from '@/lib/supabase/server'
 import { isBoardOrAbove, isSuperAdmin } from '@/lib/auth'
 import LogoutButton from './logout-button'
+import LoginTracker from '@/app/components/login-tracker'
 
 type ModuleItem = {
   title: string
@@ -145,6 +146,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+      <LoginTracker />
       <div className="mx-auto max-w-2xl">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
