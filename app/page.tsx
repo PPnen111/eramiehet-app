@@ -242,7 +242,7 @@ export default function Home() {
       </div>
 
       {/* TRUST SECTION */}
-      <div className="mx-auto max-w-lg px-6 pb-20">
+      <div className="mx-auto max-w-lg px-6 pb-10">
         <div className="h-px bg-green-900 mb-8" />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {[
@@ -266,6 +266,19 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* FOOTER */}
+      <div className="mx-auto max-w-lg px-6 pb-16 text-center">
+        <p className="text-xs text-green-800">
+          <Link href="/tietosuoja" className="hover:text-green-600 underline">
+            Tietosuojaseloste
+          </Link>
+          {' · '}
+          <Link href="/login" className="hover:text-green-600 underline">
+            Kirjaudu sisään
+          </Link>
+        </p>
       </div>
 
     </main>

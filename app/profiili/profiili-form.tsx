@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
-import { ArrowLeft, Pencil, Check, X, Eye, EyeOff } from 'lucide-react'
+import { ArrowLeft, Pencil, Check, X, Eye, EyeOff, Download, Trash2 } from 'lucide-react'
 
 type ProfileRow = {
   id: string
@@ -143,6 +143,53 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
       setPwMsg({ type: 'err', text: 'Verkkovirhe, yritä uudelleen' })
     } finally {
       setSavingPw(false)
+    }
+  }
+
+  // GDPR state
+  const [exporting, setExporting] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+
+  const handleExport = async () => {
+    setExporting(true)
+    try {
+      const res = await fetch('/api/gdpr/export')
+      if (!res.ok) return
+      const blob = await res.blob()
+      const date = new Date().toISOString().slice(0, 10)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `omat-tiedot-${date}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      // silent
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (deleteConfirm !== 'POISTA') return
+    setDeleting(true)
+    setDeleteError('')
+    try {
+      const res = await fetch('/api/gdpr/delete', { method: 'DELETE' })
+      if (!res.ok) {
+        const body = await res.json() as { error?: string }
+        setDeleteError(body.error ?? 'Poisto epäonnistui')
+        setDeleting(false)
+        return
+      }
+      await supabase.auth.signOut()
+      router.push('/')
+    } catch {
+      setDeleteError('Verkkovirhe. Yritä uudelleen.')
+      setDeleting(false)
     }
   }
 
@@ -286,7 +333,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
         </section>
 
         {/* ── Section 3: Vaihda salasana ── */}
-        <section className="rounded-2xl border border-green-800 bg-white/5 p-5">
+        <section className="mb-4 rounded-2xl border border-green-800 bg-white/5 p-5">
           <h2 className="mb-4 font-semibold text-white">Vaihda salasana</h2>
 
           <form onSubmit={handleChangePassword} className="space-y-3">
@@ -366,6 +413,81 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
             </button>
           </form>
         </section>
+        {/* ── Section 4: Omat tietosi (GDPR) ── */}
+        <section className="rounded-2xl border border-green-800 bg-white/5 p-5">
+          <h2 className="mb-1 font-semibold text-white">Omat tietosi</h2>
+          <p className="mb-4 text-xs text-green-500">
+            GDPR-oikeutesi —{' '}
+            <Link href="/tietosuoja" className="underline hover:text-green-300">
+              tietosuojaseloste
+            </Link>
+          </p>
+
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={handleExport}
+              disabled={exporting}
+              className="flex items-center gap-2 rounded-lg border border-green-700 px-4 py-2.5 text-sm font-medium text-green-300 hover:bg-green-900/40 disabled:opacity-50 transition-colors"
+            >
+              <Download size={15} />
+              {exporting ? 'Ladataan...' : 'Lataa omat tietoni'}
+            </button>
+
+            <button
+              onClick={() => { setShowDeleteModal(true); setDeleteConfirm(''); setDeleteError('') }}
+              className="flex items-center gap-2 rounded-lg border border-red-800 px-4 py-2.5 text-sm font-medium text-red-400 hover:bg-red-900/20 transition-colors"
+            >
+              <Trash2 size={15} />
+              Poista tilini
+            </button>
+          </div>
+        </section>
+
+        {/* Delete confirmation modal */}
+        {showDeleteModal && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
+            onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteModal(false) }}
+          >
+            <div className="w-full max-w-sm rounded-2xl border border-red-800 bg-green-950 p-5 shadow-2xl">
+              <h3 className="mb-2 font-semibold text-white">Haluatko varmasti poistaa tilisi?</h3>
+              <p className="mb-4 text-sm text-red-300">
+                Kaikki tietosi poistetaan pysyvästi. Tätä ei voi peruuttaa.
+              </p>
+              <label className="mb-1 block text-xs text-green-400">
+                Kirjoita <span className="font-bold text-white">POISTA</span> vahvistaaksesi
+              </label>
+              <input
+                type="text"
+                value={deleteConfirm}
+                onChange={(e) => setDeleteConfirm(e.target.value)}
+                className="mb-3 w-full rounded-lg border border-red-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-red-500"
+                placeholder="POISTA"
+              />
+              {deleteError && (
+                <p className="mb-3 rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">
+                  {deleteError}
+                </p>
+              )}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleDelete}
+                  disabled={deleteConfirm !== 'POISTA' || deleting}
+                  className="flex-1 rounded-lg bg-red-700 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-40 transition-colors"
+                >
+                  {deleting ? 'Poistetaan...' : 'Poista tili'}
+                </button>
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  disabled={deleting}
+                  className="rounded-lg border border-green-800 px-4 py-2.5 text-sm text-green-300 hover:bg-white/5"
+                >
+                  Peruuta
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   )

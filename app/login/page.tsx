@@ -175,6 +175,12 @@ export default function LoginPage() {
               Aloita tästä →
             </Link>
           </p>
+          <p className="mt-3 text-center text-xs text-neutral-400">
+            Rekisteröitymällä hyväksyt{' '}
+            <Link href="/tietosuoja" className="text-green-700 underline hover:text-green-600">
+              tietosuojaselosteen
+            </Link>
+          </p>
         </div>
       </div>
     </main>
