@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import SuperadminTabs from './superadmin-tabs'
 import type { EnhancedClub, UserRow } from './analytics-tab'
 import type { FeedbackRow } from './feedback-tab'
+import type { SubscriptionRow } from './subscriptions-tab'
 
 type ProfileData = {
   id: string
@@ -17,6 +18,17 @@ type ClubData = {
   id: string
   name: string | null
   created_at: string
+}
+
+type SubscriptionRaw = {
+  id: string
+  club_id: string
+  status: string
+  trial_starts_at: string | null
+  trial_ends_at: string | null
+  activated_at: string | null
+  created_at: string
+  clubs: { name: string | null } | null
 }
 
 type FeedbackRaw = {
@@ -75,6 +87,7 @@ export default async function SuperadminPage() {
     { data: profilesRaw },
     { data: clubsRaw },
     { data: feedbackRaw },
+    { data: subscriptionsRaw },
   ] = await Promise.all([
     admin.auth.admin.listUsers({ perPage: 1000 }),
     admin.from('profiles').select('id, club_id, full_name, role'),
@@ -82,6 +95,10 @@ export default async function SuperadminPage() {
     admin
       .from('feedback')
       .select('*, profiles(full_name), clubs(name)')
+      .order('created_at', { ascending: false }),
+    admin
+      .from('subscriptions')
+      .select('*, clubs(name)')
       .order('created_at', { ascending: false }),
   ])
 
@@ -159,6 +176,19 @@ export default async function SuperadminPage() {
 
   const unreadFeedbackCount = feedbackRows.filter((r) => r.status === 'uusi').length
 
+  const subscriptionRows: SubscriptionRow[] = ((subscriptionsRaw ?? []) as unknown as SubscriptionRaw[]).map(
+    (s) => ({
+      id: s.id,
+      club_id: s.club_id,
+      club_name: s.clubs?.name ?? null,
+      status: s.status,
+      trial_starts_at: s.trial_starts_at,
+      trial_ends_at: s.trial_ends_at,
+      activated_at: s.activated_at,
+      created_at: s.created_at,
+    })
+  )
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
       <div className="mx-auto max-w-6xl space-y-6">
@@ -180,6 +210,7 @@ export default async function SuperadminPage() {
           feedbackRows={feedbackRows}
           unreadFeedbackCount={unreadFeedbackCount}
           currentUserId={user.id}
+          subscriptions={subscriptionRows}
         />
       </div>
     </main>

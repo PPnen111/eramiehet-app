@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -30,6 +31,23 @@ export async function POST(request: NextRequest) {
   if (error) {
     console.error('create_club_for_user RPC error:', error)
     return NextResponse.json({ error: 'Seuran luonti epäonnistui: ' + error.message }, { status: 500 })
+  }
+
+  // Insert trial subscription for the new club
+  const clubId = (data as { club_id?: string } | null)?.club_id ?? (typeof data === 'string' ? data : null)
+  if (clubId) {
+    const admin = createAdminClient()
+    const trialEndsAt = new Date()
+    trialEndsAt.setDate(trialEndsAt.getDate() + 30)
+    const { error: subError } = await admin.from('subscriptions').insert({
+      club_id: clubId,
+      status: 'trial',
+      trial_starts_at: new Date().toISOString(),
+      trial_ends_at: trialEndsAt.toISOString(),
+    })
+    if (subError) {
+      console.error('subscription insert error:', subError)
+    }
   }
 
   return NextResponse.json(data)

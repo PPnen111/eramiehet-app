@@ -6,8 +6,10 @@ import InfoTab from './info-tab'
 import LandingV1 from './landing-v1'
 import LandingV2 from './landing-v2'
 import FeedbackTab from './feedback-tab'
+import SubscriptionsTab from './subscriptions-tab'
 import type { Stats, UserRow, EnhancedClub } from './analytics-tab'
 import type { FeedbackRow } from './feedback-tab'
+import type { SubscriptionRow } from './subscriptions-tab'
 
 interface Props {
   stats: Stats
@@ -16,9 +18,10 @@ interface Props {
   feedbackRows: FeedbackRow[]
   unreadFeedbackCount: number
   currentUserId: string
+  subscriptions: SubscriptionRow[]
 }
 
-type Tab = 'analytics' | 'info' | 'landing-v1' | 'landing-v2' | 'feedback'
+type Tab = 'analytics' | 'subscriptions' | 'feedback' | 'info' | 'landing-v1' | 'landing-v2'
 
 export default function SuperadminTabs({
   stats,
@@ -27,11 +30,13 @@ export default function SuperadminTabs({
   feedbackRows,
   unreadFeedbackCount,
   currentUserId,
+  subscriptions,
 }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('analytics')
 
   const TABS: { id: Tab; label: string; badge?: number }[] = [
     { id: 'analytics', label: 'Analytiikka' },
+    { id: 'subscriptions', label: 'Tilaukset' },
     { id: 'feedback', label: 'Palautteet 💬', badge: unreadFeedbackCount },
     { id: 'info', label: 'Tietoa sovelluksesta' },
     { id: 'landing-v1', label: 'Landing V1 — Tumma' },
@@ -66,6 +71,7 @@ export default function SuperadminTabs({
       {activeTab === 'analytics' && (
         <AnalyticsTab stats={stats} userRows={userRows} enhancedClubs={enhancedClubs} currentUserId={currentUserId} />
       )}
+      {activeTab === 'subscriptions' && <SubscriptionsTab subscriptions={subscriptions} />}
       {activeTab === 'feedback' && <FeedbackTab rows={feedbackRows} />}
       {activeTab === 'info' && <InfoTab />}
       {activeTab === 'landing-v1' && (
