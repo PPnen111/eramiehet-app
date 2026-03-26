@@ -35,14 +35,44 @@ function writeQueue(q: PendingItem[]) {
   localStorage.setItem(QUEUE_KEY, JSON.stringify(q))
 }
 
-const ELAIMET = [
-  { value: 'hirvi', label: 'Hirvi' },
-  { value: 'valkohantapeura', label: 'Valkohäntäpeura' },
-  { value: 'metsäkauris', label: 'Metsäkauris' },
-  { value: 'karhu', label: 'Karhu' },
-  { value: 'metsäjänis', label: 'Metsäjänis' },
-  { value: 'fasaani', label: 'Fasaani' },
-  { value: 'muu', label: 'Muu' },
+const ELAIN_LABELS: Record<string, string> = {
+  metso: 'Metso', teeri: 'Teeri', pyy: 'Pyy', riekko: 'Riekko',
+  sinisorsa: 'Sinisorsa', tavi: 'Tavi', haapana: 'Haapana',
+  jouhisorsa: 'Jouhisorsa', heinätavi: 'Heinätavi', lapasorsa: 'Lapasorsa',
+  tukkasotka: 'Tukkasotka', telkkä: 'Telkkä', isokoskelo: 'Isokoskelo',
+  tukkakoskelo: 'Tukkakoskelo', metsähanhi: 'Metsähanhi',
+  merihanhi: 'Merihanhi', kanadanhanhi: 'Kanadanhanhi',
+  sepelkyyhky: 'Sepelkyyhky', uuttukyyhky: 'Uuttukyyhky',
+  fasaani: 'Fasaani', lehtokurppa: 'Lehtokurppa',
+  nokikana: 'Nokikana', varis: 'Varis', harakka: 'Harakka', naakka: 'Naakka',
+  metsäjänis: 'Metsäjänis', rusakko: 'Rusakko',
+  euroopanmajava: 'Euroopanmajava',
+  kettu: 'Kettu', mäyrä: 'Mäyrä', kärppä: 'Kärppä',
+  hilleri: 'Hilleri', näätä: 'Näätä',
+  pienpedot: 'Pienpedot', muut_petonisäkkäät: 'Muut petonisäkkäät',
+  villisika: 'Villisika', metsäkauris: 'Metsäkauris',
+}
+
+const ELAIN_RYHMAT = [
+  { group: 'Metsäkanalinnut', items: ['metso', 'teeri', 'pyy', 'riekko'] },
+  {
+    group: 'Vesilinnut',
+    items: [
+      'sinisorsa', 'tavi', 'haapana', 'jouhisorsa', 'heinätavi', 'lapasorsa',
+      'tukkasotka', 'telkkä', 'isokoskelo', 'tukkakoskelo',
+      'metsähanhi', 'merihanhi', 'kanadanhanhi',
+    ],
+  },
+  {
+    group: 'Muut linnut',
+    items: ['sepelkyyhky', 'uuttukyyhky', 'fasaani', 'lehtokurppa', 'nokikana', 'varis', 'harakka', 'naakka'],
+  },
+  { group: 'Jänikset', items: ['metsäjänis', 'rusakko'] },
+  {
+    group: 'Pienpedot',
+    items: ['kettu', 'mäyrä', 'kärppä', 'hilleri', 'näätä', 'pienpedot', 'muut_petonisäkkäät'],
+  },
+  { group: 'Muut nisäkkäät', items: ['villisika', 'metsäkauris', 'euroopanmajava'] },
 ]
 
 interface Props {
@@ -56,7 +86,7 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [elain, setElain] = useState('hirvi')
+  const [elain, setElain] = useState('metso')
   const [maara, setMaara] = useState(1)
   const [sukupuoli, setSukupuoli] = useState('tuntematon')
   const [ikaLuokka, setIkaLuokka] = useState('tuntematon')
@@ -95,7 +125,7 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
   }, [])
 
   function resetForm() {
-    setElain('hirvi')
+    setElain('metso')
     setMaara(1)
     setSukupuoli('tuntematon')
     setIkaLuokka('tuntematon')
@@ -224,8 +254,12 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
                 <div>
                   <label className={labelClass}>Eläin *</label>
                   <select value={elain} onChange={(e) => setElain(e.target.value)} className={selectClass}>
-                    {ELAIMET.map((a) => (
-                      <option key={a.value} value={a.value}>{a.label}</option>
+                    {ELAIN_RYHMAT.map((ryhmä) => (
+                      <optgroup key={ryhmä.group} label={ryhmä.group}>
+                        {ryhmä.items.map((v) => (
+                          <option key={v} value={v}>{ELAIN_LABELS[v]}</option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </div>

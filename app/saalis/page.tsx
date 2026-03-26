@@ -7,23 +7,45 @@ import NewSaalisForm from './new-saalis-form'
 import DeleteSaalisButton from './delete-saalis-button'
 
 const elainLabels: Record<string, string> = {
-  hirvi: 'Hirvi',
-  valkohantapeura: 'Valkohäntäpeura',
-  metsäkauris: 'Metsäkauris',
-  karhu: 'Karhu',
-  metsäjänis: 'Metsäjänis',
-  fasaani: 'Fasaani',
-  muu: 'Muu',
+  metso: 'Metso', teeri: 'Teeri', pyy: 'Pyy', riekko: 'Riekko',
+  sinisorsa: 'Sinisorsa', tavi: 'Tavi', haapana: 'Haapana',
+  jouhisorsa: 'Jouhisorsa', heinätavi: 'Heinätavi', lapasorsa: 'Lapasorsa',
+  tukkasotka: 'Tukkasotka', telkkä: 'Telkkä', isokoskelo: 'Isokoskelo',
+  tukkakoskelo: 'Tukkakoskelo', metsähanhi: 'Metsähanhi',
+  merihanhi: 'Merihanhi', kanadanhanhi: 'Kanadanhanhi',
+  sepelkyyhky: 'Sepelkyyhky', uuttukyyhky: 'Uuttukyyhky',
+  fasaani: 'Fasaani', lehtokurppa: 'Lehtokurppa',
+  nokikana: 'Nokikana', varis: 'Varis', harakka: 'Harakka', naakka: 'Naakka',
+  metsäjänis: 'Metsäjänis', rusakko: 'Rusakko',
+  euroopanmajava: 'Euroopanmajava',
+  kettu: 'Kettu', mäyrä: 'Mäyrä', kärppä: 'Kärppä',
+  hilleri: 'Hilleri', näätä: 'Näätä',
+  pienpedot: 'Pienpedot', muut_petonisäkkäät: 'Muut petonisäkkäät',
+  villisika: 'Villisika', metsäkauris: 'Metsäkauris',
+}
+
+const B = {
+  kana: 'bg-amber-900 text-amber-200',
+  vesi: 'bg-blue-900 text-blue-200',
+  kyyhky: 'bg-orange-900 text-orange-200',
+  lintu: 'bg-stone-700 text-stone-200',
+  jänis: 'bg-sky-900 text-sky-200',
+  peto: 'bg-yellow-900 text-yellow-200',
+  suur: 'bg-red-900 text-red-200',
 }
 
 const elainBadge: Record<string, string> = {
-  hirvi: 'bg-amber-900 text-amber-200',
-  valkohantapeura: 'bg-stone-700 text-stone-200',
-  metsäkauris: 'bg-yellow-900 text-yellow-200',
-  karhu: 'bg-red-900 text-red-200',
-  metsäjänis: 'bg-blue-900 text-blue-200',
-  fasaani: 'bg-orange-900 text-orange-200',
-  muu: 'bg-green-900 text-green-200',
+  metso: B.kana, teeri: B.kana, pyy: B.kana, riekko: B.kana,
+  sinisorsa: B.vesi, tavi: B.vesi, haapana: B.vesi,
+  jouhisorsa: B.vesi, heinätavi: B.vesi, lapasorsa: B.vesi,
+  tukkasotka: B.vesi, telkkä: B.vesi, isokoskelo: B.vesi,
+  tukkakoskelo: B.vesi, metsähanhi: B.vesi, merihanhi: B.vesi, kanadanhanhi: B.vesi,
+  sepelkyyhky: B.kyyhky, uuttukyyhky: B.kyyhky, fasaani: B.kyyhky,
+  lehtokurppa: B.lintu, nokikana: B.lintu, varis: B.lintu, harakka: B.lintu, naakka: B.lintu,
+  metsäjänis: B.jänis, rusakko: B.jänis,
+  kettu: B.peto, mäyrä: B.peto, kärppä: B.peto,
+  hilleri: B.peto, näätä: B.peto, pienpedot: B.peto, muut_petonisäkkäät: B.peto,
+  villisika: B.suur, metsäkauris: B.suur, euroopanmajava: B.suur,
 }
 
 const sukupuoliLabel: Record<string, string> = {
