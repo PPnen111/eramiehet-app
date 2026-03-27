@@ -3,14 +3,15 @@
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-type Booking = {
+export type CalendarBooking = {
   id: string
   starts_on: string
   ends_on: string
+  status: 'pending' | 'confirmed'
 }
 
 interface Props {
-  bookings: Booking[]
+  bookings: CalendarBooking[]
 }
 
 const WEEKDAYS = ['Ma', 'Ti', 'Ke', 'To', 'Pe', 'La', 'Su']
@@ -55,7 +56,6 @@ export default function CabinCalendar({ bookings }: Props) {
 
   const firstDay = new Date(year, month, 1)
   const lastDay = new Date(year, month + 1, 0)
-  // Ma=0, Ti=1, ... Su=6  (getDay: 0=Su, 1=Ma, ..., 6=La → shift +6 mod 7)
   const firstDayOfWeek = (firstDay.getDay() + 6) % 7
 
   const monthName = firstDay.toLocaleDateString('fi-FI', { month: 'long', year: 'numeric' })
@@ -66,8 +66,12 @@ export default function CabinCalendar({ bookings }: Props) {
     cells.push(`${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`)
   }
 
-  function getStatus(dateStr: string): 'booked' | 'today' | 'past' | 'free' {
-    if (bookings.some((b) => b.starts_on <= dateStr && b.ends_on >= dateStr)) return 'booked'
+  function getStatus(dateStr: string): 'confirmed' | 'pending' | 'today' | 'past' | 'free' {
+    for (const b of bookings) {
+      if (b.starts_on <= dateStr && b.ends_on >= dateStr) {
+        return b.status === 'confirmed' ? 'confirmed' : 'pending'
+      }
+    }
     if (dateStr === todayStr) return 'today'
     if (dateStr < todayStr) return 'past'
     return 'free'
@@ -75,10 +79,11 @@ export default function CabinCalendar({ bookings }: Props) {
 
   const base = 'flex h-9 items-center justify-center rounded-lg text-sm select-none'
   const styles: Record<string, string> = {
-    booked: 'bg-red-900/70 font-semibold text-red-200',
+    confirmed: 'bg-red-900/70 font-semibold text-red-200',
+    pending: 'bg-orange-500/70 font-semibold text-orange-100',
     today: 'ring-2 ring-green-400 font-semibold text-white',
     past: 'text-green-800',
-    free: 'text-green-300 hover:bg-white/10 cursor-default',
+    free: 'text-green-300',
   }
 
   return (
@@ -126,19 +131,26 @@ export default function CabinCalendar({ bookings }: Props) {
       </div>
 
       {/* Selite */}
-      <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-green-500">
-        <span className="flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded bg-red-900/70" />
-          Varattu
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded border border-green-600" />
-          Vapaa
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded ring-2 ring-green-400" />
-          Tänään
-        </span>
+      <div className="mt-4 space-y-1.5 border-t border-green-900 pt-3">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-600">Selite</p>
+        <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs">
+          <span className="flex items-center gap-1.5 text-green-400">
+            <span className="inline-block h-3 w-3 rounded bg-orange-500/70" />
+            Odottaa vahvistusta
+          </span>
+          <span className="flex items-center gap-1.5 text-green-400">
+            <span className="inline-block h-3 w-3 rounded bg-red-900/70" />
+            Vahvistettu varaus
+          </span>
+          <span className="flex items-center gap-1.5 text-green-400">
+            <span className="inline-block h-3 w-3 rounded ring-2 ring-green-400" />
+            Tänään
+          </span>
+          <span className="flex items-center gap-1.5 text-green-400">
+            <span className="inline-block h-3 w-3 rounded border border-green-700" />
+            Vapaa
+          </span>
+        </div>
       </div>
     </div>
   )
