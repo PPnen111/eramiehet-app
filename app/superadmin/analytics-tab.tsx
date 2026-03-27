@@ -169,6 +169,39 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
   const [deleting, setDeleting] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
 
+  // Role editing state: userId → pending role value
+  const [pendingRoles, setPendingRoles] = useState<Record<string, string>>({})
+  const [savingRole, setSavingRole] = useState<string | null>(null)
+
+  function setRoleDraft(userId: string, role: string) {
+    setPendingRoles((prev) => ({ ...prev, [userId]: role }))
+  }
+
+  async function handleSaveRole(userId: string) {
+    const role = pendingRoles[userId]
+    if (!role) return
+    setSavingRole(userId)
+    try {
+      const res = await fetch('/api/superadmin/update-role', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, role }),
+      })
+      const data = await res.json() as { error?: string }
+      if (!res.ok) {
+        showToast(data.error ?? 'Roolin muutos epäonnistui', 'error')
+      } else {
+        showToast('Rooli päivitetty', 'success')
+        setPendingRoles((prev) => { const next = { ...prev }; delete next[userId]; return next })
+        router.refresh()
+      }
+    } catch {
+      showToast('Roolin muutos epäonnistui', 'error')
+    } finally {
+      setSavingRole(null)
+    }
+  }
+
   function showToast(message: string, type: 'success' | 'error') {
     setToast({ message, type })
   }
@@ -337,7 +370,11 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
                   {userRows.map((u) => {
                     const isSelf = u.id === currentUserId
                     const isSuperadmin = u.role === 'superadmin'
-                    const canDelete = !isSelf && !isSuperadmin
+                    const canEdit = !isSelf && !isSuperadmin
+                    const canDelete = canEdit
+                    const draftRole = pendingRoles[u.id]
+                    const hasChange = draftRole !== undefined && draftRole !== u.role
+                    const isSaving = savingRole === u.id
                     return (
                       <tr key={u.id} className="hover:bg-white/[0.03]">
                         <td className="px-4 py-3 font-medium text-white">
@@ -347,8 +384,34 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
                         <td className="px-4 py-3 text-green-300">
                           {u.club_name ?? <span className="text-green-700">—</span>}
                         </td>
-                        <td className="px-4 py-3 text-green-300">
-                          {u.role ? (roleLabelFi[u.role] ?? u.role) : <span className="text-green-700">—</span>}
+                        <td className="px-4 py-3">
+                          {canEdit ? (
+                            <div className="flex items-center gap-1.5">
+                              <select
+                                value={draftRole ?? u.role ?? 'member'}
+                                onChange={(e) => setRoleDraft(u.id, e.target.value)}
+                                disabled={isSaving}
+                                className="rounded border border-green-800 bg-white/10 px-2 py-1 text-xs text-white outline-none focus:border-green-500 disabled:opacity-50"
+                              >
+                                <option value="member">Jäsen</option>
+                                <option value="board_member">Johtokunta</option>
+                                <option value="admin">Ylläpitäjä</option>
+                              </select>
+                              {hasChange && (
+                                <button
+                                  onClick={() => handleSaveRole(u.id)}
+                                  disabled={isSaving}
+                                  className="rounded bg-green-700 px-2 py-1 text-xs font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+                                >
+                                  {isSaving ? '...' : 'Tallenna'}
+                                </button>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-green-600">
+                              {u.role ? (roleLabelFi[u.role] ?? u.role) : '—'}
+                            </span>
+                          )}
                         </td>
                         <td className="px-4 py-3 text-green-400">
                           {formatDate(u.created_at)}
