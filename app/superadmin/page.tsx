@@ -343,6 +343,7 @@ export default async function SuperadminPage() {
           pageStats={pageStats}
           userActivity={userActivity}
           aggregateStats={aggregateStats}
+          clubs={enhancedClubs.map((c) => ({ id: c.id, name: c.name ?? '' }))}
         />
       </div>
     </main>

@@ -8,6 +8,7 @@ import LandingV2 from './landing-v2'
 import FeedbackTab from './feedback-tab'
 import SubscriptionsTab from './subscriptions-tab'
 import UsageTab from './usage-tab'
+import CreateUserForm from './create-user-form'
 import type { Stats, UserRow, EnhancedClub } from './analytics-tab'
 import type { FeedbackRow } from './feedback-tab'
 import type { SubscriptionRow } from './subscriptions-tab'
@@ -25,6 +26,7 @@ interface Props {
   pageStats: PageStatRow[]
   userActivity: UserActivityRow[]
   aggregateStats: AggregateStats
+  clubs: { id: string; name: string }[]
 }
 
 type Tab = 'analytics' | 'usage' | 'subscriptions' | 'feedback' | 'info' | 'landing-v1' | 'landing-v2'
@@ -41,6 +43,7 @@ export default function SuperadminTabs({
   pageStats,
   userActivity,
   aggregateStats,
+  clubs,
 }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('analytics')
 
@@ -80,7 +83,10 @@ export default function SuperadminTabs({
 
       {/* Tab content */}
       {activeTab === 'analytics' && (
-        <AnalyticsTab stats={stats} userRows={userRows} enhancedClubs={enhancedClubs} currentUserId={currentUserId} />
+        <>
+          <CreateUserForm clubs={clubs} />
+          <AnalyticsTab stats={stats} userRows={userRows} enhancedClubs={enhancedClubs} currentUserId={currentUserId} />
+        </>
       )}
       {activeTab === 'usage' && (
         <UsageTab
