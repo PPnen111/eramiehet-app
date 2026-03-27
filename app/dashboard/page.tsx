@@ -51,7 +51,7 @@ const COMMON_MODULES: ModuleItem[] = [
   },
   {
     title: 'Eräkartano',
-    description: 'Tee varaus mökkiin.',
+    description: 'Tee varaus eräkartanoon.',
     href: '/erakartano',
     icon: Tent,
   },
