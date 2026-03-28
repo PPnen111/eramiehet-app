@@ -51,8 +51,21 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-green-950 text-white" style={{ scrollBehavior: 'smooth' }}>
 
+      {/* ── NAVBAR ──────────────────────────────────────────────────────── */}
+      <nav className="sticky top-0 z-50 w-full border-b border-green-900 bg-green-950/90 backdrop-blur-sm">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <img src="/jahtipro-logo.png" alt="JahtiPro" className="h-10 w-auto" />
+          <Link
+            href="/login"
+            className="rounded-lg border border-green-600 px-4 py-2 text-sm text-green-300 transition-colors hover:bg-green-900"
+          >
+            Kirjaudu sisään (beta)
+          </Link>
+        </div>
+      </nav>
+
       {/* ── SECTION 1: HERO ─────────────────────────────────────────────── */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 text-center">
+      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 pt-16 text-center">
         <div className="absolute inset-0 bg-gradient-to-b from-green-950 via-green-950 to-green-900 pointer-events-none" />
         <div className="relative z-10 mx-auto max-w-2xl">
           <span className="mb-8 inline-flex items-center gap-2 rounded-full bg-green-800/60 px-4 py-1.5 text-sm font-semibold text-green-300 ring-1 ring-green-700/50">
