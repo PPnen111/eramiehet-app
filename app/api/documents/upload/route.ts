@@ -53,11 +53,18 @@ export async function POST(request: NextRequest) {
   const path = `${clubId}/${Date.now()}.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
+  // Ensure bucket exists (no-op if already exists)
+  await admin.storage.createBucket('documents', {
+    public: false,
+    fileSizeLimit: 10 * 1024 * 1024,
+  })
+
   const { error: storageError } = await admin.storage
     .from('documents')
     .upload(path, buffer, { contentType: file.type })
 
   if (storageError) {
+    console.error('[documents/upload] storage error:', storageError)
     return NextResponse.json({ error: storageError.message }, { status: 500 })
   }
 
