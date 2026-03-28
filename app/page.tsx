@@ -6,7 +6,7 @@ import { useState } from 'react'
 export default function Home() {
   const [email, setEmail] = useState('')
   const [clubName, setClubName] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState<'registered' | 'already_registered' | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState('')
 
@@ -20,10 +20,10 @@ export default function Home() {
       body: JSON.stringify({ email, club_name: clubName }),
     })
     setSubmitting(false)
-    if (res.ok) {
-      setSubmitted(true)
+    const data = await res.json().catch(() => ({})) as { success?: boolean; message?: string; error?: string }
+    if (res.ok && data.success) {
+      setSubmitMessage(data.message === 'already_registered' ? 'already_registered' : 'registered')
     } else {
-      const data = await res.json().catch(() => ({})) as { error?: string }
       setFormError(data.error ?? 'Jokin meni pieleen. Yritä uudelleen.')
     }
   }
@@ -63,11 +63,19 @@ export default function Home() {
             Ilmoittaudu kiinnostuneeksi — olemme yhteydessä ennen julkaisua.
           </p>
 
-          {submitted ? (
+          {submitMessage === 'registered' ? (
             <div className="rounded-xl bg-green-900/50 px-4 py-5 text-center">
               <p className="text-2xl mb-2">✅</p>
               <p className="font-semibold text-green-200">Kiitos!</p>
               <p className="mt-1 text-sm text-green-400">
+                Olemme yhteydessä kun sovellus avautuu.
+              </p>
+            </div>
+          ) : submitMessage === 'already_registered' ? (
+            <div className="rounded-xl bg-amber-900/40 px-4 py-5 text-center ring-1 ring-amber-700/40">
+              <p className="text-2xl mb-2">🎉</p>
+              <p className="font-semibold text-amber-200">Olet jo listalla!</p>
+              <p className="mt-1 text-sm text-amber-400">
                 Olemme yhteydessä kun sovellus avautuu.
               </p>
             </div>
