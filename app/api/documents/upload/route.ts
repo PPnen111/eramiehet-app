@@ -59,13 +59,20 @@ export async function POST(request: NextRequest) {
     fileSizeLimit: 10 * 1024 * 1024,
   })
 
+  // Debug: list buckets to verify
+  const { data: buckets, error: bucketsError } = await admin.storage.listBuckets()
+  console.error('[documents/upload] buckets:', JSON.stringify(buckets), 'error:', bucketsError)
+
   const { error: storageError } = await admin.storage
     .from('documents')
     .upload(path, buffer, { contentType: file.type })
 
   if (storageError) {
     console.error('[documents/upload] storage error:', storageError)
-    return NextResponse.json({ error: storageError.message }, { status: 500 })
+    return NextResponse.json({
+      error: storageError.message,
+      buckets: buckets?.map((b) => b.name) ?? [],
+    }, { status: 500 })
   }
 
   const { error: dbError } = await admin.from('documents').insert({

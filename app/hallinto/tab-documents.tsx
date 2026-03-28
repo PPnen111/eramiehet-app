@@ -62,10 +62,11 @@ export default function TabDocuments({ clubId }: Props) {
     fd.append('club_id', clubId)
 
     const res = await fetch('/api/documents/upload', { method: 'POST', body: fd })
-    const data = await res.json().catch(() => ({})) as { error?: string }
+    const data = await res.json().catch(() => ({})) as { error?: string; buckets?: string[] }
 
     if (!res.ok) {
-      setFormError(data.error ?? 'Lataus epäonnistui')
+      const bucketInfo = data.buckets ? ` (buckets: ${data.buckets.join(', ') || 'ei yhtään'})` : ''
+      setFormError((data.error ?? 'Lataus epäonnistui') + bucketInfo)
       setUploading(false)
       return
     }
