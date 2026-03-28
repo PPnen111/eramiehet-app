@@ -6,7 +6,7 @@ import { isBoardOrAbove } from '@/lib/auth'
 import { invoiceHtml, invoiceSubject, type InvoiceEmailData } from '@/lib/emails/invoice'
 import { generateReferenceNumber } from '@/lib/utils/reference-number'
 
-const FROM = 'JahtiPro <onboarding@resend.dev>'
+const FROM = 'JahtiPro <noreply@jahtipro.fi>'
 
 type MemberRow = {
   id: string

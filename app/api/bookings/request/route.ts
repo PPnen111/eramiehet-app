@@ -10,7 +10,7 @@ const LOCATION_LABELS: Record<string, string> = {
   majoitustilat: 'Majoitustilat',
 }
 
-const FROM = 'JahtiPro <onboarding@resend.dev>'
+const FROM = 'JahtiPro <noreply@jahtipro.fi>'
 const APPROVAL_EMAIL = 'jpsimola1@gmail.com'
 
 type ProfileRow = { club_id: string; full_name: string | null }

@@ -5,7 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import { invitationHtml, invitationSubject, type InvitationEmailData } from '@/lib/emails/invitation'
 
-const FROM = 'JahtiPro <onboarding@resend.dev>'
+const FROM = 'JahtiPro <noreply@jahtipro.fi>'
 const VALID_ROLES = ['admin', 'board_member', 'member'] as const
 type ValidRole = (typeof VALID_ROLES)[number]
 
