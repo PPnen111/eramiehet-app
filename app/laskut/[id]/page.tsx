@@ -226,7 +226,7 @@ export default async function LaskuPage({
 
           {/* Footer */}
           <div className="border-t border-gray-100 bg-gray-50 px-8 py-4">
-            <p className="text-center text-xs text-gray-400">Erämiesten App</p>
+            <p className="text-center text-xs text-gray-400">JahtiPro</p>
           </div>
         </div>
 

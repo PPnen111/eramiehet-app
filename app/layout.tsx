@@ -7,8 +7,8 @@ import ActivityTracker from "./components/activity-tracker";
 import OfflineSync from "./components/offline-sync";
 
 export const metadata: Metadata = {
-  title: "Erämiesten App",
-  description: "Metsästysseuran hallinta helpoksi",
+  title: "JahtiPro",
+  description: "Metsästysseuran hallintajärjestelmä",
 };
 
 export default function RootLayout({

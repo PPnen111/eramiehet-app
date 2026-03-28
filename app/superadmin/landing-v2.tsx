@@ -81,7 +81,7 @@ export default function LandingV2() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-700">
               <Target size={15} className="text-white" />
             </div>
-            <span className="font-bold text-stone-900">Erämiesten App</span>
+            <span className="font-bold text-stone-900">JahtiPro</span>
           </div>
           <div className="hidden items-center gap-7 text-sm text-stone-500 sm:flex">
             <span className="hover:text-stone-900 cursor-pointer">Ominaisuudet</span>
@@ -247,7 +247,7 @@ export default function LandingV2() {
 
       {/* Footer */}
       <div className="border-t border-stone-200 px-8 py-5 text-center text-xs text-stone-400">
-        © 2026 Erämiesten App · Tietosuoja · Käyttöehdot · Tuki
+        © 2026 JahtiPro · Tietosuoja · Käyttöehdot · Tuki
       </div>
     </div>
   )

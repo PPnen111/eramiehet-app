@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
   const planLabel = plan ?? 'Ei valittu'
 
   const { error } = await resend.emails.send({
-    from: 'Erämiesten App <noreply@eramiehet.fi>',
+    from: 'JahtiPro <noreply@eramiehet.fi>',
     to: 'paunonen@gmail.com',
     subject: `Tilausyhteydenotto: ${name} — ${planLabel}`,
     text: [

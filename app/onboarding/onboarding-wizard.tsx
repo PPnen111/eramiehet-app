@@ -116,7 +116,7 @@ export default function OnboardingWizard({ clubName }: Props) {
               Tervetuloa{clubName ? `, ${clubName}!` : '!'}
             </h1>
             <p className="mb-6 text-sm leading-6 text-green-300">
-              Seuranne on nyt rekisteröity Erämiesten Appiin. Käydään yhdessä läpi muutama
+              Seuranne on nyt rekisteröity JahtiProiin. Käydään yhdessä läpi muutama
               perusvaihe, niin pääsette alkuun nopeasti.
             </p>
             <ul className="mb-6 space-y-2 text-sm text-green-400">

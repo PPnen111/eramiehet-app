@@ -1,4 +1,4 @@
-# CLAUDE.md — Erämiehet App
+# CLAUDE.md — JahtiPro
 
 ## MCP Connectors (use directly — do NOT ask the user to copy-paste)
 

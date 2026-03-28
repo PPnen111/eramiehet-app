@@ -5,7 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import { invoiceHtml, invoiceSubject, type InvoiceEmailData } from '@/lib/emails/invoice'
 
-const FROM = 'Erämiesten App <onboarding@resend.dev>'
+const FROM = 'JahtiPro <onboarding@resend.dev>'
 
 type PaymentRow = {
   id: string

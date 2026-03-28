@@ -185,7 +185,7 @@ export default function InvoicePreviewModal({ payment, memberName, clubName, onC
 
           {/* Footer */}
           <div className="border-t border-gray-100 bg-gray-50 px-8 py-3">
-            <p className="text-center text-xs text-gray-400">Erämiesten App</p>
+            <p className="text-center text-xs text-gray-400">JahtiPro</p>
           </div>
         </div>
 

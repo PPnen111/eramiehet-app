@@ -108,7 +108,7 @@ export function reminderHtml(data: ReminderEmailData): string {
           <tr>
             <td style="background:#f0f0f0;padding:16px 32px;border-top:1px solid #e0e0e0;">
               <p style="margin:0;font-size:12px;color:#999999;text-align:center;">
-                Erämiesten App &mdash; automaattinen viesti, älä vastaa tähän sähköpostiin
+                JahtiPro &mdash; automaattinen viesti, älä vastaa tähän sähköpostiin
               </p>
             </td>
           </tr>

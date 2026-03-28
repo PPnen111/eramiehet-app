@@ -161,7 +161,7 @@ export default function InfoTab() {
 
       {/* ── Section 1: Mitä sovellus tekee ── */}
       <section>
-        <h2 className="mb-1 text-xl font-bold text-white">Mitä Erämiesten App tekee?</h2>
+        <h2 className="mb-1 text-xl font-bold text-white">Mitä JahtiPro tekee?</h2>
         <p className="mb-6 text-sm text-green-400">
           Kaikki metsästysseuran tarvitsemat työkalut yhdessä mobiilisovelluksessa.
         </p>

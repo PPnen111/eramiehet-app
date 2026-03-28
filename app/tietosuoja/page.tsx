@@ -17,7 +17,7 @@ export default function TietosuojaPage() {
           <section>
             <h2 className="mb-2 text-base font-bold text-white">1. Rekisterinpitäjä</h2>
             <p>
-              Erämiesten App<br />
+              JahtiPro<br />
               Yhteyshenkilö: Pekka Paunonen<br />
               Sähköposti:{' '}
               <a

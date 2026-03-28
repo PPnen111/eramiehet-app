@@ -47,7 +47,7 @@ export default function LandingV1() {
     <div className="rounded-2xl border border-green-800 bg-green-950 font-sans text-white">
       {/* Nav */}
       <nav className="flex items-center justify-between border-b border-green-900 px-8 py-4">
-        <span className="text-lg font-bold tracking-tight text-green-300">Erämiesten App</span>
+        <span className="text-lg font-bold tracking-tight text-green-300">JahtiPro</span>
         <div className="hidden items-center gap-6 text-sm text-green-400 sm:flex">
           <span>Ominaisuudet</span>
           <span>Hinnat</span>
@@ -179,7 +179,7 @@ export default function LandingV1() {
 
       {/* Footer */}
       <div className="border-t border-green-900 px-8 py-5 text-center text-xs text-green-700">
-        © 2026 Erämiesten App · Suomalainen palvelu · Tietosuoja
+        © 2026 JahtiPro · Suomalainen palvelu · Tietosuoja
       </div>
     </div>
   )
