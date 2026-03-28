@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { isBoardOrAbove } from '@/lib/auth'
 import EditCabinInfoForm from './edit-form'
 
 type CabinInfoRow = {
@@ -22,7 +23,7 @@ export default async function MuokkaaInfoPage() {
     .single()
 
   if (!profile) redirect('/login')
-  if (profile.role !== 'admin' && profile.role !== 'board_member') redirect('/erakartano')
+  if (!isBoardOrAbove(profile.role)) redirect('/erakartano')
 
   const { data: raw } = await supabase
     .from('cabin_info')

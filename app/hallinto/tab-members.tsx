@@ -3,7 +3,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
+import { formatDate } from '@/lib/format'
 import type { AdminMember } from './page'
+import CsvImport from './csv-import'
 
 const roleOptions = [
   { value: 'member', label: 'Jäsen' },
@@ -25,14 +27,20 @@ type Invitation = {
   created_at: string
 }
 
+type ImportLog = {
+  id: string
+  total_rows: number
+  success_count: number
+  skip_count: number
+  error_count: number
+  created_at: string
+}
+
 interface Props {
   clubId: string
   initialMembers: AdminMember[]
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI')
-}
 
 function InviteStatusBadge({ status, expiresAt }: { status: string; expiresAt: string }) {
   const isExpired = status === 'pending' && new Date(expiresAt) < new Date()
@@ -68,6 +76,18 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const [inviteSuccess, setInviteSuccess] = useState('')
   const [inviteError, setInviteError] = useState('')
   const [invitations, setInvitations] = useState<Invitation[]>([])
+  const [importOpen, setImportOpen] = useState(false)
+  const [importLogs, setImportLogs] = useState<ImportLog[]>([])
+
+  const loadImportLogs = useCallback(async () => {
+    const { data } = await supabase
+      .from('member_imports')
+      .select('id, total_rows, success_count, skip_count, error_count, created_at')
+      .eq('club_id', clubId)
+      .order('created_at', { ascending: false })
+      .limit(3)
+    if (data) setImportLogs(data as unknown as ImportLog[])
+  }, [supabase, clubId])
 
   const loadInvitations = useCallback(async () => {
     const { data } = await supabase
@@ -84,7 +104,8 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
 
   useEffect(() => {
     void loadInvitations()
-  }, [loadInvitations])
+    void loadImportLogs()
+  }, [loadInvitations, loadImportLogs])
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -127,6 +148,60 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* CSV Import section */}
+      <section className="rounded-2xl border border-green-800 bg-white/5 p-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+            Tuo jäseniä CSV:stä
+          </h2>
+          <button
+            onClick={() => setImportOpen((v) => !v)}
+            className="rounded-lg border border-green-700 px-3 py-1 text-xs font-medium text-green-300 hover:bg-white/5 transition-colors"
+          >
+            {importOpen ? 'Sulje' : 'Tuo jäseniä'}
+          </button>
+        </div>
+
+        {importOpen && (
+          <div className="mt-4">
+            <CsvImport
+              onImportDone={() => {
+                router.refresh()
+                void loadImportLogs()
+                setImportOpen(false)
+              }}
+            />
+          </div>
+        )}
+
+        {/* Import history */}
+        {importLogs.length > 0 && !importOpen && (
+          <div className="mt-3 space-y-1.5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-green-600">
+              Viimeisimmät tuonnit
+            </p>
+            {importLogs.map((log) => (
+              <div
+                key={log.id}
+                className="flex items-center justify-between rounded-lg border border-green-900 bg-white/[0.03] px-3 py-2 text-xs"
+              >
+                <span className="text-green-400">{formatDate(log.created_at)}</span>
+                <span className="text-green-300">
+                  {log.total_rows} riviä ·{' '}
+                  <span className="text-green-200">{log.success_count} tuotu</span>
+                  {log.skip_count > 0 && (
+                    <span className="text-yellow-400"> · {log.skip_count} ohitettu</span>
+                  )}
+                  {log.error_count > 0 && (
+                    <span className="text-red-400"> · {log.error_count} virheitä</span>
+                  )}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
       {/* Invitation section */}
       <section className="rounded-2xl border border-green-800 bg-white/5 p-4">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">

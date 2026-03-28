@@ -9,7 +9,8 @@ export function invitationSubject(data: InvitationEmailData): string {
 }
 
 export function invitationHtml(data: InvitationEmailData): string {
-  const acceptUrl = `https://eramiehet-app.vercel.app/liity?token=${data.token}`
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://eramiehet-app.vercel.app'
+  const acceptUrl = `${baseUrl}/liity?token=${data.token}`
 
   return `<!DOCTYPE html>
 <html lang="fi">
@@ -69,7 +70,7 @@ export function invitationHtml(data: InvitationEmailData): string {
           <tr>
             <td style="background:#f0f0f0;padding:16px 32px;border-top:1px solid #e0e0e0;">
               <p style="margin:0;font-size:12px;color:#999999;text-align:center;">
-                Erämiesten App &mdash; automaattinen viesti, älä vastaa tähän sähköpostiin
+                JahtiPro &mdash; automaattinen viesti, älä vastaa tähän sähköpostiin
               </p>
             </td>
           </tr>

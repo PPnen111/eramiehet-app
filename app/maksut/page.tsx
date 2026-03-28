@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { CheckCircle2, CreditCard } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { formatDate, formatEuros } from '@/lib/format'
 
 type Payment = {
   id: string
@@ -17,13 +19,6 @@ const statusConfig: Record<string, { label: string; cls: string }> = {
   overdue: { label: 'Myöhässä', cls: 'bg-red-900 text-red-200' },
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI')
-}
-
-function formatEuros(cents: number) {
-  return (cents / 100).toLocaleString('fi-FI', { style: 'currency', currency: 'EUR' })
-}
 
 export default async function MaksutPage() {
   const supabase = await createClient()
@@ -72,7 +67,10 @@ export default async function MaksutPage() {
         )}
 
         {payments.length === 0 && (
-          <p className="text-sm text-green-600">Ei maksuja.</p>
+          <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
+            <CreditCard size={32} className="text-green-700" strokeWidth={1.5} />
+            <p className="text-sm text-green-600">Ei maksuja.</p>
+          </div>
         )}
 
         {unpaid.length > 0 && (
@@ -117,11 +115,14 @@ export default async function MaksutPage() {
               {paid.map((p) => (
                 <div key={p.id} className="rounded-xl border border-green-900 bg-white/[0.03] p-3 opacity-70">
                   <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="font-medium text-white">{p.description}</p>
-                      {p.paid_at && (
-                        <p className="text-xs text-green-500">Maksettu {formatDate(p.paid_at)}</p>
-                      )}
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-green-600" />
+                      <div>
+                        <p className="font-medium text-white">{p.description}</p>
+                        {p.paid_at && (
+                          <p className="text-xs text-green-500">Maksettu {formatDate(p.paid_at)}</p>
+                        )}
+                      </div>
                     </div>
                     <p className="shrink-0 font-semibold text-green-400">
                       {formatEuros(p.amount_cents)}

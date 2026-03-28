@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isBoardOrAbove } from '@/lib/auth'
 import MemberSearch from './member-search'
 
 export type MemberRow = {
@@ -25,7 +26,8 @@ export default async function JasenetPage() {
     .eq('id', user.id)
     .single()
 
-  if (!myProfile || (myProfile.role !== 'admin' && myProfile.role !== 'board_member')) {
+  const effectiveRole = myProfile?.role ?? null
+  if (!isBoardOrAbove(effectiveRole)) {
     redirect('/dashboard')
   }
 
@@ -35,7 +37,7 @@ export default async function JasenetPage() {
   const { data: raw } = await admin
     .from('profiles')
     .select('id, full_name, email, phone, role, member_status, join_date')
-    .eq('club_id', myProfile.club_id)
+    .eq('club_id', myProfile!.club_id)
     .order('full_name', { ascending: true })
 
   const members = (raw ?? []) as MemberRow[]

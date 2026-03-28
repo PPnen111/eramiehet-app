@@ -2,18 +2,17 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/browser'
+import { formatDate } from '@/lib/format'
 
 type ExistingBooking = {
   id: string
   starts_on: string
   ends_on: string
+  location: string
 }
 
 interface Props {
-  clubId: string
-  profileId: string
-  isAdmin: boolean
+  selectedLocation: string
   existingBookings: ExistingBooking[]
 }
 
@@ -26,17 +25,8 @@ function datesOverlap(
   return aStart <= bEnd && aEnd >= bStart
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI')
-}
-
-export default function BookingForm({
-  clubId,
-  profileId,
-  existingBookings,
-}: Props) {
+export default function BookingForm({ selectedLocation, existingBookings }: Props) {
   const router = useRouter()
-  const supabase = createClient()
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -45,6 +35,7 @@ export default function BookingForm({
   const [endsOn, setEndsOn] = useState('')
   const [note, setNote] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,28 +46,34 @@ export default function BookingForm({
       return
     }
 
-    const conflict = existingBookings.find((b) =>
+    // Only check overlaps for the same location
+    const locationBookings = existingBookings.filter((b) => b.location === selectedLocation)
+    const conflict = locationBookings.find((b) =>
       datesOverlap(startsOn, endsOn, b.starts_on, b.ends_on)
     )
     if (conflict) {
       setError(
-        `Päällekkäinen varaus: ${formatDate(conflict.starts_on)} – ${formatDate(conflict.ends_on)}`
+        `Päällekkäinen varaus tässä kohteessa: ${formatDate(conflict.starts_on)} – ${formatDate(conflict.ends_on)}`
       )
       return
     }
 
     setLoading(true)
-    const { error: insertError } = await supabase.from('bookings').insert({
-      club_id: clubId,
-      profile_id: profileId,
-      booker_name: bookerName || null,
-      starts_on: startsOn,
-      ends_on: endsOn,
-      note: note || null,
+    const res = await fetch('/api/bookings/request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: selectedLocation,
+        starts_on: startsOn,
+        ends_on: endsOn,
+        booker_name: bookerName || null,
+        note: note || null,
+      }),
     })
 
-    if (insertError) {
-      setError(insertError.message)
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({})) as { error?: string }
+      setError(body.error ?? 'Varaus epäonnistui')
       setLoading(false)
       return
     }
@@ -85,8 +82,10 @@ export default function BookingForm({
     setStartsOn('')
     setEndsOn('')
     setNote('')
-    setOpen(false)
     setLoading(false)
+    setOpen(false)
+    setSuccess('Varauspyyntö lähetetty! Odota vahvistusta.')
+    setTimeout(() => setSuccess(''), 6000)
     router.refresh()
   }
 
@@ -96,18 +95,23 @@ export default function BookingForm({
 
   if (!open) {
     return (
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white"
-      >
-        + Tee varaus
-      </button>
+      <div className="space-y-2">
+        <button
+          onClick={() => setOpen(true)}
+          className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+        >
+          + Lähetä varauspyyntö
+        </button>
+        {success && (
+          <p className="rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">{success}</p>
+        )}
+      </div>
     )
   }
 
   return (
     <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
-      <h2 className="mb-4 font-semibold text-white">Uusi varaus</h2>
+      <h2 className="mb-4 font-semibold text-white">Uusi varauspyyntö</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -163,14 +167,14 @@ export default function BookingForm({
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
           >
-            {loading ? 'Tallennetaan...' : 'Tallenna varaus'}
+            {loading ? 'Lähetetään...' : 'Lähetä varauspyyntö'}
           </button>
           <button
             type="button"
             onClick={() => { setOpen(false); setError('') }}
-            className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300"
+            className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300 hover:bg-white/5"
           >
             Peruuta
           </button>

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isBoardOrAbove } from '@/lib/auth'
 import AdminPanel from './admin-panel'
 
 export type AdminMember = {
@@ -23,7 +24,8 @@ export default async function HallintoPage() {
     .eq('id', user.id)
     .single()
 
-  if (!profile || (profile.role !== 'admin' && profile.role !== 'board_member')) {
+  const effectiveRole = profile?.role ?? null
+  if (!isBoardOrAbove(effectiveRole)) {
     return (
       <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
         <div className="mx-auto max-w-2xl space-y-4">
@@ -39,7 +41,7 @@ export default async function HallintoPage() {
   const { data: raw } = await admin
     .from('profiles')
     .select('id, full_name, email, role, member_status')
-    .eq('club_id', profile.club_id)
+    .eq('club_id', profile!.club_id)
     .order('full_name', { ascending: true })
 
   const initialMembers = (raw ?? []) as AdminMember[]
@@ -49,7 +51,7 @@ export default async function HallintoPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
         <h1 className="text-2xl font-bold text-white">Hallinto</h1>
-        <AdminPanel clubId={profile.club_id} initialMembers={initialMembers} />
+        <AdminPanel clubId={profile!.club_id} initialMembers={initialMembers} isAdmin={effectiveRole === 'admin' || effectiveRole === 'superadmin'} />
       </div>
     </main>
   )

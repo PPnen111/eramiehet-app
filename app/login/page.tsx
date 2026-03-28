@@ -5,14 +5,13 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/browser'
 
-type Mode = 'login' | 'signup' | 'reset'
+type Mode = 'login' | 'reset'
 
 export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
   const [mode, setMode] = useState<Mode>('login')
-  const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
@@ -29,7 +28,6 @@ export default function LoginPage() {
     setMessage('')
     setEmail('')
     setPassword('')
-    setFullName('')
   }
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -49,28 +47,6 @@ export default function LoginPage() {
     router.refresh()
   }
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage('')
-
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } },
-    })
-
-    if (error) {
-      showMsg(error.message, 'error')
-      setLoading(false)
-      return
-    }
-
-    showMsg('Rekisteröityminen onnistui. Tarkista sähköpostisi tai kirjaudu sisään.', 'success')
-    setLoading(false)
-    setMode('login')
-  }
-
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -83,7 +59,7 @@ export default function LoginPage() {
     setLoading(false)
 
     if (error) {
-      showMsg('Sähköpostiosoitetta ei löydy tai lähetys epäonnistui.', 'error')
+      showMsg(error.message, 'error')
       return
     }
 
@@ -102,29 +78,6 @@ export default function LoginPage() {
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-xl">
-          {/* Tab bar — only for login / signup */}
-          {mode !== 'reset' && (
-            <div className="mb-6 flex gap-2">
-              <button
-                type="button"
-                onClick={() => switchMode('login')}
-                className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  mode === 'login' ? 'bg-green-800 text-white' : 'bg-neutral-100 text-neutral-600'
-                }`}
-              >
-                Kirjaudu
-              </button>
-              <button
-                type="button"
-                onClick={() => switchMode('signup')}
-                className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  mode === 'signup' ? 'bg-green-800 text-white' : 'bg-neutral-100 text-neutral-600'
-                }`}
-              >
-                Rekisteröidy
-              </button>
-            </div>
-          )}
 
           {/* Login form */}
           {mode === 'login' && (
@@ -165,50 +118,6 @@ export default function LoginPage() {
                   Unohditko salasanan?
                 </button>
               </p>
-            </form>
-          )}
-
-          {/* Signup form */}
-          {mode === 'signup' && (
-            <form onSubmit={handleSignup} className="space-y-4">
-              <div>
-                <label className={labelCls}>Nimi</label>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                  className={inputCls}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>Sähköposti</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className={inputCls}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>Salasana</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  className={inputCls}
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-lg bg-green-800 py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
-              >
-                {loading ? 'Luodaan käyttäjää...' : 'Luo käyttäjä'}
-              </button>
             </form>
           )}
 
@@ -261,8 +170,15 @@ export default function LoginPage() {
 
           {/* Bottom link */}
           <p className="mt-4 text-center text-sm text-neutral-500">
+            Haluatko rekisteröidä uuden seuran?{' '}
             <Link href="/rekisteroidy" className="font-medium text-green-700 hover:text-green-600">
-              Rekisteröi uusi seura
+              Aloita tästä →
+            </Link>
+          </p>
+          <p className="mt-3 text-center text-xs text-neutral-400">
+            Rekisteröitymällä hyväksyt{' '}
+            <Link href="/tietosuoja" className="text-green-700 underline hover:text-green-600">
+              tietosuojaselosteen
             </Link>
           </p>
         </div>

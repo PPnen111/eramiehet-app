@@ -42,11 +42,31 @@ export async function updateSession(request: NextRequest) {
     url.pathname.startsWith('/erakartano') ||
     url.pathname.startsWith('/maksut') ||
     url.pathname.startsWith('/hallinto') ||
-    url.pathname.startsWith('/superadmin')
+    url.pathname.startsWith('/superadmin') ||
+    url.pathname.startsWith('/vaihda-seura')
 
+  // Unauthenticated → login
   if (!user && isProtected) {
     url.pathname = '/login'
     return NextResponse.redirect(url)
+  }
+
+  // Authenticated + protected (but not already on /vaihda-seura):
+  // ensure active_club_id is set so all pages have a club context
+  if (user && isProtected && !url.pathname.startsWith('/vaihda-seura')) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('active_club_id, role')
+      .eq('id', user.id)
+      .single()
+
+    const profile = data as { active_club_id: string | null; role: string | null } | null
+
+    // Superadmin works across all clubs — skip the check
+    if (profile && profile.role !== 'superadmin' && !profile.active_club_id) {
+      url.pathname = '/vaihda-seura'
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse

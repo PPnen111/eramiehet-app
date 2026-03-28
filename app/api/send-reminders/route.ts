@@ -3,8 +3,7 @@ import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { reminderHtml, reminderSubject, type ReminderEmailData } from '@/lib/emails/reminder'
 
-const FROM = 'Erämiesten App <noreply@eramiehet.fi>'
-// Use onboarding@resend.dev while domain noreply@eramiehet.fi is not yet verified in Resend
+const FROM = 'JahtiPro <noreply@jahtipro.fi>'
 
 type PaymentRow = {
   id: string

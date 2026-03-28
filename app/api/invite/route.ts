@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isBoardOrAbove } from '@/lib/auth'
 import { invitationHtml, invitationSubject, type InvitationEmailData } from '@/lib/emails/invitation'
 
-const FROM = 'Erämiesten App <noreply@eramiehet.fi>'
+const FROM = 'JahtiPro <noreply@jahtipro.fi>'
 
 type ProfileRow = {
   club_id: string
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
 
   const profile = profileRaw as unknown as ProfileRow
 
-  if (profile.role !== 'admin' && profile.role !== 'board_member') {
+  if (!isBoardOrAbove(profile.role)) {
     return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
   }
 

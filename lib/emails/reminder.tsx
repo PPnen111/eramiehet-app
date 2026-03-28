@@ -30,7 +30,7 @@ export function reminderHtml(data: ReminderEmailData): string {
   const badgeText = data.isOverdue ? 'Erääntynyt' : 'Maksu erääntyy pian'
   const intro = data.isOverdue
     ? `Laskullanne on erääntynyt maksu. Pyydämme teitä ystävällisesti hoitamaan sen mahdollisimman pian.`
-    : `Muistutamme, että teillä on maksu, jonka eräpäivä on ${due}. Maksu erääntyi 7 päivän kuluttua.`
+    : `Muistutamme, että teillä on maksu, jonka eräpäivä on ${due}. Maksu erääntyy 7 päivän kuluttua.`
 
   return `<!DOCTYPE html>
 <html lang="fi">
@@ -108,7 +108,7 @@ export function reminderHtml(data: ReminderEmailData): string {
           <tr>
             <td style="background:#f0f0f0;padding:16px 32px;border-top:1px solid #e0e0e0;">
               <p style="margin:0;font-size:12px;color:#999999;text-align:center;">
-                Erämiesten App &mdash; automaattinen viesti, älä vastaa tähän sähköpostiin
+                JahtiPro &mdash; automaattinen viesti, älä vastaa tähän sähköpostiin
               </p>
             </td>
           </tr>

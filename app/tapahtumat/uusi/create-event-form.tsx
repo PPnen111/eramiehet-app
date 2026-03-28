@@ -14,7 +14,7 @@ const EVENT_TYPES = [
 
 interface Props {
   clubId: string
-  userId: string
+  userId?: string
 }
 
 export default function CreateEventForm({ clubId, userId }: Props) {
@@ -26,7 +26,6 @@ export default function CreateEventForm({ clubId, userId }: Props) {
   const [type, setType] = useState('muu')
   const [startsAt, setStartsAt] = useState('')
   const [endsAt, setEndsAt] = useState('')
-  const [location, setLocation] = useState('')
   const [description, setDescription] = useState('')
   const [error, setError] = useState('')
 
@@ -42,11 +41,10 @@ export default function CreateEventForm({ clubId, userId }: Props) {
       starts_at: startsAt,
       ends_at: endsAt || null,
       description: description || null,
-      location: location || null,
-      created_by: userId,
     })
 
     if (insertError) {
+      console.error('Event insert error:', insertError)
       setError('Tapahtuman luominen epäonnistui: ' + insertError.message)
       setLoading(false)
       return
@@ -109,18 +107,6 @@ export default function CreateEventForm({ clubId, userId }: Props) {
           value={endsAt}
           onChange={(e) => setEndsAt(e.target.value)}
           className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500 [color-scheme:dark]"
-        />
-      </div>
-
-      {/* Sijainti */}
-      <div>
-        <label className="mb-1 block text-sm text-green-300">Sijainti</label>
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="esim. Seurantalo, Koiramäki"
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
         />
       </div>
 

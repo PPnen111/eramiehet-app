@@ -1,27 +1,51 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { Target } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { formatDate } from '@/lib/format'
 import NewSaalisForm from './new-saalis-form'
 import DeleteSaalisButton from './delete-saalis-button'
 
 const elainLabels: Record<string, string> = {
-  hirvi: 'Hirvi',
-  valkohantapeura: 'Valkohäntäpeura',
-  metsäkauris: 'Metsäkauris',
-  karhu: 'Karhu',
-  metsäjänis: 'Metsäjänis',
-  fasaani: 'Fasaani',
-  muu: 'Muu',
+  metso: 'Metso', teeri: 'Teeri', pyy: 'Pyy', riekko: 'Riekko',
+  sinisorsa: 'Sinisorsa', tavi: 'Tavi', haapana: 'Haapana',
+  jouhisorsa: 'Jouhisorsa', heinätavi: 'Heinätavi', lapasorsa: 'Lapasorsa',
+  tukkasotka: 'Tukkasotka', telkkä: 'Telkkä', isokoskelo: 'Isokoskelo',
+  tukkakoskelo: 'Tukkakoskelo', metsähanhi: 'Metsähanhi',
+  merihanhi: 'Merihanhi', kanadanhanhi: 'Kanadanhanhi',
+  sepelkyyhky: 'Sepelkyyhky', uuttukyyhky: 'Uuttukyyhky',
+  fasaani: 'Fasaani', lehtokurppa: 'Lehtokurppa',
+  nokikana: 'Nokikana', varis: 'Varis', harakka: 'Harakka', naakka: 'Naakka',
+  metsäjänis: 'Metsäjänis', rusakko: 'Rusakko',
+  euroopanmajava: 'Euroopanmajava',
+  kettu: 'Kettu', mäyrä: 'Mäyrä', kärppä: 'Kärppä',
+  hilleri: 'Hilleri', näätä: 'Näätä',
+  pienpedot: 'Pienpedot', muut_petonisäkkäät: 'Muut petonisäkkäät',
+  villisika: 'Villisika', metsäkauris: 'Metsäkauris',
+}
+
+const B = {
+  kana: 'bg-amber-900 text-amber-200',
+  vesi: 'bg-blue-900 text-blue-200',
+  kyyhky: 'bg-orange-900 text-orange-200',
+  lintu: 'bg-stone-700 text-stone-200',
+  jänis: 'bg-sky-900 text-sky-200',
+  peto: 'bg-yellow-900 text-yellow-200',
+  suur: 'bg-red-900 text-red-200',
 }
 
 const elainBadge: Record<string, string> = {
-  hirvi: 'bg-amber-900 text-amber-200',
-  valkohantapeura: 'bg-stone-700 text-stone-200',
-  metsäkauris: 'bg-yellow-900 text-yellow-200',
-  karhu: 'bg-red-900 text-red-200',
-  metsäjänis: 'bg-blue-900 text-blue-200',
-  fasaani: 'bg-orange-900 text-orange-200',
-  muu: 'bg-green-900 text-green-200',
+  metso: B.kana, teeri: B.kana, pyy: B.kana, riekko: B.kana,
+  sinisorsa: B.vesi, tavi: B.vesi, haapana: B.vesi,
+  jouhisorsa: B.vesi, heinätavi: B.vesi, lapasorsa: B.vesi,
+  tukkasotka: B.vesi, telkkä: B.vesi, isokoskelo: B.vesi,
+  tukkakoskelo: B.vesi, metsähanhi: B.vesi, merihanhi: B.vesi, kanadanhanhi: B.vesi,
+  sepelkyyhky: B.kyyhky, uuttukyyhky: B.kyyhky, fasaani: B.kyyhky,
+  lehtokurppa: B.lintu, nokikana: B.lintu, varis: B.lintu, harakka: B.lintu, naakka: B.lintu,
+  metsäjänis: B.jänis, rusakko: B.jänis,
+  kettu: B.peto, mäyrä: B.peto, kärppä: B.peto,
+  hilleri: B.peto, näätä: B.peto, pienpedot: B.peto, muut_petonisäkkäät: B.peto,
+  villisika: B.suur, metsäkauris: B.suur, euroopanmajava: B.suur,
 }
 
 const sukupuoliLabel: Record<string, string> = {
@@ -37,13 +61,6 @@ const ikaLabel: Record<string, string> = {
   tuntematon: '',
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fi-FI', {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-  })
-}
 
 export default async function SaalisPage() {
   const supabase = await createClient()
@@ -54,18 +71,13 @@ export default async function SaalisPage() {
 
   if (!user) redirect('/login')
 
-  const { data: membership, error: membershipError } = await supabase
-    .from('club_members')
+  const { data: profile } = await supabase
+    .from('profiles')
     .select('club_id, role')
-    .eq('profile_id', user.id)
-    .eq('status', 'active')
+    .eq('id', user.id)
     .single()
 
-  console.log('DEBUG user.id:', user.id)
-  console.log('DEBUG membership:', membership)
-  console.log('DEBUG membershipError:', membershipError)
-
-  if (!membership) {
+  if (!profile) {
     return (
       <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
         <div className="mx-auto max-w-2xl">
@@ -77,12 +89,12 @@ export default async function SaalisPage() {
     )
   }
 
-  const isAdmin = membership.role === 'admin' || membership.role === 'board_member'
+  const isAdmin = profile.role === 'admin' || profile.role === 'board_member'
 
   const { data: saaliset } = await supabase
     .from('saalis')
     .select('id, elain, maara, sukupuoli, ika_luokka, paikka, kuvaus, pvm, profile_id, reporter_name')
-    .eq('club_id', membership.club_id)
+    .eq('club_id', profile.club_id)
     .order('pvm', { ascending: false })
 
   const thisYear = new Date().getFullYear()
@@ -102,7 +114,7 @@ export default async function SaalisPage() {
 
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-2xl font-bold text-white">Saalisilmoitukset</h1>
-          <NewSaalisForm clubId={membership.club_id} profileId={user.id} />
+          <NewSaalisForm clubId={profile.club_id} profileId={user.id} />
         </div>
 
         {/* Tänä vuonna */}
@@ -111,7 +123,10 @@ export default async function SaalisPage() {
             {thisYear}
           </h2>
           {thisYearSaalis.length === 0 ? (
-            <p className="text-sm text-green-600">Ei saalisilmoituksia tänä vuonna.</p>
+            <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
+              <Target size={32} className="text-green-700" strokeWidth={1.5} />
+              <p className="text-sm text-green-600">Ei saalisilmoituksia tänä vuonna.</p>
+            </div>
           ) : (
             <div className="space-y-3">
               {thisYearSaalis.map((s) => (

@@ -1,5 +1,16 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import {
+  Scale,
+  Target,
+  Rabbit,
+  PawPrint,
+  CalendarCheck,
+  Sun,
+  FileText,
+  Download,
+  FolderOpen,
+} from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 
 type DocRow = {
@@ -17,6 +28,16 @@ const categoryLabel: Record<string, string> = {
   vuosikokous: 'Vuosikokous',
   kesakokous: 'Kesäkokous',
   muu: 'Muut',
+}
+
+const categoryIcon: Record<string, React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>> = {
+  seura_saannot: Scale,
+  hirviseurue: Target,
+  peurajaosto: Rabbit,
+  karhujaosto: PawPrint,
+  vuosikokous: CalendarCheck,
+  kesakokous: Sun,
+  muu: FileText,
 }
 
 const categoryOrder = [
@@ -82,15 +103,20 @@ export default async function MetsastajillePage() {
         <h1 className="text-2xl font-bold text-white">Metsästäjille</h1>
 
         {docsWithUrls.length === 0 && (
-          <p className="text-sm text-green-600">Ei dokumentteja.</p>
+          <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
+            <FolderOpen size={32} className="text-green-700" strokeWidth={1.5} />
+            <p className="text-sm text-green-600">Ei dokumentteja.</p>
+          </div>
         )}
 
         {categoryOrder.map((cat) => {
           const items = grouped[cat]
           if (!items?.length) return null
+          const CatIcon = categoryIcon[cat] ?? FileText
           return (
             <section key={cat}>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
+              <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-green-400">
+                <CatIcon size={14} strokeWidth={2} />
                 {categoryLabel[cat]}
               </h2>
               <div className="space-y-2">
@@ -105,8 +131,9 @@ export default async function MetsastajillePage() {
                         href={doc.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="shrink-0 rounded-lg bg-green-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700"
+                        className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-green-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 transition-colors"
                       >
+                        <Download size={12} />
                         Lataa
                       </a>
                     ) : (
