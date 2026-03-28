@@ -54,15 +54,7 @@ export default function Home() {
       {/* ── NAVBAR ──────────────────────────────────────────────────────── */}
       <nav className="sticky top-0 z-50 w-full border-b border-green-900 bg-green-950/90 backdrop-blur-sm">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <svg width="32" height="32" viewBox="0 0 32 32">
-              <circle cx="16" cy="16" r="15" fill="#166534" />
-              <text x="16" y="21" textAnchor="middle" fontSize="18" fill="white">🦌</text>
-            </svg>
-            <span className="text-xl font-bold text-white">
-              Jahti<span className="text-green-400">Pro</span>
-            </span>
-          </div>
+          <img src="/jahtipro-logo.png" alt="JahtiPro" className="h-10 w-auto" />
           <a
             href="/login"
             className="rounded-lg border border-green-600 px-4 py-2 text-sm text-green-300 transition hover:bg-green-900"
