@@ -16,7 +16,7 @@ export async function DELETE(request: NextRequest) {
     .single()
 
   const p = profile as { club_id: string | null; role: string | null } | null
-  const allowedRoles = ['admin', 'board_member']
+  const allowedRoles = ['admin', 'board_member', 'superadmin']
   if (!p || !allowedRoles.includes(p.role ?? '')) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
@@ -32,7 +32,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Puuttuvia kenttiä' }, { status: 400 })
   }
 
-  if (p.club_id !== club_id) {
+  if (p.role !== 'superadmin' && p.club_id !== club_id) {
     return NextResponse.json({ error: 'Ei oikeuksia tähän seuraan' }, { status: 403 })
   }
 

@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     .single()
 
   const p = profile as { club_id: string | null; role: string | null } | null
-  const allowedRoles = ['admin', 'board_member']
+  const allowedRoles = ['admin', 'board_member', 'superadmin']
   if (!p || !allowedRoles.includes(p.role ?? '')) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Puuttuvia kenttiä' }, { status: 400 })
   }
 
-  if (p.club_id !== clubId) {
+  if (p.role !== 'superadmin' && p.club_id !== clubId) {
     return NextResponse.json({ error: 'Ei oikeuksia tähän seuraan' }, { status: 403 })
   }
 
