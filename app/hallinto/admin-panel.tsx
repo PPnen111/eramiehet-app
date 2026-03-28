@@ -4,23 +4,30 @@ import { useState } from 'react'
 import TabMembers from './tab-members'
 import TabPayments from './tab-payments'
 import TabDocuments from './tab-documents'
+import TabGroups from './tab-groups'
 import type { AdminMember } from './page'
 
-type Tab = 'jasenet' | 'maksut' | 'dokumentit'
+type Tab = 'jasenet' | 'maksut' | 'dokumentit' | 'ryhmat'
 
 const tabs: { id: Tab; label: string }[] = [
   { id: 'jasenet', label: 'Jäsenet' },
   { id: 'maksut', label: 'Maksut' },
   { id: 'dokumentit', label: 'Dokumentit' },
+  { id: 'ryhmat', label: 'Ryhmät' },
 ]
 
 interface Props {
   clubId: string
   initialMembers: AdminMember[]
+  isAdmin: boolean
 }
 
-export default function AdminPanel({ clubId, initialMembers }: Props) {
+export default function AdminPanel({ clubId, initialMembers, isAdmin }: Props) {
   const [active, setActive] = useState<Tab>('jasenet')
+
+  const clubMembers = initialMembers
+    .filter((m) => m.member_status === 'active')
+    .map((m) => ({ id: m.id, full_name: m.full_name, email: m.email }))
 
   return (
     <div className="space-y-5">
@@ -44,6 +51,7 @@ export default function AdminPanel({ clubId, initialMembers }: Props) {
       {active === 'jasenet' && <TabMembers clubId={clubId} initialMembers={initialMembers} />}
       {active === 'maksut' && <TabPayments clubId={clubId} />}
       {active === 'dokumentit' && <TabDocuments clubId={clubId} />}
+      {active === 'ryhmat' && <TabGroups clubId={clubId} clubMembers={clubMembers} isAdmin={isAdmin} />}
     </div>
   )
 }
