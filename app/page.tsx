@@ -56,7 +56,7 @@ export default function Home() {
         <img
           src="/jahtipro-logo.png"
           alt="JahtiPro"
-          className="h-8 md:h-9 w-auto object-contain brightness-110 contrast-110 mix-blend-darken drop-shadow-[0_0_6px_rgba(34,197,94,0.4)]"
+          className="h-8 md:h-9 w-auto object-contain brightness-110 contrast-110 drop-shadow-[0_0_6px_rgba(34,197,94,0.4)]"
         />
         <a
           href="/login"
