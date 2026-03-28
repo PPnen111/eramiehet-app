@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { isAdminOrAbove } from '@/lib/auth'
+import { isAdminOrAbove, isBoardOrAbove } from '@/lib/auth'
 
 async function canManageGroup(userId: string, groupId: string, admin: ReturnType<typeof createAdminClient>) {
   const { data: profile } = await admin
@@ -11,7 +11,7 @@ async function canManageGroup(userId: string, groupId: string, admin: ReturnType
     .single()
 
   const role = (profile as { role: string } | null)?.role
-  if (isAdminOrAbove(role)) return true
+  if (isBoardOrAbove(role)) return true
 
   // Check if user is leader of this group
   const { data: membership } = await admin
@@ -44,7 +44,7 @@ export async function POST(
 
   const { error } = await admin
     .from('club_group_members')
-    .insert({ group_id: groupId, profile_id, role: 'member', added_by: user.id })
+    .insert({ group_id: groupId, profile_id, role: 'member' })
 
   if (error) {
     if (error.code === '23505') {
@@ -102,7 +102,7 @@ export async function PATCH(
     .eq('id', user.id)
     .single()
 
-  if (!isAdminOrAbove((profile as { role: string } | null)?.role)) {
+  if (!isBoardOrAbove((profile as { role: string } | null)?.role)) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
 
