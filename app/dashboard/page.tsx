@@ -19,6 +19,7 @@ import {
   Pencil,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove, isSuperAdmin } from '@/lib/auth'
 import LogoutButton from './logout-button'
 import LoginTracker from '@/app/components/login-tracker'
@@ -142,6 +143,59 @@ export default async function DashboardPage() {
     clubCreatedAt !== null &&
     new Date(clubCreatedAt) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 
+  // Fetch user's groups
+  type MyGroupMembership = {
+    group_id: string
+    role: string
+    club_groups: { id: string; name: string; description: string | null } | null
+  }
+  type GroupMemberForCount = {
+    group_id: string
+    role: string
+    profiles: { full_name: string | null } | null
+  }
+
+  let myGroups: { id: string; name: string; description: string | null; memberCount: number; leaderName: string | null; myRole: string }[] = []
+
+  try {
+    const admin = createAdminClient()
+    const { data: membershipsRaw } = await admin
+      .from('club_group_members')
+      .select('group_id, role, club_groups(id, name, description)')
+      .eq('profile_id', user.id)
+
+    const memberships = (membershipsRaw ?? []) as unknown as MyGroupMembership[]
+    const groupIds = memberships.map((m) => m.group_id)
+
+    if (groupIds.length > 0) {
+      const { data: allMembersRaw } = await admin
+        .from('club_group_members')
+        .select('group_id, role, profiles(full_name)')
+        .in('group_id', groupIds)
+
+      const allMembers = (allMembersRaw ?? []) as unknown as GroupMemberForCount[]
+
+      myGroups = memberships
+        .filter((m) => m.club_groups)
+        .map((m) => {
+          const g = m.club_groups as unknown as { id: string; name: string; description: string | null }
+          const groupMembers = allMembers.filter((gm) => gm.group_id === m.group_id)
+          const leader = groupMembers.find((gm) => gm.role === 'leader')
+          const leaderName = (leader?.profiles as unknown as { full_name: string | null } | null)?.full_name ?? null
+          return {
+            id: g.id,
+            name: g.name,
+            description: g.description,
+            memberCount: groupMembers.length,
+            leaderName,
+            myRole: m.role,
+          }
+        })
+    }
+  } catch {
+    // admin client may not be available locally
+  }
+
   // Role comes from profiles directly; superadmin lives on profiles.role
   const role = profileRole === 'superadmin' ? 'superadmin' : profileRole
 
@@ -236,6 +290,39 @@ export default async function DashboardPage() {
               </div>
               <ArrowLeftRight size={16} className="shrink-0 text-green-400 rotate-90" />
             </Link>
+          </div>
+        )}
+
+        {/* Omat ryhmät */}
+        {myGroups.length > 0 && (
+          <div className="mb-4 space-y-2">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+              Omat ryhmät
+            </h2>
+            {myGroups.map((g) => (
+              <div
+                key={g.id}
+                className="rounded-xl border border-green-800 bg-white/5 px-4 py-3"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-white">{g.name}</p>
+                    {g.description && (
+                      <p className="mt-0.5 text-xs text-green-500">{g.description}</p>
+                    )}
+                    <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-green-600">
+                      <span>{g.memberCount} jäsentä</span>
+                      {g.leaderName && <span>Johtaja: {g.leaderName}</span>}
+                    </div>
+                  </div>
+                  {g.myRole === 'leader' && (
+                    <span className="shrink-0 rounded-full bg-green-700 px-2 py-0.5 text-[10px] font-bold text-green-100">
+                      Ryhmänjohtaja
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
