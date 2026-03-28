@@ -49,51 +49,23 @@ export default function TabDocuments({ clubId }: Props) {
 
   useEffect(() => { load() }, [load])
 
-  const ALLOWED_TYPES = [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'image/jpeg',
-    'image/png',
-  ]
-  const MAX_SIZE_MB = 10
-
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError('')
     if (!file) { setFormError('Valitse tiedosto.'); return }
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      setFormError('Sallitut tiedostotyypit: PDF, Word, JPG, PNG.')
-      return
-    }
-    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-      setFormError(`Tiedosto on liian suuri. Maksimikoko on ${MAX_SIZE_MB} MB.`)
-      return
-    }
 
     setUploading(true)
-    const ext = file.name.split('.').pop() ?? 'bin'
-    const path = `${clubId}/${Date.now()}.${ext}`
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('name', name)
+    fd.append('category', category)
+    fd.append('club_id', clubId)
 
-    const { error: storageError } = await supabase.storage
-      .from('documents')
-      .upload(path, file)
+    const res = await fetch('/api/documents/upload', { method: 'POST', body: fd })
+    const data = await res.json().catch(() => ({})) as { error?: string }
 
-    if (storageError) {
-      setFormError(storageError.message)
-      setUploading(false)
-      return
-    }
-
-    const { error: dbError } = await supabase.from('documents').insert({
-      club_id: clubId,
-      name,
-      category,
-      storage_path: path,
-    })
-
-    if (dbError) {
-      setFormError(dbError.message)
+    if (!res.ok) {
+      setFormError(data.error ?? 'Lataus epäonnistui')
       setUploading(false)
       return
     }
@@ -109,8 +81,11 @@ export default function TabDocuments({ clubId }: Props) {
   const handleDelete = async (doc: Document) => {
     if (!confirm('Poistetaanko dokumentti?')) return
     setBusy(doc.id)
-    await supabase.storage.from('documents').remove([doc.storage_path])
-    await supabase.from('documents').delete().eq('id', doc.id)
+    await fetch('/api/documents/delete', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ doc_id: doc.id, storage_path: doc.storage_path, club_id: clubId }),
+    })
     setBusy(null)
     load()
   }
