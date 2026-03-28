@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 
 const iconBox = 'inline-flex items-center justify-center rounded-lg bg-green-900/50 p-2 text-green-400'
+const card = 'rounded-2xl border border-green-800 bg-green-900 px-6 py-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-green-950/60'
 
 export default function Home() {
   const [email, setEmail] = useState('')
@@ -53,23 +54,38 @@ export default function Home() {
       {/* ── SECTION 1: HERO ─────────────────────────────────────────────── */}
       <section className="relative flex min-h-screen flex-col items-center justify-center px-6 text-center">
         <div className="absolute inset-0 bg-gradient-to-b from-green-950 via-green-950 to-green-900 pointer-events-none" />
-        <div className="relative z-10 mx-auto max-w-3xl">
+        <div className="relative z-10 mx-auto max-w-2xl">
           <span className="mb-8 inline-flex items-center gap-2 rounded-full bg-green-800/60 px-4 py-1.5 text-sm font-semibold text-green-300 ring-1 ring-green-700/50">
             <Rocket className="h-4 w-4" />
             Suljettu beta käynnissä
           </span>
 
-          <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl">
-            Käytä aikasi rakkaaseen<br className="hidden sm:block" /> harrastukseen.<br />
+          <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl">
+            Käytä aikasi rakkaaseen harrastukseen.<br />
             <span className="text-green-300">Vähemmän hallintoon.</span>
           </h1>
 
-          <p className="mx-auto mb-8 max-w-xl text-lg leading-relaxed text-green-200">
+          <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-green-200">
             JahtiPro hoitaa metsästysseuran hallinnon puolestasi — jäsenrekisteristä
             maksuihin ja saalisilmoituksista eräkartanon varauksiin.
           </p>
 
-          <p className="text-sm text-green-400">
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <a
+              href="#signup"
+              className="w-full rounded-xl bg-green-600 px-8 py-4 text-base font-bold text-white transition-colors hover:bg-green-500 sm:w-auto"
+            >
+              Ilmoittaudu beta-listalle →
+            </a>
+            <a
+              href="#features"
+              className="w-full rounded-xl border border-green-700 px-8 py-4 text-base font-medium text-green-300 transition-colors hover:border-green-500 hover:text-green-200 sm:w-auto"
+            >
+              Katso miten toimii ↓
+            </a>
+          </div>
+
+          <p className="mt-10 text-sm text-green-500">
             Kehitetty yhdessä Kyyjärven Erämiehet ry:n kanssa
           </p>
         </div>
@@ -83,34 +99,19 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 2: PAIN POINTS ──────────────────────────────────────── */}
-      <section className="bg-green-900/40 py-24 px-6">
+      <section className="bg-green-900/40 py-24 px-6 md:py-32">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-12 text-center text-3xl font-extrabold text-white md:text-4xl">
+          <h2 className="mb-12 text-center text-3xl font-extrabold tracking-tight text-white md:text-4xl">
             Tuntuuko tämä tutulta?
           </h2>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             {[
-              {
-                icon: <MessageSquareWarning className="h-6 w-6" />,
-                title: 'WhatsApp-kaaos',
-                body: 'Tapahtumat, maksut ja ilmoitukset hukkuvat ryhmäviesteihin. Tärkeät asiat katoavat.',
-              },
-              {
-                icon: <FileSpreadsheet className="h-6 w-6" />,
-                title: 'Excel kaikkialla',
-                body: 'Jäsenrekisteri, maksut ja varaukset eri tiedostoissa. Hallitus tekee tuplatyötä joka vuosi.',
-              },
-              {
-                icon: <Clock className="h-6 w-6" />,
-                title: 'Aikaa tuhlaantuu',
-                body: 'Kokoukset, muistutukset, pöytäkirjat — hallintoon kuluu tunteja jotka voisi viettää metsässä.',
-              },
+              { icon: <MessageSquareWarning className="h-6 w-6" />, title: 'WhatsApp-kaaos', body: 'Tapahtumat, maksut ja ilmoitukset hukkuvat ryhmäviesteihin. Tärkeät asiat katoavat.' },
+              { icon: <FileSpreadsheet className="h-6 w-6" />, title: 'Excel kaikkialla', body: 'Jäsenrekisteri, maksut ja varaukset eri tiedostoissa. Hallitus tekee tuplatyötä joka vuosi.' },
+              { icon: <Clock className="h-6 w-6" />, title: 'Aikaa tuhlaantuu', body: 'Kokoukset, muistutukset, pöytäkirjat — hallintoon kuluu tunteja jotka voisi viettää metsässä.' },
             ].map(({ icon, title, body }) => (
-              <div
-                key={title}
-                className="rounded-2xl border border-green-800 bg-green-900/60 px-6 py-6 transition-transform duration-200 hover:-translate-y-0.5"
-              >
-                <div className={`${iconBox} mb-3`}>{icon}</div>
+              <div key={title} className={card}>
+                <div className={`${iconBox} mb-4`}>{icon}</div>
                 <p className="mb-2 font-bold text-white">{title}</p>
                 <p className="text-sm leading-relaxed text-green-300">{body}</p>
               </div>
@@ -120,10 +121,10 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 3: SOLUTION ─────────────────────────────────────────── */}
-      <section className="py-24 px-6 text-center">
+      <section className="py-24 px-6 text-center md:py-32">
         <div className="mx-auto max-w-2xl">
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-green-500">Ratkaisu</p>
-          <h2 className="mb-6 text-3xl font-extrabold text-white md:text-5xl">
+          <h2 className="mb-6 text-3xl font-extrabold tracking-tight text-white md:text-5xl">
             JahtiPro tekee kaiken tämän
             <span className="text-green-300"> puolestasi.</span>
           </h2>
@@ -135,9 +136,9 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 4: BENEFITS ─────────────────────────────────────────── */}
-      <section className="bg-green-900/30 py-24 px-6">
+      <section className="bg-green-900/30 py-24 px-6 md:py-32">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-12 text-center text-3xl font-extrabold text-white md:text-4xl">
+          <h2 className="mb-12 text-center text-3xl font-extrabold tracking-tight text-white md:text-4xl">
             Mitä saat
           </h2>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -149,23 +150,30 @@ export default function Home() {
               { icon: <Shield className="h-6 w-6" />, title: 'Tiedot turvassa', body: 'Jokaisen seuran tiedot täysin erillään. GDPR-yhteensopiva suomalainen palvelu.' },
               { icon: <Tent className="h-6 w-6" />, title: 'Kartano hallinnassa', body: 'Varauskalenteri estää päällekkäiset varaukset. Hinnasto ja ohjeet aina saatavilla.' },
             ].map(({ icon, title, body }) => (
-              <div
-                key={title}
-                className="rounded-2xl border border-green-800 bg-green-900/50 px-6 py-6 transition-transform duration-200 hover:-translate-y-0.5"
-              >
-                <div className={`${iconBox} mb-3`}>{icon}</div>
+              <div key={title} className={card}>
+                <div className={`${iconBox} mb-4`}>{icon}</div>
                 <p className="mb-2 font-bold text-white">{title}</p>
                 <p className="text-sm leading-relaxed text-green-300">{body}</p>
               </div>
             ))}
           </div>
+
+          {/* Secondary CTA after benefits */}
+          <div className="mt-12 text-center">
+            <a
+              href="#signup"
+              className="inline-block rounded-xl bg-green-600 px-8 py-4 text-base font-bold text-white transition-colors hover:bg-green-500"
+            >
+              Ilmoittaudu mukaan →
+            </a>
+          </div>
         </div>
       </section>
 
       {/* ── SECTION 5: FEATURES ─────────────────────────────────────────── */}
-      <section className="py-24 px-6">
+      <section id="features" className="py-24 px-6 md:py-32">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-12 text-center text-3xl font-extrabold text-white md:text-4xl">
+          <h2 className="mb-12 text-center text-3xl font-extrabold tracking-tight text-white md:text-4xl">
             Kaikki mitä seura tarvitsee
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -177,10 +185,7 @@ export default function Home() {
               { icon: <Users className="h-6 w-6" />, title: 'Ryhmähallinta', body: 'Hirviseurue, peurajaosto — omat ryhmät omilla jäsenillä.' },
               { icon: <Map className="h-6 w-6" />, title: 'Karttatunnukset', body: 'Karttapalvelujen tunnukset turvallisesti kaikille jäsenille.' },
             ].map(({ icon, title, body }) => (
-              <div
-                key={title}
-                className="flex gap-4 rounded-2xl border border-green-800/60 bg-white/[0.03] px-5 py-5 transition-transform duration-200 hover:-translate-y-0.5"
-              >
+              <div key={title} className="flex gap-4 rounded-2xl border border-green-800 bg-green-900 px-5 py-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-green-950/60">
                 <div className={`${iconBox} mt-0.5 shrink-0`}>{icon}</div>
                 <div>
                   <p className="mb-1 font-bold text-white">{title}</p>
@@ -193,9 +198,9 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 6: INTEREST CAPTURE ─────────────────────────────────── */}
-      <section className="bg-green-900/30 py-24 px-6">
-        <div className="mx-auto max-w-xl text-center">
-          <h2 className="mb-4 text-3xl font-extrabold text-white md:text-4xl">
+      <section id="signup" className="bg-green-900/30 py-24 px-6 md:py-32">
+        <div className="mx-auto max-w-md text-center">
+          <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
             Haluatko seurasi mukaan?
           </h2>
           <p className="mb-10 text-lg leading-relaxed text-green-200">
@@ -204,7 +209,7 @@ export default function Home() {
           </p>
 
           {submitMessage === 'registered' ? (
-            <div className="rounded-2xl bg-green-900/60 px-6 py-8 ring-1 ring-green-700/50">
+            <div className="rounded-2xl bg-green-900 px-6 py-8 ring-1 ring-green-700/50">
               <CheckCircle className="mx-auto mb-3 h-10 w-10 text-green-400" />
               <p className="text-lg font-bold text-green-200">Kiitos!</p>
               <p className="mt-2 text-sm text-green-400">Olemme yhteydessä kun sovellus avautuu.</p>
@@ -223,20 +228,20 @@ export default function Home() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="Sähköpostiosoitteesi"
-                className="w-full rounded-xl border border-green-700 bg-white/10 px-4 py-3.5 text-white placeholder-green-600 outline-none focus:border-green-500"
+                className="w-full rounded-xl border border-green-800 bg-green-900 px-4 py-3 text-white placeholder-green-500 outline-none focus:border-green-500"
               />
               <input
                 type="text"
                 value={clubName}
                 onChange={(e) => setClubName(e.target.value)}
                 placeholder="Seurasi nimi"
-                className="w-full rounded-xl border border-green-700 bg-white/10 px-4 py-3.5 text-white placeholder-green-600 outline-none focus:border-green-500"
+                className="w-full rounded-xl border border-green-800 bg-green-900 px-4 py-3 text-white placeholder-green-500 outline-none focus:border-green-500"
               />
               {formError && <p className="text-sm text-red-400">{formError}</p>}
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-xl bg-green-600 py-4 text-base font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors"
+                className="w-full rounded-xl bg-green-600 py-4 text-base font-bold text-white transition-colors hover:bg-green-500 disabled:opacity-50"
               >
                 {submitting ? 'Lähetetään...' : 'Ilmoittaudu →'}
               </button>
@@ -252,7 +257,7 @@ export default function Home() {
           <p className="mb-3 text-sm text-green-500">Oletko kutsuttu beta-testaajaksi?</p>
           <Link
             href="/login"
-            className="inline-block rounded-xl border border-green-700 px-6 py-2.5 text-sm font-medium text-green-300 hover:border-green-500 hover:text-green-200 transition-colors"
+            className="inline-block rounded-xl border border-green-700 px-6 py-2.5 text-sm font-medium text-green-300 transition-colors hover:border-green-500 hover:text-green-200"
           >
             Kirjaudu sisään →
           </Link>
