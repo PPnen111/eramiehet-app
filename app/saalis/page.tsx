@@ -96,6 +96,7 @@ export default async function SaalisPage() {
     .select('id, elain, maara, sukupuoli, ika_luokka, paikka, kuvaus, pvm, profile_id, reporter_name')
     .eq('club_id', profile.club_id)
     .order('pvm', { ascending: false })
+    .limit(200)
 
   const thisYear = new Date().getFullYear()
   const thisYearSaalis = (saaliset ?? []).filter(

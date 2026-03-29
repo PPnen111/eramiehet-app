@@ -5,15 +5,17 @@ import TabMembers from './tab-members'
 import TabPayments from './tab-payments'
 import TabDocuments from './tab-documents'
 import TabGroups from './tab-groups'
+import TabClubInfo from './tab-club-info'
 import type { AdminMember } from './page'
 
-type Tab = 'jasenet' | 'maksut' | 'dokumentit' | 'ryhmat'
+type Tab = 'jasenet' | 'maksut' | 'dokumentit' | 'ryhmat' | 'seuran-tiedot'
 
 const tabs: { id: Tab; label: string }[] = [
   { id: 'jasenet', label: 'Jäsenet' },
   { id: 'maksut', label: 'Maksut' },
   { id: 'dokumentit', label: 'Dokumentit' },
   { id: 'ryhmat', label: 'Ryhmät' },
+  { id: 'seuran-tiedot', label: 'Seuran tiedot' },
 ]
 
 interface Props {
@@ -52,6 +54,7 @@ export default function AdminPanel({ clubId, initialMembers, isAdmin }: Props) {
       {active === 'maksut' && <TabPayments clubId={clubId} />}
       {active === 'dokumentit' && <TabDocuments clubId={clubId} />}
       {active === 'ryhmat' && <TabGroups clubId={clubId} clubMembers={clubMembers} isAdmin={isAdmin} />}
+      {active === 'seuran-tiedot' && <TabClubInfo clubId={clubId} />}
     </div>
   )
 }

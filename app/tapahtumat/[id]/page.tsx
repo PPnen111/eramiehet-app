@@ -1,8 +1,10 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import DeleteEventDetailButton from './delete-button'
+import RegistrationsManager from './registrations-manager'
 
 const typeLabels: Record<string, string> = {
   talkoot: 'Talkoot',
@@ -39,12 +41,13 @@ type EventRow = {
   type: string
   starts_at: string
   ends_at: string | null
-  location: string | null
-  created_by: string | null
 }
 
-type ProfileRow = {
-  full_name: string | null
+type RegistrationRow = {
+  id: string
+  profile_id: string
+  created_at: string
+  profiles: { full_name: string | null } | null
 }
 
 export default async function TapahtumaDetailPage({
@@ -71,7 +74,7 @@ export default async function TapahtumaDetailPage({
 
   const { data: raw } = await supabase
     .from('events')
-    .select('id, club_id, title, description, type, starts_at, ends_at, location, created_by')
+    .select('id, club_id, title, description, type, starts_at, ends_at')
     .eq('id', id)
     .single()
 
@@ -84,18 +87,16 @@ export default async function TapahtumaDetailPage({
 
   const isAdmin = isBoardOrAbove(profile.role)
 
-  // Fetch creator name if available
-  let creatorName: string | null = null
-  if (event.created_by) {
-    const { data: creatorRaw } = await supabase
-      .from('profiles')
-      .select('full_name')
-      .eq('id', event.created_by)
-      .single()
-    if (creatorRaw) {
-      const creator = creatorRaw as unknown as ProfileRow
-      creatorName = creator.full_name
-    }
+  // Fetch registrations (table may not exist — handle gracefully)
+  let registrations: RegistrationRow[] = []
+  if (isAdmin) {
+    const adminClient = createAdminClient()
+    const { data: regsRaw } = await adminClient
+      .from('event_registrations')
+      .select('id, profile_id, created_at, profiles(full_name)')
+      .eq('event_id', event.id)
+      .order('created_at', { ascending: true })
+    registrations = ((regsRaw ?? []) as unknown as RegistrationRow[])
   }
 
   return (
@@ -132,14 +133,6 @@ export default async function TapahtumaDetailPage({
             )}
           </div>
 
-          {/* Sijainti */}
-          {event.location && (
-            <div className="flex items-start gap-2 text-sm">
-              <span className="text-green-500">Sijainti</span>
-              <span className="text-green-200">{event.location}</span>
-            </div>
-          )}
-
           {/* Kuvaus */}
           {event.description && (
             <div>
@@ -150,11 +143,18 @@ export default async function TapahtumaDetailPage({
             </div>
           )}
 
-          {/* Luonut */}
-          {creatorName && (
-            <p className="text-xs text-green-600">Luonut: {creatorName}</p>
-          )}
+
         </div>
+
+        {/* Ilmoittautuneet (admin) */}
+        {isAdmin && (
+          <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+              Ilmoittautuneet ({registrations.length})
+            </h2>
+            <RegistrationsManager eventId={event.id} registrations={registrations} />
+          </div>
+        )}
 
         {/* Admin-toiminnot */}
         {isAdmin && (

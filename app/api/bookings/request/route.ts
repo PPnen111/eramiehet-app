@@ -83,17 +83,34 @@ export async function POST(req: NextRequest) {
   const locationLabel = LOCATION_LABELS[location]
   const bookerDisplay = booker_name ?? profile.full_name ?? user.email ?? 'Tuntematon'
 
-  // Find club admin/board email for approval notification
-  const { data: adminProfileRaw } = await admin
-    .from('profiles')
-    .select('email')
+  // Determine notification recipients
+  // 1. Check cabin_info.booking_notification_email first
+  const { data: cabinInfoRaw } = await admin
+    .from('cabin_info')
+    .select('booking_notification_email')
     .eq('club_id', profile.club_id)
-    .in('role', ['admin', 'board_member'])
-    .not('email', 'is', null)
-    .limit(1)
     .maybeSingle()
-  const approvalEmail = (adminProfileRaw as { email: string | null } | null)?.email
-  if (!approvalEmail) {
+  const cabinNotificationEmail = (cabinInfoRaw as { booking_notification_email: string | null } | null)
+    ?.booking_notification_email
+
+  let notificationEmails: string[]
+  if (cabinNotificationEmail) {
+    notificationEmails = [cabinNotificationEmail]
+  } else {
+    // Fallback: first 3 admins/board_members
+    const { data: adminProfilesRaw } = await admin
+      .from('profiles')
+      .select('email')
+      .eq('club_id', profile.club_id)
+      .in('role', ['admin', 'board_member'])
+      .not('email', 'is', null)
+      .limit(3)
+    notificationEmails = ((adminProfilesRaw ?? []) as { email: string | null }[])
+      .map((p) => p.email)
+      .filter((e): e is string => Boolean(e))
+  }
+
+  if (notificationEmails.length === 0) {
     return NextResponse.json({ ok: true })
   }
 
@@ -101,7 +118,7 @@ export async function POST(req: NextRequest) {
   await resend.emails
     .send({
       from: FROM,
-      to: approvalEmail,
+      to: notificationEmails,
       subject: `Uusi varauspyyntö – ${locationLabel} ${starts_on}`,
       html: `
         <h2 style="color:#166534">Uusi varauspyyntö</h2>

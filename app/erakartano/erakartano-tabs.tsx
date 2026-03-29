@@ -30,9 +30,11 @@ export type BookingRow = {
 function parseLocation(note: string | null): string {
   return note?.match(/\[kohde:(\w+)\]/)?.[1] ?? 'erakartano'
 }
-function parseStatus(note: string | null): 'pending' | 'confirmed' {
+function parseStatus(note: string | null): 'pending' | 'confirmed' | 'cancelled' {
   const s = note?.match(/\[tila:(\w+)\]/)?.[1]
-  return s === 'confirmed' ? 'confirmed' : 'pending'
+  if (s === 'confirmed') return 'confirmed'
+  if (s === 'cancelled') return 'cancelled'
+  return 'pending'
 }
 function parseBookerName(note: string | null): string | null {
   return note?.match(/\[varaaja:([^\]]+)\]/)?.[1] ?? null
@@ -74,7 +76,9 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
   const [activeLocation, setActiveLocation] = useState<string>(LOCATIONS[0].value)
   const today = new Date().toISOString().slice(0, 10)
 
-  const locationBookings = bookings.filter((b) => parseLocation(b.note) === activeLocation)
+  const locationBookings = bookings.filter(
+    (b) => parseLocation(b.note) === activeLocation && parseStatus(b.note) !== 'cancelled'
+  )
 
   const calendarBookings: CalendarBooking[] = locationBookings.map((b) => ({
     id: b.id,
@@ -160,7 +164,8 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
                   const bookerName =
                     parseBookerName(b.note) ??
                     (b.profiles as unknown as { full_name: string | null } | null)?.full_name
-                  const isPending = parseStatus(b.note) === 'pending'
+                  const status = parseStatus(b.note)
+                  const isPending = status === 'pending'
                   const cleanNote = parseNote(b.note)
 
                   return (

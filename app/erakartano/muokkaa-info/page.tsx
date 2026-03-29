@@ -7,6 +7,7 @@ import EditCabinInfoForm from './edit-form'
 type CabinInfoRow = {
   pricing_text: string | null
   instructions_text: string | null
+  booking_notification_email: string | null
 }
 
 export default async function MuokkaaInfoPage() {
@@ -27,7 +28,7 @@ export default async function MuokkaaInfoPage() {
 
   const { data: raw } = await supabase
     .from('cabin_info')
-    .select('pricing_text, instructions_text')
+    .select('pricing_text, instructions_text, booking_notification_email')
     .eq('club_id', profile.club_id)
     .single()
 
@@ -44,6 +45,7 @@ export default async function MuokkaaInfoPage() {
           clubId={profile.club_id}
           initialPricing={info?.pricing_text ?? ''}
           initialInstructions={info?.instructions_text ?? ''}
+          initialNotificationEmail={info?.booking_notification_email ?? ''}
         />
       </div>
     </main>

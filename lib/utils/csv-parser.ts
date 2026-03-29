@@ -33,9 +33,9 @@ function parseRow(line: string, sep: string): string[] {
 }
 
 function findCol(headers: string[], options: string[]): number {
-  for (const opt of options) {
-    const idx = headers.indexOf(opt)
-    if (idx >= 0) return idx
+  const normalized = options.map((o) => o.toLowerCase().trim())
+  for (let i = 0; i < headers.length; i++) {
+    if (normalized.includes(headers[i].toLowerCase().trim())) return i
   }
   return -1
 }
@@ -43,7 +43,7 @@ function findCol(headers: string[], options: string[]): number {
 /**
  * Parse CSV text into MemberRow array.
  * Supports comma and semicolon separators, quoted fields, UTF-8 (Finnish ä/ö).
- * Skips empty rows. Expects header row: nimi,sahkoposti,puhelin,rooli,liittynyt
+ * Supports Finnish and English column names. Handles Etunimet+Sukunimi combining.
  */
 export function parseCSV(text: string): MemberRow[] {
   const lines = text.split(/\r?\n/)
@@ -53,23 +53,37 @@ export function parseCSV(text: string): MemberRow[] {
   const firstLine = nonEmpty[0]
   const sep = firstLine.includes(';') ? ';' : ','
 
-  const headers = parseRow(firstLine, sep).map((h) => h.toLowerCase().trim().replace(/^"|"$/g, ''))
+  const headers = parseRow(firstLine, sep).map((h) => h.trim().replace(/^"|"$/g, ''))
+
+  // Separate first/last name columns (for Etunimet + Sukunimi pattern)
+  const colFirstName = findCol(headers, ['Etunimet', 'Etunimi'])
+  const colLastName = findCol(headers, ['Sukunimi'])
+  const colFullName = findCol(headers, ['Nimi', 'Name', 'full_name', 'nimi'])
 
   const col = {
-    nimi: findCol(headers, ['nimi', 'name', 'full_name']),
-    sahkoposti: findCol(headers, ['sahkoposti', 'sähköposti', 'email', 'e-mail']),
-    puhelin: findCol(headers, ['puhelin', 'phone', 'puh']),
-    rooli: findCol(headers, ['rooli', 'role']),
-    liittynyt: findCol(headers, ['liittynyt', 'join_date', 'liittymispäivä']),
+    sahkoposti: findCol(headers, ['Sähköposti', 'sahkoposti', 'Email', 'email', 'S-posti', 'Sähköpostiosoite', 'e-mail']),
+    puhelin: findCol(headers, ['Puhelinnumero', 'Puhelin', 'Phone', 'phone', 'Matkapuhelin', 'GSM', 'gsm', 'puh']),
+    rooli: findCol(headers, ['Rooli', 'rooli', 'Role', 'role']),
+    liittynyt: findCol(headers, ['Liittynyt', 'liittynyt', 'Join_date', 'join_date', 'Liittymispäivä']),
   }
+
+  const useNameCombine = colFirstName >= 0 && colLastName >= 0
 
   const rows: MemberRow[] = []
   for (let i = 1; i < nonEmpty.length; i++) {
     const cells = parseRow(nonEmpty[i], sep)
     const get = (idx: number) => (idx >= 0 ? (cells[idx] ?? '').trim() : '')
-    if (!get(col.nimi) && !get(col.sahkoposti)) continue // skip blank rows
+
+    let nimi: string
+    if (useNameCombine) {
+      nimi = [get(colFirstName), get(colLastName)].filter(Boolean).join(' ')
+    } else {
+      nimi = get(colFullName)
+    }
+
+    if (!nimi && !get(col.sahkoposti)) continue // skip blank rows
     rows.push({
-      nimi: get(col.nimi),
+      nimi,
       sahkoposti: get(col.sahkoposti),
       puhelin: get(col.puhelin),
       rooli: get(col.rooli),

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/browser'
+import { Trash2 } from 'lucide-react'
 
 interface Props {
   bookingId: string
@@ -10,21 +10,21 @@ interface Props {
 
 export default function DeleteBookingButton({ bookingId }: Props) {
   const router = useRouter()
-  const supabase = createClient()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const handleDelete = async () => {
-    if (!confirm('Poistetaanko varaus?')) return
+    if (!confirm('Peruutetaanko varaus?')) return
     setLoading(true)
     setError('')
-    const { error: deleteError } = await supabase.from('bookings').delete().eq('id', bookingId)
+    const res = await fetch(`/api/bookings/${bookingId}`, { method: 'DELETE' })
     setLoading(false)
-    if (deleteError) {
-      setError('Poisto epäonnistui.')
-      return
+    if (res.ok) {
+      router.refresh()
+    } else {
+      const data = (await res.json()) as { error?: string }
+      setError(data.error ?? 'Peruutus epäonnistui.')
     }
-    router.refresh()
   }
 
   return (
@@ -32,9 +32,11 @@ export default function DeleteBookingButton({ bookingId }: Props) {
       <button
         onClick={handleDelete}
         disabled={loading}
-        className="rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+        title="Peruuta varaus"
+        className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
       >
-        {loading ? '...' : 'Poista'}
+        <Trash2 size={12} />
+        {loading ? '...' : 'Peruuta'}
       </button>
       {error && <p className="text-xs text-red-400">{error}</p>}
     </div>

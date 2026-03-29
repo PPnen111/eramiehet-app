@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Trash2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate, formatEuros } from '@/lib/format'
 import { generateReferenceNumber } from '@/lib/utils/reference-number'
@@ -144,11 +145,16 @@ export default function TabPayments({ clubId }: Props) {
   }
 
   const deletePayment = async (id: string) => {
-    if (!confirm('Poistetaanko maksu?')) return
+    if (!confirm('Poistetaanko lasku?')) return
     setBusy(id)
-    await supabase.from('payments').delete().eq('id', id)
+    const res = await fetch(`/api/payments/${id}`, { method: 'DELETE' })
     setBusy(null)
-    void load()
+    if (res.ok) {
+      void load()
+    } else {
+      const data = (await res.json()) as { error?: string }
+      showToast(data.error ?? 'Poisto epäonnistui', 'error')
+    }
   }
 
   const sendInvoice = async (paymentId: string) => {
@@ -693,13 +699,17 @@ export default function TabPayments({ clubId }: Props) {
                     Tulosta PDF
                   </Link>
 
-                  <button
-                    onClick={() => void deletePayment(p.id)}
-                    disabled={isBusy}
-                    className="rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
-                  >
-                    Poista
-                  </button>
+                  {p.status === 'pending' && (
+                    <button
+                      onClick={() => void deletePayment(p.id)}
+                      disabled={isBusy}
+                      title="Poista lasku"
+                      className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                    >
+                      <Trash2 size={12} />
+                      Poista
+                    </button>
+                  )}
                 </div>
               </div>
             )
