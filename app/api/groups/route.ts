@@ -16,7 +16,40 @@ type GroupMemberRow = {
   group_id: string
   profile_id: string
   role: string
-  profiles: { full_name: string | null; email: string | null } | null
+}
+
+type ProfileRow = {
+  id: string
+  full_name: string | null
+  email: string | null
+}
+
+async function fetchMembersWithProfiles(admin: ReturnType<typeof createAdminClient>, groupIds: string[]) {
+  if (groupIds.length === 0) return []
+
+  const { data: members } = await admin
+    .from('club_group_members')
+    .select('id, group_id, profile_id, role')
+    .in('group_id', groupIds)
+
+  const memberRows = (members ?? []) as unknown as GroupMemberRow[]
+  if (memberRows.length === 0) return memberRows
+
+  const profileIds = [...new Set(memberRows.map((m) => m.profile_id))]
+  const { data: profiles } = await admin
+    .from('profiles')
+    .select('id, full_name, email')
+    .in('id', profileIds)
+
+  const profileMap = new Map(
+    ((profiles ?? []) as unknown as ProfileRow[]).map((p) => [p.id, p])
+  )
+
+  return memberRows.map((m) => ({
+    ...m,
+    full_name: profileMap.get(m.profile_id)?.full_name ?? null,
+    email: profileMap.get(m.profile_id)?.email ?? null,
+  }))
 }
 
 export async function GET() {
@@ -58,26 +91,11 @@ export async function GET() {
       .order('name', { ascending: true })
 
     const groupRows = (groups ?? []) as unknown as GroupRow[]
-
-    const { data: members } = await admin
-      .from('club_group_members')
-      .select('id, group_id, profile_id, role, profiles(full_name, email)')
-      .in('group_id', leaderGroupIds)
-      .order('created_at', { ascending: true })
-
-    const memberRows = (members ?? []) as unknown as GroupMemberRow[]
+    const memberRows = await fetchMembersWithProfiles(admin, leaderGroupIds)
 
     const result = groupRows.map((g) => ({
       ...g,
-      members: memberRows
-        .filter((m) => m.group_id === g.id)
-        .map((m) => ({
-          id: m.id,
-          profile_id: m.profile_id,
-          role: m.role,
-          full_name: (m.profiles as unknown as { full_name: string | null } | null)?.full_name ?? null,
-          email: (m.profiles as unknown as { email: string | null } | null)?.email ?? null,
-        })),
+      members: memberRows.filter((m) => m.group_id === g.id),
     }))
 
     return NextResponse.json(result)
@@ -92,29 +110,11 @@ export async function GET() {
 
   const groupRows = (groups ?? []) as unknown as GroupRow[]
   const groupIds = groupRows.map((g) => g.id)
-
-  let memberRows: GroupMemberRow[] = []
-  if (groupIds.length > 0) {
-    const { data: members } = await admin
-      .from('club_group_members')
-      .select('id, group_id, profile_id, role, profiles(full_name, email)')
-      .in('group_id', groupIds)
-      .order('created_at', { ascending: true })
-
-    memberRows = (members ?? []) as unknown as GroupMemberRow[]
-  }
+  const memberRows = await fetchMembersWithProfiles(admin, groupIds)
 
   const result = groupRows.map((g) => ({
     ...g,
-    members: memberRows
-      .filter((m) => m.group_id === g.id)
-      .map((m) => ({
-        id: m.id,
-        profile_id: m.profile_id,
-        role: m.role,
-        full_name: (m.profiles as unknown as { full_name: string | null } | null)?.full_name ?? null,
-        email: (m.profiles as unknown as { email: string | null } | null)?.email ?? null,
-      })),
+    members: memberRows.filter((m) => m.group_id === g.id),
   }))
 
   return NextResponse.json(result)
