@@ -127,8 +127,8 @@ No `any` — use `unknown` as intermediate cast instead.
 
 ## Git
 
-Branch: `claude/local-directory-encoding-8hL2K`
+Branch: `main`
 
 ```bash
-git push -u origin claude/local-directory-encoding-8hL2K
+git push -u origin main
 ```
