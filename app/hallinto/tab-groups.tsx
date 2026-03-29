@@ -379,7 +379,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                                 <select
                                   value={invoiceType}
                                   onChange={(e) => setInvoiceType(e.target.value)}
-                                  className="w-full rounded-lg border border-amber-800 bg-white/10 px-3 py-2 text-sm text-white outline-none"
+                                  className="w-full rounded-lg border border-amber-800 bg-green-950 px-3 py-2 text-sm text-white outline-none"
                                 >
                                   <option value="membership_fee">Jäsenmaksu</option>
                                   <option value="hunting_fee">Metsästysmaksu</option>
@@ -414,7 +414,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                                     type="date"
                                     value={invoiceDue}
                                     onChange={(e) => setInvoiceDue(e.target.value)}
-                                    className="w-full rounded-lg border border-amber-800 bg-white/10 px-3 py-2 text-sm text-white outline-none"
+                                    className="w-full rounded-lg border border-amber-800 bg-green-950 px-3 py-2 text-sm text-white outline-none"
                                   />
                                 </div>
                               </div>
