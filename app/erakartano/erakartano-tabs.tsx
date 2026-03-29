@@ -22,10 +22,28 @@ export type BookingRow = {
   starts_on: string
   ends_on: string
   note: string | null
-  location: string
-  status: 'pending' | 'confirmed'
-  booker_name: string | null
   profiles: { full_name: string | null } | null
+}
+
+// Helpers to parse metadata encoded in note field
+// Format: [kohde:erakartano]\n[varaaja:John]\n[tila:pending]\nOriginal note
+function parseLocation(note: string | null): string {
+  return note?.match(/\[kohde:(\w+)\]/)?.[1] ?? 'erakartano'
+}
+function parseStatus(note: string | null): 'pending' | 'confirmed' {
+  const s = note?.match(/\[tila:(\w+)\]/)?.[1]
+  return s === 'confirmed' ? 'confirmed' : 'pending'
+}
+function parseBookerName(note: string | null): string | null {
+  return note?.match(/\[varaaja:([^\]]+)\]/)?.[1] ?? null
+}
+function parseNote(note: string | null): string | null {
+  const clean = note
+    ?.replace(/\[kohde:[^\]]+\]\n?/g, '')
+    .replace(/\[varaaja:[^\]]+\]\n?/g, '')
+    .replace(/\[tila:[^\]]+\]\n?/g, '')
+    .trim()
+  return clean || null
 }
 
 interface Props {
@@ -56,20 +74,20 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
   const [activeLocation, setActiveLocation] = useState<string>(LOCATIONS[0].value)
   const today = new Date().toISOString().slice(0, 10)
 
-  const locationBookings = bookings.filter((b) => b.location === activeLocation)
+  const locationBookings = bookings.filter((b) => parseLocation(b.note) === activeLocation)
 
   const calendarBookings: CalendarBooking[] = locationBookings.map((b) => ({
     id: b.id,
     starts_on: b.starts_on,
     ends_on: b.ends_on,
-    status: b.status,
+    status: parseStatus(b.note),
   }))
 
   const allForOverlap = bookings.map((b) => ({
     id: b.id,
     starts_on: b.starts_on,
     ends_on: b.ends_on,
-    location: b.location,
+    location: parseLocation(b.note),
   }))
 
   // Group by month
@@ -87,7 +105,7 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
       <div className="flex flex-wrap gap-2">
         {LOCATIONS.map((loc) => {
           const count = bookings.filter(
-            (b) => b.location === loc.value && b.ends_on >= today
+            (b) => parseLocation(b.note) === loc.value && b.ends_on >= today
           ).length
           return (
             <button
@@ -140,9 +158,10 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
                   const isFuture = b.ends_on >= today
                   const canCancel = isFuture && (isAdmin || b.profile_id === userId)
                   const bookerName =
-                    b.booker_name ??
+                    parseBookerName(b.note) ??
                     (b.profiles as unknown as { full_name: string | null } | null)?.full_name
-                  const isPending = b.status === 'pending'
+                  const isPending = parseStatus(b.note) === 'pending'
+                  const cleanNote = parseNote(b.note)
 
                   return (
                     <div
@@ -180,8 +199,8 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
                           {bookerName && (
                             <p className="mt-1 text-sm text-green-300">{bookerName}</p>
                           )}
-                          {b.note && (
-                            <p className="mt-1 text-sm text-green-500">{b.note}</p>
+                          {cleanNote && (
+                            <p className="mt-1 text-sm text-green-500">{cleanNote}</p>
                           )}
                         </div>
                         <div className="flex shrink-0 items-center gap-1.5">
