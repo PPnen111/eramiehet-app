@@ -7,6 +7,7 @@ import { parseCSV, type MemberRow } from '@/lib/utils/csv-parser'
 const VALID_ROLES = ['admin', 'board_member', 'member', '']
 const CSV_TEMPLATE =
   'nimi,sahkoposti,puhelin,rooli,liittynyt\nMatti Meikäläinen,matti@example.com,0401234567,member,2024-01-01'
+const ACCEPTED_FORMATS = '.csv,.xlsx'
 
 type ValidationError = { row: number; field: string; message: string }
 
@@ -68,6 +69,7 @@ export default function CsvImport({ onImportDone }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
   const [fileName, setFileName] = useState('')
+  const [originalFile, setOriginalFile] = useState<File | null>(null)
   const [rows, setRows] = useState<MemberRow[]>([])
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([])
   const [importing, setImporting] = useState(false)
@@ -87,29 +89,51 @@ export default function CsvImport({ onImportDone }: Props) {
   }
 
   const processFile = useCallback((file: File) => {
-    if (!file.name.endsWith('.csv')) {
-      setParseError('Vain .csv-tiedostot ovat tuettuja.')
+    const isXlsx = file.name.toLowerCase().endsWith('.xlsx')
+    const isCsv = file.name.toLowerCase().endsWith('.csv')
+    if (!isXlsx && !isCsv) {
+      setParseError('Vain .csv ja .xlsx -tiedostot ovat tuettuja.')
       return
     }
     setParseError('')
     setResult(null)
     setFileName(file.name)
+    setOriginalFile(file)
 
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const text = e.target?.result
-      if (typeof text !== 'string') return
-      const parsed = parseCSV(text)
-      if (parsed.length === 0) {
-        setParseError('Tiedostossa ei ole dataa tai otsikkorivi puuttuu.')
-        setRows([])
-        setValidationErrors([])
-        return
+    if (isXlsx) {
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const buffer = e.target?.result
+        if (!(buffer instanceof ArrayBuffer)) return
+        const { parseXlsxToMemberRows } = await import('@/lib/utils/xlsx-parser')
+        const parsed = parseXlsxToMemberRows(buffer)
+        if (parsed.length === 0) {
+          setParseError('Tiedostossa ei ole dataa tai otsikkorivi puuttuu.')
+          setRows([])
+          setValidationErrors([])
+          return
+        }
+        setRows(parsed)
+        setValidationErrors(validate(parsed))
       }
-      setRows(parsed)
-      setValidationErrors(validate(parsed))
+      reader.readAsArrayBuffer(file)
+    } else {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const text = e.target?.result
+        if (typeof text !== 'string') return
+        const parsed = parseCSV(text)
+        if (parsed.length === 0) {
+          setParseError('Tiedostossa ei ole dataa tai otsikkorivi puuttuu.')
+          setRows([])
+          setValidationErrors([])
+          return
+        }
+        setRows(parsed)
+        setValidationErrors(validate(parsed))
+      }
+      reader.readAsText(file, 'UTF-8')
     }
-    reader.readAsText(file, 'UTF-8')
   }, [])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,15 +149,16 @@ export default function CsvImport({ onImportDone }: Props) {
   }
 
   const handleImport = async () => {
-    if (rows.length === 0 || validationErrors.length > 0) return
+    if (rows.length === 0 || validationErrors.length > 0 || !originalFile) return
     setImporting(true)
     setResult(null)
 
     try {
+      const formData = new FormData()
+      formData.append('file', originalFile)
       const res = await fetch('/api/import-members', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ members: rows }),
+        body: formData,
       })
       const data = (await res.json()) as ImportResult & { error?: string }
       if (!res.ok) {
@@ -142,6 +167,7 @@ export default function CsvImport({ onImportDone }: Props) {
         setResult(data)
         setRows([])
         setFileName('')
+        setOriginalFile(null)
         setValidationErrors([])
         onImportDone()
       }
@@ -155,6 +181,7 @@ export default function CsvImport({ onImportDone }: Props) {
   const reset = () => {
     setRows([])
     setFileName('')
+    setOriginalFile(null)
     setValidationErrors([])
     setParseError('')
     setResult(null)
@@ -169,7 +196,7 @@ export default function CsvImport({ onImportDone }: Props) {
       {/* Template download */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-green-500">
-          Tuo jäseniä CSV-tiedostosta (nimi, sähköposti, puhelin, rooli, liittynyt)
+          Tuo jäseniä CSV tai Excel -tiedostosta (nimi, sähköposti, puhelin)
         </p>
         <button
           onClick={handleDownloadTemplate}
@@ -195,13 +222,13 @@ export default function CsvImport({ onImportDone }: Props) {
         >
           <Upload size={24} className="text-green-500" />
           <p className="text-sm text-green-300">
-            Vedä CSV-tiedosto tähän tai <span className="underline">valitse tiedosto</span>
+            Vedä tiedosto tähän tai <span className="underline">valitse tiedosto</span>
           </p>
-          <p className="text-xs text-green-600">Vain .csv -tiedostot</p>
+          <p className="text-xs text-green-600">CSV tai Excel (.xlsx)</p>
           <input
             ref={fileInputRef}
             type="file"
-            accept=".csv"
+            accept={ACCEPTED_FORMATS}
             className="hidden"
             onChange={handleFileChange}
           />

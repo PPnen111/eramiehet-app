@@ -156,12 +156,15 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* CSV Import section */}
+      {/* Import section */}
       <section className="rounded-2xl border border-green-800 bg-white/5 p-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
-            Tuo jäseniä CSV:stä
-          </h2>
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+              Tuo jäseniä
+            </h2>
+            <p className="text-xs text-green-600">CSV tai Excel (.xlsx)</p>
+          </div>
           <button
             onClick={() => setImportOpen((v) => !v)}
             className="rounded-lg border border-green-700 px-3 py-1 text-xs font-medium text-green-300 hover:bg-white/5 transition-colors"
