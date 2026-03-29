@@ -7,7 +7,7 @@ export type CalendarBooking = {
   id: string
   starts_on: string
   ends_on: string
-  status: 'pending' | 'confirmed'
+  status: 'pending' | 'confirmed' | 'cancelled'
 }
 
 interface Props {

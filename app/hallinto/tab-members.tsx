@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { Trash2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate } from '@/lib/format'
 import type { AdminMember } from './page'
@@ -71,6 +72,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const supabase = createClient()
 
   const [busy, setBusy] = useState<string | null>(null)
+  const [deletingMember, setDeletingMember] = useState<string | null>(null)
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteLoading, setInviteLoading] = useState(false)
   const [inviteSuccess, setInviteSuccess] = useState('')
@@ -142,6 +144,16 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
     await fetch(`/api/invite/${id}`, { method: 'DELETE' })
     setDeletingInvite(null)
     void loadInvitations()
+  }
+
+  const removeMember = async (id: string, name: string) => {
+    if (!confirm(`Haluatko varmasti poistaa jäsenen ${name} seurasta?`)) return
+    setDeletingMember(id)
+    const res = await fetch(`/api/members/${id}`, { method: 'DELETE' })
+    setDeletingMember(null)
+    if (res.ok) {
+      router.refresh()
+    }
   }
 
   const save = async (id: string, patch: Partial<Pick<AdminMember, 'role' | 'member_status'>>) => {
@@ -331,27 +343,41 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                   <p className="truncate font-medium text-white">{m.full_name ?? '—'}</p>
                   {m.email && <p className="text-xs text-green-500">{m.email}</p>}
                 </div>
-                <div className="flex shrink-0 flex-col gap-1.5">
-                  <select
-                    value={m.role}
-                    disabled={busy === m.id}
-                    onChange={(e) => save(m.id, { role: e.target.value })}
-                    className="rounded-lg border border-green-800 bg-green-950 px-2 py-1 text-xs text-white outline-none focus:border-green-500 disabled:opacity-50"
+                <div className="flex shrink-0 items-start gap-2">
+                  <div className="flex flex-col gap-1.5">
+                    <select
+                      value={m.role}
+                      disabled={busy === m.id || deletingMember === m.id}
+                      onChange={(e) => save(m.id, { role: e.target.value })}
+                      className="rounded-lg border border-green-800 bg-green-950 px-2 py-1 text-xs text-white outline-none focus:border-green-500 disabled:opacity-50"
+                    >
+                      {roleOptions.map((r) => (
+                        <option key={r.value} value={r.value}>{r.label}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={m.member_status}
+                      disabled={busy === m.id || deletingMember === m.id}
+                      onChange={(e) => save(m.id, { member_status: e.target.value })}
+                      className="rounded-lg border border-green-800 bg-green-950 px-2 py-1 text-xs text-white outline-none focus:border-green-500 disabled:opacity-50"
+                    >
+                      {statusOptions.map((s) => (
+                        <option key={s.value} value={s.value}>{s.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <button
+                    onClick={() => void removeMember(m.id, m.full_name ?? '—')}
+                    disabled={deletingMember === m.id || busy === m.id}
+                    title="Poista seurasta"
+                    className="mt-0.5 rounded-md p-1.5 text-stone-500 hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
                   >
-                    {roleOptions.map((r) => (
-                      <option key={r.value} value={r.value}>{r.label}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={m.member_status}
-                    disabled={busy === m.id}
-                    onChange={(e) => save(m.id, { member_status: e.target.value })}
-                    className="rounded-lg border border-green-800 bg-green-950 px-2 py-1 text-xs text-white outline-none focus:border-green-500 disabled:opacity-50"
-                  >
-                    {statusOptions.map((s) => (
-                      <option key={s.value} value={s.value}>{s.label}</option>
-                    ))}
-                  </select>
+                    {deletingMember === m.id ? (
+                      <span className="text-xs">...</span>
+                    ) : (
+                      <Trash2 size={14} />
+                    )}
+                  </button>
                 </div>
               </div>
             </div>

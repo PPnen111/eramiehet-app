@@ -1,8 +1,10 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import DeleteEventDetailButton from './delete-button'
+import RegistrationsManager from './registrations-manager'
 
 const typeLabels: Record<string, string> = {
   talkoot: 'Talkoot',
@@ -41,6 +43,13 @@ type EventRow = {
   ends_at: string | null
 }
 
+type RegistrationRow = {
+  id: string
+  profile_id: string
+  created_at: string
+  profiles: { full_name: string | null } | null
+}
+
 export default async function TapahtumaDetailPage({
   params,
 }: {
@@ -77,6 +86,18 @@ export default async function TapahtumaDetailPage({
   if (event.club_id !== profile.club_id) notFound()
 
   const isAdmin = isBoardOrAbove(profile.role)
+
+  // Fetch registrations (table may not exist — handle gracefully)
+  let registrations: RegistrationRow[] = []
+  if (isAdmin) {
+    const adminClient = createAdminClient()
+    const { data: regsRaw } = await adminClient
+      .from('event_registrations')
+      .select('id, profile_id, created_at, profiles(full_name)')
+      .eq('event_id', event.id)
+      .order('created_at', { ascending: true })
+    registrations = ((regsRaw ?? []) as unknown as RegistrationRow[])
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
@@ -124,6 +145,16 @@ export default async function TapahtumaDetailPage({
 
 
         </div>
+
+        {/* Ilmoittautuneet (admin) */}
+        {isAdmin && (
+          <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+              Ilmoittautuneet ({registrations.length})
+            </h2>
+            <RegistrationsManager eventId={event.id} registrations={registrations} />
+          </div>
+        )}
 
         {/* Admin-toiminnot */}
         {isAdmin && (
