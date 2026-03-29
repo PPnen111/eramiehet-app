@@ -11,7 +11,12 @@ const FROM = 'JahtiPro <noreply@jahtipro.fi>'
 type MemberInfo = {
   profile_id: string
   role: string
-  profiles: { full_name: string | null; email: string | null } | null
+}
+
+type ProfileInfo = {
+  id: string
+  full_name: string | null
+  email: string | null
 }
 
 type RequestBody = {
@@ -69,16 +74,26 @@ export async function POST(
     return NextResponse.json({ error: 'Puuttuvat kentät' }, { status: 400 })
   }
 
-  // Fetch group members with profile info
+  // Fetch group members
   const { data: membersRaw } = await admin
     .from('club_group_members')
-    .select('profile_id, role, profiles(full_name, email)')
+    .select('profile_id, role')
     .eq('group_id', groupId)
 
   const members = (membersRaw ?? []) as unknown as MemberInfo[]
   if (members.length === 0) {
     return NextResponse.json({ created: 0, sent: 0, skipped: 0 })
   }
+
+  // Fetch profiles separately (avoid fragile PostgREST join)
+  const profileIds = members.map((m) => m.profile_id)
+  const { data: profilesRaw } = await admin
+    .from('profiles')
+    .select('id, full_name, email')
+    .in('id', profileIds)
+  const profileMap = new Map(
+    ((profilesRaw ?? []) as unknown as ProfileInfo[]).map((p) => [p.id, p])
+  )
 
   const bulkId = crypto.randomUUID()
   const insertRows = members.map((m) => ({
@@ -125,23 +140,14 @@ export async function POST(
     const adminEmail = (adminProfileRaw as { email: string | null } | null)?.email ?? 'info@eramiehet.fi'
 
     const resend = new Resend(apiKey)
-    const memberMap = new Map(
-      members.map((m) => [
-        m.profile_id,
-        {
-          full_name: (m.profiles as unknown as { full_name: string | null } | null)?.full_name,
-          email: (m.profiles as unknown as { email: string | null } | null)?.email,
-        },
-      ])
-    )
     const sentPaymentIds: string[] = []
 
     for (const row of inserted) {
-      const member = memberMap.get(row.profile_id)
-      if (!member?.email) continue
+      const profile = profileMap.get(row.profile_id)
+      if (!profile?.email) continue
 
       const emailData: InvoiceEmailData = {
-        memberName: member.full_name ?? 'Jäsen',
+        memberName: profile.full_name ?? 'Jäsen',
         clubName,
         description,
         amountCents: amount_cents,
@@ -152,7 +158,7 @@ export async function POST(
 
       const { error: sendError } = await resend.emails.send({
         from: FROM,
-        to: member.email,
+        to: profile.email,
         subject: invoiceSubject(emailData),
         html: invoiceHtml(emailData),
       })

@@ -124,7 +124,7 @@ export default function CreateUserForm({ clubs }: Props) {
                   value={clubId}
                   onChange={(e) => setClubId(e.target.value)}
                   required
-                  className={inputClass}
+                  className="w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
                 >
                   {clubs.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -138,7 +138,7 @@ export default function CreateUserForm({ clubs }: Props) {
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className={inputClass}
+                  className="w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
                 >
                   <option value="member">Jäsen</option>
                   <option value="board_member">Hallitus</option>

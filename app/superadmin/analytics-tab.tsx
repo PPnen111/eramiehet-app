@@ -391,7 +391,7 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
                                 value={draftRole ?? u.role ?? 'member'}
                                 onChange={(e) => setRoleDraft(u.id, e.target.value)}
                                 disabled={isSaving}
-                                className="rounded border border-green-800 bg-white/10 px-2 py-1 text-xs text-white outline-none focus:border-green-500 disabled:opacity-50"
+                                className="rounded border border-green-800 bg-green-950 px-2 py-1 text-xs text-white outline-none focus:border-green-500 disabled:opacity-50"
                               >
                                 <option value="member">Jäsen</option>
                                 <option value="board_member">Johtokunta</option>

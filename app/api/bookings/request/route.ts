@@ -12,7 +12,6 @@ const LOCATION_LABELS: Record<string, string> = {
 }
 
 const FROM = 'JahtiPro <noreply@jahtipro.fi>'
-const APPROVAL_EMAIL = 'jpsimola1@gmail.com'
 
 type ProfileRow = { club_id: string; full_name: string | null }
 
@@ -84,11 +83,25 @@ export async function POST(req: NextRequest) {
   const locationLabel = LOCATION_LABELS[location]
   const bookerDisplay = booker_name ?? profile.full_name ?? user.email ?? 'Tuntematon'
 
+  // Find club admin/board email for approval notification
+  const { data: adminProfileRaw } = await admin
+    .from('profiles')
+    .select('email')
+    .eq('club_id', profile.club_id)
+    .in('role', ['admin', 'board_member'])
+    .not('email', 'is', null)
+    .limit(1)
+    .maybeSingle()
+  const approvalEmail = (adminProfileRaw as { email: string | null } | null)?.email
+  if (!approvalEmail) {
+    return NextResponse.json({ ok: true })
+  }
+
   const resend = new Resend(process.env.RESEND_API_KEY)
   await resend.emails
     .send({
       from: FROM,
-      to: APPROVAL_EMAIL,
+      to: approvalEmail,
       subject: `Uusi varauspyyntö – ${locationLabel} ${starts_on}`,
       html: `
         <h2 style="color:#166534">Uusi varauspyyntö</h2>

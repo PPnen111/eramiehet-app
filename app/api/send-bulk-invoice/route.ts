@@ -38,11 +38,11 @@ export async function POST(req: NextRequest) {
 
   const { data: callerRaw } = await supabase
     .from('profiles')
-    .select('role, active_club_id')
+    .select('role, club_id, active_club_id')
     .eq('id', user.id)
     .single()
 
-  const caller = callerRaw as { role: string | null; active_club_id: string | null } | null
+  const caller = callerRaw as { role: string | null; club_id: string | null; active_club_id: string | null } | null
   if (!isBoardOrAbove(caller?.role)) {
     return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
   }
@@ -75,7 +75,8 @@ export async function POST(req: NextRequest) {
   } = body as RequestBody
 
   // Verify caller belongs to this club
-  if (caller?.active_club_id !== club_id) {
+  const callerClubId = caller?.active_club_id ?? caller?.club_id
+  if (callerClubId !== club_id) {
     return NextResponse.json({ error: 'Ei oikeutta tähän seuraan' }, { status: 403 })
   }
 
