@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const LOCATION_LABELS: Record<string, string> = {
   erakartano: 'Eräkartano',
@@ -57,15 +58,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Profiilia ei löydy' }, { status: 400 })
   }
 
-  const { error: insertError } = await supabase.from('bookings').insert({
+  // Encode location, booker_name and status into note field
+  // (bookings table may not have these columns yet — run supabase/migrations/add_bookings_columns.sql)
+  const encodedNote = [
+    `[kohde:${location}]`,
+    booker_name ? `[varaaja:${booker_name}]` : null,
+    '[tila:pending]',
+    note,
+  ].filter(Boolean).join('\n')
+
+  const admin = createAdminClient()
+  const { error: insertError } = await admin.from('bookings').insert({
     club_id: profile.club_id,
     profile_id: user.id,
-    booker_name,
-    location,
     starts_on,
     ends_on,
-    note,
-    status: 'pending',
+    note: encodedNote,
   })
 
   if (insertError) {

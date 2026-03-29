@@ -90,7 +90,7 @@ export default function BookingForm({ selectedLocation, existingBookings }: Prop
   }
 
   const inputClass =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
+    'w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500 [color-scheme:dark]'
   const labelClass = 'mb-1 block text-sm text-green-300'
 
   if (!open) {

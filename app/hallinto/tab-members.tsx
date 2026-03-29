@@ -76,6 +76,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const [inviteSuccess, setInviteSuccess] = useState('')
   const [inviteError, setInviteError] = useState('')
   const [invitations, setInvitations] = useState<Invitation[]>([])
+  const [deletingInvite, setDeletingInvite] = useState<string | null>(null)
   const [importOpen, setImportOpen] = useState(false)
   const [importLogs, setImportLogs] = useState<ImportLog[]>([])
 
@@ -134,6 +135,13 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
     } finally {
       setInviteLoading(false)
     }
+  }
+
+  const deleteInvite = async (id: string) => {
+    setDeletingInvite(id)
+    await fetch(`/api/invite/${id}`, { method: 'DELETE' })
+    setDeletingInvite(null)
+    void loadInvitations()
   }
 
   const save = async (id: string, patch: Partial<Pick<AdminMember, 'role' | 'member_status'>>) => {
@@ -252,7 +260,23 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                     Lähetetty {formatDate(inv.created_at)}
                   </p>
                 </div>
-                <InviteStatusBadge status={inv.status} expiresAt={inv.expires_at} />
+                <div className="flex items-center gap-2 shrink-0">
+                  <InviteStatusBadge status={inv.status} expiresAt={inv.expires_at} />
+                  <button
+                    onClick={() => deleteInvite(inv.id)}
+                    disabled={deletingInvite === inv.id}
+                    title="Poista kutsu"
+                    className="rounded-md p-1 text-stone-500 hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
+                  >
+                    {deletingInvite === inv.id ? (
+                      <span className="text-xs">...</span>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
             ))}
           </div>

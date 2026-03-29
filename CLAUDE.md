@@ -127,8 +127,18 @@ No `any` — use `unknown` as intermediate cast instead.
 
 ## Git
 
-Branch: `claude/local-directory-encoding-8hL2K`
+Development branch: `claude/local-directory-encoding-8hL2K`
+
+After every completed task, run this sequence to keep jahtipro.fi up to date:
 
 ```bash
-git push -u origin claude/local-directory-encoding-8hL2K
+git add -A
+git commit -m "your commit message"
+git push origin claude/local-directory-encoding-8hL2K
+gh pr create --base main --head claude/local-directory-encoding-8hL2K \
+  --title "Auto-merge" --body "" --fill 2>/dev/null || true
+gh pr merge --merge --auto 2>/dev/null || true
 ```
+
+If `gh` CLI is unavailable, push to claude branch only and remind the user:
+> ⚠️ Muista mergetä main: github.com/PPnen111/eramiehet-app/compare/main...claude/local-directory-encoding-8hL2K

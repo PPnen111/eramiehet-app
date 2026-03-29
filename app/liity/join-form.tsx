@@ -40,30 +40,29 @@ export default function JoinForm({ email, clubId, token }: Props) {
 
     setLoading(true)
 
-    // Create auth user with club metadata
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          club_id: clubId,
-          full_name: fullName,
-        },
-      },
+    // Register via server-side endpoint (creates user + profile + marks invite accepted)
+    const res = await fetch('/api/invite/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, full_name: fullName, password }),
     })
 
-    if (signUpError) {
-      setError('Tilin luominen epäonnistui: ' + signUpError.message)
+    const json = (await res.json()) as { ok?: boolean; error?: string }
+
+    if (!res.ok || !json.ok) {
+      setError(json.error ?? 'Tilin luominen epäonnistui')
       setLoading(false)
       return
     }
 
-    // Mark invitation as accepted
-    await fetch('/api/invite/accept', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
-    })
+    // Sign in with the newly created credentials
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (signInError) {
+      setError('Tili luotu, mutta kirjautuminen epäonnistui. Kokeile kirjautua sisään.')
+      setLoading(false)
+      return
+    }
 
     router.push('/dashboard')
     router.refresh()

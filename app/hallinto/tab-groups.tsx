@@ -511,11 +511,11 @@ function AddMemberSelect({
       <select
         value={selected}
         onChange={(e) => setSelected(e.target.value)}
-        className="min-w-0 flex-1 rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
+        className="min-w-0 flex-1 rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
       >
-        <option value="">Valitse jäsen...</option>
+        <option value="" className="bg-green-950 text-white">Valitse jäsen...</option>
         {members.map((m) => (
-          <option key={m.id} value={m.id}>
+          <option key={m.id} value={m.id} className="bg-green-950 text-white">
             {m.full_name ?? m.email ?? m.id}
           </option>
         ))}

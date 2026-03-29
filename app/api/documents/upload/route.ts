@@ -59,19 +59,17 @@ export async function POST(request: NextRequest) {
     fileSizeLimit: 10 * 1024 * 1024,
   })
 
-  // Debug: list buckets to verify
-  const { data: buckets, error: bucketsError } = await admin.storage.listBuckets()
-  console.error('[documents/upload] buckets:', JSON.stringify(buckets), 'error:', bucketsError)
-
   const { error: storageError } = await admin.storage
     .from('documents')
     .upload(path, buffer, { contentType: file.type })
 
   if (storageError) {
-    console.error('[documents/upload] storage error:', storageError)
+    // List buckets so the error response reveals the actual bucket IDs for debugging
+    const { data: buckets } = await admin.storage.listBuckets()
     return NextResponse.json({
       error: storageError.message,
-      buckets: buckets?.map((b) => b.name) ?? [],
+      hint: 'Check that a bucket with id "documents" exists in Supabase Storage',
+      existingBuckets: buckets?.map((b) => ({ id: b.id, name: b.name })) ?? [],
     }, { status: 500 })
   }
 

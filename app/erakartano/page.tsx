@@ -47,7 +47,7 @@ export default async function ErakartanoPage() {
 
   const { data: raw } = await supabase
     .from('bookings')
-    .select('id, profile_id, starts_on, ends_on, note, location, status, booker_name, profiles(full_name)')
+    .select('id, profile_id, starts_on, ends_on, note, profiles(full_name)')
     .eq('club_id', profile.club_id)
     .order('starts_on', { ascending: true })
 
