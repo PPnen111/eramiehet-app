@@ -39,12 +39,6 @@ type EventRow = {
   type: string
   starts_at: string
   ends_at: string | null
-  location: string | null
-  created_by: string | null
-}
-
-type ProfileRow = {
-  full_name: string | null
 }
 
 export default async function TapahtumaDetailPage({
@@ -71,7 +65,7 @@ export default async function TapahtumaDetailPage({
 
   const { data: raw } = await supabase
     .from('events')
-    .select('id, club_id, title, description, type, starts_at, ends_at, location, created_by')
+    .select('id, club_id, title, description, type, starts_at, ends_at')
     .eq('id', id)
     .single()
 
@@ -83,20 +77,6 @@ export default async function TapahtumaDetailPage({
   if (event.club_id !== profile.club_id) notFound()
 
   const isAdmin = isBoardOrAbove(profile.role)
-
-  // Fetch creator name if available
-  let creatorName: string | null = null
-  if (event.created_by) {
-    const { data: creatorRaw } = await supabase
-      .from('profiles')
-      .select('full_name')
-      .eq('id', event.created_by)
-      .single()
-    if (creatorRaw) {
-      const creator = creatorRaw as unknown as ProfileRow
-      creatorName = creator.full_name
-    }
-  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
@@ -132,14 +112,6 @@ export default async function TapahtumaDetailPage({
             )}
           </div>
 
-          {/* Sijainti */}
-          {event.location && (
-            <div className="flex items-start gap-2 text-sm">
-              <span className="text-green-500">Sijainti</span>
-              <span className="text-green-200">{event.location}</span>
-            </div>
-          )}
-
           {/* Kuvaus */}
           {event.description && (
             <div>
@@ -150,10 +122,7 @@ export default async function TapahtumaDetailPage({
             </div>
           )}
 
-          {/* Luonut */}
-          {creatorName && (
-            <p className="text-xs text-green-600">Luonut: {creatorName}</p>
-          )}
+
         </div>
 
         {/* Admin-toiminnot */}
