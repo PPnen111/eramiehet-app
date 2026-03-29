@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { reminderHtml, reminderSubject, type ReminderEmailData } from '@/lib/emails/reminder'
+import { runConcurrent } from '@/lib/utils/concurrent'
 
 const FROM = 'JahtiPro <noreply@jahtipro.fi>'
 const EMAIL_CONCURRENCY = 10
@@ -27,16 +28,6 @@ function isoDate(offsetDays: number): string {
   return d.toISOString().slice(0, 10)
 }
 
-/** Run async tasks with bounded concurrency */
-async function runConcurrent<T>(
-  items: T[],
-  fn: (item: T) => Promise<void>,
-  concurrency: number
-): Promise<void> {
-  for (let i = 0; i < items.length; i += concurrency) {
-    await Promise.all(items.slice(i, i + concurrency).map(fn))
-  }
-}
 
 export async function POST(req: NextRequest) {
   // Protect with CRON_SECRET

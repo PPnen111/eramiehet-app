@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import { invoiceHtml, invoiceSubject, type InvoiceEmailData } from '@/lib/emails/invoice'
 import { generateReferenceNumber } from '@/lib/utils/reference-number'
+import { runConcurrent } from '@/lib/utils/concurrent'
 
 const FROM = 'JahtiPro <noreply@jahtipro.fi>'
 
@@ -176,9 +177,9 @@ export async function POST(req: NextRequest) {
     const memberMap = new Map(members.map((m) => [m.id, m]))
     const sentPaymentIds: string[] = []
 
-    for (const row of inserted) {
+    await runConcurrent(inserted, async (row) => {
       const member = memberMap.get(row.profile_id)
-      if (!member?.email) continue
+      if (!member?.email) return
 
       const emailData: InvoiceEmailData = {
         memberName: member.full_name ?? 'Jäsen',
@@ -201,7 +202,7 @@ export async function POST(req: NextRequest) {
         sent++
         sentPaymentIds.push(row.id)
       }
-    }
+    }, 10)
 
     // Mark sent_at for successfully sent payments
     if (sentPaymentIds.length > 0) {

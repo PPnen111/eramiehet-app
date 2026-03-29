@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isAdminOrAbove } from '@/lib/auth'
 import { invoiceHtml, invoiceSubject, type InvoiceEmailData } from '@/lib/emails/invoice'
 import { generateReferenceNumber } from '@/lib/utils/reference-number'
+import { runConcurrent } from '@/lib/utils/concurrent'
 
 const FROM = 'JahtiPro <noreply@jahtipro.fi>'
 
@@ -142,9 +143,9 @@ export async function POST(
     const resend = new Resend(apiKey)
     const sentPaymentIds: string[] = []
 
-    for (const row of inserted) {
+    await runConcurrent(inserted, async (row) => {
       const profile = profileMap.get(row.profile_id)
-      if (!profile?.email) continue
+      if (!profile?.email) return
 
       const emailData: InvoiceEmailData = {
         memberName: profile.full_name ?? 'Jäsen',
@@ -167,7 +168,7 @@ export async function POST(
         sent++
         sentPaymentIds.push(row.id)
       }
-    }
+    }, 10)
 
     if (sentPaymentIds.length > 0) {
       await admin
