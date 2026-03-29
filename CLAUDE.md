@@ -135,7 +135,10 @@ After every completed task, run this sequence to keep jahtipro.fi up to date:
 git add -A
 git commit -m "your commit message"
 git push origin claude/local-directory-encoding-8hL2K
-git push origin claude/local-directory-encoding-8hL2K:main
+gh pr create --base main --head claude/local-directory-encoding-8hL2K \
+  --title "Auto-merge" --body "" --fill 2>/dev/null || true
+gh pr merge --merge --auto 2>/dev/null || true
 ```
 
-The last line pushes directly to `main` without switching branches, so jahtipro.fi updates automatically on every change.
+If `gh` CLI is unavailable, push to claude branch only and remind the user:
+> ⚠️ Muista mergetä main: github.com/PPnen111/eramiehet-app/compare/main...claude/local-directory-encoding-8hL2K
