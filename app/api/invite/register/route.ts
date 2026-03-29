@@ -82,6 +82,7 @@ export async function POST(req: NextRequest) {
   const { error: profileError } = await admin.from('profiles').upsert({
     id: newUser.user.id,
     club_id: invitation.club_id,
+    active_club_id: invitation.club_id,
     email: invitation.email,
     full_name: full_name.trim(),
     role: 'member',
