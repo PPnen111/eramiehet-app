@@ -127,8 +127,14 @@ No `any` — use `unknown` as intermediate cast instead.
 
 ## Git
 
-Branch: `main`
+Development branch: `claude/local-directory-encoding-8hL2K`
+
+After every change, run this sequence to keep jahtipro.fi up to date:
 
 ```bash
-git push -u origin main
+git push origin claude/local-directory-encoding-8hL2K
+git checkout main
+git merge claude/local-directory-encoding-8hL2K
+git push origin main
+git checkout claude/local-directory-encoding-8hL2K
 ```
