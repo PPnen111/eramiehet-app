@@ -8,13 +8,15 @@ interface Props {
   clubId: string
   initialPricing: string
   initialInstructions: string
+  initialNotificationEmail: string
 }
 
-export default function EditCabinInfoForm({ clubId, initialPricing, initialInstructions }: Props) {
+export default function EditCabinInfoForm({ clubId, initialPricing, initialInstructions, initialNotificationEmail }: Props) {
   const router = useRouter()
   const supabase = createClient()
   const [pricing, setPricing] = useState(initialPricing)
   const [instructions, setInstructions] = useState(initialInstructions)
+  const [notificationEmail, setNotificationEmail] = useState(initialNotificationEmail)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -28,6 +30,7 @@ export default function EditCabinInfoForm({ clubId, initialPricing, initialInstr
         club_id: clubId,
         pricing_text: pricing || null,
         instructions_text: instructions || null,
+        booking_notification_email: notificationEmail.trim() || null,
       },
       { onConflict: 'club_id' }
     )
@@ -67,6 +70,23 @@ export default function EditCabinInfoForm({ clubId, initialPricing, initialInstr
           placeholder="Kirjoita käyttöohjeet tähän..."
           className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
         />
+      </div>
+
+      <div>
+        <label className="mb-1 block text-sm font-semibold text-green-300">
+          Varauspyyntöjen vastaanottaja
+        </label>
+        <input
+          type="email"
+          value={notificationEmail}
+          onChange={(e) => setNotificationEmail(e.target.value)}
+          placeholder="esim. toiminnanjohtaja@seura.fi"
+          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+        />
+        <p className="mt-1 text-xs text-green-600">
+          Tähän osoitteeseen lähetetään ilmoitus uusista varauspyynnöistä. Jos tyhjä, menee seuran
+          admineille.
+        </p>
       </div>
 
       {error && (
