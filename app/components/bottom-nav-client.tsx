@@ -10,6 +10,7 @@ import {
   CreditCard,
   Settings2,
   UserCircle,
+  Map,
 } from 'lucide-react'
 
 type NavItem = {
@@ -34,6 +35,12 @@ const ADMIN_NAV: NavItem[] = [
   { href: '/profiili', label: 'Profiili', icon: UserCircle },
 ]
 
+const DEV_NAV: NavItem[] = [
+  { href: '/dashboard', label: 'Koti', icon: House },
+  { href: '/kehitys', label: 'Kehitys', icon: Map },
+  { href: '/profiili', label: 'Profiili', icon: UserCircle },
+]
+
 const HIDDEN_PATHS = ['/login', '/rekisteroidy']
 
 export default function BottomNavClient({ role }: { role: string | null }) {
@@ -42,7 +49,11 @@ export default function BottomNavClient({ role }: { role: string | null }) {
   if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null
 
   const items =
-    role === 'superadmin' || role === 'admin' || role === 'board_member' ? ADMIN_NAV : MEMBER_NAV
+    role === 'dev_partner'
+      ? DEV_NAV
+      : role === 'superadmin' || role === 'admin' || role === 'board_member'
+        ? ADMIN_NAV
+        : MEMBER_NAV
 
   return (
     <>
