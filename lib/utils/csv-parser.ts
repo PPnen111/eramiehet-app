@@ -43,9 +43,9 @@ function parseRow(line: string, sep: string): string[] {
 }
 
 function findCol(headers: string[], options: string[]): number {
-  const normalized = options.map((o) => o.toLowerCase().trim())
+  const normalized = options.map((o) => o.normalize('NFC').toLowerCase().trim())
   for (let i = 0; i < headers.length; i++) {
-    if (normalized.includes(headers[i].toLowerCase().trim())) return i
+    if (normalized.includes(headers[i].normalize('NFC').toLowerCase().trim())) return i
   }
   return -1
 }

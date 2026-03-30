@@ -2,9 +2,9 @@ import * as XLSX from 'xlsx'
 import type { MemberRow } from './csv-parser'
 
 function findIdx(headers: string[], aliases: string[]): number {
-  const normalized = aliases.map((a) => a.toLowerCase().trim())
+  const normalized = aliases.map((a) => a.normalize('NFC').toLowerCase().trim())
   for (let i = 0; i < headers.length; i++) {
-    if (normalized.includes((headers[i] ?? '').toLowerCase().trim())) return i
+    if (normalized.includes((headers[i] ?? '').normalize('NFC').toLowerCase().trim())) return i
   }
   return -1
 }
@@ -31,7 +31,7 @@ export function parseXlsxToMemberRows(buffer: ArrayBuffer): MemberRow[] {
   const idxLastName = findIdx(headers, ['Sukunimi'])
   const idxFullName = findIdx(headers, ['Nimi', 'Name', 'full_name'])
   const idxEmail = findIdx(headers, [
-    'Sähköposti', 'Email', 'email', 'S-posti', 'Sähköpostiosoite', 'sahkoposti',
+    'Sähköposti', 'Email', 'email', 'S-posti', 'Sähköpostiosoite', 'sahkoposti', 'e-mail', 'E-posti',
   ])
   const idxPhone = findIdx(headers, [
     'Puhelinnumero', 'Puhelin', 'Phone', 'phone', 'Matkapuhelin', 'GSM', 'gsm',
