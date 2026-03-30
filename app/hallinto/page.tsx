@@ -9,8 +9,10 @@ export type AdminMember = {
   id: string
   full_name: string | null
   email: string | null
+  phone: string | null
   role: string
   member_status: string
+  member_type: string | null
 }
 
 export default async function HallintoPage() {
@@ -40,7 +42,7 @@ export default async function HallintoPage() {
   const admin = createAdminClient()
   const { data: raw } = await admin
     .from('profiles')
-    .select('id, full_name, email, role, member_status')
+    .select('id, full_name, email, phone, role, member_status, member_type')
     .eq('club_id', profile!.club_id)
     .order('full_name', { ascending: true })
 

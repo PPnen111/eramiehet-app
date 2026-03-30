@@ -39,6 +39,16 @@ export function parseXlsxToMemberRows(buffer: ArrayBuffer): MemberRow[] {
   const idxRole = findIdx(headers, ['Rooli', 'Role', 'rooli', 'role'])
   const idxDate = findIdx(headers, ['Liittynyt', 'Join_date', 'join_date', 'Liittymispäivä'])
 
+  const idxMemberNumber = findIdx(headers, ['Jäsennumero', 'jasennumero', 'member_number'])
+  const idxBirthDate = findIdx(headers, ['Syntymäaika', 'syntymaaika', 'birth_date', 'Syntymäpäivä'])
+  const idxMemberType = findIdx(headers, ['Jäsenlaji', 'jasenlaji', 'member_type'])
+  const idxStreetAddress = findIdx(headers, ['Postitusosoite', 'Katuosoite', 'katuosoite', 'street_address', 'Osoite'])
+  const idxPostalCode = findIdx(headers, ['Postinumero', 'postinumero', 'postal_code'])
+  const idxCity = findIdx(headers, ['Postitoimipaikka', 'postitoimipaikka', 'city', 'Kaupunki'])
+  const idxMunicipality = findIdx(headers, ['Kotikunta', 'kotikunta', 'home_municipality', 'Kunta'])
+  const idxBilling = findIdx(headers, ['Laskutustapa', 'laskutustapa', 'billing_method'])
+  const idxAdditional = findIdx(headers, ['Lisätiedot', 'lisatiedot', 'additional_info'])
+
   const useNameCombine = idxFirstName >= 0 && idxLastName >= 0
 
   const rows: MemberRow[] = []
@@ -61,6 +71,15 @@ export function parseXlsxToMemberRows(buffer: ArrayBuffer): MemberRow[] {
       puhelin: get(idxPhone),
       rooli: get(idxRole),
       liittynyt: get(idxDate),
+      jasennumero: get(idxMemberNumber),
+      syntymaaika: get(idxBirthDate),
+      jasenlaji: get(idxMemberType),
+      katuosoite: get(idxStreetAddress),
+      postinumero: get(idxPostalCode),
+      postitoimipaikka: get(idxCity),
+      kotikunta: get(idxMunicipality),
+      laskutustapa: get(idxBilling),
+      lisatiedot: get(idxAdditional),
     })
   }
 
