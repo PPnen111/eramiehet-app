@@ -1,24 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Resend } from 'resend'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
-import { invitationHtml, invitationSubject, type InvitationEmailData } from '@/lib/emails/invitation'
 import { parseCSV } from '@/lib/utils/csv-parser'
 import { parseXlsxToMemberRows } from '@/lib/utils/xlsx-parser'
-
-const FROM = 'JahtiPro <noreply@jahtipro.fi>'
-
-type ImportMember = {
-  full_name: string
-  email: string | null
-  phone: string | null
-}
 
 type ImportResult = {
   nimi: string
   status: 'success' | 'skipped' | 'error'
   note: string
+}
+
+/** Convert Finnish date dd.mm.yyyy → yyyy-mm-dd, or return null */
+function parseFinnishDate(s: string): string | null {
+  const m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/)
+  if (!m) return null
+  return `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`
+}
+
+/** Parse any recognisable date string → yyyy-mm-dd, or null */
+function parseDate(s: string): string | null {
+  if (!s) return null
+  const finnish = parseFinnishDate(s)
+  if (finnish) return finnish
+  const d = new Date(s)
+  if (!isNaN(d.getTime())) return d.toISOString().slice(0, 10)
+  return null
 }
 
 export async function POST(req: NextRequest) {
@@ -30,25 +37,24 @@ export async function POST(req: NextRequest) {
 
   const { data: callerRaw } = await supabase
     .from('profiles')
-    .select('role, active_club_id, full_name')
+    .select('role, active_club_id, club_id, full_name')
     .eq('id', user.id)
     .single()
 
   const caller = callerRaw as {
     role: string | null
     active_club_id: string | null
+    club_id: string | null
     full_name: string | null
   } | null
 
   if (!isBoardOrAbove(caller?.role)) {
     return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
   }
-  if (!caller?.active_club_id) {
+  const clubId = caller?.active_club_id ?? caller?.club_id
+  if (!clubId) {
     return NextResponse.json({ error: 'Ei aktiivista seuraa' }, { status: 400 })
   }
-
-  const clubId = caller.active_club_id
-  const callerName = caller.full_name ?? 'Ylläpitäjä'
 
   let formData: FormData
   try {
@@ -63,7 +69,7 @@ export async function POST(req: NextRequest) {
   }
 
   const fileName = file.name.toLowerCase()
-  let parsedRows: { nimi: string; sahkoposti: string; puhelin: string }[]
+  let parsedRows: ReturnType<typeof parseCSV>
 
   if (fileName.endsWith('.xlsx')) {
     const buffer = await file.arrayBuffer()
@@ -75,100 +81,127 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Tuetut tiedostomuodot: .csv, .xlsx' }, { status: 400 })
   }
 
-  const members: ImportMember[] = parsedRows
-    .filter((r) => r.nimi.trim())
-    .map((r) => ({
-      full_name: r.nimi.trim(),
-      email: r.sahkoposti.trim() || null,
-      phone: r.puhelin.trim() || null,
-    }))
-
-  if (members.length === 0) {
+  // Only import rows with email (required for auth user creation)
+  const rows = parsedRows.filter((r) => r.nimi.trim())
+  if (rows.length === 0) {
     return NextResponse.json({ error: 'Ei jäseniä tuotavaksi' }, { status: 400 })
   }
 
   const admin = createAdminClient()
   const today = new Date().toISOString().slice(0, 10)
 
-  // Fetch club name for emails
-  const { data: clubRaw } = await admin.from('clubs').select('name').eq('id', clubId).single()
-  const clubName = (clubRaw as { name: string } | null)?.name ?? 'Metsästysseura'
-
-  const apiKey = process.env.RESEND_API_KEY
-  const resend = apiKey ? new Resend(apiKey) : null
-
   const results: ImportResult[] = []
 
-  for (const m of members) {
-    const { full_name, email, phone } = m
+  for (const r of rows) {
+    const full_name = r.nimi.trim()
+    const email = r.sahkoposti.trim() || null
 
-    // Check if already a member of this club (by email)
-    if (email) {
-      const { data: existing } = await admin
-        .from('profiles')
-        .select('id')
-        .eq('email', email)
-        .eq('club_id', clubId)
-        .maybeSingle()
-
-      if (existing) {
-        results.push({ nimi: full_name, status: 'skipped', note: 'jo jäsen' })
-        continue
-      }
+    if (!email) {
+      results.push({ nimi: full_name, status: 'skipped', note: 'ei sähköpostia' })
+      continue
     }
 
-    // Insert profile row
-    const profileId = crypto.randomUUID()
-    const { error: profileError } = await admin.from('profiles').insert({
-      id: profileId,
+    // Skip if already a member of this club
+    const { data: existing } = await admin
+      .from('profiles')
+      .select('id')
+      .eq('email', email)
+      .eq('club_id', clubId)
+      .maybeSingle()
+
+    if (existing) {
+      results.push({ nimi: full_name, status: 'skipped', note: 'jo jäsen' })
+      continue
+    }
+
+    // Create auth user — this also ensures profiles_id_fkey is satisfied
+    const { data: newAuthUser, error: authError } = await admin.auth.admin.createUser({
+      email,
+      email_confirm: true,
+      password: crypto.randomUUID(),
+      user_metadata: { full_name },
+    })
+
+    if (authError || !newAuthUser?.user) {
+      // If user already exists in auth.users but not in this club's profiles, try to use them
+      if (authError?.message?.includes('already been registered') || authError?.code === 'email_exists') {
+        // Look up existing auth user via profiles (they may be in another club)
+        const { data: existingProfile } = await admin
+          .from('profiles')
+          .select('id')
+          .eq('email', email)
+          .maybeSingle()
+
+        if (!existingProfile) {
+          results.push({ nimi: full_name, status: 'error', note: authError?.message ?? 'Auth-virhe' })
+          continue
+        }
+
+        // Upsert the profile for this club
+        const { error: profileError } = await admin.from('profiles').upsert({
+          id: existingProfile.id,
+          club_id: clubId,
+          active_club_id: clubId,
+          full_name,
+          email,
+          phone: r.puhelin || null,
+          role: 'member',
+          member_status: 'active',
+          join_date: parseDate(r.liittynyt) ?? today,
+          member_number: r.jasennumero || null,
+          birth_date: parseDate(r.syntymaaika),
+          member_type: r.jasenlaji || null,
+          street_address: r.katuosoite || null,
+          postal_code: r.postinumero || null,
+          city: r.postitoimipaikka || null,
+          home_municipality: r.kotikunta || null,
+          billing_method: r.laskutustapa || null,
+          additional_info: r.lisatiedot || null,
+        })
+
+        if (profileError) {
+          results.push({ nimi: full_name, status: 'error', note: profileError.message })
+        } else {
+          results.push({ nimi: full_name, status: 'success', note: email })
+        }
+        continue
+      }
+
+      results.push({ nimi: full_name, status: 'error', note: authError?.message ?? 'Auth-virhe' })
+      continue
+    }
+
+    const userId = newAuthUser.user.id
+
+    // Upsert profile with all fields
+    const { error: profileError } = await admin.from('profiles').upsert({
+      id: userId,
       club_id: clubId,
       active_club_id: clubId,
       full_name,
       email,
-      phone,
+      phone: r.puhelin || null,
       role: 'member',
       member_status: 'active',
-      join_date: today,
+      join_date: parseDate(r.liittynyt) ?? today,
+      member_number: r.jasennumero || null,
+      birth_date: parseDate(r.syntymaaika),
+      member_type: r.jasenlaji || null,
+      street_address: r.katuosoite || null,
+      postal_code: r.postinumero || null,
+      city: r.postitoimipaikka || null,
+      home_municipality: r.kotikunta || null,
+      billing_method: r.laskutustapa || null,
+      additional_info: r.lisatiedot || null,
     })
 
     if (profileError) {
-      console.error('Profile insert error:', profileError)
+      console.error('Profile upsert error:', profileError)
       results.push({ nimi: full_name, status: 'error', note: profileError.message })
       continue
     }
 
-    // For members with email: create invitation + send email
-    if (email) {
-      const token = crypto.randomUUID()
-      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-
-      await admin.from('invitations').insert({
-        club_id: clubId,
-        email,
-        token,
-        invited_by: user.id,
-        status: 'pending',
-        expires_at: expiresAt,
-      })
-
-      if (resend) {
-        const emailData: InvitationEmailData = {
-          inviterName: callerName,
-          clubName,
-          token,
-        }
-        await resend.emails.send({
-          from: FROM,
-          to: email,
-          subject: invitationSubject(emailData),
-          html: invitationHtml(emailData),
-        })
-      }
-
-      results.push({ nimi: full_name, status: 'success', note: email })
-    } else {
-      results.push({ nimi: full_name, status: 'success', note: 'ei sähköpostia' })
-    }
+    results.push({ nimi: full_name, status: 'success', note: email })
   }
 
   const successCount = results.filter((r) => r.status === 'success').length
@@ -176,13 +209,13 @@ export async function POST(req: NextRequest) {
   const errorCount = results.filter((r) => r.status === 'error').length
   const errorDetails = results.filter((r) => r.status === 'error')
 
-  // Log import to member_imports
+  // Log import
   const { data: logRow } = await admin
     .from('member_imports')
     .insert({
       club_id: clubId,
       imported_by: user.id,
-      total_rows: members.length,
+      total_rows: rows.length,
       success_count: successCount,
       skip_count: skipCount,
       error_count: errorCount,

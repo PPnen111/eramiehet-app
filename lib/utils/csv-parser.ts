@@ -4,6 +4,16 @@ export type MemberRow = {
   puhelin: string
   rooli: string
   liittynyt: string
+  // Extended fields
+  jasennumero: string
+  syntymaaika: string
+  jasenlaji: string
+  katuosoite: string
+  postinumero: string
+  postitoimipaikka: string
+  kotikunta: string
+  laskutustapa: string
+  lisatiedot: string
 }
 
 /** Parse a single CSV line, respecting quoted fields */
@@ -65,6 +75,15 @@ export function parseCSV(text: string): MemberRow[] {
     puhelin: findCol(headers, ['Puhelinnumero', 'Puhelin', 'Phone', 'phone', 'Matkapuhelin', 'GSM', 'gsm', 'puh']),
     rooli: findCol(headers, ['Rooli', 'rooli', 'Role', 'role']),
     liittynyt: findCol(headers, ['Liittynyt', 'liittynyt', 'Join_date', 'join_date', 'Liittymispäivä']),
+    jasennumero: findCol(headers, ['Jäsennumero', 'jasennumero', 'member_number']),
+    syntymaaika: findCol(headers, ['Syntymäaika', 'syntymaaika', 'birth_date', 'Syntymäpäivä']),
+    jasenlaji: findCol(headers, ['Jäsenlaji', 'jasenlaji', 'member_type']),
+    katuosoite: findCol(headers, ['Postitusosoite', 'Katuosoite', 'katuosoite', 'street_address', 'Osoite']),
+    postinumero: findCol(headers, ['Postinumero', 'postinumero', 'postal_code']),
+    postitoimipaikka: findCol(headers, ['Postitoimipaikka', 'postitoimipaikka', 'city', 'Kaupunki']),
+    kotikunta: findCol(headers, ['Kotikunta', 'kotikunta', 'home_municipality', 'Kunta']),
+    laskutustapa: findCol(headers, ['Laskutustapa', 'laskutustapa', 'billing_method']),
+    lisatiedot: findCol(headers, ['Lisätiedot', 'lisatiedot', 'additional_info']),
   }
 
   const useNameCombine = colFirstName >= 0 && colLastName >= 0
@@ -88,6 +107,15 @@ export function parseCSV(text: string): MemberRow[] {
       puhelin: get(col.puhelin),
       rooli: get(col.rooli),
       liittynyt: get(col.liittynyt),
+      jasennumero: get(col.jasennumero),
+      syntymaaika: get(col.syntymaaika),
+      jasenlaji: get(col.jasenlaji),
+      katuosoite: get(col.katuosoite),
+      postinumero: get(col.postinumero),
+      postitoimipaikka: get(col.postitoimipaikka),
+      kotikunta: get(col.kotikunta),
+      laskutustapa: get(col.laskutustapa),
+      lisatiedot: get(col.lisatiedot),
     })
   }
 
