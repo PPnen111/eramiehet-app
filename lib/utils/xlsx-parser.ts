@@ -13,7 +13,9 @@ function findIdx(headers: string[], aliases: string[]): number {
  * Parse an XLSX ArrayBuffer into MemberRow[].
  * Detects columns by Finnish/English header names. Handles Etunimet+Sukunimi combining.
  */
-export function parseXlsxToMemberRows(buffer: ArrayBuffer): MemberRow[] {
+export function parseXlsxToMemberRows(buffer: ArrayBuffer): MemberRow[]
+export function parseXlsxToMemberRows(buffer: ArrayBuffer, debug: true): { rows: MemberRow[]; headers: string[]; headerRowIndex: number }
+export function parseXlsxToMemberRows(buffer: ArrayBuffer, debug?: boolean) {
   const workbook = XLSX.read(new Uint8Array(buffer), { type: 'array' })
   const sheet = workbook.Sheets[workbook.SheetNames[0]]
 
@@ -23,9 +25,25 @@ export function parseXlsxToMemberRows(buffer: ArrayBuffer): MemberRow[] {
     raw: false,
   }) as unknown[][]
 
-  if (rawRows.length < 2) return []
+  if (rawRows.length < 2) return debug ? { rows: [], headers: [], headerRowIndex: -1 } : []
 
-  const headers = (rawRows[0] as unknown[]).map(String)
+  // Try to find the header row: look at first 5 rows, pick the one with most
+  // recognisable column names (handles title rows before the actual header)
+  const knownHeaders = [
+    'sähköposti', 'email', 'nimi', 'sukunimi', 'etunimet', 'etunimi',
+    'puhelinnumero', 'puhelin', 'jäsennumero', 'jäsenlaji', 'postinumero',
+    'postitoimipaikka', 'kotikunta', 'postitusosoite', 'katuosoite',
+  ]
+  let headerRowIndex = 0
+  let bestScore = 0
+  for (let r = 0; r < Math.min(5, rawRows.length); r++) {
+    const score = (rawRows[r] as unknown[]).filter((cell) =>
+      knownHeaders.includes(String(cell ?? '').normalize('NFC').toLowerCase().trim())
+    ).length
+    if (score > bestScore) { bestScore = score; headerRowIndex = r }
+  }
+
+  const headers = (rawRows[headerRowIndex] as unknown[]).map(String)
 
   const idxFirstName = findIdx(headers, ['Etunimet', 'Etunimi'])
   const idxLastName = findIdx(headers, ['Sukunimi'])
@@ -52,7 +70,7 @@ export function parseXlsxToMemberRows(buffer: ArrayBuffer): MemberRow[] {
   const useNameCombine = idxFirstName >= 0 && idxLastName >= 0
 
   const rows: MemberRow[] = []
-  for (let i = 1; i < rawRows.length; i++) {
+  for (let i = headerRowIndex + 1; i < rawRows.length; i++) {
     const cells = rawRows[i] as unknown[]
     const get = (idx: number) => (idx >= 0 ? String(cells[idx] ?? '').trim() : '')
 
@@ -83,5 +101,6 @@ export function parseXlsxToMemberRows(buffer: ArrayBuffer): MemberRow[] {
     })
   }
 
+  if (debug) return { rows, headers, headerRowIndex }
   return rows
 }

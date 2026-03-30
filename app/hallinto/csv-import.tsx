@@ -16,6 +16,7 @@ type ImportResult = {
   skipped: number
   errors: number
   error_details: string[]
+  debug?: { header_row: number; headers: string[] }
 }
 
 interface Props {
@@ -346,6 +347,12 @@ export default function CsvImport({ onImportDone }: Props) {
               </div>
             )}
           </div>
+          {result.debug && (
+            <details className="mt-3 rounded-lg border border-green-900 bg-black/20 px-3 py-2 text-xs text-green-600">
+              <summary className="cursor-pointer">Debug: havaitut sarakkeet (rivi {result.debug.header_row + 1})</summary>
+              <p className="mt-1 break-all text-green-500">{result.debug.headers.join(' | ')}</p>
+            </details>
+          )}
         </div>
       )}
     </div>
