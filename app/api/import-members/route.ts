@@ -71,9 +71,15 @@ export async function POST(req: NextRequest) {
   const fileName = file.name.toLowerCase()
   let parsedRows: ReturnType<typeof parseCSV>
 
+  let debugHeaders: string[] = []
+  let debugHeaderRow = 0
+
   if (fileName.endsWith('.xlsx')) {
     const buffer = await file.arrayBuffer()
-    parsedRows = parseXlsxToMemberRows(buffer)
+    const result = parseXlsxToMemberRows(buffer, true)
+    parsedRows = result.rows
+    debugHeaders = result.headers
+    debugHeaderRow = result.headerRowIndex
   } else if (fileName.endsWith('.csv')) {
     const text = await file.text()
     parsedRows = parseCSV(text)
@@ -232,5 +238,6 @@ export async function POST(req: NextRequest) {
     errors: errorCount,
     import_id: importId,
     error_details: errorDetails.map((e) => `${e.nimi}: ${e.note}`),
+    debug: { header_row: debugHeaderRow, headers: debugHeaders },
   })
 }
