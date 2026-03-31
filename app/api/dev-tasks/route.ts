@@ -11,7 +11,8 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Kirjautuminen vaaditaan' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient()
+  const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -20,8 +21,6 @@ export async function GET() {
   if (!isDevAccess((profile as { role: string } | null)?.role)) {
     return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
   }
-
-  const admin = createAdminClient()
   const { data, error } = await admin
     .from('dev_tasks')
     .select(`
@@ -77,7 +76,8 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Kirjautuminen vaaditaan' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient()
+  const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -97,8 +97,6 @@ export async function POST(req: NextRequest) {
   if (!body.title?.trim()) {
     return NextResponse.json({ error: 'Otsikko vaaditaan' }, { status: 400 })
   }
-
-  const admin = createAdminClient()
   const { data, error } = await admin
     .from('dev_tasks')
     .insert({

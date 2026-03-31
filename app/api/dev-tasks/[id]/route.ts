@@ -15,7 +15,10 @@ export async function PATCH(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Kirjautuminen vaaditaan' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  // Use admin client for profile read — dev_partner may lack club_id, which
+  // causes SSR-client RLS to block the select and return null.
+  const admin = createAdminClient()
+  const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -42,9 +45,11 @@ export async function PATCH(
     return NextResponse.json({ error: 'Ei muutettavia kenttiä' }, { status: 400 })
   }
 
-  const admin = createAdminClient()
   const { error } = await admin.from('dev_tasks').update(patch).eq('id', id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('Dev task update error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
 
   return NextResponse.json({ ok: true })
 }
@@ -58,7 +63,8 @@ export async function DELETE(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Kirjautuminen vaaditaan' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient()
+  const { data: profile } = await admin
     .from('profiles')
     .select('role')
     .eq('id', user.id)
@@ -69,9 +75,11 @@ export async function DELETE(
     return NextResponse.json({ error: 'Vain superadmin voi poistaa tehtäviä' }, { status: 403 })
   }
 
-  const admin = createAdminClient()
   const { error } = await admin.from('dev_tasks').delete().eq('id', id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('Dev task delete error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
 
   return NextResponse.json({ ok: true })
 }
