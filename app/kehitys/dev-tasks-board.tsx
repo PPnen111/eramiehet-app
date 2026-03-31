@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Trash2, MessageSquare, ChevronDown, ChevronUp, Plus, X } from 'lucide-react'
+import { Trash2, MessageSquare, ChevronDown, ChevronUp, Plus, X, ChevronLeft } from 'lucide-react'
+import Link from 'next/link'
 
 export type DevTask = {
   id: string
@@ -228,6 +229,10 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
       <div className="mx-auto max-w-2xl">
+        <Link href="/dashboard" className="mb-4 flex items-center gap-1 text-sm text-green-400 hover:text-green-300">
+          <ChevronLeft className="h-4 w-4" />
+          Takaisin
+        </Link>
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
