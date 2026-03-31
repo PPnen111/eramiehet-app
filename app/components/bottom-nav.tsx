@@ -27,9 +27,12 @@ export default async function BottomNav() {
 
   const profile = profileData as unknown as ProfileRow | null
 
-  // Superadmin role lives directly on profiles
+  // Special roles live directly on profiles (no club required)
   if (profile?.role === 'superadmin') {
     return <BottomNavClient role="superadmin" />
+  }
+  if (profile?.role === 'dev_partner') {
+    return <BottomNavClient role="dev_partner" />
   }
 
   if (!profile?.active_club_id) {

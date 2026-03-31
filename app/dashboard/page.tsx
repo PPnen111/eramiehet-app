@@ -277,6 +277,22 @@ export default async function DashboardPage() {
           </div>
         )}
 
+        {/* Kehityssuunnitelma (superadmin + dev_partner) */}
+        {(profileRole === 'superadmin' || profileRole === 'dev_partner') && (
+          <div className="mb-4">
+            <Link
+              href="/kehitys"
+              className="flex items-center gap-3 rounded-xl border border-green-700 bg-green-900/20 px-4 py-3 hover:bg-green-900/40 transition-colors"
+            >
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-green-200">🗺️ Kehityssuunnitelma</p>
+                <p className="text-xs text-green-500">Yhteinen kehitystyötila</p>
+              </div>
+              <span className="text-xs text-green-400">Avaa →</span>
+            </Link>
+          </div>
+        )}
+
         {/* Onboarding card for new clubs */}
         {role === 'admin' && isNewClub && (
           <div className="mb-4">
