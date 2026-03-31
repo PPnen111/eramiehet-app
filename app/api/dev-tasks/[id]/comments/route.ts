@@ -27,7 +27,7 @@ export async function GET(
 
   const admin = createAdminClient()
   const { data, error } = await admin
-    .from('dev_task_comments')
+    .from('dev_comments')
     .select('id, message, created_at, profiles(full_name)')
     .eq('task_id', id)
     .order('created_at', { ascending: true })
@@ -77,7 +77,7 @@ export async function POST(
   }
 
   const admin = createAdminClient()
-  const { error } = await admin.from('dev_task_comments').insert({
+  const { error } = await admin.from('dev_comments').insert({
     task_id: id,
     profile_id: user.id,
     message: body.message.trim(),

@@ -35,7 +35,7 @@ export default async function KehitysPage() {
   let commentCounts: Record<string, number> = {}
   if (taskIds.length > 0) {
     const { data: counts } = await admin
-      .from('dev_task_comments')
+      .from('dev_comments')
       .select('task_id')
       .in('task_id', taskIds)
     for (const row of (counts ?? []) as { task_id: string }[]) {
