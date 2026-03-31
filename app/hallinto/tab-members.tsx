@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Trash2, Mail } from 'lucide-react'
+import Link from 'next/link'
+import { Trash2, Mail, ExternalLink } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate } from '@/lib/format'
 import type { AdminMember } from './page'
@@ -263,7 +264,12 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-medium text-white">{m.full_name ?? '—'}</p>
+                    <Link
+                      href={`/jasenet/${m.id}`}
+                      className="font-medium text-white hover:text-green-300 transition-colors"
+                    >
+                      {m.full_name ?? '—'}
+                    </Link>
                     <LoginBadge hasLoggedIn={m.has_logged_in} />
                     {invitedMember === m.id && (
                       <span className="text-xs text-green-400">Kutsu lähetetty ✓</span>
@@ -299,6 +305,13 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                     </select>
                   </div>
                   <div className="flex flex-col gap-1.5 mt-0.5">
+                    <Link
+                      href={`/jasenet/${m.id}`}
+                      title="Avaa jäsensivu"
+                      className="rounded-md p-1.5 text-green-600 hover:bg-green-900/40 hover:text-green-300 transition-colors"
+                    >
+                      <ExternalLink size={14} />
+                    </Link>
                     {!m.has_logged_in && m.email && (
                       <button
                         onClick={() => void inviteMember(m.id)}
