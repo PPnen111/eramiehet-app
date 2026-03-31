@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-function isDevAccess(role: string | null | undefined): boolean {
-  return role === 'superadmin' || role === 'dev_partner'
+function isDevAccess(role: string | null | undefined, devAccess: boolean | null | undefined): boolean {
+  return role === 'superadmin' || devAccess === true
 }
 
 export async function GET() {
@@ -14,11 +14,12 @@ export async function GET() {
   const admin = createAdminClient()
   const { data: profile } = await admin
     .from('profiles')
-    .select('role')
+    .select('role, dev_access')
     .eq('id', user.id)
     .single()
 
-  if (!isDevAccess((profile as { role: string } | null)?.role)) {
+  const p = profile as { role: string; dev_access: boolean | null } | null
+  if (!isDevAccess(p?.role, p?.dev_access)) {
     return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
   }
   const { data, error } = await admin
@@ -79,11 +80,12 @@ export async function POST(req: NextRequest) {
   const admin = createAdminClient()
   const { data: profile } = await admin
     .from('profiles')
-    .select('role')
+    .select('role, dev_access')
     .eq('id', user.id)
     .single()
 
-  if (!isDevAccess((profile as { role: string } | null)?.role)) {
+  const p = profile as { role: string; dev_access: boolean | null } | null
+  if (!isDevAccess(p?.role, p?.dev_access)) {
     return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
   }
 

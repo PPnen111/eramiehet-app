@@ -11,14 +11,15 @@ export default async function KehitysPage() {
 
   const { data: profileRaw } = await supabase
     .from('profiles')
-    .select('role, full_name')
+    .select('role, full_name, dev_access')
     .eq('id', user.id)
     .single()
 
-  const profile = profileRaw as { role: string | null; full_name: string | null } | null
+  const profile = profileRaw as { role: string | null; full_name: string | null; dev_access: boolean | null } | null
   const role = profile?.role ?? null
+  const devAccess = profile?.dev_access ?? false
 
-  if (role !== 'superadmin' && role !== 'dev_partner') {
+  if (role !== 'superadmin' && !devAccess) {
     redirect('/dashboard')
   }
 
@@ -67,5 +68,5 @@ export default async function KehitysPage() {
     }
   })
 
-  return <DevTasksBoard initialTasks={tasks} role={role} />
+  return <DevTasksBoard initialTasks={tasks} role={role ?? 'member'} />
 }

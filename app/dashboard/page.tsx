@@ -111,7 +111,7 @@ export default async function DashboardPage() {
   // Fetch profile for display name, active_club_id, and superadmin check
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('full_name, role, active_club_id')
+    .select('full_name, role, active_club_id, dev_access')
     .eq('id', user.id)
     .single()
 
@@ -119,10 +119,12 @@ export default async function DashboardPage() {
     full_name: string | null
     role: string | null
     active_club_id: string | null
+    dev_access: boolean | null
   } | null
 
   const displayName = profile?.full_name ?? user.email
   const profileRole = profile?.role ?? null
+  const devAccess = profile?.dev_access ?? false
   const activeClubId = profile?.active_club_id ?? null
 
   // Fetch club name and created_at for the active club
@@ -277,8 +279,8 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        {/* Kehityssuunnitelma (superadmin + dev_partner) */}
-        {(profileRole === 'superadmin' || profileRole === 'dev_partner') && (
+        {/* Kehityssuunnitelma */}
+        {(profileRole === 'superadmin' || devAccess) && (
           <div className="mb-4">
             <Link
               href="/kehitys"

@@ -9,6 +9,7 @@ type MembershipRow = {
 type ProfileRow = {
   role: string | null
   active_club_id: string | null
+  dev_access: boolean | null
 }
 
 export default async function BottomNav() {
@@ -21,17 +22,19 @@ export default async function BottomNav() {
 
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('role, active_club_id')
+    .select('role, active_club_id, dev_access')
     .eq('id', user.id)
     .single()
 
   const profile = profileData as unknown as ProfileRow | null
 
-  // Special roles live directly on profiles (no club required)
+  // Superadmin gets admin nav
   if (profile?.role === 'superadmin') {
     return <BottomNavClient role="superadmin" />
   }
-  if (profile?.role === 'dev_partner') {
+
+  // dev_access users with no club get the dev-only nav
+  if (profile?.dev_access && !profile?.active_club_id) {
     return <BottomNavClient role="dev_partner" />
   }
 
