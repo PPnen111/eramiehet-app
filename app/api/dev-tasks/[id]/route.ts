@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-function isDevAccess(role: string | null | undefined): boolean {
-  return role === 'superadmin' || role === 'dev_partner'
+function isDevAccess(role: string | null | undefined, devAccess: boolean | null | undefined): boolean {
+  return role === 'superadmin' || devAccess === true
 }
 
 export async function PATCH(
@@ -15,16 +15,17 @@ export async function PATCH(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Kirjautuminen vaaditaan' }, { status: 401 })
 
-  // Use admin client for profile read — dev_partner may lack club_id, which
-  // causes SSR-client RLS to block the select and return null.
+  // Use admin client for profile read — dev_access users may lack club_id,
+  // which causes SSR-client RLS to block the select and return null.
   const admin = createAdminClient()
   const { data: profile } = await admin
     .from('profiles')
-    .select('role')
+    .select('role, dev_access')
     .eq('id', user.id)
     .single()
 
-  if (!isDevAccess((profile as { role: string } | null)?.role)) {
+  const p = profile as { role: string; dev_access: boolean | null } | null
+  if (!isDevAccess(p?.role, p?.dev_access)) {
     return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
   }
 

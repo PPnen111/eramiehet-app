@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-function isDevAccess(role: string | null | undefined): boolean {
-  return role === 'superadmin' || role === 'dev_partner'
+function isDevAccess(role: string | null | undefined, devAccess: boolean | null | undefined): boolean {
+  return role === 'superadmin' || devAccess === true
 }
 
 export async function GET(
@@ -18,13 +18,15 @@ export async function GET(
   const admin = createAdminClient()
   const { data: profile } = await admin
     .from('profiles')
-    .select('role')
+    .select('role, dev_access')
     .eq('id', user.id)
     .single()
 
-  if (!isDevAccess((profile as { role: string } | null)?.role)) {
+  const p = profile as { role: string; dev_access: boolean | null } | null
+  if (!isDevAccess(p?.role, p?.dev_access)) {
     return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
   }
+
   const { data, error } = await admin
     .from('dev_comments')
     .select('id, message, created_at, profiles(full_name)')
@@ -60,13 +62,15 @@ export async function POST(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Kirjautuminen vaaditaan' }, { status: 401 })
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient()
+  const { data: profile } = await admin
     .from('profiles')
-    .select('role')
+    .select('role, dev_access')
     .eq('id', user.id)
     .single()
 
-  if (!isDevAccess((profile as { role: string } | null)?.role)) {
+  const p = profile as { role: string; dev_access: boolean | null } | null
+  if (!isDevAccess(p?.role, p?.dev_access)) {
     return NextResponse.json({ error: 'Ei käyttöoikeutta' }, { status: 403 })
   }
 
@@ -75,7 +79,6 @@ export async function POST(
     return NextResponse.json({ error: 'Viesti vaaditaan' }, { status: 400 })
   }
 
-  const admin = createAdminClient()
   const { error } = await admin.from('dev_comments').insert({
     task_id: id,
     profile_id: user.id,
