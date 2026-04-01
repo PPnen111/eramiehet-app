@@ -1,0 +1,16 @@
+[
+  {
+    "full_name": "Matti Meikäläinen",
+    "email": "matti@example.com",
+    "phone": "0401234567",
+    "member_number": "123",
+    "birth_date": "1980-01-15",
+    "member_type": "01/Jäsen / Varsinainen jäsen",
+    "street_address": "Metsätie 1",
+    "postal_code": "00100",
+    "city": "Helsinki",
+    "home_municipality": "Helsinki",
+    "billing_method": "Sähköpostilasku",
+    "additional_info": null
+  }
+]
