@@ -34,13 +34,17 @@ export async function PATCH(
     description?: string
     status?: string
     priority?: string
+    category?: string
+    sort_order?: number
   }
 
-  const patch: Record<string, string | null> = {}
+  const patch: Record<string, string | null | number> = {}
   if (body.title !== undefined) patch.title = body.title.trim()
   if (body.description !== undefined) patch.description = body.description.trim() || null
   if (body.status !== undefined) patch.status = body.status
   if (body.priority !== undefined) patch.priority = body.priority
+  if (body.category !== undefined) patch.category = body.category
+  if (body.sort_order !== undefined) patch.sort_order = body.sort_order
 
   if (Object.keys(patch).length === 0) {
     return NextResponse.json({ error: 'Ei muutettavia kenttiä' }, { status: 400 })

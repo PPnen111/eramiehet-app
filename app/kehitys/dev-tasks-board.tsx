@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Trash2, MessageSquare, ChevronDown, ChevronUp, Plus, X, ChevronLeft } from 'lucide-react'
+import { Trash2, MessageSquare, Plus, X, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 
 export type DevTask = {
@@ -14,6 +14,7 @@ export type DevTask = {
   created_at: string
   created_by_name: string | null
   comment_count: number
+  sort_order?: number | null
 }
 
 type Comment = {
@@ -23,7 +24,7 @@ type Comment = {
   author_name: string
 }
 
-const STATUS_OPTIONS = [
+const COLUMNS = [
   { value: 'idea', label: '💡 Idea' },
   { value: 'suunnitteilla', label: '📋 Suunnitteilla' },
   { value: 'työn_alla', label: '🔨 Työn alla' },
@@ -54,22 +55,28 @@ const PRIORITY_BAR: Record<string, string> = {
   matala: 'bg-green-500',
 }
 
-const STATUS_BADGE: Record<string, string> = {
-  idea: 'bg-purple-900/60 text-purple-300',
-  suunnitteilla: 'bg-blue-900/60 text-blue-300',
-  'työn_alla': 'bg-yellow-900/60 text-yellow-300',
-  valmis: 'bg-green-900/60 text-green-300',
-  hylätty: 'bg-stone-700 text-stone-400',
+const PRIORITY_DOT: Record<string, string> = {
+  kriittinen: 'bg-red-500',
+  korkea: 'bg-orange-400',
+  normaali: 'bg-yellow-400',
+  matala: 'bg-green-500',
 }
 
-const FILTER_OPTIONS = [
-  { value: 'kaikki', label: 'Kaikki' },
-  { value: 'idea', label: '💡 Idea' },
-  { value: 'suunnitteilla', label: '📋 Suunnitteilla' },
-  { value: 'työn_alla', label: '🔨 Työn alla' },
-  { value: 'valmis', label: '✅ Valmis' },
-  { value: 'hylätty', label: '❌ Hylätty' },
-]
+const COL_HEADER: Record<string, string> = {
+  idea: 'text-purple-300 border-purple-800',
+  suunnitteilla: 'text-blue-300 border-blue-800',
+  työn_alla: 'text-yellow-300 border-yellow-800',
+  valmis: 'text-green-300 border-green-800',
+  hylätty: 'text-stone-400 border-stone-700',
+}
+
+const COL_BG: Record<string, string> = {
+  idea: 'bg-purple-900/10',
+  suunnitteilla: 'bg-blue-900/10',
+  työn_alla: 'bg-yellow-900/10',
+  valmis: 'bg-green-900/10',
+  hylätty: 'bg-stone-800/10',
+}
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -83,13 +90,6 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('fi-FI')
 }
 
-function SavedFeedback({ show }: { show: boolean }) {
-  if (!show) return null
-  return (
-    <span className="text-xs text-green-400 animate-pulse">Tallennettu ✓</span>
-  )
-}
-
 interface Props {
   initialTasks: DevTask[]
   role: string
@@ -97,37 +97,27 @@ interface Props {
 
 export default function DevTasksBoard({ initialTasks, role }: Props) {
   const [tasks, setTasks] = useState<DevTask[]>(initialTasks)
-  const [filter, setFilter] = useState('kaikki')
-  const [expandedId, setExpandedId] = useState<string | null>(null)
-  const [showNewForm, setShowNewForm] = useState(false)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [draggingId, setDraggingId] = useState<string | null>(null)
+  const [dragOverCol, setDragOverCol] = useState<string | null>(null)
   const [savedId, setSavedId] = useState<string | null>(null)
-  const [errorId, setErrorId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [newTaskCol, setNewTaskCol] = useState<string | null>(null)
 
-  // Comments state per task
+  // Comments
   const [comments, setComments] = useState<Record<string, Comment[]>>({})
   const [loadingComments, setLoadingComments] = useState<string | null>(null)
-  const [newComment, setNewComment] = useState<Record<string, string>>({})
-  const [sendingComment, setSendingComment] = useState<string | null>(null)
+  const [newComment, setNewComment] = useState('')
+  const [sendingComment, setSendingComment] = useState(false)
 
-  // New task form
-  const [newTitle, setNewTitle] = useState('')
-  const [newDesc, setNewDesc] = useState('')
-  const [newCategory, setNewCategory] = useState('yleinen')
-  const [newPriority, setNewPriority] = useState('normaali')
-  const [savingNew, setSavingNew] = useState(false)
+  const selectedTask = tasks.find((t) => t.id === selectedId) ?? null
 
   const showSaved = useCallback((id: string) => {
     setSavedId(id)
     setTimeout(() => setSavedId((prev) => (prev === id ? null : prev)), 2000)
   }, [])
 
-  const showError = useCallback((id: string) => {
-    setErrorId(id)
-    setTimeout(() => setErrorId((prev) => (prev === id ? null : prev)), 3000)
-  }, [])
-
-  const patch = useCallback(async (id: string, update: Record<string, string | null>) => {
+  const patch = useCallback(async (id: string, update: Record<string, string | null | number>) => {
     const res = await fetch(`/api/dev-tasks/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -136,10 +126,8 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
     if (res.ok) {
       setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...update } : t)))
       showSaved(id)
-    } else {
-      showError(id)
     }
-  }, [showSaved, showError])
+  }, [showSaved])
 
   const loadComments = useCallback(async (taskId: string) => {
     if (comments[taskId]) return
@@ -152,34 +140,28 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
     setLoadingComments(null)
   }, [comments])
 
-  const toggleExpand = useCallback((id: string) => {
-    setExpandedId((prev) => {
-      const next = prev === id ? null : id
-      if (next) void loadComments(next)
-      return next
-    })
-  }, [loadComments])
+  useEffect(() => {
+    if (selectedId) void loadComments(selectedId)
+  }, [selectedId, loadComments])
 
-  const sendComment = async (taskId: string) => {
-    const msg = newComment[taskId]?.trim()
-    if (!msg) return
-    setSendingComment(taskId)
-    const res = await fetch(`/api/dev-tasks/${taskId}/comments`, {
+  const sendComment = async () => {
+    if (!selectedId || !newComment.trim()) return
+    setSendingComment(true)
+    const res = await fetch(`/api/dev-tasks/${selectedId}/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: msg }),
+      body: JSON.stringify({ message: newComment.trim() }),
     })
-    setSendingComment(null)
+    setSendingComment(false)
     if (res.ok) {
-      setNewComment((prev) => ({ ...prev, [taskId]: '' }))
-      // Reload comments
-      const r2 = await fetch(`/api/dev-tasks/${taskId}/comments`)
+      setNewComment('')
+      const r2 = await fetch(`/api/dev-tasks/${selectedId}/comments`)
       if (r2.ok) {
         const json = (await r2.json()) as { comments: Comment[] }
-        setComments((prev) => ({ ...prev, [taskId]: json.comments }))
+        setComments((prev) => ({ ...prev, [selectedId]: json.comments }))
       }
       setTasks((prev) =>
-        prev.map((t) => (t.id === taskId ? { ...t, comment_count: t.comment_count + 1 } : t))
+        prev.map((t) => (t.id === selectedId ? { ...t, comment_count: t.comment_count + 1 } : t))
       )
     }
   }
@@ -191,183 +173,212 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
     setDeletingId(null)
     if (res.ok) {
       setTasks((prev) => prev.filter((t) => t.id !== id))
-      if (expandedId === id) setExpandedId(null)
+      setSelectedId(null)
     }
   }
 
-  const createTask = async () => {
-    if (!newTitle.trim()) return
-    setSavingNew(true)
-    const res = await fetch('/api/dev-tasks', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: newTitle.trim(),
-        description: newDesc.trim() || undefined,
-        category: newCategory,
-        priority: newPriority,
-      }),
-    })
-    setSavingNew(false)
-    if (res.ok) {
-      // Reload from API
-      const r2 = await fetch('/api/dev-tasks')
-      if (r2.ok) {
-        const json = (await r2.json()) as { tasks: DevTask[] }
-        setTasks(json.tasks)
+  // Drag and drop
+  const handleDragStart = (id: string) => setDraggingId(id)
+  const handleDragEnd = () => { setDraggingId(null); setDragOverCol(null) }
+  const handleDragOver = (e: React.DragEvent, col: string) => {
+    e.preventDefault()
+    setDragOverCol(col)
+  }
+  const handleDrop = (col: string) => {
+    if (draggingId && draggingId !== col) {
+      const task = tasks.find((t) => t.id === draggingId)
+      if (task && task.status !== col) {
+        void patch(draggingId, { status: col })
       }
-      setNewTitle('')
-      setNewDesc('')
-      setNewCategory('yleinen')
-      setNewPriority('normaali')
-      setShowNewForm(false)
     }
+    setDraggingId(null)
+    setDragOverCol(null)
   }
-
-  const filtered = filter === 'kaikki' ? tasks : tasks.filter((t) => t.status === filter)
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
-      <div className="mx-auto max-w-2xl">
-        <Link href="/dashboard" className="mb-4 flex items-center gap-1 text-sm text-green-400 hover:text-green-300">
+    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950">
+      {/* Top bar */}
+      <div className="px-4 pt-6 pb-4">
+        <Link href="/dashboard" className="mb-3 flex items-center gap-1 text-sm text-green-400 hover:text-green-300">
           <ChevronLeft className="h-4 w-4" />
           Takaisin
         </Link>
-        {/* Header */}
-        <div className="mb-6 flex items-start justify-between gap-4">
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">🗺️ Kehityssuunnitelma</h1>
-            <p className="mt-0.5 text-sm text-green-400">Yhteinen kehitystyötila</p>
+            <h1 className="text-xl font-bold text-white">🗺️ Kehityssuunnitelma</h1>
+            <p className="text-xs text-green-500 mt-0.5">{tasks.length} tehtävää</p>
           </div>
           <button
-            onClick={() => setShowNewForm((v) => !v)}
+            onClick={() => setNewTaskCol('idea')}
             className="flex items-center gap-1.5 rounded-xl bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
           >
-            {showNewForm ? <X size={15} /> : <Plus size={15} />}
-            {showNewForm ? 'Sulje' : '+ Uusi tehtävä'}
+            <Plus size={15} />
+            Uusi tehtävä
           </button>
         </div>
-
-        {/* New task form */}
-        {showNewForm && (
-          <div className="mb-6 rounded-2xl border border-green-700 bg-white/5 p-4 space-y-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Uusi tehtävä</h2>
-            <input
-              type="text"
-              placeholder="Otsikko *"
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
-            />
-            <textarea
-              placeholder="Kuvaus"
-              value={newDesc}
-              onChange={(e) => setNewDesc(e.target.value)}
-              rows={3}
-              className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500 resize-none"
-            />
-            <div className="flex gap-3">
-              <select
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                className="flex-1 rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-sm text-white outline-none focus:border-green-500"
-              >
-                {CATEGORY_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>{o.label}</option>
-                ))}
-              </select>
-              <select
-                value={newPriority}
-                onChange={(e) => setNewPriority(e.target.value)}
-                className="flex-1 rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-sm text-white outline-none focus:border-green-500"
-              >
-                {PRIORITY_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>{o.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={createTask}
-                disabled={savingNew || !newTitle.trim()}
-                className="rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
-              >
-                {savingNew ? 'Tallennetaan...' : 'Tallenna'}
-              </button>
-              <button
-                onClick={() => setShowNewForm(false)}
-                className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-400 hover:bg-white/5"
-              >
-                Peruuta
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Filter bar */}
-        <div className="mb-4 flex flex-wrap gap-2">
-          {FILTER_OPTIONS.map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => setFilter(value)}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                filter === value
-                  ? 'bg-green-700 text-white'
-                  : 'border border-green-800 text-green-400 hover:border-green-600 hover:text-green-300'
-              }`}
-            >
-              {label}
-              {value !== 'kaikki' && (
-                <span className={`ml-1.5 rounded-full px-1.5 text-xs ${filter === value ? 'bg-green-600' : 'bg-green-900 text-green-500'}`}>
-                  {tasks.filter((t) => t.status === value).length}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Task list */}
-        {filtered.length === 0 ? (
-          <p className="py-12 text-center text-sm text-green-600">Ei tehtäviä.</p>
-        ) : (
-          <div className="space-y-3">
-            {filtered.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                role={role}
-                expanded={expandedId === task.id}
-                onToggle={() => toggleExpand(task.id)}
-                onPatch={patch}
-                onDelete={deleteTask}
-                deleting={deletingId === task.id}
-                saved={savedId === task.id}
-                error={errorId === task.id}
-                comments={comments[task.id] ?? null}
-                loadingComments={loadingComments === task.id}
-                commentInput={newComment[task.id] ?? ''}
-                onCommentInput={(v) => setNewComment((prev) => ({ ...prev, [task.id]: v }))}
-                onSendComment={() => sendComment(task.id)}
-                sendingComment={sendingComment === task.id}
-              />
-            ))}
-          </div>
-        )}
       </div>
+
+      {/* Kanban board — horizontal scroll */}
+      <div className="overflow-x-auto pb-8">
+        <div className="flex gap-3 px-4" style={{ minWidth: `${COLUMNS.length * 260}px` }}>
+          {COLUMNS.map((col) => {
+            const colTasks = tasks.filter((t) => t.status === col.value)
+            const isOver = dragOverCol === col.value
+            return (
+              <div
+                key={col.value}
+                className={`flex w-60 shrink-0 flex-col rounded-2xl border transition-colors ${
+                  isOver ? 'border-green-500 bg-green-900/20' : `border-green-900/60 ${COL_BG[col.value]}`
+                }`}
+                onDragOver={(e) => handleDragOver(e, col.value)}
+                onDrop={() => handleDrop(col.value)}
+                onDragLeave={() => setDragOverCol(null)}
+              >
+                {/* Column header */}
+                <div className={`flex items-center justify-between border-b px-3 py-2.5 ${COL_HEADER[col.value]}`}>
+                  <span className="text-xs font-semibold">{col.label}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-xs">{colTasks.length}</span>
+                    <button
+                      onClick={() => setNewTaskCol(col.value)}
+                      title="Lisää tähän sarakkeeseen"
+                      className="rounded p-0.5 hover:bg-white/10 transition-colors"
+                    >
+                      <Plus size={13} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Cards */}
+                <div className="flex flex-col gap-2 p-2 flex-1">
+                  {colTasks.map((task) => (
+                    <KanbanCard
+                      key={task.id}
+                      task={task}
+                      selected={selectedId === task.id}
+                      dragging={draggingId === task.id}
+                      saved={savedId === task.id}
+                      onClick={() => setSelectedId((prev) => prev === task.id ? null : task.id)}
+                      onDragStart={() => handleDragStart(task.id)}
+                      onDragEnd={handleDragEnd}
+                    />
+                  ))}
+                  {colTasks.length === 0 && (
+                    <div className="flex-1 rounded-xl border border-dashed border-white/10 flex items-center justify-center min-h-16">
+                      <span className="text-xs text-white/20">Tyhjä</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Slide-in detail panel */}
+      {selectedTask && (
+        <DetailPanel
+          task={selectedTask}
+          role={role}
+          onClose={() => setSelectedId(null)}
+          onPatch={patch}
+          onDelete={deleteTask}
+          deleting={deletingId === selectedTask.id}
+          saved={savedId === selectedTask.id}
+          comments={comments[selectedTask.id] ?? null}
+          loadingComments={loadingComments === selectedTask.id}
+          commentInput={newComment}
+          onCommentInput={setNewComment}
+          onSendComment={sendComment}
+          sendingComment={sendingComment}
+        />
+      )}
+
+      {/* New task modal */}
+      {newTaskCol !== null && (
+        <NewTaskModal
+          defaultStatus={newTaskCol}
+          onClose={() => setNewTaskCol(null)}
+          onCreate={async (data) => {
+            const res = await fetch('/api/dev-tasks', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
+            })
+            if (res.ok) {
+              const r2 = await fetch('/api/dev-tasks')
+              if (r2.ok) {
+                const json = (await r2.json()) as { tasks: DevTask[] }
+                setTasks(json.tasks)
+              }
+              setNewTaskCol(null)
+            }
+          }}
+        />
+      )}
     </main>
   )
 }
 
-interface TaskCardProps {
+// ─── Kanban card ────────────────────────────────────────────────────────────
+
+interface KanbanCardProps {
+  task: DevTask
+  selected: boolean
+  dragging: boolean
+  saved: boolean
+  onClick: () => void
+  onDragStart: () => void
+  onDragEnd: () => void
+}
+
+function KanbanCard({ task, selected, dragging, saved, onClick, onDragStart, onDragEnd }: KanbanCardProps) {
+  const catLabel = CATEGORY_OPTIONS.find((c) => c.value === task.category)?.label ?? task.category
+
+  return (
+    <div
+      draggable
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      onClick={onClick}
+      className={`cursor-pointer rounded-xl border bg-white/5 overflow-hidden transition-all select-none ${
+        selected ? 'border-green-500 bg-green-900/20' : 'border-green-900 hover:border-green-700'
+      } ${dragging ? 'opacity-40' : ''}`}
+    >
+      <div className={`h-1 w-full ${PRIORITY_BAR[task.priority] ?? 'bg-stone-600'}`} />
+      <div className="px-3 py-2.5">
+        <p className="text-sm font-medium text-white leading-snug line-clamp-2">{task.title}</p>
+        <div className="mt-2 flex items-center justify-between gap-1">
+          <span className="rounded bg-white/10 px-1.5 py-0.5 text-xs text-stone-300">{catLabel}</span>
+          <div className="flex items-center gap-2">
+            {task.comment_count > 0 && (
+              <span className="flex items-center gap-0.5 text-xs text-green-600">
+                <MessageSquare size={10} />
+                {task.comment_count}
+              </span>
+            )}
+            {saved && <span className="text-xs text-green-400">✓</span>}
+            <span className={`h-2 w-2 rounded-full ${PRIORITY_DOT[task.priority] ?? 'bg-stone-500'}`} />
+          </div>
+        </div>
+        {task.created_by_name && (
+          <p className="mt-1.5 text-xs text-green-700 truncate">{task.created_by_name}</p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Detail panel ────────────────────────────────────────────────────────────
+
+interface DetailPanelProps {
   task: DevTask
   role: string
-  expanded: boolean
-  onToggle: () => void
-  onPatch: (id: string, update: Record<string, string | null>) => Promise<void>
+  onClose: () => void
+  onPatch: (id: string, update: Record<string, string | null | number>) => Promise<void>
   onDelete: (id: string, title: string) => Promise<void>
   deleting: boolean
   saved: boolean
-  error: boolean
   comments: Comment[] | null
   loadingComments: boolean
   commentInput: string
@@ -376,25 +387,27 @@ interface TaskCardProps {
   sendingComment: boolean
 }
 
-function TaskCard({
-  task, role, expanded, onToggle, onPatch, onDelete, deleting,
-  saved, error, comments, loadingComments, commentInput, onCommentInput, onSendComment, sendingComment,
-}: TaskCardProps) {
+function DetailPanel({
+  task, role, onClose, onPatch, onDelete, deleting, saved,
+  comments, loadingComments, commentInput, onCommentInput, onSendComment, sendingComment,
+}: DetailPanelProps) {
   const [editingTitle, setEditingTitle] = useState(false)
   const [titleValue, setTitleValue] = useState(task.title)
   const [editingDesc, setEditingDesc] = useState(false)
   const [descValue, setDescValue] = useState(task.description ?? '')
-
   const titleRef = useRef<HTMLInputElement>(null)
   const descRef = useRef<HTMLTextAreaElement>(null)
 
+  // Reset edits when task changes
   useEffect(() => {
-    if (editingTitle) titleRef.current?.focus()
-  }, [editingTitle])
+    setTitleValue(task.title)
+    setDescValue(task.description ?? '')
+    setEditingTitle(false)
+    setEditingDesc(false)
+  }, [task.id, task.title, task.description])
 
-  useEffect(() => {
-    if (editingDesc) descRef.current?.focus()
-  }, [editingDesc])
+  useEffect(() => { if (editingTitle) titleRef.current?.focus() }, [editingTitle])
+  useEffect(() => { if (editingDesc) descRef.current?.focus() }, [editingDesc])
 
   const saveTitle = () => {
     setEditingTitle(false)
@@ -413,113 +426,48 @@ function TaskCard({
     }
   }
 
-  const catLabel = CATEGORY_OPTIONS.find((c) => c.value === task.category)?.label ?? task.category
-  const statusLabel = STATUS_OPTIONS.find((s) => s.value === task.status)?.label ?? task.status
-
   return (
-    <div className={`rounded-xl border bg-white/5 overflow-hidden transition-colors ${
-      expanded ? 'border-green-600' : 'border-green-800'
-    }`}>
-      {/* Priority bar */}
-      <div className={`h-1 w-full ${PRIORITY_BAR[task.priority] ?? 'bg-stone-600'}`} />
-
-      {/* Card header — click to expand */}
+    <>
+      {/* Backdrop */}
       <div
-        className="cursor-pointer px-4 py-3"
-        onClick={onToggle}
-      >
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            {/* Title */}
-            <div className="group flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-              {editingTitle ? (
-                <input
-                  ref={titleRef}
-                  value={titleValue}
-                  onChange={(e) => setTitleValue(e.target.value)}
-                  onBlur={saveTitle}
-                  onKeyDown={(e) => { if (e.key === 'Enter') saveTitle() }}
-                  className="w-full rounded border border-green-600 bg-green-900/40 px-2 py-0.5 text-sm font-semibold text-white outline-none"
-                />
-              ) : (
-                <p
-                  className="font-semibold text-white hover:text-green-200 cursor-text"
-                  onClick={() => setEditingTitle(true)}
-                  title="Klikkaa muokataksesi"
-                >
-                  {task.title}
-                </p>
-              )}
-              {saved && <SavedFeedback show />}
-              {error && <span className="text-xs text-red-400">Virhe tallennuksessa</span>}
-            </div>
-
-            {/* Badges */}
-            <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-              <span className="rounded-full bg-stone-700/60 px-2 py-0.5 text-xs text-stone-300">
-                {catLabel}
-              </span>
-              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_BADGE[task.status] ?? 'bg-stone-700 text-stone-400'}`}>
-                {statusLabel}
-              </span>
-            </div>
-
-            {/* Meta */}
-            <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-green-600">
-              {task.created_by_name && <span>{task.created_by_name}</span>}
-              <span>{relativeTime(task.created_at)}</span>
-              {task.comment_count > 0 && (
-                <span className="flex items-center gap-1 text-green-500">
-                  <MessageSquare size={10} />
-                  {task.comment_count}
-                </span>
-              )}
-            </div>
-          </div>
-
-          <button
-            onClick={(e) => { e.stopPropagation(); onToggle() }}
-            className="mt-0.5 shrink-0 text-green-600 hover:text-green-400"
-          >
-            {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Expanded section */}
-      {expanded && (
-        <div className="border-t border-green-800/60 px-4 py-4 space-y-4">
-          {/* Description */}
-          <div>
-            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-green-600">Kuvaus</p>
-            {editingDesc ? (
-              <textarea
-                ref={descRef}
-                value={descValue}
-                onChange={(e) => setDescValue(e.target.value)}
-                onBlur={saveDesc}
-                onKeyDown={(e) => { if (e.key === 'Enter' && e.ctrlKey) saveDesc() }}
-                rows={4}
-                className="w-full rounded-lg border border-green-600 bg-green-900/30 px-3 py-2 text-sm text-white outline-none resize-none"
-                placeholder="Lisää kuvaus..."
+        className="fixed inset-0 z-40 bg-black/40"
+        onClick={onClose}
+      />
+      {/* Panel */}
+      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-gradient-to-b from-green-950 to-stone-950 shadow-2xl border-l border-green-800 overflow-y-auto">
+        {/* Header */}
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-green-800 bg-green-950 px-5 py-4">
+          <div className="flex-1 min-w-0">
+            {editingTitle ? (
+              <input
+                ref={titleRef}
+                value={titleValue}
+                onChange={(e) => setTitleValue(e.target.value)}
+                onBlur={saveTitle}
+                onKeyDown={(e) => { if (e.key === 'Enter') saveTitle() }}
+                className="w-full rounded border border-green-600 bg-green-900/40 px-2 py-1 text-base font-bold text-white outline-none"
               />
             ) : (
-              <div
-                className="group cursor-text rounded-lg border border-transparent px-3 py-2 hover:border-green-800 hover:bg-white/5 transition-colors"
-                onClick={() => setEditingDesc(true)}
+              <h2
+                className="cursor-text text-base font-bold text-white hover:text-green-200 transition-colors"
+                onClick={() => setEditingTitle(true)}
+                title="Klikkaa muokataksesi"
               >
-                {task.description ? (
-                  <p className="whitespace-pre-wrap text-sm text-green-200">{task.description}</p>
-                ) : (
-                  <p className="text-sm text-green-700 italic">Klikkaa lisätäksesi kuvaus...</p>
-                )}
-                <span className="mt-1 block text-xs text-green-700 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Muokkaa
-                </span>
-              </div>
+                {task.title}
+              </h2>
             )}
+            <div className="mt-1 flex items-center gap-2 text-xs text-green-600">
+              {task.created_by_name && <span>{task.created_by_name}</span>}
+              <span>{relativeTime(task.created_at)}</span>
+              {saved && <span className="text-green-400">Tallennettu ✓</span>}
+            </div>
           </div>
+          <button onClick={onClose} className="shrink-0 rounded-lg p-1.5 text-green-500 hover:bg-white/10 hover:text-white transition-colors">
+            <X size={18} />
+          </button>
+        </div>
 
+        <div className="flex-1 space-y-5 px-5 py-4">
           {/* Status + Priority */}
           <div className="flex gap-3">
             <div className="flex-1">
@@ -529,7 +477,7 @@ function TaskCard({
                 onChange={(e) => void onPatch(task.id, { status: e.target.value })}
                 className="w-full rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-sm text-white outline-none focus:border-green-500"
               >
-                {STATUS_OPTIONS.map((o) => (
+                {COLUMNS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
                 ))}
               </select>
@@ -546,6 +494,48 @@ function TaskCard({
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* Category */}
+          <div>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-green-600">Kategoria</p>
+            <select
+              value={task.category}
+              onChange={(e) => void onPatch(task.id, { category: e.target.value })}
+              className="w-full rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-sm text-white outline-none focus:border-green-500"
+            >
+              {CATEGORY_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Description */}
+          <div>
+            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-green-600">Kuvaus</p>
+            {editingDesc ? (
+              <textarea
+                ref={descRef}
+                value={descValue}
+                onChange={(e) => setDescValue(e.target.value)}
+                onBlur={saveDesc}
+                onKeyDown={(e) => { if (e.key === 'Enter' && e.ctrlKey) saveDesc() }}
+                rows={5}
+                className="w-full rounded-lg border border-green-600 bg-green-900/30 px-3 py-2 text-sm text-white outline-none resize-none"
+                placeholder="Lisää kuvaus..."
+              />
+            ) : (
+              <div
+                className="group cursor-text rounded-lg border border-transparent px-3 py-2 hover:border-green-800 hover:bg-white/5 transition-colors"
+                onClick={() => setEditingDesc(true)}
+              >
+                {task.description ? (
+                  <p className="whitespace-pre-wrap text-sm text-green-200">{task.description}</p>
+                ) : (
+                  <p className="text-sm text-green-700 italic">Klikkaa lisätäksesi kuvaus...</p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Comments */}
@@ -570,8 +560,6 @@ function TaskCard({
             ) : (
               <p className="mb-3 text-xs text-green-700 italic">Ei kommentteja vielä.</p>
             )}
-
-            {/* Add comment */}
             <div className="flex gap-2">
               <textarea
                 value={commentInput}
@@ -590,7 +578,7 @@ function TaskCard({
             </div>
           </div>
 
-          {/* Delete (superadmin only) */}
+          {/* Delete */}
           {role === 'superadmin' && (
             <div className="border-t border-green-900/60 pt-3">
               <button
@@ -604,7 +592,110 @@ function TaskCard({
             </div>
           )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
+  )
+}
+
+// ─── New task modal ──────────────────────────────────────────────────────────
+
+interface NewTaskModalProps {
+  defaultStatus: string
+  onClose: () => void
+  onCreate: (data: { title: string; description?: string; category: string; priority: string; status: string }) => Promise<void>
+}
+
+function NewTaskModal({ defaultStatus, onClose, onCreate }: NewTaskModalProps) {
+  const [title, setTitle] = useState('')
+  const [desc, setDesc] = useState('')
+  const [category, setCategory] = useState('yleinen')
+  const [priority, setPriority] = useState('normaali')
+  const [status, setStatus] = useState(defaultStatus)
+  const [saving, setSaving] = useState(false)
+
+  const submit = async () => {
+    if (!title.trim()) return
+    setSaving(true)
+    await onCreate({
+      title: title.trim(),
+      description: desc.trim() || undefined,
+      category,
+      priority,
+      status,
+    })
+    setSaving(false)
+  }
+
+  return (
+    <>
+      <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} />
+      <div className="fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-5 shadow-2xl max-w-md mx-auto space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Uusi tehtävä</h2>
+          <button onClick={onClose} className="text-green-600 hover:text-green-300">
+            <X size={16} />
+          </button>
+        </div>
+        <input
+          type="text"
+          placeholder="Otsikko *"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          autoFocus
+          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+        />
+        <textarea
+          placeholder="Kuvaus"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+          rows={3}
+          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500 resize-none"
+        />
+        <div className="grid grid-cols-3 gap-2">
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-xs text-white outline-none"
+          >
+            {COLUMNS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-xs text-white outline-none"
+          >
+            {CATEGORY_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            className="rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-xs text-white outline-none"
+          >
+            {PRIORITY_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={submit}
+            disabled={saving || !title.trim()}
+            className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+          >
+            {saving ? 'Tallennetaan...' : 'Tallenna'}
+          </button>
+          <button
+            onClick={onClose}
+            className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-400 hover:bg-white/5"
+          >
+            Peruuta
+          </button>
+        </div>
+      </div>
+    </>
   )
 }
