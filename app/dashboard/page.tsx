@@ -23,6 +23,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove, isSuperAdmin } from '@/lib/auth'
 import LogoutButton from './logout-button'
 import LoginTracker from '@/app/components/login-tracker'
+import WelcomeCard from './welcome-card'
 
 type ModuleItem = {
   title: string
@@ -111,7 +112,7 @@ export default async function DashboardPage() {
   // Fetch profile for display name, active_club_id, and superadmin check
   const { data: profileData } = await supabase
     .from('profiles')
-    .select('full_name, role, active_club_id, dev_access')
+    .select('full_name, role, active_club_id, dev_access, member_status')
     .eq('id', user.id)
     .single()
 
@@ -120,12 +121,14 @@ export default async function DashboardPage() {
     role: string | null
     active_club_id: string | null
     dev_access: boolean | null
+    member_status: string | null
   } | null
 
   const displayName = profile?.full_name ?? user.email
   const profileRole = profile?.role ?? null
   const devAccess = profile?.dev_access ?? false
   const activeClubId = profile?.active_club_id ?? null
+  const memberStatus = profile?.member_status ?? null
 
   // Fetch club name and created_at for the active club
   let clubName: string | null = null
@@ -247,6 +250,24 @@ export default async function DashboardPage() {
             <LogoutButton />
           </div>
         </div>
+
+        {/* Pending banner */}
+        {memberStatus === 'pending' && (
+          <div className="mb-6 rounded-2xl border border-yellow-700 bg-yellow-900/20 px-4 py-4">
+            <p className="text-sm font-semibold text-yellow-200">Tervetuloa JahtiProhon! 🎉</p>
+            <p className="mt-1 text-sm text-yellow-300">
+              Tilisi odottaa seuran johtokunnan hyväksyntää. Sinut hyväksytään pian — ei tarvitse tehdä muuta kuin odottaa.
+            </p>
+            <p className="mt-1 text-xs text-yellow-500">
+              Jos sinulla on kiire, ota yhteyttä seuran johtokuntaan.
+            </p>
+          </div>
+        )}
+
+        {/* First-login welcome card (active non-admin members) */}
+        {memberStatus === 'active' && role !== 'admin' && role !== 'board_member' && (
+          <WelcomeCard name={profile?.full_name ?? null} />
+        )}
 
         {/* Pika-toiminnot */}
         <div className="mb-6 flex gap-3">
