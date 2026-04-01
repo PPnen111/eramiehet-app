@@ -117,7 +117,11 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
 
   const approveMember = async (id: string) => {
     setApprovingMember(id)
-    await supabase.from('profiles').update({ member_status: 'active' }).eq('id', id)
+    await fetch(`/api/members/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ member_status: 'active' }),
+    })
     setApprovingMember(null)
     void fetchMembers()
   }
