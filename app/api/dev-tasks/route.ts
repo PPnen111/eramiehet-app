@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
     description?: string
     category?: string
     priority?: string
+    status?: string
   }
 
   if (!body.title?.trim()) {
@@ -106,7 +107,7 @@ export async function POST(req: NextRequest) {
       description: body.description?.trim() || null,
       category: body.category ?? 'yleinen',
       priority: body.priority ?? 'normaali',
-      status: 'idea',
+      status: body.status ?? 'idea',
       created_by: user.id,
     })
     .select('id')
