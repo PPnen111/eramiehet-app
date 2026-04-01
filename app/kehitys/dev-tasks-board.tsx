@@ -27,7 +27,7 @@ type Comment = {
 const COLUMNS = [
   { value: 'idea', label: '💡 Idea' },
   { value: 'suunnitteilla', label: '📋 Suunnitteilla' },
-  { value: 'työn_alla', label: '🔨 Työn alla' },
+  { value: 'tyon_alla', label: '🔨 Työn alla' },
   { value: 'valmis', label: '✅ Valmis' },
   { value: 'hylätty', label: '❌ Hylätty' },
 ]
@@ -65,7 +65,7 @@ const PRIORITY_DOT: Record<string, string> = {
 const COL_HEADER: Record<string, string> = {
   idea: 'text-purple-300 border-purple-800',
   suunnitteilla: 'text-blue-300 border-blue-800',
-  työn_alla: 'text-yellow-300 border-yellow-800',
+  tyon_alla: 'text-yellow-300 border-yellow-800',
   valmis: 'text-green-300 border-green-800',
   hylätty: 'text-stone-400 border-stone-700',
 }
@@ -73,7 +73,7 @@ const COL_HEADER: Record<string, string> = {
 const COL_BG: Record<string, string> = {
   idea: 'bg-purple-900/10',
   suunnitteilla: 'bg-blue-900/10',
-  työn_alla: 'bg-yellow-900/10',
+  tyon_alla: 'bg-yellow-900/10',
   valmis: 'bg-green-900/10',
   hylätty: 'bg-stone-800/10',
 }
