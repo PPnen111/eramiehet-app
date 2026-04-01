@@ -439,14 +439,27 @@ function DetailPanel({
         <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-green-800 bg-green-950 px-5 py-4">
           <div className="flex-1 min-w-0">
             {editingTitle ? (
-              <input
-                ref={titleRef}
-                value={titleValue}
-                onChange={(e) => setTitleValue(e.target.value)}
-                onBlur={saveTitle}
-                onKeyDown={(e) => { if (e.key === 'Enter') saveTitle() }}
-                className="w-full rounded border border-green-600 bg-green-900/40 px-2 py-1 text-base font-bold text-white outline-none"
-              />
+              <div className="flex items-center gap-2">
+                <input
+                  ref={titleRef}
+                  value={titleValue}
+                  onChange={(e) => setTitleValue(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') saveTitle(); if (e.key === 'Escape') { setEditingTitle(false); setTitleValue(task.title) } }}
+                  className="flex-1 rounded border border-green-600 bg-green-900/40 px-2 py-1 text-base font-bold text-white outline-none"
+                />
+                <button
+                  onClick={saveTitle}
+                  className="shrink-0 rounded-lg bg-green-700 px-2.5 py-1 text-xs font-semibold text-white hover:bg-green-600 transition-colors"
+                >
+                  Tallenna
+                </button>
+                <button
+                  onClick={() => { setEditingTitle(false); setTitleValue(task.title) }}
+                  className="shrink-0 rounded-lg border border-green-800 px-2.5 py-1 text-xs text-green-400 hover:bg-white/5 transition-colors"
+                >
+                  Peruuta
+                </button>
+              </div>
             ) : (
               <h2
                 className="cursor-text text-base font-bold text-white hover:text-green-200 transition-colors"
@@ -514,16 +527,31 @@ function DetailPanel({
           <div>
             <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-green-600">Kuvaus</p>
             {editingDesc ? (
-              <textarea
-                ref={descRef}
-                value={descValue}
-                onChange={(e) => setDescValue(e.target.value)}
-                onBlur={saveDesc}
-                onKeyDown={(e) => { if (e.key === 'Enter' && e.ctrlKey) saveDesc() }}
-                rows={5}
-                className="w-full rounded-lg border border-green-600 bg-green-900/30 px-3 py-2 text-sm text-white outline-none resize-none"
-                placeholder="Lisää kuvaus..."
-              />
+              <div className="space-y-2">
+                <textarea
+                  ref={descRef}
+                  value={descValue}
+                  onChange={(e) => setDescValue(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Escape') { setEditingDesc(false); setDescValue(task.description ?? '') } }}
+                  rows={5}
+                  className="w-full rounded-lg border border-green-600 bg-green-900/30 px-3 py-2 text-sm text-white outline-none resize-none"
+                  placeholder="Lisää kuvaus..."
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={saveDesc}
+                    className="rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors"
+                  >
+                    Tallenna
+                  </button>
+                  <button
+                    onClick={() => { setEditingDesc(false); setDescValue(task.description ?? '') }}
+                    className="rounded-lg border border-green-800 px-3 py-1.5 text-xs text-green-400 hover:bg-white/5 transition-colors"
+                  >
+                    Peruuta
+                  </button>
+                </div>
+              </div>
             ) : (
               <div
                 className="group cursor-text rounded-lg border border-transparent px-3 py-2 hover:border-green-800 hover:bg-white/5 transition-colors"
