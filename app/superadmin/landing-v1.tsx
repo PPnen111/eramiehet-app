@@ -172,9 +172,7 @@ export default function LandingV1() {
         <p className="mt-3 text-sm text-green-400">
           Aloita 14 päivän maksuton kokeilu — ei luottokorttia tarvita.
         </p>
-        <button className="mt-6 flex items-center gap-2 rounded-xl bg-green-600 px-8 py-3 font-semibold text-white hover:bg-green-500 mx-auto">
-          Rekisteröi seurasi <ArrowRight size={16} />
-        </button>
+        {/* Rekisteröi seurasi -painike hidden */}
       </div>
 
       {/* Footer */}

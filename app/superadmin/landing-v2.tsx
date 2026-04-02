@@ -239,9 +239,7 @@ export default function LandingV2() {
         <p className="mt-3 text-green-200">
           Aloita 14 päivän maksuton kokeilu. Ei luottokorttia. Ei sitoumusta.
         </p>
-        <button className="mt-7 inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 font-bold text-green-800 shadow-lg hover:bg-green-50">
-          Rekisteröi seurasi nyt <ArrowRight size={18} />
-        </button>
+        {/* Rekisteröi seurasi -painike hidden */}
         <p className="mt-4 text-xs text-green-300">Käyttövalmis 5 minuutissa · Suomalainen tuki</p>
       </div>
 
