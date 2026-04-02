@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { Trash2, Mail, ChevronRight } from 'lucide-react'
+import { Trash2, Mail, ChevronRight, UserPlus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate } from '@/lib/format'
 import type { AdminMember } from './page'
 import type { MemberWithStatus } from '@/app/api/members/route'
 import CsvImport from './csv-import'
 import ExcelImportForm from './excel-import-form'
+import AddMemberForm from './add-member-form'
 
 type ImportLog = {
   id: string
@@ -58,6 +59,8 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const [importMode, setImportMode] = useState<'file' | 'form'>('file')
   const [importLogs, setImportLogs] = useState<ImportLog[]>([])
   const [approvingMember, setApprovingMember] = useState<string | null>(null)
+  const [addMemberOpen, setAddMemberOpen] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
 
   const fetchMembers = useCallback(async () => {
     setLoadingMembers(true)
@@ -230,16 +233,25 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
           <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
             Jäsenet ({loadingMembers ? '…' : rest.length})
           </h2>
-          {notLoggedIn.length > 0 && (
+          <div className="flex items-center gap-2">
+            {notLoggedIn.length > 0 && (
+              <button
+                onClick={() => void inviteAll()}
+                disabled={invitingAll}
+                className="flex items-center gap-1.5 rounded-lg bg-green-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
+              >
+                <Mail size={12} />
+                {invitingAll ? `Lähetetään ${notLoggedIn.length} kutsua...` : `Kutsu kaikki (${notLoggedIn.length})`}
+              </button>
+            )}
             <button
-              onClick={() => void inviteAll()}
-              disabled={invitingAll}
-              className="flex items-center gap-1.5 rounded-lg bg-green-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
+              onClick={() => setAddMemberOpen(true)}
+              className="flex items-center gap-1.5 rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors"
             >
-              <Mail size={12} />
-              {invitingAll ? `Lähetetään ${notLoggedIn.length} kutsua...` : `Kutsu kaikki (${notLoggedIn.length})`}
+              <UserPlus size={12} />
+              Uusi jäsen
             </button>
-          )}
+          </div>
         </div>
 
         {inviteAllResult && (
@@ -302,6 +314,26 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
           )}
         </div>
       </section>
+
+      {/* Add member slide-in form */}
+      {addMemberOpen && (
+        <AddMemberForm
+          onDone={(message) => {
+            setAddMemberOpen(false)
+            void fetchMembers()
+            setToast(message)
+            setTimeout(() => setToast(null), 4000)
+          }}
+          onCancel={() => setAddMemberOpen(false)}
+        />
+      )}
+
+      {/* Success toast */}
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-green-700 px-5 py-3 text-sm font-semibold text-white shadow-lg">
+          {toast}
+        </div>
+      )}
     </div>
   )
 }
