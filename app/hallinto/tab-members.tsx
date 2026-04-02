@@ -8,6 +8,7 @@ import { formatDate } from '@/lib/format'
 import type { AdminMember } from './page'
 import type { MemberWithStatus } from '@/app/api/members/route'
 import CsvImport from './csv-import'
+import ExcelImportForm from './excel-import-form'
 
 type ImportLog = {
   id: string
@@ -54,6 +55,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const [invitingAll, setInvitingAll] = useState(false)
   const [inviteAllResult, setInviteAllResult] = useState<string | null>(null)
   const [importOpen, setImportOpen] = useState(false)
+  const [importMode, setImportMode] = useState<'file' | 'form'>('file')
   const [importLogs, setImportLogs] = useState<ImportLog[]>([])
   const [approvingMember, setApprovingMember] = useState<string | null>(null)
 
@@ -147,8 +149,36 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
           </button>
         </div>
         {importOpen && (
-          <div className="mt-4">
-            <CsvImport onImportDone={() => { void fetchMembers(); void loadImportLogs(); setImportOpen(false) }} />
+          <div className="mt-4 space-y-3">
+            {/* Toggle between file and form import */}
+            <div className="flex gap-1 rounded-lg border border-green-800 bg-white/[0.03] p-1">
+              <button
+                onClick={() => setImportMode('file')}
+                className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                  importMode === 'file'
+                    ? 'bg-green-700 text-white'
+                    : 'text-green-400 hover:bg-white/5'
+                }`}
+              >
+                Tuo tiedostosta
+              </button>
+              <button
+                onClick={() => setImportMode('form')}
+                className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                  importMode === 'form'
+                    ? 'bg-green-700 text-white'
+                    : 'text-green-400 hover:bg-white/5'
+                }`}
+              >
+                Täytä lomake
+              </button>
+            </div>
+
+            {importMode === 'file' ? (
+              <CsvImport onImportDone={() => { void fetchMembers(); void loadImportLogs(); setImportOpen(false) }} />
+            ) : (
+              <ExcelImportForm onImportDone={() => { void fetchMembers(); void loadImportLogs(); setImportOpen(false) }} />
+            )}
           </div>
         )}
         {importLogs.length > 0 && !importOpen && (
