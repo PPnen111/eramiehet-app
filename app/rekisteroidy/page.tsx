@@ -1,51 +1,7 @@
-'use client'
-
-import { useState } from 'react'
 import Link from 'next/link'
-import { Building2, Users, Mail } from 'lucide-react'
-import { createClient } from '@/lib/supabase/browser'
+import { Users, Mail } from 'lucide-react'
 
 export default function RekisteroidyPage() {
-  const supabase = createClient()
-
-  const [clubName, setClubName] = useState('')
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
-
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          club_name: clubName,
-          full_name: fullName,
-        },
-      },
-    })
-
-    if (signUpError) {
-      setError(signUpError.message)
-      setLoading(false)
-      return
-    }
-
-    setSuccess(true)
-    setLoading(false)
-  }
-
-  const inputClass =
-    'w-full rounded-lg border border-green-800 bg-green-950/60 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500'
-  const labelClass = 'mb-1 block text-sm font-medium text-green-300'
-
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-12">
       <div className="mx-auto max-w-3xl">
@@ -59,98 +15,8 @@ export default function RekisteroidyPage() {
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {/* Vaihtoehto A — Uusi seura */}
-          <div className="rounded-2xl border border-green-700 bg-green-950/50 p-6">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-800">
-                <Building2 size={20} className="text-green-200" />
-              </div>
-              <div>
-                <h2 className="font-bold text-white">Uusi seura</h2>
-                <p className="text-xs text-green-500">Rekisteröi metsästysseurasi</p>
-              </div>
-            </div>
-
-            {success ? (
-              <div className="space-y-3 rounded-lg bg-green-900/60 p-4 text-sm text-green-200">
-                <p className="font-semibold">Rekisteröityminen onnistui!</p>
-                <p className="text-green-400 text-xs">
-                  Tarkista sähköpostisi ja vahvista osoitteesi — sen jälkeen voit kirjautua sisään.
-                </p>
-                <Link
-                  href="/login"
-                  className="block w-full rounded-lg bg-green-700 py-2 text-center text-sm font-semibold text-white hover:bg-green-600"
-                >
-                  Siirry kirjautumiseen →
-                </Link>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-3">
-                <div>
-                  <label className={labelClass}>Seuran nimi *</label>
-                  <input
-                    type="text"
-                    value={clubName}
-                    onChange={(e) => setClubName(e.target.value)}
-                    required
-                    placeholder="esim. Koiviston Erämiehet ry"
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className={labelClass}>Oma nimi *</label>
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                    placeholder="Etunimi Sukunimi"
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className={labelClass}>Sähköposti *</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    placeholder="nimi@esimerkki.fi"
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className={labelClass}>Salasana *</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    placeholder="Vähintään 6 merkkiä"
-                    className={inputClass}
-                  />
-                </div>
-
-                {error && (
-                  <p className="rounded-lg bg-red-950/60 p-3 text-sm text-red-300">{error}</p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white transition-opacity hover:bg-green-600 disabled:opacity-50"
-                >
-                  {loading ? 'Rekisteröidään...' : 'Rekisteröi seura'}
-                </button>
-
-                <p className="text-center text-xs text-green-600">
-                  Sinusta tulee seuran ylläpitäjä
-                </p>
-              </form>
-            )}
-          </div>
+        <div className="grid gap-4 sm:grid-cols-1">
+          {/* Vaihtoehto A — Uusi seura — hidden: club registration disabled */}
 
           {/* Vaihtoehto B — Liity olemassa olevaan seuraan */}
           <div className="rounded-2xl border border-green-800 bg-white/[0.03] p-6">

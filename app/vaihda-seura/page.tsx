@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ClubSelector from './club-selector'
-import CreateClubForm from './create-club-form'
 
 type Club = {
   club_id: string
@@ -53,13 +52,13 @@ export default async function VaihdaSeuraPage() {
             Seurat
           </h1>
           <p className="mt-2 text-sm text-green-400">
-            Valitse seura tai luo uusi.
+            Valitse seura.
           </p>
         </div>
 
         <div className="flex flex-col gap-3">
           {clubs.length > 0 && <ClubSelector clubs={clubs} />}
-          <CreateClubForm />
+          {/* CreateClubForm hidden — club creation disabled */}
         </div>
       </div>
     </main>

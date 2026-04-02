@@ -168,13 +168,7 @@ export default function LoginPage() {
             </p>
           )}
 
-          {/* Bottom link */}
-          <p className="mt-4 text-center text-sm text-neutral-500">
-            Haluatko rekisteröidä uuden seuran?{' '}
-            <Link href="/rekisteroidy" className="font-medium text-green-700 hover:text-green-600">
-              Aloita tästä →
-            </Link>
-          </p>
+          {/* Bottom link — hidden: club registration disabled */}
           <p className="mt-3 text-center text-xs text-neutral-400">
             Rekisteröitymällä hyväksyt{' '}
             <Link href="/tietosuoja" className="text-green-700 underline hover:text-green-600">
