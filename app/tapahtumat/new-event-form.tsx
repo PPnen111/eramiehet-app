@@ -9,6 +9,7 @@ const EVENT_TYPES = [
   { value: 'ampumaharjoitus', label: 'Ampumaharjoitus' },
   { value: 'kokous', label: 'Kokous' },
   { value: 'metsastyspaiva', label: 'Metsästyspäivä' },
+  { value: 'kilpailu', label: '🏆 Kilpailu' },
   { value: 'muu', label: 'Muu' },
 ]
 

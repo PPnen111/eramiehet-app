@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Hammer, Target, Users, Crosshair, MoreHorizontal, CalendarX, Plus } from 'lucide-react'
+import { Hammer, Target, Users, Crosshair, Trophy, MoreHorizontal, CalendarX, Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import DeleteEventButton from './delete-event-button'
 
@@ -9,6 +9,7 @@ const typeLabels: Record<string, string> = {
   ampumaharjoitus: 'Ampumaharjoitus',
   kokous: 'Kokous',
   metsastyspaiva: 'Metsästyspäivä',
+  kilpailu: 'Kilpailu',
   muu: 'Muu',
 }
 
@@ -17,6 +18,7 @@ const typeBadge: Record<string, string> = {
   ampumaharjoitus: 'bg-blue-900 text-blue-200',
   kokous: 'bg-purple-900 text-purple-200',
   metsastyspaiva: 'bg-green-900 text-green-200',
+  kilpailu: 'bg-amber-900 text-amber-200',
   muu: 'bg-stone-700 text-stone-300',
 }
 
@@ -25,6 +27,7 @@ const typeIcon: Record<string, React.ComponentType<{ size?: number }>> = {
   ampumaharjoitus: Target,
   kokous: Users,
   metsastyspaiva: Crosshair,
+  kilpailu: Trophy,
   muu: MoreHorizontal,
 }
 

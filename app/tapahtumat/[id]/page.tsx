@@ -11,6 +11,7 @@ const typeLabels: Record<string, string> = {
   ampumaharjoitus: 'Ampumaharjoitus',
   kokous: 'Kokous',
   metsastyspaiva: 'Metsästyspäivä',
+  kilpailu: 'Kilpailu',
   muu: 'Muu',
 }
 
@@ -19,6 +20,7 @@ const typeBadge: Record<string, string> = {
   ampumaharjoitus: 'bg-blue-900 text-blue-200',
   kokous: 'bg-purple-900 text-purple-200',
   metsastyspaiva: 'bg-green-900 text-green-200',
+  kilpailu: 'bg-amber-900 text-amber-200',
   muu: 'bg-stone-700 text-stone-300',
 }
 
