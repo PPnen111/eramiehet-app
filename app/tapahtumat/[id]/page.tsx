@@ -68,11 +68,13 @@ export default async function TapahtumaDetailPage({
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('club_id, role')
+    .select('club_id, active_club_id, role')
     .eq('id', user.id)
     .single()
 
   if (!profile) redirect('/login')
+
+  const clubId = profile.active_club_id ?? profile.club_id
 
   const { data: raw } = await supabase
     .from('events')
@@ -85,7 +87,7 @@ export default async function TapahtumaDetailPage({
   const event = raw as unknown as EventRow
 
   // Verify event belongs to user's club
-  if (event.club_id !== profile.club_id) notFound()
+  if (event.club_id !== clubId) notFound()
 
   const isAdmin = isBoardOrAbove(profile.role)
 
