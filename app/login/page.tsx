@@ -53,7 +53,7 @@ export default function LoginPage() {
     setMessage('')
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: 'https://jahtipro.fi/auth/callback?next=/reset-password',
     })
 
     setLoading(false)
