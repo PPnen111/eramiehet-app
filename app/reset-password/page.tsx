@@ -72,7 +72,7 @@ export default function ResetPasswordPage() {
   }
 
   const inputCls =
-    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700'
+    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700'
   const labelCls = 'mb-1 block text-sm font-medium text-neutral-700'
 
   return (
