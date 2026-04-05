@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 
-type ProfileRow = { club_id: string; role: string }
+type ProfileRow = { club_id: string; active_club_id: string | null; role: string }
 
 export async function DELETE(
   _req: NextRequest,
@@ -19,7 +19,7 @@ export async function DELETE(
 
   const { data: profileRaw } = await supabase
     .from('profiles')
-    .select('club_id, role')
+    .select('club_id, active_club_id, role')
     .eq('id', user.id)
     .single()
 
@@ -27,28 +27,25 @@ export async function DELETE(
   if (!caller || !isBoardOrAbove(caller.role)) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
+  const clubId = caller.active_club_id ?? caller.club_id
 
   const admin = createAdminClient()
 
-  // Fetch payment to check status and club ownership
+  // Verify payment exists and belongs to club
   const { data: paymentRaw } = await admin
     .from('payments')
-    .select('status')
+    .select('id')
     .eq('id', id)
-    .eq('club_id', caller.club_id)
+    .eq('club_id', clubId)
     .maybeSingle()
 
-  const payment = paymentRaw as { status: string } | null
-  if (!payment) return NextResponse.json({ error: 'Laskua ei löydy' }, { status: 404 })
-  if (payment.status !== 'pending') {
-    return NextResponse.json({ error: 'Vain odottavat laskut voidaan poistaa' }, { status: 400 })
-  }
+  if (!paymentRaw) return NextResponse.json({ error: 'Laskua ei löydy' }, { status: 404 })
 
   const { error } = await admin
     .from('payments')
     .delete()
     .eq('id', id)
-    .eq('club_id', caller.club_id)
+    .eq('club_id', clubId)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
