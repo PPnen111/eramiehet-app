@@ -53,7 +53,7 @@ export default function LoginPage() {
     setMessage('')
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://jahtipro.fi/auth/callback?next=/reset-password',
+      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
     })
 
     setLoading(false)
@@ -74,7 +74,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-green-950 to-stone-950 px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">Metsästysseuran sovellus</h1>
+          <h1 className="text-3xl font-bold text-white">JahtiPro</h1>
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-xl">
