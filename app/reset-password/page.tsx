@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-green-950 to-stone-950 px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">Metsästysseuran sovellus</h1>
+          <h1 className="text-3xl font-bold text-white">JahtiPro</h1>
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-xl">
