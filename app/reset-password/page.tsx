@@ -22,12 +22,25 @@ export default function ResetPasswordPage() {
   const [messageType, setMessageType] = useState<'success' | 'error' | 'info'>('info')
 
   useEffect(() => {
-    // Also check hash in effect (SSR safety)
+    // Check hash fragment (implicit flow fallback)
     if (window.location.hash.includes('type=recovery')) {
       setReady(true)
     }
 
-    // Check if recovery session already exists
+    // Handle PKCE code in URL (if redirected here directly instead of via callback)
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (!error) {
+          setReady(true)
+          // Clean URL
+          window.history.replaceState({}, '', '/reset-password')
+        }
+      })
+    }
+
+    // Check if session already exists (set by callback route)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setReady(true)
     })

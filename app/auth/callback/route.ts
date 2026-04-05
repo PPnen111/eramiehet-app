@@ -38,13 +38,12 @@ export async function GET(request: Request) {
     }
   }
 
-  // Handle email confirmation / magic link (PKCE code flow)
+  // Handle PKCE code flow (email confirmation, magic link, recovery)
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      if (type === 'recovery') {
-        return NextResponse.redirect(new URL('/reset-password', origin))
-      }
+      // Redirect to next (defaults to /dashboard)
+      // For recovery: next=/reset-password is passed via redirectTo query param
       return NextResponse.redirect(new URL(next, origin))
     }
   }
