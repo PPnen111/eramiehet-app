@@ -151,19 +151,42 @@ export async function DELETE(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Ei kirjautunut' }, { status: 401 })
 
+  // Cannot delete yourself
+  if (id === user.id) {
+    return NextResponse.json({ error: 'Et voi poistaa itseäsi' }, { status: 403 })
+  }
+
   const caller = await getCallerClub(supabase, user.id)
   if (!caller || !isBoardOrAbove(caller.role)) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
+  const clubId = caller.active_club_id ?? caller.club_id
 
   const admin = createAdminClient()
+
+  // Check that member belongs to this club before deleting
+  const { data: target } = await admin
+    .from('profiles')
+    .select('id, email')
+    .eq('id', id)
+    .eq('club_id', clubId)
+    .single()
+
+  if (!target) {
+    return NextResponse.json({ error: 'Jäsentä ei löydy' }, { status: 404 })
+  }
+
+  // Delete profile
   const { error } = await admin
     .from('profiles')
     .delete()
     .eq('id', id)
-    .eq('club_id', caller.club_id)
+    .eq('club_id', clubId)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Delete auth user (ignore errors — member may not have an auth account)
+  await admin.auth.admin.deleteUser(id).catch(() => {})
 
   return NextResponse.json({ ok: true })
 }
