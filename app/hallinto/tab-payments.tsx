@@ -145,11 +145,12 @@ export default function TabPayments({ clubId }: Props) {
   }
 
   const deletePayment = async (id: string) => {
-    if (!confirm('Poistetaanko lasku?')) return
+    if (!confirm('Haluatko varmasti poistaa laskun?')) return
     setBusy(id)
     const res = await fetch(`/api/payments/${id}`, { method: 'DELETE' })
     setBusy(null)
     if (res.ok) {
+      showToast('Lasku poistettu', 'success')
       void load()
     } else {
       const data = (await res.json()) as { error?: string }
@@ -699,17 +700,15 @@ export default function TabPayments({ clubId }: Props) {
                     Tulosta PDF
                   </Link>
 
-                  {p.status === 'pending' && (
-                    <button
-                      onClick={() => void deletePayment(p.id)}
-                      disabled={isBusy}
-                      title="Poista lasku"
-                      className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
-                    >
-                      <Trash2 size={12} />
-                      Poista
-                    </button>
-                  )}
+                  <button
+                    onClick={() => void deletePayment(p.id)}
+                    disabled={isBusy}
+                    title="Poista lasku"
+                    className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                  >
+                    <Trash2 size={12} />
+                    Poista
+                  </button>
                 </div>
               </div>
             )
