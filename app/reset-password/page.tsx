@@ -4,11 +4,17 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
 
+// Check hash before component mounts so initial state is correct
+function hasRecoveryHash(): boolean {
+  if (typeof window === 'undefined') return false
+  return window.location.hash.includes('type=recovery')
+}
+
 export default function ResetPasswordPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  const [ready, setReady] = useState(false)
+  const [ready, setReady] = useState(hasRecoveryHash)
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
@@ -16,13 +22,12 @@ export default function ResetPasswordPage() {
   const [messageType, setMessageType] = useState<'success' | 'error' | 'info'>('info')
 
   useEffect(() => {
-    // Detect recovery hash fragment immediately (before Supabase processes it)
-    const hash = window.location.hash
-    if (hash.includes('type=recovery')) {
+    // Also check hash in effect (SSR safety)
+    if (window.location.hash.includes('type=recovery')) {
       setReady(true)
     }
 
-    // Check if recovery session already exists (token processed before listener registered)
+    // Check if recovery session already exists
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setReady(true)
     })
