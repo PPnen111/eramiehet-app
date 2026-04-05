@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Check, Bell } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate, formatEuros } from '@/lib/format'
 import { generateReferenceNumber } from '@/lib/utils/reference-number'
@@ -52,10 +52,45 @@ type Toast = {
   type: 'success' | 'error'
 }
 
+type FilterType = 'all' | 'unpaid' | 'overdue' | 'paid'
+
 const statusConfig: Record<string, { label: string; cls: string }> = {
   paid: { label: 'Maksettu', cls: 'bg-green-800 text-green-200' },
   pending: { label: 'Odottaa', cls: 'bg-yellow-900 text-yellow-200' },
   overdue: { label: 'Myöhässä', cls: 'bg-red-900 text-red-200' },
+}
+
+function isOverdue(p: Payment): boolean {
+  if (p.status === 'paid') return false
+  if (!p.due_date) return false
+  return p.due_date < new Date().toISOString().slice(0, 10)
+}
+
+function getEffectiveStatus(p: Payment): string {
+  if (p.status === 'paid') return 'paid'
+  if (isOverdue(p)) return 'overdue'
+  return 'pending'
+}
+
+function sortPayments(payments: Payment[]): Payment[] {
+  return [...payments].sort((a, b) => {
+    const sa = getEffectiveStatus(a)
+    const sb = getEffectiveStatus(b)
+    const order: Record<string, number> = { overdue: 0, pending: 1, paid: 2 }
+    const oa = order[sa] ?? 1
+    const ob = order[sb] ?? 1
+    if (oa !== ob) return oa - ob
+    // Within overdue: oldest due_date first
+    if (sa === 'overdue') {
+      return (a.due_date ?? '').localeCompare(b.due_date ?? '')
+    }
+    // Within pending: nearest due_date first
+    if (sa === 'pending') {
+      return (a.due_date ?? '9999').localeCompare(b.due_date ?? '9999')
+    }
+    // Within paid: most recently paid first
+    return (b.paid_at ?? '').localeCompare(a.paid_at ?? '')
+  })
 }
 
 interface Props {
@@ -72,8 +107,11 @@ export default function TabPayments({ clubId }: Props) {
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
   const [invoiceBusy, setInvoiceBusy] = useState<string | null>(null)
+  const [remindBusy, setRemindBusy] = useState<string | null>(null)
+  const [bulkRemindBusy, setBulkRemindBusy] = useState(false)
   const [toasts, setToasts] = useState<Toast[]>([])
   const [previewPayment, setPreviewPayment] = useState<Payment | null>(null)
+  const [filter, setFilter] = useState<FilterType>('unpaid')
 
   // Form section
   const [formOpen, setFormOpen] = useState(false)
@@ -134,14 +172,49 @@ export default function TabPayments({ clubId }: Props) {
     void load()
   }, [load])
 
-  const markPaid = async (id: string) => {
-    setBusy(id)
-    await supabase
-      .from('payments')
-      .update({ status: 'paid', paid_at: new Date().toISOString() })
-      .eq('id', id)
-    setBusy(null)
-    void load()
+  // Computed counts
+  const overduePayments = useMemo(() => payments.filter((p) => isOverdue(p)), [payments])
+  const pendingPayments = useMemo(
+    () => payments.filter((p) => p.status !== 'paid' && !isOverdue(p)),
+    [payments]
+  )
+  const paidPayments = useMemo(() => payments.filter((p) => p.status === 'paid'), [payments])
+
+  // Filtered + sorted list
+  const filteredPayments = useMemo(() => {
+    let list: Payment[]
+    switch (filter) {
+      case 'unpaid':
+        list = payments.filter((p) => p.status !== 'paid')
+        break
+      case 'overdue':
+        list = overduePayments
+        break
+      case 'paid':
+        list = paidPayments
+        break
+      default:
+        list = payments
+    }
+    return sortPayments(list)
+  }, [payments, filter, overduePayments, paidPayments])
+
+  const quickTogglePaid = async (id: string) => {
+    // Optimistic update
+    setPayments((prev) =>
+      prev.map((p) =>
+        p.id === id ? { ...p, status: 'paid', paid_at: new Date().toISOString() } : p
+      )
+    )
+    const res = await fetch(`/api/payments/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'paid', paid_at: new Date().toISOString() }),
+    })
+    if (!res.ok) {
+      showToast('Virhe merkittäessä maksetuksi', 'error')
+      void load() // Revert on error
+    }
   }
 
   const deletePayment = async (id: string) => {
@@ -181,6 +254,49 @@ export default function TabPayments({ clubId }: Props) {
       showToast('Verkkovirhe. Yritä uudelleen.', 'error')
     }
     setInvoiceBusy(null)
+  }
+
+  const sendReminder = async (paymentId: string) => {
+    setRemindBusy(paymentId)
+    try {
+      const res = await fetch('/api/payments/remind', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payment_ids: [paymentId] }),
+      })
+      if (res.ok) {
+        showToast('Muistutus lähetetty!', 'success')
+      } else {
+        const data = (await res.json()) as { error?: string }
+        showToast(data.error ?? 'Muistutuksen lähetys epäonnistui', 'error')
+      }
+    } catch {
+      showToast('Verkkovirhe.', 'error')
+    }
+    setRemindBusy(null)
+  }
+
+  const sendBulkReminder = async () => {
+    const ids = overduePayments.map((p) => p.id)
+    if (ids.length === 0) return
+    setBulkRemindBusy(true)
+    try {
+      const res = await fetch('/api/payments/remind', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ payment_ids: ids }),
+      })
+      if (res.ok) {
+        const data = (await res.json()) as { sent: number; skipped: number }
+        showToast(`Muistutus lähetetty ${data.sent} jäsenelle`, 'success')
+      } else {
+        const data = (await res.json()) as { error?: string }
+        showToast(data.error ?? 'Lähetys epäonnistui', 'error')
+      }
+    } catch {
+      showToast('Verkkovirhe.', 'error')
+    }
+    setBulkRemindBusy(false)
   }
 
   const resetSingleForm = () => {
@@ -343,6 +459,28 @@ export default function TabPayments({ clubId }: Props) {
         ? 'bg-green-700 text-white'
         : 'bg-white/5 text-green-400 hover:bg-white/10'
     }`
+
+  const filterBtn = (f: FilterType, label: string, count?: number, badgeCls?: string) => (
+    <button
+      onClick={() => setFilter(f)}
+      className={`relative rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+        filter === f
+          ? 'bg-green-700 text-white'
+          : 'bg-white/5 text-green-400 hover:bg-white/10'
+      }`}
+    >
+      {label}
+      {count !== undefined && count > 0 && (
+        <span
+          className={`ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold ${
+            badgeCls ?? 'bg-green-600 text-white'
+          }`}
+        >
+          {count}
+        </span>
+      )}
+    </button>
+  )
 
   return (
     <div className="space-y-5">
@@ -628,87 +766,146 @@ export default function TabPayments({ clubId }: Props) {
         </div>
       )}
 
+      {/* ── Filter bar ── */}
+      <div className="flex flex-wrap items-center gap-2">
+        {filterBtn('unpaid', 'Maksamattomat', pendingPayments.length + overduePayments.length)}
+        {filterBtn('overdue', 'Myöhässä', overduePayments.length, 'bg-red-600 text-white')}
+        {filterBtn('paid', 'Maksettu', paidPayments.length)}
+        {filterBtn('all', 'Kaikki', payments.length)}
+
+        {/* Bulk remind button */}
+        {overduePayments.length > 0 && (
+          <button
+            onClick={() => void sendBulkReminder()}
+            disabled={bulkRemindBusy}
+            className="ml-auto flex items-center gap-1.5 rounded-lg bg-red-900/60 px-3 py-1.5 text-xs font-semibold text-red-200 hover:bg-red-800/60 disabled:opacity-50 transition-colors"
+          >
+            <Bell size={12} />
+            {bulkRemindBusy
+              ? 'Lähetetään...'
+              : `Muistutus kaikille myöhässä (${overduePayments.length})`}
+          </button>
+        )}
+      </div>
+
       {/* ── Payment list ── */}
-      {payments.length === 0 ? (
-        <p className="text-sm text-green-600">Ei maksuja.</p>
+      {filteredPayments.length === 0 ? (
+        <p className="text-sm text-green-600">
+          {filter === 'all' ? 'Ei maksuja.' : 'Ei maksuja tässä näkymässä.'}
+        </p>
       ) : (
         <div className="space-y-2">
-          {payments.map((p) => {
-            const cfg = statusConfig[p.status] ?? statusConfig.pending
+          {filteredPayments.map((p) => {
+            const effectiveStatus = getEffectiveStatus(p)
+            const cfg = statusConfig[effectiveStatus] ?? statusConfig.pending
             const profileName = (
               p.profiles as unknown as { full_name: string | null } | null
             )?.full_name
             const isBusy = busy === p.id || invoiceBusy === p.id
+            const isPaid = p.status === 'paid'
+            const isOD = effectiveStatus === 'overdue'
 
             return (
-              <div key={p.id} className="rounded-xl border border-green-800 bg-white/5 p-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="truncate font-medium text-white">{p.description}</p>
-                    <p className="text-xs text-green-400">
-                      {profileName ?? '—'}
-                      {p.due_date && ` · eräpäivä ${formatDate(p.due_date)}`}
-                    </p>
-                    {p.sent_at && (
-                      <p className="text-xs text-green-600">
-                        Lähetetty {formatDate(p.sent_at)}
-                      </p>
-                    )}
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <p className="font-semibold text-white">{formatEuros(p.amount_cents)}</p>
-                    <span
-                      className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${cfg.cls}`}
-                    >
-                      {cfg.label}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {p.status !== 'paid' && (
-                    <button
-                      onClick={() => void markPaid(p.id)}
-                      disabled={isBusy}
-                      className="rounded-lg bg-green-800 px-3 py-1 text-xs font-semibold text-white disabled:opacity-50"
-                    >
-                      Merkitse maksetuksi
-                    </button>
-                  )}
-
-                  {p.status !== 'paid' && !p.sent_at && (
-                    <button
-                      onClick={() => void sendInvoice(p.id)}
-                      disabled={isBusy}
-                      className="rounded-lg border border-green-700 px-3 py-1 text-xs font-semibold text-green-300 hover:bg-green-800/40 disabled:opacity-50"
-                    >
-                      {invoiceBusy === p.id ? 'Lähetetään...' : 'Lähetä sähköpostilla'}
-                    </button>
-                  )}
-
+              <div
+                key={p.id}
+                className={`rounded-xl border p-3 transition-colors ${
+                  isPaid
+                    ? 'border-green-900/50 bg-green-900/10'
+                    : isOD
+                      ? 'border-red-800/60 bg-red-900/10'
+                      : 'border-green-800 bg-white/5'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  {/* Quick toggle checkbox */}
                   <button
-                    onClick={() => setPreviewPayment(p)}
-                    className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
+                    onClick={() => { if (!isPaid) void quickTogglePaid(p.id) }}
+                    disabled={isPaid}
+                    className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
+                      isPaid
+                        ? 'border-green-600 bg-green-700 text-white cursor-default'
+                        : 'border-green-700 bg-transparent text-transparent hover:border-green-500 hover:bg-green-900/40 cursor-pointer'
+                    }`}
+                    title={isPaid ? 'Maksettu' : 'Merkitse maksetuksi'}
                   >
-                    Esikatsele
+                    <Check size={14} strokeWidth={3} />
                   </button>
 
-                  <Link
-                    href={`/laskut/${p.id}`}
-                    className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
-                  >
-                    Tulosta PDF
-                  </Link>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className={`truncate font-medium ${isPaid ? 'text-green-500 line-through' : 'text-white'}`}>
+                          {p.description}
+                        </p>
+                        <p className="text-xs text-green-400">
+                          {profileName ?? '—'}
+                          {p.due_date && ` · eräpäivä ${formatDate(p.due_date)}`}
+                        </p>
+                        {p.sent_at && (
+                          <p className="text-xs text-green-600">
+                            Lähetetty {formatDate(p.sent_at)}
+                          </p>
+                        )}
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className={`font-semibold ${isPaid ? 'text-green-500' : 'text-white'}`}>
+                          {formatEuros(p.amount_cents)}
+                        </p>
+                        <span
+                          className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${cfg.cls}`}
+                        >
+                          {cfg.label}
+                        </span>
+                      </div>
+                    </div>
 
-                  <button
-                    onClick={() => void deletePayment(p.id)}
-                    disabled={isBusy}
-                    title="Poista lasku"
-                    className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
-                  >
-                    <Trash2 size={12} />
-                    Poista
-                  </button>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {!isPaid && !p.sent_at && (
+                        <button
+                          onClick={() => void sendInvoice(p.id)}
+                          disabled={isBusy}
+                          className="rounded-lg border border-green-700 px-3 py-1 text-xs font-semibold text-green-300 hover:bg-green-800/40 disabled:opacity-50"
+                        >
+                          {invoiceBusy === p.id ? 'Lähetetään...' : 'Lähetä sähköpostilla'}
+                        </button>
+                      )}
+
+                      {isOD && (
+                        <button
+                          onClick={() => void sendReminder(p.id)}
+                          disabled={remindBusy === p.id}
+                          className="flex items-center gap-1 rounded-lg bg-red-900/40 px-3 py-1 text-xs font-semibold text-red-300 hover:bg-red-800/40 disabled:opacity-50"
+                        >
+                          <Bell size={11} />
+                          {remindBusy === p.id ? 'Lähetetään...' : 'Lähetä muistutus'}
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => setPreviewPayment(p)}
+                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
+                      >
+                        Esikatsele
+                      </button>
+
+                      <Link
+                        href={`/laskut/${p.id}`}
+                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
+                      >
+                        Tulosta PDF
+                      </Link>
+
+                      <button
+                        onClick={() => void deletePayment(p.id)}
+                        disabled={isBusy}
+                        title="Poista lasku"
+                        className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                      >
+                        <Trash2 size={12} />
+                        Poista
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             )
