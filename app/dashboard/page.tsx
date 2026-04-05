@@ -47,7 +47,7 @@ const COMMON_MODULES: ModuleItem[] = [
   },
   {
     title: 'Saalisilmoitus',
-    description: 'Ilmoita saaliisi nopeasti.',
+    description: 'Erämiesten oma saalistilasto',
     href: '/saalis',
     icon: Target,
   },
