@@ -5,6 +5,7 @@ import FeedbackButton from "./components/feedback-button";
 import TrialBanner from "./components/trial-banner";
 import ActivityTracker from "./components/activity-tracker";
 import OfflineSync from "./components/offline-sync";
+import RecoveryRedirect from "./components/recovery-redirect";
 
 export const metadata: Metadata = {
   title: "JahtiPro",
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="fi">
       <body className="antialiased">
+        <RecoveryRedirect />
         <ActivityTracker />
         <OfflineSync />
         <TrialBanner />
