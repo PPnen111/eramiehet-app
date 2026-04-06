@@ -8,6 +8,8 @@ type CabinInfoRow = {
   pricing_text: string | null
   instructions_text: string | null
   booking_notification_email: string | null
+  approver_name: string | null
+  approver_email: string | null
 }
 
 export default async function MuokkaaInfoPage() {
@@ -28,7 +30,7 @@ export default async function MuokkaaInfoPage() {
 
   const { data: raw } = await supabase
     .from('cabin_info')
-    .select('pricing_text, instructions_text, booking_notification_email')
+    .select('pricing_text, instructions_text, booking_notification_email, approver_name, approver_email')
     .eq('club_id', profile.club_id)
     .single()
 
@@ -46,6 +48,8 @@ export default async function MuokkaaInfoPage() {
           initialPricing={info?.pricing_text ?? ''}
           initialInstructions={info?.instructions_text ?? ''}
           initialNotificationEmail={info?.booking_notification_email ?? ''}
+          initialApproverName={info?.approver_name ?? ''}
+          initialApproverEmail={info?.approver_email ?? ''}
         />
       </div>
     </main>

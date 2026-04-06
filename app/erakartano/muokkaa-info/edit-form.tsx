@@ -9,14 +9,18 @@ interface Props {
   initialPricing: string
   initialInstructions: string
   initialNotificationEmail: string
+  initialApproverName: string
+  initialApproverEmail: string
 }
 
-export default function EditCabinInfoForm({ clubId, initialPricing, initialInstructions, initialNotificationEmail }: Props) {
+export default function EditCabinInfoForm({ clubId, initialPricing, initialInstructions, initialNotificationEmail, initialApproverName, initialApproverEmail }: Props) {
   const router = useRouter()
   const supabase = createClient()
   const [pricing, setPricing] = useState(initialPricing)
   const [instructions, setInstructions] = useState(initialInstructions)
   const [notificationEmail, setNotificationEmail] = useState(initialNotificationEmail)
+  const [approverName, setApproverName] = useState(initialApproverName)
+  const [approverEmail, setApproverEmail] = useState(initialApproverEmail)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -31,6 +35,8 @@ export default function EditCabinInfoForm({ clubId, initialPricing, initialInstr
         pricing_text: pricing || null,
         instructions_text: instructions || null,
         booking_notification_email: notificationEmail.trim() || null,
+        approver_name: approverName.trim() || null,
+        approver_email: approverEmail.trim() || null,
       },
       { onConflict: 'club_id' }
     )
@@ -86,6 +92,33 @@ export default function EditCabinInfoForm({ clubId, initialPricing, initialInstr
         <p className="mt-1 text-xs text-green-600">
           Tähän osoitteeseen lähetetään ilmoitus uusista varauspyynnöistä. Jos tyhjä, menee seuran
           admineille.
+        </p>
+      </div>
+
+      <div className="rounded-xl border border-green-800 bg-white/[0.03] p-4 space-y-3">
+        <label className="block text-sm font-semibold text-green-300">
+          Varausten hyväksyjä
+        </label>
+        <div>
+          <input
+            type="text"
+            value={approverName}
+            onChange={(e) => setApproverName(e.target.value)}
+            placeholder="Nimi (esim. Matti Metsästäjä)"
+            className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          />
+        </div>
+        <div>
+          <input
+            type="email"
+            value={approverEmail}
+            onChange={(e) => setApproverEmail(e.target.value)}
+            placeholder="Sähköposti (esim. matti@seura.fi)"
+            className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          />
+        </div>
+        <p className="text-xs text-green-600">
+          Hyväksyjä saa ilmoituksen uusista varauspyynnöistä ja voi hyväksyä/hylätä ne hallintosivulla.
         </p>
       </div>
 
