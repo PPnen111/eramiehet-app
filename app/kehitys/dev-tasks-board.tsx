@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Trash2, MessageSquare, Plus, X, ChevronLeft, LayoutGrid, TrendingUp, Sparkles, Shield } from 'lucide-react'
+import { Trash2, MessageSquare, Plus, X, ChevronLeft, LayoutGrid, TrendingUp, Sparkles, Shield, Lock, Users } from 'lucide-react'
 import Link from 'next/link'
 import FeatureMatrix from './feature-matrix'
 import GrowthStrategy from './growth-strategy'
@@ -202,7 +202,7 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
     setDragOverCol(null)
   }
 
-  const pageTabBtn = (tab: PageTab, label: string, icon?: React.ReactNode) => (
+  const pageTabBtn = (tab: PageTab, label: string, icon?: React.ReactNode, access?: 'shared' | 'superadmin') => (
     <button
       onClick={() => setPageTab(tab)}
       className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
@@ -213,6 +213,8 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
     >
       {icon}
       {label}
+      {role === 'superadmin' && access === 'shared' && <Users size={10} className="ml-0.5 opacity-50" />}
+      {role === 'superadmin' && access === 'superadmin' && <Lock size={10} className="ml-0.5 opacity-50" />}
     </button>
   )
 
@@ -241,13 +243,18 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
         </div>
 
         {/* Page tabs */}
-        <div className="mt-4 flex gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
-          {pageTabBtn('kanban', 'Tehtävät')}
-          {pageTabBtn('ominaisuudet', 'Ominaisuudet', <LayoutGrid size={14} />)}
-          {pageTabBtn('kasvustrategia', 'Kasvustrategia', <TrendingUp size={14} />)}
-          {role === 'superadmin' && pageTabBtn('tulevaisuus', 'Tulevaisuus', <Sparkles size={14} />)}
-          {role === 'superadmin' && pageTabBtn('tietoturva', 'Tietoturva & GDPR', <Shield size={14} />)}
+        <div className="mt-4 flex flex-wrap gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
+          {pageTabBtn('kanban', 'Tehtävät', undefined, 'shared')}
+          {pageTabBtn('ominaisuudet', 'Ominaisuudet', <LayoutGrid size={14} />, 'superadmin')}
+          {pageTabBtn('kasvustrategia', 'Kasvustrategia', <TrendingUp size={14} />, 'superadmin')}
+          {role === 'superadmin' && pageTabBtn('tulevaisuus', 'Tulevaisuus', <Sparkles size={14} />, 'superadmin')}
+          {role === 'superadmin' && pageTabBtn('tietoturva', 'Tietoturva & GDPR', <Shield size={14} />, 'superadmin')}
         </div>
+        {role === 'superadmin' && (
+          <p className="mt-1.5 text-[10px] text-green-700">
+            🔒 = vain Pekka näkee &nbsp;|&nbsp; 👥 = Jari näkee myös
+          </p>
+        )}
       </div>
 
       {pageTab === 'ominaisuudet' && (
