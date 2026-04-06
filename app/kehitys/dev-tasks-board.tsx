@@ -245,7 +245,7 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
         {/* Page tabs */}
         <div className="mt-4 flex flex-wrap gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
           {pageTabBtn('kanban', 'Tehtävät', undefined, 'shared')}
-          {pageTabBtn('ominaisuudet', 'Ominaisuudet', <LayoutGrid size={14} />, 'superadmin')}
+          {pageTabBtn('ominaisuudet', 'Ominaisuudet', <LayoutGrid size={14} />, 'shared')}
           {pageTabBtn('kasvustrategia', 'Kasvustrategia', <TrendingUp size={14} />, 'superadmin')}
           {role === 'superadmin' && pageTabBtn('tulevaisuus', 'Tulevaisuus', <Sparkles size={14} />, 'superadmin')}
           {role === 'superadmin' && pageTabBtn('tietoturva', 'Tietoturva & GDPR', <Shield size={14} />, 'superadmin')}
