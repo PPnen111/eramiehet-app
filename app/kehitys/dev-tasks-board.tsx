@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Trash2, MessageSquare, Plus, X, ChevronLeft, LayoutGrid, TrendingUp } from 'lucide-react'
+import { Trash2, MessageSquare, Plus, X, ChevronLeft, LayoutGrid, TrendingUp, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import FeatureMatrix from './feature-matrix'
 import GrowthStrategy from './growth-strategy'
+import FutureNotes from './future-notes'
 
 export type DevTask = {
   id: string
@@ -97,7 +98,7 @@ interface Props {
   role: string
 }
 
-type PageTab = 'kanban' | 'ominaisuudet' | 'kasvustrategia'
+type PageTab = 'kanban' | 'ominaisuudet' | 'kasvustrategia' | 'tulevaisuus'
 
 export default function DevTasksBoard({ initialTasks, role }: Props) {
   const [pageTab, setPageTab] = useState<PageTab>('kanban')
@@ -243,6 +244,7 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
           {pageTabBtn('kanban', 'Tehtävät')}
           {pageTabBtn('ominaisuudet', 'Ominaisuudet', <LayoutGrid size={14} />)}
           {pageTabBtn('kasvustrategia', 'Kasvustrategia', <TrendingUp size={14} />)}
+          {role === 'superadmin' && pageTabBtn('tulevaisuus', 'Tulevaisuus', <Sparkles size={14} />)}
         </div>
       </div>
 
@@ -255,6 +257,12 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
       {pageTab === 'kasvustrategia' && (
         <div className="px-4 pb-8">
           <GrowthStrategy />
+        </div>
+      )}
+
+      {pageTab === 'tulevaisuus' && role === 'superadmin' && (
+        <div className="px-4 pb-8">
+          <FutureNotes />
         </div>
       )}
 
