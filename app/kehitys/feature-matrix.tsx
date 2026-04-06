@@ -205,6 +205,9 @@ export default function FeatureMatrix() {
         <p className="mt-2 text-xs text-green-700">
           Roolit periytyvät: Superadmin &gt; Admin &gt; Hallituksen jäsen &gt; Jäsen
         </p>
+        <p className="mt-1 text-xs text-green-700">
+          Päivitetty: 6.4.2026
+        </p>
       </div>
     </div>
   )
