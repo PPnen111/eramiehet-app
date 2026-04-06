@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Trash2, MessageSquare, Plus, X, ChevronLeft, LayoutGrid } from 'lucide-react'
+import { Trash2, MessageSquare, Plus, X, ChevronLeft, LayoutGrid, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 import FeatureMatrix from './feature-matrix'
+import GrowthStrategy from './growth-strategy'
 
 export type DevTask = {
   id: string
@@ -96,7 +97,7 @@ interface Props {
   role: string
 }
 
-type PageTab = 'kanban' | 'ominaisuudet'
+type PageTab = 'kanban' | 'ominaisuudet' | 'kasvustrategia'
 
 export default function DevTasksBoard({ initialTasks, role }: Props) {
   const [pageTab, setPageTab] = useState<PageTab>('kanban')
@@ -241,12 +242,19 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
         <div className="mt-4 flex gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
           {pageTabBtn('kanban', 'Tehtävät')}
           {pageTabBtn('ominaisuudet', 'Ominaisuudet', <LayoutGrid size={14} />)}
+          {pageTabBtn('kasvustrategia', 'Kasvustrategia', <TrendingUp size={14} />)}
         </div>
       </div>
 
       {pageTab === 'ominaisuudet' && (
         <div className="px-4 pb-8">
           <FeatureMatrix />
+        </div>
+      )}
+
+      {pageTab === 'kasvustrategia' && (
+        <div className="px-4 pb-8">
+          <GrowthStrategy />
         </div>
       )}
 
