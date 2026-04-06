@@ -2,12 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { FileText, Download, Loader2 } from 'lucide-react'
-import { createClient } from '@/lib/supabase/browser'
-
-const STORAGE_PATH = 'JahtiPro kasvustrategia.pdf'
 
 export default function GrowthStrategy() {
-  const supabase = createClient()
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -16,21 +12,24 @@ export default function GrowthStrategy() {
     async function fetchUrl() {
       setLoading(true)
       setError(null)
-      const { data, error: storageError } = await supabase.storage
-        .from('documents')
-        .createSignedUrl(STORAGE_PATH, 3600)
-
-      if (storageError || !data?.signedUrl) {
-        setError('PDF-tiedostoa ei löytynyt. Tarkista että tiedosto on ladattu Supabase Storageen.')
-        setLoading(false)
-        return
+      try {
+        const res = await fetch(
+          '/api/storage/signed-url?bucket=documents&path=' +
+            encodeURIComponent('JahtiPro kasvustrategia.pdf')
+        )
+        if (res.ok) {
+          const json = (await res.json()) as { url: string }
+          setPdfUrl(json.url)
+        } else {
+          setError('PDF-tiedostoa ei löytynyt. Tarkista että tiedosto on ladattu Supabase Storageen.')
+        }
+      } catch {
+        setError('Verkkovirhe.')
       }
-
-      setPdfUrl(data.signedUrl)
       setLoading(false)
     }
     void fetchUrl()
-  }, [supabase])
+  }, [])
 
   if (loading) {
     return (
