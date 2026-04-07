@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Trash2, MessageSquare, Plus, X, ChevronLeft, LayoutGrid, TrendingUp, Sparkles, Shield, Lock, Users } from 'lucide-react'
+import { Trash2, MessageSquare, Plus, X, ChevronLeft, LayoutGrid, TrendingUp, Sparkles, Shield, Lock, Users, Zap } from 'lucide-react'
 import Link from 'next/link'
 import FeatureMatrix from './feature-matrix'
 import GrowthStrategy from './growth-strategy'
 import FutureNotes from './future-notes'
 import SecurityPlan from './security-plan'
+import AutomationPlan from './automation-plan'
 
 export type DevTask = {
   id: string
@@ -99,7 +100,7 @@ interface Props {
   role: string
 }
 
-type PageTab = 'kanban' | 'ominaisuudet' | 'kasvustrategia' | 'tulevaisuus' | 'tietoturva'
+type PageTab = 'kanban' | 'ominaisuudet' | 'kasvustrategia' | 'tulevaisuus' | 'tietoturva' | 'automaatiot'
 
 export default function DevTasksBoard({ initialTasks, role }: Props) {
   const [pageTab, setPageTab] = useState<PageTab>('kanban')
@@ -249,6 +250,7 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
           {pageTabBtn('kasvustrategia', 'Kasvustrategia', <TrendingUp size={14} />, 'superadmin')}
           {role === 'superadmin' && pageTabBtn('tulevaisuus', 'Tulevaisuus', <Sparkles size={14} />, 'superadmin')}
           {role === 'superadmin' && pageTabBtn('tietoturva', 'Tietoturva & GDPR', <Shield size={14} />, 'superadmin')}
+          {role === 'superadmin' && pageTabBtn('automaatiot', 'Automaatiot', <Zap size={14} />, 'superadmin')}
         </div>
         {role === 'superadmin' && (
           <p className="mt-1.5 text-[10px] text-green-700">
@@ -278,6 +280,12 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
       {pageTab === 'tietoturva' && role === 'superadmin' && (
         <div className="px-4 pb-8">
           <SecurityPlan />
+        </div>
+      )}
+
+      {pageTab === 'automaatiot' && role === 'superadmin' && (
+        <div className="px-4 pb-8">
+          <AutomationPlan />
         </div>
       )}
 
