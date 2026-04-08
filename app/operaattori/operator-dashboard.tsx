@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   LayoutDashboard, Users, TrendingUp, Bell, Map,
-  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare,
+  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare, AlertTriangle, Download,
 } from 'lucide-react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/format'
@@ -20,6 +20,8 @@ type Club = {
   plan: string | null
   trial_ends_at: string | null
   activity_30d: number
+  activity_7d: number
+  activity_weeks: [number, number, number, number]
   last_active: string | null
   notes: { note: string; created_at: string }[]
 }
@@ -28,7 +30,48 @@ type KPI = {
   active_clubs: number
   total_members: number
   trial_count: number
+  trial_expiring_14d: number
   signup_count: number
+  signups_this_week: number
+}
+
+type HealthStatus = 'terve' | 'tarkkaile' | 'toimenpide'
+
+function trialDaysLeft(c: Club): number | null {
+  if (!c.trial_ends_at) return null
+  return Math.ceil((new Date(c.trial_ends_at).getTime() - Date.now()) / 86400000)
+}
+
+function clubHealth(c: Club): HealthStatus {
+  const days = trialDaysLeft(c)
+  if (c.activity_30d === 0) return 'toimenpide'
+  if (days !== null && days < 7) return 'toimenpide'
+  if (c.activity_30d < 100 || (days !== null && days <= 14)) return 'tarkkaile'
+  if (c.member_count <= 10) return 'tarkkaile'
+  return 'terve'
+}
+
+const HEALTH: Record<HealthStatus, { dot: string; label: string; cls: string }> = {
+  terve: { dot: 'bg-green-400', label: 'Terve', cls: 'text-green-400' },
+  tarkkaile: { dot: 'bg-yellow-400', label: 'Tarkkaile', cls: 'text-yellow-400' },
+  toimenpide: { dot: 'bg-red-400', label: 'Toimenpide', cls: 'text-red-400' },
+}
+
+function MiniSparkline({ weeks }: { weeks: [number, number, number, number] }) {
+  const max = Math.max(...weeks, 1)
+  const increasing = weeks[3] >= weeks[0]
+  return (
+    <div className="flex items-end gap-0.5 h-5" title={`Viikot: ${weeks.join(', ')}`}>
+      {weeks.map((w, i) => (
+        <div
+          key={i}
+          className={`w-2 rounded-sm ${increasing ? 'bg-green-500' : 'bg-stone-500'}`}
+          style={{ height: `${Math.max((w / max) * 100, 8)}%` }}
+          title={`${w}`}
+        />
+      ))}
+    </div>
+  )
 }
 
 type PipelineEntry = {
@@ -222,6 +265,52 @@ export default function OperatorDashboard() {
     void loadAll()
   }
 
+  // ── Remind ────────────────────────────────────────────────────
+
+  const [remindBusy, setRemindBusy] = useState<string | null>(null)
+  const [bulkRemindBusy, setBulkRemindBusy] = useState(false)
+
+  const sendRemind = async (clubId: string) => {
+    setRemindBusy(clubId)
+    const res = await fetch(`/api/operator/remind/${clubId}`, { method: 'POST' })
+    setRemindBusy(null)
+    if (res.ok) {
+      const d = (await res.json()) as { club_name: string }
+      showToast(`Muistutus lähetetty: ${d.club_name}`)
+    } else {
+      showToast('Lähetys epäonnistui')
+    }
+  }
+
+  const sendBulkRemind = async () => {
+    const targets = clubs.filter((c) => {
+      const days = trialDaysLeft(c)
+      return days !== null && days < 14 && c.activity_7d === 0
+    })
+    if (targets.length === 0) { showToast('Ei kohteita'); return }
+    if (!confirm(`Lähetetään muistutus ${targets.length} seuralle, jatketaan?`)) return
+    setBulkRemindBusy(true)
+    for (const c of targets) {
+      await fetch(`/api/operator/remind/${c.id}`, { method: 'POST' })
+    }
+    setBulkRemindBusy(false)
+    showToast(`Muistutus lähetetty ${targets.length} seuralle`)
+  }
+
+  const downloadCsv = () => {
+    const header = 'Seuran nimi,Jäseniä,Trial päättyy,Aktiviteetti 30pv,Tila\n'
+    const rows = clubs.map((c) =>
+      `"${c.name}",${c.member_count},${c.trial_ends_at?.slice(0, 10) ?? ''},${c.activity_30d},${c.subscription_status ?? ''}`
+    ).join('\n')
+    const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `jahtipro-seurat-${new Date().toISOString().slice(0, 10)}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   // ── Render helpers ────────────────────────────────────────────
 
   const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
@@ -290,55 +379,111 @@ export default function OperatorDashboard() {
         )}
 
         {/* ═══ TAB: OVERVIEW ═══ */}
-        {tab === 'overview' && (
+        {tab === 'overview' && (() => {
+          const alertClubs = clubs.filter((c) => {
+            const days = trialDaysLeft(c)
+            return (days !== null && days < 14) || (days !== null && days < 7)
+          })
+          const wonCount = pipeline.filter((p) => p.status === 'won').length
+          const convRate = pipeline.length > 0 ? Math.round((wonCount / pipeline.length) * 100) : 0
+
+          return (
           <div className="space-y-6">
-            {/* KPI cards */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {[
-                { label: 'Aktiiviset seurat', value: kpi.active_clubs },
-                { label: 'Jäseniä yhteensä', value: kpi.total_members },
-                { label: 'Trialissa', value: kpi.trial_count },
-                { label: 'Kiinnostusilmoitukset', value: kpi.signup_count },
-              ].map((k, i) => (
-                <div key={i} className="rounded-xl border border-green-800 bg-white/5 p-4 text-center">
-                  <p className="text-2xl font-bold text-white">{k.value}</p>
-                  <p className="mt-1 text-xs text-green-500">{k.label}</p>
+            {/* Trial alerts */}
+            {alertClubs.length > 0 && (
+              <div className="rounded-2xl border border-red-800/60 bg-red-900/10 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertTriangle size={16} className="text-red-400" />
+                  <h3 className="text-sm font-semibold text-red-300">Toimenpiteitä vaativat seurat</h3>
                 </div>
-              ))}
+                <div className="space-y-2">
+                  {alertClubs.map((c) => {
+                    const days = trialDaysLeft(c)
+                    const isUrgent = days !== null && days < 7
+                    return (
+                      <div key={c.id} className={`flex items-center justify-between rounded-lg border px-3 py-2 ${isUrgent ? 'border-red-800/60 bg-red-900/20' : 'border-yellow-800/60 bg-yellow-900/10'}`}>
+                        <div>
+                          <span className="text-sm font-medium text-white">{c.name}</span>
+                          <span className={`ml-2 text-xs ${isUrgent ? 'text-red-400' : 'text-yellow-400'}`}>
+                            trial päättyy {days} päivässä {c.activity_7d === 0 ? '— ei aktiivisuutta' : ''}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => { openNewPipeline({ club_name: c.name, status: 'trial' }); setTab('pipeline') }}
+                          className="rounded-lg bg-green-800 px-2.5 py-1 text-xs font-semibold text-white hover:bg-green-700"
+                        >
+                          → Myyntiputki
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* KPI cards with progress */}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="rounded-xl border border-green-800 bg-white/5 p-4 text-center">
+                <p className="text-2xl font-bold text-white">{kpi.active_clubs}</p>
+                <p className="mt-1 text-xs text-green-500">Aktiiviset seurat</p>
+                <div className="mt-2 h-1.5 rounded-full bg-green-900/40"><div className="h-full rounded-full bg-green-500" style={{ width: `${Math.min(kpi.active_clubs * 10, 100)}%` }} /></div>
+                <p className="mt-1 text-[10px] text-green-700">tavoite: 10</p>
+              </div>
+              <div className="rounded-xl border border-green-800 bg-white/5 p-4 text-center">
+                <p className="text-2xl font-bold text-white">{kpi.total_members}</p>
+                <p className="mt-1 text-xs text-green-500">Jäseniä yhteensä</p>
+                <div className="mt-2 h-1.5 rounded-full bg-green-900/40"><div className="h-full rounded-full bg-green-500" style={{ width: `${Math.min((kpi.total_members / 500) * 100, 100)}%` }} /></div>
+                <p className="mt-1 text-[10px] text-green-700">tavoite: 500</p>
+              </div>
+              <div className="rounded-xl border border-green-800 bg-white/5 p-4 text-center">
+                <p className="text-2xl font-bold text-white">{kpi.trial_count}</p>
+                <p className="mt-1 text-xs text-green-500">Trialissa</p>
+                {kpi.trial_expiring_14d > 0 && (
+                  <p className="mt-1 text-[10px] text-amber-400">{kpi.trial_expiring_14d} päättyy 14 pv sisällä</p>
+                )}
+              </div>
+              <div className="rounded-xl border border-green-800 bg-white/5 p-4 text-center">
+                <p className="text-2xl font-bold text-white">{kpi.signup_count}</p>
+                <p className="mt-1 text-xs text-green-500">Kiinnostusilmoitukset</p>
+                {kpi.signups_this_week > 0 && (
+                  <p className="mt-1 text-[10px] text-green-400">+{kpi.signups_this_week} tällä viikolla</p>
+                )}
+              </div>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2">
-              {/* Club activity */}
+              {/* Club activity with health */}
               <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
                 <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
                   Seurojen aktiviteetti (30 pv)
                 </h3>
                 <div className="space-y-2">
-                  {clubs.map((c) => (
-                    <div key={c.id} className="flex items-center justify-between rounded-lg border border-green-900/40 bg-white/[0.02] px-3 py-2">
-                      <div className="flex items-center gap-2">
-                        <span className={`h-2 w-2 rounded-full ${
-                          c.activity_30d >= 100 ? 'bg-green-400' : c.activity_30d > 0 ? 'bg-yellow-400' : 'bg-red-400'
-                        }`} />
-                        <span className="text-sm text-white">{c.name}</span>
+                  {clubs.map((c) => {
+                    const h = HEALTH[clubHealth(c)]
+                    return (
+                      <div key={c.id} className="flex items-center justify-between rounded-lg border border-green-900/40 bg-white/[0.02] px-3 py-2">
+                        <div className="flex items-center gap-2">
+                          <span className={`h-2 w-2 rounded-full ${h.dot}`} />
+                          <span className="text-sm text-white">{c.name}</span>
+                          <span className={`text-[10px] ${h.cls}`}>{h.label}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs">
+                          <span className="text-green-400">{c.activity_30d}</span>
+                          {c.last_active && <span className="text-green-600">{formatDate(c.last_active)}</span>}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-3 text-xs">
-                        <span className="text-green-400">{c.activity_30d} tapahtumaa</span>
-                        {c.last_active && (
-                          <span className="text-green-600">{formatDate(c.last_active)}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                   {clubs.length === 0 && <p className="text-sm text-green-600">Ei seuroja.</p>}
                 </div>
               </div>
 
-              {/* Pipeline summary */}
+              {/* Pipeline summary with conversion */}
               <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
-                  Myyntiputki
-                </h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-green-400">Myyntiputki</h3>
+                  <span className="text-xs text-green-500">Konversio: {convRate}%</span>
+                </div>
                 <div className="space-y-2">
                   {pipelineCounts.map((s) => (
                     <div key={s.value} className="flex items-center justify-between rounded-lg border border-green-900/40 bg-white/[0.02] px-3 py-2">
@@ -349,8 +494,25 @@ export default function OperatorDashboard() {
                 </div>
               </div>
             </div>
+
+            {/* Quick actions */}
+            <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">Pikavalinnat</h3>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => { openNewPipeline(); setTab('pipeline') }} className="flex items-center gap-1.5 rounded-lg bg-green-700 px-3 py-2 text-xs font-semibold text-white hover:bg-green-600 transition-colors">
+                  <Plus size={13} /> Lisää prospekti
+                </button>
+                <button onClick={() => void sendBulkRemind()} disabled={bulkRemindBusy} className="flex items-center gap-1.5 rounded-lg bg-red-900/60 px-3 py-2 text-xs font-semibold text-red-200 hover:bg-red-800/60 disabled:opacity-50 transition-colors">
+                  <Bell size={13} /> {bulkRemindBusy ? 'Lähetetään...' : 'Muistutus inaktiivisille'}
+                </button>
+                <button onClick={downloadCsv} className="flex items-center gap-1.5 rounded-lg border border-green-800 px-3 py-2 text-xs font-semibold text-green-300 hover:bg-white/5 transition-colors">
+                  <Download size={13} /> Lataa raportti (CSV)
+                </button>
+              </div>
+            </div>
           </div>
-        )}
+          )
+        })()}
 
         {/* ═══ TAB: CLUBS ═══ */}
         {tab === 'clubs' && (
@@ -363,39 +525,67 @@ export default function OperatorDashboard() {
                     <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Jäseniä</th>
                     <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Tila</th>
                     <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Trial päättyy</th>
-                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Aktiviteetti 30pv</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Trendi (4vk)</th>
                     <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Viim. aktiivinen</th>
-                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Muistiinpanot</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Toiminnot</th>
                   </tr>
                 </thead>
                 <tbody>
                   {clubs.map((c) => {
-                    const trialDanger = c.trial_ends_at && c.trial_ends_at.slice(0, 10) < today
-                    const trialWarn = c.trial_ends_at && !trialDanger && c.trial_ends_at.slice(0, 10) <= new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10)
+                    const days = trialDaysLeft(c)
+                    const trialDanger = days !== null && days < 0
+                    const trialWarn = days !== null && !trialDanger && days <= 7
+                    const h = HEALTH[clubHealth(c)]
+                    const showRemind = days !== null && days < 14
                     return (
                       <tr key={c.id} className="border-b border-green-900/30 hover:bg-white/[0.03]">
-                        <td className="px-3 py-2.5 font-medium text-white">{c.name}</td>
+                        <td className="px-3 py-2.5">
+                          <div className="flex items-center gap-2">
+                            <span className={`h-2 w-2 shrink-0 rounded-full ${h.dot}`} />
+                            <span className="font-medium text-white">{c.name}</span>
+                          </div>
+                        </td>
                         <td className="px-3 py-2.5 text-center text-green-300">{c.member_count}</td>
                         <td className="px-3 py-2.5 text-center">
-                          <span className={`text-xs font-semibold ${subStatusCls(c.subscription_status)}`}>
-                            {c.subscription_status ?? '—'}
-                          </span>
+                          <div className="flex items-center justify-center gap-1.5">
+                            <span className={`text-xs font-semibold ${subStatusCls(c.subscription_status)}`}>
+                              {c.subscription_status ?? '—'}
+                            </span>
+                            <span className={`text-[10px] ${h.cls}`}>{h.label}</span>
+                          </div>
                         </td>
                         <td className={`px-3 py-2.5 text-center text-xs ${trialDanger ? 'text-red-400 font-semibold' : trialWarn ? 'text-amber-400' : 'text-green-500'}`}>
                           {c.trial_ends_at ? formatDate(c.trial_ends_at) : '—'}
                         </td>
-                        <td className="px-3 py-2.5 text-center text-green-300">{c.activity_30d}</td>
+                        <td className="px-3 py-2.5">
+                          <div className="flex items-center justify-center gap-2">
+                            <MiniSparkline weeks={c.activity_weeks} />
+                            <span className="text-xs text-green-500">{c.activity_30d}</span>
+                          </div>
+                        </td>
                         <td className="px-3 py-2.5 text-center text-xs text-green-500">
                           {c.last_active ? formatDate(c.last_active) : '—'}
                         </td>
                         <td className="px-3 py-2.5 text-center">
-                          <button
-                            onClick={() => { setNotesClubId(c.id); setNewNote('') }}
-                            className="rounded-md p-1 text-green-600 hover:bg-green-900/40 hover:text-green-300 transition-colors"
-                            title="Muistiinpanot"
-                          >
-                            <MessageSquare size={14} />
-                          </button>
+                          <div className="flex items-center justify-center gap-1">
+                            {showRemind && (
+                              <button
+                                onClick={() => void sendRemind(c.id)}
+                                disabled={remindBusy === c.id}
+                                className="rounded-md p-1 text-amber-500 hover:bg-amber-900/30 hover:text-amber-300 disabled:opacity-40 transition-colors"
+                                title="Lähetä trial-muistutus"
+                              >
+                                <Bell size={13} />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => { setNotesClubId(c.id); setNewNote('') }}
+                              className="rounded-md p-1 text-green-600 hover:bg-green-900/40 hover:text-green-300 transition-colors"
+                              title="Muistiinpanot"
+                            >
+                              <MessageSquare size={13} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     )
@@ -407,15 +597,24 @@ export default function OperatorDashboard() {
         )}
 
         {/* ═══ TAB: PIPELINE ═══ */}
-        {tab === 'pipeline' && (
+        {tab === 'pipeline' && (() => {
+          const wonCount = pipeline.filter((p) => p.status === 'won').length
+          const convRate = pipeline.length > 0 ? Math.round((wonCount / pipeline.length) * 100) : 0
+          const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
+          const addedThisWeek = pipeline.filter((p) => p.created_at >= weekAgo).length
+          return (
           <div className="space-y-4">
-            <button
-              onClick={() => openNewPipeline()}
-              className="flex items-center gap-1.5 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
-            >
-              <Plus size={15} />
-              Uusi prospekti
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => openNewPipeline()}
+                className="flex items-center gap-1.5 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+              >
+                <Plus size={15} />
+                Uusi prospekti
+              </button>
+              <span className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-green-400">Konversio: {convRate}%</span>
+              {addedThisWeek > 0 && <span className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-green-400">+{addedThisWeek} tällä viikolla</span>}
+            </div>
 
             <div className="rounded-2xl border border-green-800 bg-white/5 overflow-hidden">
               <div className="overflow-x-auto">
@@ -479,7 +678,8 @@ export default function OperatorDashboard() {
               </div>
             </div>
           </div>
-        )}
+          )
+        })()}
 
         {/* ═══ TAB: SIGNUPS ═══ */}
         {tab === 'signups' && (

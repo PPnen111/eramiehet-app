@@ -17,12 +17,17 @@ export async function GET() {
   }
 
   const admin = createAdminClient()
+  const now = Date.now()
+  const d7 = new Date(now - 7 * 86400000).toISOString()
+  const d14 = new Date(now - 14 * 86400000).toISOString()
+  const d21 = new Date(now - 21 * 86400000).toISOString()
+  const d28 = new Date(now - 28 * 86400000).toISOString()
 
   const [{ data: clubs }, { data: subs }, { data: activity }, { data: signups }] = await Promise.all([
     admin.from('clubs').select('id, name, created_at').order('name'),
     admin.from('subscriptions').select('club_id, status, plan, trial_ends_at'),
-    admin.from('activity_log').select('club_id, created_at').gte('created_at', new Date(Date.now() - 30 * 86400000).toISOString()),
-    admin.from('launch_signups').select('id'),
+    admin.from('activity_log').select('club_id, created_at').gte('created_at', d28),
+    admin.from('launch_signups').select('id, created_at'),
   ])
 
   const clubList = (clubs ?? []) as { id: string; name: string; created_at: string }[]
@@ -43,16 +48,24 @@ export async function GET() {
     memberMap.set(m.club_id, (memberMap.get(m.club_id) ?? 0) + 1)
   }
 
-  // Activity per club (30d)
-  const activityMap = new Map<string, { count: number; last: string }>()
+  // Activity per club — total 30d + weekly breakdown + 7d count
+  type ActivityData = { total: number; last: string; weeks: [number, number, number, number]; w1: number }
+  const activityMap = new Map<string, ActivityData>()
+
   for (const a of (activity ?? []) as { club_id: string; created_at: string }[]) {
-    const curr = activityMap.get(a.club_id)
-    if (!curr) {
-      activityMap.set(a.club_id, { count: 1, last: a.created_at })
-    } else {
-      curr.count++
-      if (a.created_at > curr.last) curr.last = a.created_at
+    let d = activityMap.get(a.club_id)
+    if (!d) {
+      d = { total: 0, last: a.created_at, weeks: [0, 0, 0, 0], w1: 0 }
+      activityMap.set(a.club_id, d)
     }
+    d.total++
+    if (a.created_at > d.last) d.last = a.created_at
+
+    // Weekly buckets: w4(oldest)..w1(newest)
+    if (a.created_at >= d7) { d.weeks[3]++; d.w1++ }
+    else if (a.created_at >= d14) d.weeks[2]++
+    else if (a.created_at >= d21) d.weeks[1]++
+    else d.weeks[0]++
   }
 
   // Operator notes
@@ -79,7 +92,9 @@ export async function GET() {
       subscription_status: sub?.status ?? null,
       plan: sub?.plan ?? null,
       trial_ends_at: sub?.trial_ends_at ?? null,
-      activity_30d: act?.count ?? 0,
+      activity_30d: act?.total ?? 0,
+      activity_7d: act?.w1 ?? 0,
+      activity_weeks: act?.weeks ?? [0, 0, 0, 0],
       last_active: act?.last ?? null,
       notes: noteMap.get(c.id) ?? [],
     }
@@ -87,7 +102,20 @@ export async function GET() {
 
   const totalMembers = Array.from(memberMap.values()).reduce((a, b) => a + b, 0)
   const trialCount = Array.from(subMap.values()).filter((s) => s.status === 'trial').length
-  const signupCount = (signups ?? []).length
+  const signupList = (signups ?? []) as { id: string; created_at: string }[]
+  const signupCount = signupList.length
+  const signupsThisWeek = signupList.filter((s) => s.created_at >= d7).length
+
+  // Trial expiry counts
+  const todayStr = new Date().toISOString().slice(0, 10)
+  const in14d = new Date(now + 14 * 86400000).toISOString().slice(0, 10)
+  let trialExpiring14d = 0
+  for (const s of Array.from(subMap.values())) {
+    if (s.status === 'trial' && s.trial_ends_at) {
+      const d = s.trial_ends_at.slice(0, 10)
+      if (d >= todayStr && d <= in14d) trialExpiring14d++
+    }
+  }
 
   return NextResponse.json({
     clubs: result,
@@ -95,7 +123,9 @@ export async function GET() {
       active_clubs: clubList.length,
       total_members: totalMembers,
       trial_count: trialCount,
+      trial_expiring_14d: trialExpiring14d,
       signup_count: signupCount,
+      signups_this_week: signupsThisWeek,
     },
   })
 }
