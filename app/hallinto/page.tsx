@@ -22,7 +22,7 @@ export default async function HallintoPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('club_id, role, member_status')
+    .select('club_id, role, member_status, active_club_id')
     .eq('id', user.id)
     .single()
 
@@ -38,12 +38,14 @@ export default async function HallintoPage() {
     )
   }
 
+  const clubId = profile!.active_club_id ?? profile!.club_id
+
   // Fetch all club members server-side via admin client (bypasses RLS)
   const admin = createAdminClient()
   const { data: raw } = await admin
     .from('profiles')
     .select('id, full_name, email, phone, role, member_status, member_type')
-    .eq('club_id', profile!.club_id)
+    .eq('club_id', clubId)
     .order('full_name', { ascending: true })
 
   const initialMembers = (raw ?? []) as AdminMember[]
@@ -53,7 +55,7 @@ export default async function HallintoPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
         <h1 className="text-2xl font-bold text-white">Hallinto</h1>
-        <AdminPanel clubId={profile!.club_id} initialMembers={initialMembers} isAdmin={effectiveRole === 'admin' || effectiveRole === 'superadmin'} />
+        <AdminPanel clubId={clubId} initialMembers={initialMembers} isAdmin={effectiveRole === 'admin' || effectiveRole === 'superadmin'} />
       </div>
     </main>
   )
