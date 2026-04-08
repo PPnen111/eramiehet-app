@@ -14,6 +14,7 @@ export type MemberWithStatus = {
   member_status: string
   member_type: string | null
   has_logged_in: boolean
+  profile_id: string | null
 }
 
 export async function GET(_req: NextRequest) {
@@ -41,50 +42,97 @@ export async function GET(_req: NextRequest) {
 
   const admin = createAdminClient()
 
-  // Fetch all profiles for the club
-  const { data: profilesRaw } = await admin
-    .from('profiles')
-    .select('id, full_name, email, phone, role, member_status, member_type')
+  // Fetch all members from member_registry (source of truth)
+  const { data: registryRaw } = await admin
+    .from('member_registry')
+    .select('id, full_name, email, phone, member_type, profile_id')
     .eq('club_id', clubId)
     .order('full_name', { ascending: true })
 
-  const profiles = (profilesRaw ?? []) as {
+  const registry = (registryRaw ?? []) as {
     id: string
     full_name: string | null
     email: string | null
     phone: string | null
-    role: string
-    member_status: string
     member_type: string | null
+    profile_id: string | null
   }[]
 
-  if (profiles.length === 0) {
-    return NextResponse.json({ members: [] })
-  }
+  // Also fetch profiles for this club (for users with app accounts)
+  const { data: profilesRaw } = await admin
+    .from('profiles')
+    .select('id, full_name, email, phone, role, member_status, member_type')
+    .eq('club_id', clubId)
 
-  // Fetch auth users to get login status
-  // listUsers returns all users; we match by ID against our profiles
-  const profileIds = new Set(profiles.map((p) => p.id))
+  const profileMap = new Map(
+    ((profilesRaw ?? []) as {
+      id: string
+      full_name: string | null
+      email: string | null
+      phone: string | null
+      role: string
+      member_status: string
+      member_type: string | null
+    }[]).map((p) => [p.id, p])
+  )
+
+  // Fetch auth users to get login status for those with profile_id
+  const profileIds = registry
+    .map((r) => r.profile_id)
+    .filter((id): id is string => id !== null)
+
   const loginMap = new Map<string, boolean>()
-
-  let page = 1
-  const perPage = 1000
-  while (true) {
-    const { data: authData } = await admin.auth.admin.listUsers({ page, perPage })
-    if (!authData?.users?.length) break
-    for (const u of authData.users) {
-      if (profileIds.has(u.id)) {
-        loginMap.set(u.id, !!u.last_sign_in_at)
+  if (profileIds.length > 0) {
+    let page = 1
+    const perPage = 1000
+    const idSet = new Set(profileIds)
+    while (true) {
+      const { data: authData } = await admin.auth.admin.listUsers({ page, perPage })
+      if (!authData?.users?.length) break
+      for (const u of authData.users) {
+        if (idSet.has(u.id)) {
+          loginMap.set(u.id, !!u.last_sign_in_at)
+        }
       }
+      if (authData.users.length < perPage) break
+      page++
     }
-    if (authData.users.length < perPage) break
-    page++
   }
 
-  const members: MemberWithStatus[] = profiles.map((p) => ({
-    ...p,
-    has_logged_in: loginMap.get(p.id) ?? false,
-  }))
+  // Build member list: registry entries + any profile-only entries not in registry
+  const registryProfileIds = new Set(registry.map((r) => r.profile_id).filter(Boolean))
+
+  const members: MemberWithStatus[] = registry.map((r) => {
+    const profile = r.profile_id ? profileMap.get(r.profile_id) : null
+    return {
+      id: r.id,
+      full_name: r.full_name ?? profile?.full_name ?? null,
+      email: r.email ?? profile?.email ?? null,
+      phone: r.phone ?? profile?.phone ?? null,
+      role: profile?.role ?? 'member',
+      member_status: profile?.member_status ?? (r.profile_id ? 'active' : 'no_account'),
+      member_type: r.member_type ?? profile?.member_type ?? null,
+      has_logged_in: r.profile_id ? (loginMap.get(r.profile_id) ?? false) : false,
+      profile_id: r.profile_id,
+    }
+  })
+
+  // Add profile-only members (have profiles entry but no registry entry)
+  for (const p of profileMap.values()) {
+    if (!registryProfileIds.has(p.id)) {
+      members.push({
+        id: p.id,
+        full_name: p.full_name,
+        email: p.email,
+        phone: p.phone,
+        role: p.role,
+        member_status: p.member_status,
+        member_type: p.member_type,
+        has_logged_in: loginMap.get(p.id) ?? false,
+        profile_id: p.id,
+      })
+    }
+  }
 
   return NextResponse.json({ members })
 }
