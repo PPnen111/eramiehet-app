@@ -134,7 +134,7 @@ const subStatusCls = (status: string | null) => {
 export default function OperatorDashboard() {
   const [tab, setTab] = useState<Tab>('overview')
   const [clubs, setClubs] = useState<Club[]>([])
-  const [kpi, setKpi] = useState<KPI>({ active_clubs: 0, total_members: 0, trial_count: 0, signup_count: 0 })
+  const [kpi, setKpi] = useState<KPI>({ active_clubs: 0, total_members: 0, trial_count: 0, trial_expiring_14d: 0, signup_count: 0, signups_this_week: 0 })
   const [pipeline, setPipeline] = useState<PipelineEntry[]>([])
   const [signups, setSignups] = useState<Signup[]>([])
   const [loading, setLoading] = useState(true)
