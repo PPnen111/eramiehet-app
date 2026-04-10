@@ -3,11 +3,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   LayoutDashboard, Users, TrendingUp, Bell, Map,
-  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare, AlertTriangle, Download, Wallet,
+  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare, AlertTriangle, Download, Wallet, Shield, Zap,
 } from 'lucide-react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/format'
 import GrowthStrategy from '@/app/kehitys/growth-strategy'
+import SecurityPlan from '@/app/kehitys/security-plan'
+import AutomationPlan from '@/app/kehitys/automation-plan'
 import BudgetTab from './budget-tab'
 import { InfoTooltip } from '@/app/components/info-tooltip'
 
@@ -114,7 +116,7 @@ type Summary = {
   feed: SummaryFeed[]
 }
 
-type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'budget' | 'strategy'
+type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'budget' | 'security' | 'automation' | 'strategy'
 
 const PIPELINE_STATUSES = [
   { value: 'lead', label: 'Lead', cls: 'bg-stone-700 text-stone-200' },
@@ -401,6 +403,8 @@ export default function OperatorDashboard() {
           {tabBtn('pipeline', 'Myyntiputki', <TrendingUp size={14} />)}
           {tabBtn('signups', 'Kiinnostusilmoitukset', <Bell size={14} />, signups.length)}
           {tabBtn('budget', 'Talous', <Wallet size={14} />)}
+          {tabBtn('security', 'Tietoturva & GDPR', <Shield size={14} />)}
+          {tabBtn('automation', 'Automaatiot', <Zap size={14} />)}
           {tabBtn('strategy', 'Strategia', <Map size={14} />)}
         </div>
       </div>
@@ -778,6 +782,12 @@ export default function OperatorDashboard() {
 
         {/* ═══ TAB: BUDGET ═══ */}
         {tab === 'budget' && <BudgetTab clubs={clubs.map((c) => ({ id: c.id, name: c.name }))} />}
+
+        {/* ═══ TAB: SECURITY ═══ */}
+        {tab === 'security' && <SecurityPlan />}
+
+        {/* ═══ TAB: AUTOMATION ═══ */}
+        {tab === 'automation' && <AutomationPlan />}
 
         {/* ═══ TAB: STRATEGY ═══ */}
         {tab === 'strategy' && <GrowthStrategy />}
