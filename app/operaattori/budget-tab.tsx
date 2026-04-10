@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Plus, Pencil, Trash2, X, Check } from 'lucide-react'
 import { formatDate } from '@/lib/format'
+import { InfoTooltip } from '@/app/components/info-tooltip'
 
 type BudgetData = {
   revenue: { mrr_cents: number; arr_cents: number; paid_this_year_cents: number; pending_cents: number; overdue_cents: number; by_plan: Record<string, { count: number; arr_cents: number }> }
@@ -155,22 +156,30 @@ export default function BudgetTab({ clubs }: Props) {
       {sub === 'yhteenveto' && (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-            {[
-              { label: 'MRR', value: data.revenue.mrr_cents > 0 ? eur(data.revenue.mrr_cents) : 'Ei vielä', sub: '/kk' },
-              { label: 'ARR', value: data.revenue.arr_cents > 0 ? eur(data.revenue.arr_cents) : 'Ei vielä', sub: '/v' },
-              { label: 'Kulut/kk', value: eur(data.expenses.this_month_cents) },
-              { label: 'Käyttökate', value: eur(data.profitability.gross_profit_cents), color: data.profitability.gross_profit_cents >= 0 ? 'text-green-300' : 'text-red-400' },
-              { label: 'Break-even', value: `${data.profitability.break_even_clubs} seuraa` },
-            ].map((k, i) => (
-              <div key={i} className="rounded-xl border border-green-800 bg-white/5 p-3 text-center">
-                <p className={`text-lg font-bold ${(k as { color?: string }).color ?? 'text-white'}`}>{k.value}</p>
-                <p className="mt-0.5 text-[10px] text-green-500">{k.label}</p>
-              </div>
-            ))}
+            <div className="rounded-xl border border-green-800 bg-white/5 p-3 text-center">
+              <p className="text-lg font-bold text-white">{data.revenue.mrr_cents > 0 ? eur(data.revenue.mrr_cents) : 'Ei vielä'}</p>
+              <p className="mt-0.5 text-[10px] text-green-500">MRR <InfoTooltip title="MRR" content="Kuukausittainen toistuva liikevaihto. Lasketaan: aktiiviset tilaukset / 12. Tärkein SaaS-mittari kasvun seuraamiseen." /></p>
+            </div>
+            <div className="rounded-xl border border-green-800 bg-white/5 p-3 text-center">
+              <p className="text-lg font-bold text-white">{data.revenue.arr_cents > 0 ? eur(data.revenue.arr_cents) : 'Ei vielä'}</p>
+              <p className="mt-0.5 text-[10px] text-green-500">ARR <InfoTooltip title="ARR" content="Vuosittainen toistuva liikevaihto. MRR × 12. Kertoo palvelun kokonaiskoosta." /></p>
+            </div>
+            <div className="rounded-xl border border-green-800 bg-white/5 p-3 text-center">
+              <p className="text-lg font-bold text-white">{eur(data.expenses.this_month_cents)}</p>
+              <p className="mt-0.5 text-[10px] text-green-500">Kulut/kk <InfoTooltip title="Burn rate" content="Kuinka paljon rahaa kuluu kuukaudessa kuluja varten. Tärkeä seurata jotta tiedetään kuinka kauan varat riittävät." /></p>
+            </div>
+            <div className="rounded-xl border border-green-800 bg-white/5 p-3 text-center">
+              <p className={`text-lg font-bold ${data.profitability.gross_profit_cents >= 0 ? 'text-green-300' : 'text-red-400'}`}>{eur(data.profitability.gross_profit_cents)}</p>
+              <p className="mt-0.5 text-[10px] text-green-500">Käyttökate <InfoTooltip title="Käyttökate" content="MRR miinus kuukausikulut. Jos positiivinen: palvelu tuottaa. Jos negatiivinen: käytät enemmän kuin tienaat (normaalia alkuvaiheessa)." /></p>
+            </div>
+            <div className="rounded-xl border border-green-800 bg-white/5 p-3 text-center">
+              <p className="text-lg font-bold text-white">{data.profitability.break_even_clubs} seuraa</p>
+              <p className="mt-0.5 text-[10px] text-green-500">Break-even <InfoTooltip title="Break-even" content="Montako seuraa tarvitaan jotta tulot kattavat kulut. Lasketaan: kuukausikulut / keskimääräinen kuukausituotto per seura." /></p>
+            </div>
           </div>
           {/* 500 club progress */}
           <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-            <h3 className="mb-2 font-semibold text-white">Matka 500 seuraan — 2028</h3>
+            <h3 className="mb-2 font-semibold text-white">Matka 500 seuraan — 2028 <InfoTooltip title="Kasvupolku" content="Tavoite: 500 maksavaa seuraa vuoden 2028 loppuun mennessä. Sininen = tavoite, vihreä = toteutunut. Perustuu lineaariseen kasvumalliin." /></h3>
             <div className="h-3 rounded-full bg-green-900/40 overflow-hidden">
               <div className="h-full rounded-full bg-green-500 transition-all" style={{ width: `${Math.min((clubs.length / 500) * 100, 100)}%` }} />
             </div>
@@ -289,7 +298,7 @@ export default function BudgetTab({ clubs }: Props) {
         <div className="space-y-4">
           {/* Scenario analysis */}
           <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">Skenaarioanalyysi</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">Skenaarioanalyysi <InfoTooltip title="Skenaarioanalyysi" content={['Uusia seuroja/kk: kuinka monta uutta maksavaa asiakasta arvioit saavasi kuukaudessa', 'Keskipaketti: minkä paketin asiakkaat valitsevat keskimäärin', 'Churn: montako % asiakkaista lähtee kuukaudessa', 'Tulokset päivittyvät reaaliajassa liukusäätimiä muuttamalla']} /></h3>
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div>
                 <label className={labelCls}>Uusia seuroja/kk</label>
@@ -302,7 +311,7 @@ export default function BudgetTab({ clubs }: Props) {
                 </select>
               </div>
               <div>
-                <label className={labelCls}>Churn %/kk</label>
+                <label className={labelCls}>Churn %/kk <InfoTooltip title="Churn %" content="Kuinka moni asiakkaista lopettaa palvelun käytön kuukaudessa. 1% churn = 100 seurasta 1 lähtee/kk. Hyvä SaaS-churn on alle 2%/kk." /></label>
                 <input type="number" value={scenChurn} onChange={(e) => setScenChurn(Number(e.target.value) || 0)} min={0} max={50} className={inputCls} />
               </div>
             </div>

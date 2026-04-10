@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { formatDate } from '@/lib/format'
 import GrowthStrategy from '@/app/kehitys/growth-strategy'
 import BudgetTab from './budget-tab'
+import { InfoTooltip } from '@/app/components/info-tooltip'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -420,7 +421,7 @@ export default function OperatorDashboard() {
               <div className="rounded-2xl border border-red-800/60 bg-red-900/10 p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <AlertTriangle size={16} className="text-red-400" />
-                  <h3 className="text-sm font-semibold text-red-300">Toimenpiteet heti</h3>
+                  <h3 className="text-sm font-semibold text-red-300">Toimenpiteet heti <InfoTooltip title="Toimenpiteet heti" content="Automaattisesti havaitut asiat jotka vaativat huomiosi juuri nyt. Päivittyy reaaliajassa." /></h3>
                 </div>
                 <div className="space-y-2">
                   {summary.alerts.map((a, i) => (
@@ -451,7 +452,7 @@ export default function OperatorDashboard() {
               <button onClick={() => setTab('clubs')} className="rounded-2xl border border-green-800 bg-white/5 p-5 text-left hover:bg-white/[0.07] transition-colors">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-lg">👥</span>
-                  <h3 className="font-semibold text-white">Asiakkuudet</h3>
+                  <h3 className="font-semibold text-white">Asiakkuudet <InfoTooltip title="Asiakkuudet" content={['Aktiiviset seurat: seurat joilla on voimassa oleva tilaus', 'Trialissa: seurat jotka käyttävät 14 pv ilmaista kokeilujaksoa', 'Liikennevalot: 🟢 aktiivinen käyttö / 🟡 vähäinen / 🔴 ei käyttöä']} /></h3>
                 </div>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between"><span className="text-green-400">Aktiiviset seurat</span><span className="text-white font-semibold">{summary.clubs.total}</span></div>
@@ -466,7 +467,7 @@ export default function OperatorDashboard() {
               <button onClick={() => setTab('pipeline')} className="rounded-2xl border border-green-800 bg-white/5 p-5 text-left hover:bg-white/[0.07] transition-colors">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-lg">📈</span>
-                  <h3 className="font-semibold text-white">Myynti & Markkinointi</h3>
+                  <h3 className="font-semibold text-white">Myynti & Markkinointi <InfoTooltip title="Myynti & Markkinointi" content={['Liidit: mahdolliset asiakkaat jotka ovat osoittaneet kiinnostusta', 'Won: liideistä muuttuneita maksavia asiakkaita', 'Konversio: kuinka moni liideistä on muuttunut asiakkaaksi (%)']} /></h3>
                 </div>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between"><span className="text-green-400">Liidejä</span><span className="text-white font-semibold">{summary.pipeline.leads}</span></div>
@@ -481,7 +482,7 @@ export default function OperatorDashboard() {
               <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-lg">💰</span>
-                  <h3 className="font-semibold text-white">Talous</h3>
+                  <h3 className="font-semibold text-white">Talous <InfoTooltip title="Talous" content={['MRR: Monthly Recurring Revenue — kuukausittainen toistuva liikevaihto', 'Avoimet laskut: lähetetyt mutta maksamattomat laskut', 'Myöhässä: eräpäivän ylittäneet maksamattomat laskut']} /></h3>
                 </div>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between"><span className="text-green-400">MRR</span><span className="text-white font-semibold">{summary.mrr > 0 ? `${summary.mrr} €/kk` : 'Trialissa — ei laskutusta vielä'}</span></div>
@@ -495,7 +496,7 @@ export default function OperatorDashboard() {
               <a href="/kehitys" className="rounded-2xl border border-green-800 bg-white/5 p-5 hover:bg-white/[0.07] transition-colors block">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-lg">⚙️</span>
-                  <h3 className="font-semibold text-white">Järjestelmä</h3>
+                  <h3 className="font-semibold text-white">Järjestelmä <InfoTooltip title="Järjestelmä" content="Tekninen tila: palvelimet, tietokanta ja sovelluksen toiminta. Supabase Pro = tuotantotason tietokanta. Vercel Pro = nopea hosting." /></h3>
                 </div>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between"><span className="text-green-400">Seurat yhteensä</span><span className="text-white font-semibold">{summary.clubs.total}</span></div>
@@ -510,7 +511,7 @@ export default function OperatorDashboard() {
               <div className="rounded-2xl border border-green-800 bg-white/5 p-5 sm:col-span-2">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-lg">🔒</span>
-                  <h3 className="font-semibold text-white">Tietoturva & GDPR</h3>
+                  <h3 className="font-semibold text-white">Tietoturva & GDPR <InfoTooltip title="Tietoturva & GDPR" content={['Tapahtumaloki: kirjaa kaikki tärkeät toiminnot automaattisesti', 'Hylätyt pääsyt: epäonnistuneet kirjautumis- tai käyttöyritykset', 'GDPR-pyynnöt: jäsenten tietopyynöt (tarkastus, poisto jne.)']} /></h3>
                 </div>
                 <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-4">
                   <div className="flex justify-between"><span className="text-green-400">Tapahtumaloki (24h)</span><span className="text-white font-semibold">{summary.audit.events_24h}</span></div>
@@ -571,11 +572,11 @@ export default function OperatorDashboard() {
                   <tr className="border-b border-green-800 bg-green-950">
                     <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-green-400">Seuran nimi</th>
                     <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Jäseniä</th>
-                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Tila</th>
-                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Trial päättyy</th>
-                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Trendi (4vk)</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Tila <InfoTooltip title="Liikennevalot" content={['🟢 Terve: yli 100 toimintoa/30pv, yli 10 jäsentä, trial kaukana', '🟡 Tarkkaile: vähäinen käyttö tai trial lähestyy', '🔴 Toimenpide: ei käyttöä, trial päättyy alle 7pv tai jo päättynyt']} /></th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Trial päättyy <InfoTooltip title="Trial päättyy" content="14 päivän ilmainen kokeilujakso. Kun trial päättyy, seura valitsee maksullisen paketin tai käyttö rajoittuu." /></th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Trendi (4vk) <InfoTooltip title="Aktiviteetti" content="Kuinka monta toimintoa (kirjautumiset, sivulataukset, ilmoitukset) seuran jäsenet ovat tehneet viimeisen 30 päivän aikana." /></th>
                     <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Viim. aktiivinen</th>
-                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Toiminnot</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Toiminnot <InfoTooltip title="Muistiinpanot" content="Sisäiset muistiinpanot tästä seurasta — vain sinä näet nämä. Hyödyllinen esim. myyntineuvottelujen seurantaan." /></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -660,7 +661,7 @@ export default function OperatorDashboard() {
                 <Plus size={15} />
                 Uusi prospekti
               </button>
-              <span className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-green-400">Konversio: {convRate}%</span>
+              <span className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-green-400">Konversio: {convRate}% <InfoTooltip title="Konversio %" content="Kuinka moni kaikista liideistä on muuttunut maksavaksi asiakkaaksi. Hyvä SaaS-konversio on 10-25%." /></span>
               {addedThisWeek > 0 && <span className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-green-400">+{addedThisWeek} tällä viikolla</span>}
             </div>
 
