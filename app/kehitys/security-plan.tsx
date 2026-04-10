@@ -84,9 +84,30 @@ export default function SecurityPlan() {
       {/* 3. MVP */}
       <Section title="3. Suositeltu ensimmäinen toteutus (MVP)">
         <div className="space-y-2 text-sm">
+          {/* Progress */}
+          <div className="mb-3 rounded-lg bg-green-900/20 px-4 py-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-sm font-medium text-green-300">MVP-edistyminen: 2/5 valmis (40%)</span>
+            </div>
+            <div className="h-2 rounded-full bg-green-900/40 overflow-hidden">
+              <div className="h-full rounded-full bg-green-500" style={{ width: '40%' }} />
+            </div>
+          </div>
+
+          {/* Done items */}
+          <div className="flex items-start gap-3 rounded-lg border border-green-600/40 bg-green-900/20 px-4 py-2.5">
+            <span className="mt-0.5 text-green-400">✅</span>
+            <span className="flex-1 text-green-300 line-through">AuditEvent-taulu + createAuditEvent() + sanitizeForAudit()</span>
+            <span className="shrink-0 rounded bg-green-800 px-1.5 py-0.5 text-[10px] font-semibold text-green-200">TEHTY</span>
+          </div>
+          <div className="flex items-start gap-3 rounded-lg border border-green-600/40 bg-green-900/20 px-4 py-2.5">
+            <span className="mt-0.5 text-green-400">✅</span>
+            <span className="flex-1 text-green-300 line-through">assertTenantScope() jokaiseen API-reitiin</span>
+            <span className="shrink-0 rounded bg-green-800 px-1.5 py-0.5 text-[10px] font-semibold text-green-200">TEHTY</span>
+          </div>
+
+          {/* Pending items */}
           {[
-            ['AuditEvent-taulu + createAuditEvent() + sanitizeForAudit()', '1 pv'],
-            ['assertTenantScope() jokaiseen API-reitiin', '2-3 pv'],
             ['RBAC-tarkistus palvelukerroksessa', '2-3 pv'],
             ['SupportAccessGrant + JIT-prosessi superadminille', '1-2 pv'],
             ['Yksinkertainen audit explorer kehityssivulle', '1 pv'],
@@ -97,9 +118,6 @@ export default function SecurityPlan() {
               <span className="shrink-0 text-xs text-green-600">{est}</span>
             </div>
           ))}
-          <p className="mt-3 rounded-lg bg-green-900/20 px-4 py-2 text-sm font-medium text-green-300">
-            Estimaatti: 2-3 viikkoa
-          </p>
         </div>
       </Section>
 
@@ -173,8 +191,8 @@ export default function SecurityPlan() {
       {/* 5. Top 10 backlog */}
       <Section title="5. Top 10 backlog">
         <ol className="list-decimal pl-5 space-y-1.5 text-sm text-green-200">
-          <li>AuditEvent-taulu + createAuditEvent() + sanitizeForAudit()</li>
-          <li>assertTenantScope() jokaiseen API-reitiin</li>
+          <li className="text-green-500 line-through">AuditEvent-taulu + createAuditEvent() + sanitizeForAudit() <span className="rounded bg-green-800 px-1 py-0.5 text-[10px] font-semibold text-green-200 no-underline">✅ TEHTY</span></li>
+          <li className="text-green-500 line-through">assertTenantScope() jokaiseen API-reitiin <span className="rounded bg-green-800 px-1 py-0.5 text-[10px] font-semibold text-green-200 no-underline">✅ TEHTY</span></li>
           <li>RBAC palvelukerroksessa (ei vain UI:ssa)</li>
           <li>SupportAccessGrant + JIT-prosessi superadminille</li>
           <li>SecurityIncident + BreachCase -workflow</li>
