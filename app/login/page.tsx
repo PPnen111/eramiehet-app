@@ -53,7 +53,7 @@ export default function LoginPage() {
     setMessage('')
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
     })
 
     setLoading(false)
@@ -67,14 +67,14 @@ export default function LoginPage() {
   }
 
   const inputCls =
-    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700'
+    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700'
   const labelCls = 'mb-1 block text-sm font-medium text-neutral-700'
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-green-950 to-stone-950 px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">Metsästysseuran sovellus</h1>
+          <h1 className="text-3xl font-bold text-white">JahtiPro</h1>
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-xl">

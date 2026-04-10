@@ -1,8 +1,11 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Trash2, MessageSquare, Plus, X, ChevronLeft } from 'lucide-react'
+import { Trash2, MessageSquare, Plus, X, ChevronLeft, LayoutGrid, TrendingUp, Sparkles, Lock, Users } from 'lucide-react'
 import Link from 'next/link'
+import FeatureMatrix from './feature-matrix'
+import GrowthStrategy from './growth-strategy'
+import FutureNotes from './future-notes'
 
 export type DevTask = {
   id: string
@@ -95,7 +98,10 @@ interface Props {
   role: string
 }
 
+type PageTab = 'kanban' | 'ominaisuudet' | 'kasvustrategia' | 'tulevaisuus'
+
 export default function DevTasksBoard({ initialTasks, role }: Props) {
+  const [pageTab, setPageTab] = useState<PageTab>('kanban')
   const [tasks, setTasks] = useState<DevTask[]>(initialTasks)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [draggingId, setDraggingId] = useState<string | null>(null)
@@ -195,6 +201,22 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
     setDragOverCol(null)
   }
 
+  const pageTabBtn = (tab: PageTab, label: string, icon?: React.ReactNode, access?: 'shared' | 'superadmin') => (
+    <button
+      onClick={() => setPageTab(tab)}
+      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+        pageTab === tab
+          ? 'bg-green-700 text-white'
+          : 'text-green-400 hover:bg-white/10'
+      }`}
+    >
+      {icon}
+      {label}
+      {role === 'superadmin' && access === 'shared' && <Users size={10} className="ml-0.5 opacity-50" />}
+      {role === 'superadmin' && access === 'superadmin' && <Lock size={10} className="ml-0.5 opacity-50" />}
+    </button>
+  )
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950">
       {/* Top bar */}
@@ -208,17 +230,53 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
             <h1 className="text-xl font-bold text-white">🗺️ Kehityssuunnitelma</h1>
             <p className="text-xs text-green-500 mt-0.5">{tasks.length} tehtävää</p>
           </div>
-          <button
-            onClick={() => setNewTaskCol('idea')}
-            className="flex items-center gap-1.5 rounded-xl bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
-          >
-            <Plus size={15} />
-            Uusi tehtävä
-          </button>
+          {pageTab === 'kanban' && (
+            <button
+              onClick={() => setNewTaskCol('idea')}
+              className="flex items-center gap-1.5 rounded-xl bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+            >
+              <Plus size={15} />
+              Uusi tehtävä
+            </button>
+          )}
         </div>
+
+        {/* Page tabs */}
+        <div className="mt-4 flex flex-wrap gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
+          {pageTabBtn('kanban', 'Tehtävät', undefined, 'shared')}
+          {pageTabBtn('ominaisuudet', 'Ominaisuudet', <LayoutGrid size={14} />, 'shared')}
+          {pageTabBtn('kasvustrategia', 'Kasvustrategia', <TrendingUp size={14} />, 'superadmin')}
+          {role === 'superadmin' && pageTabBtn('tulevaisuus', 'Tulevaisuus', <Sparkles size={14} />, 'superadmin')}
+        </div>
+        {role === 'superadmin' && (
+          <p className="mt-1.5 text-[10px] text-green-700">
+            🔒 = vain Pekka näkee &nbsp;|&nbsp; 👥 = Jari näkee myös
+          </p>
+        )}
       </div>
 
+      {pageTab === 'ominaisuudet' && (
+        <div className="px-4 pb-8">
+          <FeatureMatrix />
+        </div>
+      )}
+
+      {pageTab === 'kasvustrategia' && (
+        <div className="px-4 pb-8">
+          <GrowthStrategy />
+        </div>
+      )}
+
+      {pageTab === 'tulevaisuus' && role === 'superadmin' && (
+        <div className="px-4 pb-8">
+          <FutureNotes />
+        </div>
+      )}
+
       {/* Kanban board — horizontal scroll */}
+      {pageTab === 'kanban' && (
+        <>
+
       <div className="overflow-x-auto pb-8">
         <div className="flex gap-3 px-4" style={{ minWidth: `${COLUMNS.length * 260}px` }}>
           {COLUMNS.map((col) => {
@@ -315,6 +373,8 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
             }
           }}
         />
+      )}
+        </>
       )}
     </main>
   )

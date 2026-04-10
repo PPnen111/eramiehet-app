@@ -11,6 +11,18 @@ export const metadata: Metadata = {
   description: "Metsästysseuran hallintajärjestelmä",
 };
 
+// Inline script that runs BEFORE any React/Supabase JS loads.
+// Detects recovery hash fragment and redirects to /reset-password
+// before Supabase auto-processes the token and signs the user in.
+const recoveryScript = `
+  (function() {
+    var h = window.location.hash;
+    if (h && h.indexOf('type=recovery') !== -1 && window.location.pathname !== '/reset-password') {
+      window.location.replace('/reset-password' + h);
+    }
+  })();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -18,6 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fi">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: recoveryScript }} />
+      </head>
       <body className="antialiased">
         <ActivityTracker />
         <OfflineSync />

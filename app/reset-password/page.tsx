@@ -4,24 +4,43 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/browser'
 
+// Check hash before component mounts so initial state is correct
+function hasRecoveryHash(): boolean {
+  if (typeof window === 'undefined') return false
+  return window.location.hash.includes('type=recovery')
+}
+
 export default function ResetPasswordPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  const [ready, setReady] = useState(false)
+  const [ready, setReady] = useState(hasRecoveryHash)
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [messageType, setMessageType] = useState<'success' | 'error' | 'info'>('info')
 
-  // Supabase places the recovery token in the URL hash.
-  // onAuthStateChange with PASSWORD_RECOVERY fires once the client
-  // has exchanged the token for a session.
-  // We also check the current session on mount in case the event
-  // fired before the listener was registered (React hydration race).
   useEffect(() => {
-    // Check if recovery session already exists (token processed before listener registered)
+    // Check hash fragment (implicit flow fallback)
+    if (window.location.hash.includes('type=recovery')) {
+      setReady(true)
+    }
+
+    // Handle PKCE code in URL (if redirected here directly instead of via callback)
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (!error) {
+          setReady(true)
+          // Clean URL
+          window.history.replaceState({}, '', '/reset-password')
+        }
+      })
+    }
+
+    // Check if session already exists (set by callback route)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setReady(true)
     })
@@ -66,14 +85,14 @@ export default function ResetPasswordPage() {
   }
 
   const inputCls =
-    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700'
+    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700'
   const labelCls = 'mb-1 block text-sm font-medium text-neutral-700'
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-green-950 to-stone-950 px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">Metsästysseuran sovellus</h1>
+          <h1 className="text-3xl font-bold text-white">JahtiPro</h1>
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-xl">

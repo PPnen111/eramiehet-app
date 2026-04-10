@@ -31,12 +31,14 @@ export default async function MuokkaaPage({
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('club_id, role')
+    .select('club_id, active_club_id, role')
     .eq('id', user.id)
     .single()
 
   if (!profile) redirect('/login')
   if (!isBoardOrAbove(profile.role)) redirect('/tapahtumat')
+
+  const clubId = profile.active_club_id ?? profile.club_id
 
   const { data: raw } = await supabase
     .from('events')
@@ -48,7 +50,7 @@ export default async function MuokkaaPage({
 
   const event = raw as unknown as EventRow
 
-  if (event.club_id !== profile.club_id) notFound()
+  if (event.club_id !== clubId) notFound()
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Hammer, Target, Users, Crosshair, Trophy, MoreHorizontal, CalendarX, Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { isBoardOrAbove } from '@/lib/auth'
 import DeleteEventButton from './delete-event-button'
 
 const typeLabels: Record<string, string> = {
@@ -52,18 +53,19 @@ export default async function TapahtumatPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('club_id, role')
+    .select('club_id, active_club_id, role')
     .eq('id', user.id)
     .single()
 
   if (!profile) redirect('/login')
 
-  const isAdmin = profile.role === 'admin' || profile.role === 'board_member'
+  const isAdmin = isBoardOrAbove(profile.role)
+  const clubId = profile.active_club_id ?? profile.club_id
 
   const { data: events } = await supabase
     .from('events')
     .select('id, title, description, type, starts_at')
-    .eq('club_id', profile.club_id)
+    .eq('club_id', clubId)
     .order('starts_at', { ascending: true })
 
   const now = new Date()
