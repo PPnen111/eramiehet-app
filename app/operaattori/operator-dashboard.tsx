@@ -3,11 +3,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   LayoutDashboard, Users, TrendingUp, Bell, Map,
-  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare, AlertTriangle, Download,
+  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare, AlertTriangle, Download, Wallet,
 } from 'lucide-react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/format'
 import GrowthStrategy from '@/app/kehitys/growth-strategy'
+import BudgetTab from './budget-tab'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -112,7 +113,7 @@ type Summary = {
   feed: SummaryFeed[]
 }
 
-type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'strategy'
+type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'budget' | 'strategy'
 
 const PIPELINE_STATUSES = [
   { value: 'lead', label: 'Lead', cls: 'bg-stone-700 text-stone-200' },
@@ -398,6 +399,7 @@ export default function OperatorDashboard() {
           {tabBtn('clubs', 'Seurat', <Users size={14} />)}
           {tabBtn('pipeline', 'Myyntiputki', <TrendingUp size={14} />)}
           {tabBtn('signups', 'Kiinnostusilmoitukset', <Bell size={14} />, signups.length)}
+          {tabBtn('budget', 'Talous', <Wallet size={14} />)}
           {tabBtn('strategy', 'Strategia', <Map size={14} />)}
         </div>
       </div>
@@ -772,6 +774,9 @@ export default function OperatorDashboard() {
             </div>
           </div>
         )}
+
+        {/* ═══ TAB: BUDGET ═══ */}
+        {tab === 'budget' && <BudgetTab clubs={clubs.map((c) => ({ id: c.id, name: c.name }))} />}
 
         {/* ═══ TAB: STRATEGY ═══ */}
         {tab === 'strategy' && <GrowthStrategy />}
