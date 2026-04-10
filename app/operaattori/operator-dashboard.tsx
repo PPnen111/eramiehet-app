@@ -97,6 +97,21 @@ type Signup = {
   created_at: string
 }
 
+type SummaryAlert = { type: string; message: string; severity: 'critical' | 'warning'; action: string; actionTab?: string; clubId?: string }
+type SummaryFeed = { icon: string; message: string; time: string }
+type Summary = {
+  clubs: { total: number; trial: number; active: number; expiring_14d: number }
+  members: { total: number }
+  pipeline: { total: number; leads: number; won_this_month: number; conversion_rate: number }
+  payments: { pending: number; overdue: number; paid_this_month: number }
+  signups: { total: number; new_48h: number }
+  audit: { events_24h: number; denied_24h: number }
+  mrr: number
+  top_club: { name: string; count: number }
+  alerts: SummaryAlert[]
+  feed: SummaryFeed[]
+}
+
 type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'strategy'
 
 const PIPELINE_STATUSES = [
@@ -118,6 +133,17 @@ const SOURCES = [
   { value: 'muu', label: 'Muu' },
 ]
 
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime()
+  const m = Math.floor(diff / 60_000)
+  if (m < 1) return 'juuri nyt'
+  if (m < 60) return `${m} min sitten`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h} t sitten`
+  const d = Math.floor(h / 24)
+  return `${d} pv sitten`
+}
+
 const statusBadge = (status: string) => {
   const s = PIPELINE_STATUSES.find((p) => p.value === status)
   return s ? s.cls : 'bg-stone-700 text-stone-200'
@@ -133,6 +159,7 @@ const subStatusCls = (status: string | null) => {
 
 export default function OperatorDashboard() {
   const [tab, setTab] = useState<Tab>('overview')
+  const [summary, setSummary] = useState<Summary | null>(null)
   const [clubs, setClubs] = useState<Club[]>([])
   const [kpi, setKpi] = useState<KPI>({ active_clubs: 0, total_members: 0, trial_count: 0, trial_expiring_14d: 0, signup_count: 0, signups_this_week: 0 })
   const [pipeline, setPipeline] = useState<PipelineEntry[]>([])
@@ -158,10 +185,11 @@ export default function OperatorDashboard() {
 
   const loadAll = useCallback(async () => {
     setLoading(true)
-    const [clubsRes, pipeRes, signupsRes] = await Promise.all([
+    const [clubsRes, pipeRes, signupsRes, summaryRes] = await Promise.all([
       fetch('/api/operator/clubs'),
       fetch('/api/operator/pipeline'),
       fetch('/api/operator/signups').catch(() => null),
+      fetch('/api/operator/summary').catch(() => null),
     ])
 
     if (clubsRes.ok) {
@@ -176,6 +204,10 @@ export default function OperatorDashboard() {
     if (signupsRes?.ok) {
       const d = (await signupsRes.json()) as { signups: Signup[] }
       setSignups(d.signups)
+    }
+    if (summaryRes?.ok) {
+      const d = (await summaryRes.json()) as Summary
+      setSummary(d)
     }
     setLoading(false)
   }, [])
@@ -378,141 +410,155 @@ export default function OperatorDashboard() {
           </div>
         )}
 
-        {/* ═══ TAB: OVERVIEW ═══ */}
-        {tab === 'overview' && (() => {
-          const alertClubs = clubs.filter((c) => {
-            const days = trialDaysLeft(c)
-            return (days !== null && days < 14) || (days !== null && days < 7)
-          })
-          const wonCount = pipeline.filter((p) => p.status === 'won').length
-          const convRate = pipeline.length > 0 ? Math.round((wonCount / pipeline.length) * 100) : 0
-
-          return (
+        {/* ═══ TAB: OVERVIEW — Command Center ═══ */}
+        {tab === 'overview' && summary && (
           <div className="space-y-6">
-            {/* Trial alerts */}
-            {alertClubs.length > 0 && (
+            {/* SECTION 1 — Alerts */}
+            {summary.alerts.length > 0 ? (
               <div className="rounded-2xl border border-red-800/60 bg-red-900/10 p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <AlertTriangle size={16} className="text-red-400" />
-                  <h3 className="text-sm font-semibold text-red-300">Toimenpiteitä vaativat seurat</h3>
+                  <h3 className="text-sm font-semibold text-red-300">Toimenpiteet heti</h3>
                 </div>
                 <div className="space-y-2">
-                  {alertClubs.map((c) => {
-                    const days = trialDaysLeft(c)
-                    const isUrgent = days !== null && days < 7
-                    return (
-                      <div key={c.id} className={`flex items-center justify-between rounded-lg border px-3 py-2 ${isUrgent ? 'border-red-800/60 bg-red-900/20' : 'border-yellow-800/60 bg-yellow-900/10'}`}>
-                        <div>
-                          <span className="text-sm font-medium text-white">{c.name}</span>
-                          <span className={`ml-2 text-xs ${isUrgent ? 'text-red-400' : 'text-yellow-400'}`}>
-                            trial päättyy {days} päivässä {c.activity_7d === 0 ? '— ei aktiivisuutta' : ''}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => { openNewPipeline({ club_name: c.name, status: 'trial' }); setTab('pipeline') }}
-                          className="rounded-lg bg-green-800 px-2.5 py-1 text-xs font-semibold text-white hover:bg-green-700"
-                        >
-                          → Myyntiputki
-                        </button>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* KPI cards with progress */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <div className="rounded-xl border border-green-800 bg-white/5 p-4 text-center">
-                <p className="text-2xl font-bold text-white">{kpi.active_clubs}</p>
-                <p className="mt-1 text-xs text-green-500">Aktiiviset seurat</p>
-                <div className="mt-2 h-1.5 rounded-full bg-green-900/40"><div className="h-full rounded-full bg-green-500" style={{ width: `${Math.min(kpi.active_clubs * 10, 100)}%` }} /></div>
-                <p className="mt-1 text-[10px] text-green-700">tavoite: 10</p>
-              </div>
-              <div className="rounded-xl border border-green-800 bg-white/5 p-4 text-center">
-                <p className="text-2xl font-bold text-white">{kpi.total_members}</p>
-                <p className="mt-1 text-xs text-green-500">Jäseniä yhteensä</p>
-                <div className="mt-2 h-1.5 rounded-full bg-green-900/40"><div className="h-full rounded-full bg-green-500" style={{ width: `${Math.min((kpi.total_members / 500) * 100, 100)}%` }} /></div>
-                <p className="mt-1 text-[10px] text-green-700">tavoite: 500</p>
-              </div>
-              <div className="rounded-xl border border-green-800 bg-white/5 p-4 text-center">
-                <p className="text-2xl font-bold text-white">{kpi.trial_count}</p>
-                <p className="mt-1 text-xs text-green-500">Trialissa</p>
-                {kpi.trial_expiring_14d > 0 && (
-                  <p className="mt-1 text-[10px] text-amber-400">{kpi.trial_expiring_14d} päättyy 14 pv sisällä</p>
-                )}
-              </div>
-              <div className="rounded-xl border border-green-800 bg-white/5 p-4 text-center">
-                <p className="text-2xl font-bold text-white">{kpi.signup_count}</p>
-                <p className="mt-1 text-xs text-green-500">Kiinnostusilmoitukset</p>
-                {kpi.signups_this_week > 0 && (
-                  <p className="mt-1 text-[10px] text-green-400">+{kpi.signups_this_week} tällä viikolla</p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-2">
-              {/* Club activity with health */}
-              <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
-                  Seurojen aktiviteetti (30 pv)
-                </h3>
-                <div className="space-y-2">
-                  {clubs.map((c) => {
-                    const h = HEALTH[clubHealth(c)]
-                    return (
-                      <div key={c.id} className="flex items-center justify-between rounded-lg border border-green-900/40 bg-white/[0.02] px-3 py-2">
-                        <div className="flex items-center gap-2">
-                          <span className={`h-2 w-2 rounded-full ${h.dot}`} />
-                          <span className="text-sm text-white">{c.name}</span>
-                          <span className={`text-[10px] ${h.cls}`}>{h.label}</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-xs">
-                          <span className="text-green-400">{c.activity_30d}</span>
-                          {c.last_active && <span className="text-green-600">{formatDate(c.last_active)}</span>}
-                        </div>
-                      </div>
-                    )
-                  })}
-                  {clubs.length === 0 && <p className="text-sm text-green-600">Ei seuroja.</p>}
-                </div>
-              </div>
-
-              {/* Pipeline summary with conversion */}
-              <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold uppercase tracking-wider text-green-400">Myyntiputki</h3>
-                  <span className="text-xs text-green-500">Konversio: {convRate}%</span>
-                </div>
-                <div className="space-y-2">
-                  {pipelineCounts.map((s) => (
-                    <div key={s.value} className="flex items-center justify-between rounded-lg border border-green-900/40 bg-white/[0.02] px-3 py-2">
-                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${s.cls}`}>{s.label}</span>
-                      <span className="text-sm font-semibold text-white">{s.count}</span>
+                  {summary.alerts.map((a, i) => (
+                    <div key={i} className={`flex items-center justify-between rounded-lg border px-3 py-2.5 ${a.severity === 'critical' ? 'border-red-800/60 bg-red-900/20' : 'border-yellow-800/60 bg-yellow-900/10'}`}>
+                      <span className="text-sm text-white">{a.message}</span>
+                      <button
+                        onClick={() => {
+                          if (a.clubId) void sendRemind(a.clubId)
+                          else if (a.actionTab) setTab(a.actionTab as Tab)
+                        }}
+                        className={`shrink-0 rounded-lg px-3 py-1 text-xs font-semibold text-white ${a.severity === 'critical' ? 'bg-red-800 hover:bg-red-700' : 'bg-yellow-800 hover:bg-yellow-700'}`}
+                      >
+                        {a.clubId && remindBusy === a.clubId ? '...' : a.action}
+                      </button>
                     </div>
                   ))}
                 </div>
               </div>
+            ) : (
+              <div className="rounded-2xl border border-green-700/40 bg-green-900/10 px-4 py-3 text-center">
+                <p className="text-sm text-green-300">✅ Kaikki kunnossa — ei kiireellisiä toimenpiteitä</p>
+              </div>
+            )}
+
+            {/* SECTION 2 — Cards grid */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              {/* Card 1: Asiakkuudet */}
+              <button onClick={() => setTab('clubs')} className="rounded-2xl border border-green-800 bg-white/5 p-5 text-left hover:bg-white/[0.07] transition-colors">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">👥</span>
+                  <h3 className="font-semibold text-white">Asiakkuudet</h3>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between"><span className="text-green-400">Aktiiviset seurat</span><span className="text-white font-semibold">{summary.clubs.total}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Jäseniä yhteensä</span><span className="text-white font-semibold">{summary.members.total}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Trialissa</span><span className="text-white font-semibold">{summary.clubs.trial}{summary.clubs.expiring_14d > 0 ? ` (${summary.clubs.expiring_14d} päättyy pian)` : ''}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Aktiivisin</span><span className="text-white font-semibold">{summary.top_club.name} ({summary.top_club.count}/30pv)</span></div>
+                </div>
+                <p className="mt-3 text-xs text-green-500">→ Seurat</p>
+              </button>
+
+              {/* Card 2: Myynti & Markkinointi */}
+              <button onClick={() => setTab('pipeline')} className="rounded-2xl border border-green-800 bg-white/5 p-5 text-left hover:bg-white/[0.07] transition-colors">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">📈</span>
+                  <h3 className="font-semibold text-white">Myynti & Markkinointi</h3>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between"><span className="text-green-400">Liidejä</span><span className="text-white font-semibold">{summary.pipeline.leads}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Won tällä kuulla</span><span className="text-white font-semibold">{summary.pipeline.won_this_month}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Kiinnostusilmoitukset</span><span className="text-white font-semibold">{summary.signups.total}{summary.signups.new_48h > 0 ? ` (+${summary.signups.new_48h} uutta)` : ''}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Konversio</span><span className="text-white font-semibold">{summary.pipeline.conversion_rate}%</span></div>
+                </div>
+                <p className="mt-3 text-xs text-green-500">→ Myyntiputki</p>
+              </button>
+
+              {/* Card 3: Talous */}
+              <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">💰</span>
+                  <h3 className="font-semibold text-white">Talous</h3>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between"><span className="text-green-400">MRR</span><span className="text-white font-semibold">{summary.mrr > 0 ? `${summary.mrr} €/kk` : 'Trialissa — ei laskutusta vielä'}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Avoimia laskuja</span><span className="text-white font-semibold">{summary.payments.pending}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Myöhässä</span><span className={`font-semibold ${summary.payments.overdue > 0 ? 'text-red-400' : 'text-white'}`}>{summary.payments.overdue}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Maksettu tässä kuussa</span><span className="text-white font-semibold">{summary.payments.paid_this_month}</span></div>
+                </div>
+              </div>
+
+              {/* Card 4: Järjestelmä */}
+              <a href="/kehitys" className="rounded-2xl border border-green-800 bg-white/5 p-5 hover:bg-white/[0.07] transition-colors block">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">⚙️</span>
+                  <h3 className="font-semibold text-white">Järjestelmä</h3>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between"><span className="text-green-400">Seurat yhteensä</span><span className="text-white font-semibold">{summary.clubs.total}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Käyttäjiä yhteensä</span><span className="text-white font-semibold">{summary.members.total}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Alusta</span><span className="text-white font-semibold">Next.js + Supabase</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Tietokanta</span><span className="text-green-300 font-semibold">Supabase Pro ✅</span></div>
+                </div>
+                <p className="mt-3 text-xs text-green-500">→ Kehityssivu</p>
+              </a>
+
+              {/* Card 5: Tietoturva & GDPR */}
+              <div className="rounded-2xl border border-green-800 bg-white/5 p-5 sm:col-span-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">🔒</span>
+                  <h3 className="font-semibold text-white">Tietoturva & GDPR</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-4">
+                  <div className="flex justify-between"><span className="text-green-400">Tapahtumaloki (24h)</span><span className="text-white font-semibold">{summary.audit.events_24h}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Hylättyjä pääsyjä</span><span className={`font-semibold ${summary.audit.denied_24h > 0 ? 'text-red-400' : 'text-white'}`}>{summary.audit.denied_24h}</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">GDPR-pyynnöt</span><span className="text-white font-semibold">0 avoinna</span></div>
+                  <div className="flex justify-between"><span className="text-green-400">Viimeisin tarkistus</span><span className="text-white font-semibold">{formatDate(new Date().toISOString())}</span></div>
+                </div>
+              </div>
             </div>
 
-            {/* Quick actions */}
-            <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">Pikavalinnat</h3>
-              <div className="flex flex-wrap gap-2">
-                <button onClick={() => { openNewPipeline(); setTab('pipeline') }} className="flex items-center gap-1.5 rounded-lg bg-green-700 px-3 py-2 text-xs font-semibold text-white hover:bg-green-600 transition-colors">
-                  <Plus size={13} /> Lisää prospekti
-                </button>
-                <button onClick={() => void sendBulkRemind()} disabled={bulkRemindBusy} className="flex items-center gap-1.5 rounded-lg bg-red-900/60 px-3 py-2 text-xs font-semibold text-red-200 hover:bg-red-800/60 disabled:opacity-50 transition-colors">
-                  <Bell size={13} /> {bulkRemindBusy ? 'Lähetetään...' : 'Muistutus inaktiivisille'}
-                </button>
-                <button onClick={downloadCsv} className="flex items-center gap-1.5 rounded-lg border border-green-800 px-3 py-2 text-xs font-semibold text-green-300 hover:bg-white/5 transition-colors">
-                  <Download size={13} /> Lataa raportti (CSV)
-                </button>
+            {/* SECTION 3 — Activity feed + quick actions */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              {/* Feed */}
+              <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">Viimeisimmät tapahtumat</h3>
+                {summary.feed.length > 0 ? (
+                  <div className="space-y-2">
+                    {summary.feed.slice(0, 5).map((f, i) => (
+                      <div key={i} className="flex items-start gap-2 rounded-lg border border-green-900/40 bg-white/[0.02] px-3 py-2">
+                        <span className="shrink-0">{f.icon}</span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm text-white">{f.message}</p>
+                          <p className="text-xs text-green-600">{relativeTime(f.time)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-green-600">Ei viimeaikaisia tapahtumia.</p>
+                )}
+              </div>
+
+              {/* Quick actions */}
+              <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">Pikavalinnat</h3>
+                <div className="flex flex-col gap-2">
+                  <button onClick={() => { openNewPipeline(); setTab('pipeline') }} className="flex items-center gap-1.5 rounded-lg bg-green-700 px-3 py-2.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors">
+                    <Plus size={13} /> Lisää prospekti
+                  </button>
+                  <button onClick={() => void sendBulkRemind()} disabled={bulkRemindBusy} className="flex items-center gap-1.5 rounded-lg bg-red-900/60 px-3 py-2.5 text-xs font-semibold text-red-200 hover:bg-red-800/60 disabled:opacity-50 transition-colors">
+                    <Bell size={13} /> {bulkRemindBusy ? 'Lähetetään...' : 'Muistutus inaktiivisille'}
+                  </button>
+                  <button onClick={downloadCsv} className="flex items-center gap-1.5 rounded-lg border border-green-800 px-3 py-2.5 text-xs font-semibold text-green-300 hover:bg-white/5 transition-colors">
+                    <Download size={13} /> Lataa raportti (CSV)
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-          )
-        })()}
+        )}
 
         {/* ═══ TAB: CLUBS ═══ */}
         {tab === 'clubs' && (
