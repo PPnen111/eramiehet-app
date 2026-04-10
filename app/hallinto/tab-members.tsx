@@ -35,19 +35,21 @@ const STATUS_LABEL: Record<string, string> = {
   active: 'Aktiivinen',
   pending: 'Odottaa',
   inactive: 'Ei-aktiivinen',
+  no_account: 'Ei sovellustunnusta',
 }
 
 const STATUS_COLOR: Record<string, string> = {
   active: 'text-green-400',
   pending: 'text-yellow-400',
   inactive: 'text-stone-400',
+  no_account: 'text-blue-400',
 }
 
 export default function TabMembers({ clubId, initialMembers }: Props) {
   const supabase = createClient()
 
   const [members, setMembers] = useState<MemberWithStatus[]>(() =>
-    initialMembers.map((m) => ({ ...m, has_logged_in: false }))
+    initialMembers.map((m) => ({ ...m, has_logged_in: false, profile_id: null }))
   )
   const [loadingMembers, setLoadingMembers] = useState(true)
   const [deletingMember, setDeletingMember] = useState<string | null>(null)
@@ -276,7 +278,9 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
               </Link>
 
               <div className="shrink-0 flex items-center gap-1.5">
-                {m.has_logged_in ? (
+                {m.member_status === 'no_account' ? (
+                  <span className="text-xs text-blue-400" title="Ei sovellustunnusta">📋</span>
+                ) : m.has_logged_in ? (
                   <span className="text-xs text-green-500" title="Kirjautunut">✅</span>
                 ) : (
                   <span className="text-xs text-stone-500" title="Ei kirjautunut">⏳</span>
@@ -284,7 +288,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                 {invitedMember === m.id && (
                   <span className="text-xs text-green-400">✓</span>
                 )}
-                {!m.has_logged_in && m.email && (
+                {!m.has_logged_in && m.email && m.member_status !== 'no_account' && (
                   <button
                     onClick={() => void inviteMember(m.id)}
                     disabled={invitingMember === m.id || invitedMember === m.id}

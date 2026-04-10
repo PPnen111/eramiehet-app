@@ -43,6 +43,7 @@ export async function updateSession(request: NextRequest) {
     url.pathname.startsWith('/maksut') ||
     url.pathname.startsWith('/hallinto') ||
     url.pathname.startsWith('/superadmin') ||
+    url.pathname.startsWith('/operaattori') ||
     url.pathname.startsWith('/vaihda-seura')
 
   // Unauthenticated → login
