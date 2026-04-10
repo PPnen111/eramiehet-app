@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { guardTenant } from '@/lib/tenant'
 
 const LOCATION_LABELS: Record<string, string> = {
   erakartano: 'Eräkartano',
@@ -56,6 +57,8 @@ export async function POST(req: NextRequest) {
   if (!profile?.club_id) {
     return NextResponse.json({ error: 'Profiilia ei löydy' }, { status: 400 })
   }
+  const brv = await guardTenant({ id: user.id, role: 'member', club_id: profile.club_id, active_club_id: null }, profile.club_id)
+  if (brv) return brv
 
   // Encode location, booker_name and status into note field
   // (bookings table may not have these columns yet — run supabase/migrations/add_bookings_columns.sql)

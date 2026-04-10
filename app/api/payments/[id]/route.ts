@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
+import { guardTenant } from '@/lib/tenant'
 
 type ProfileRow = { club_id: string; active_club_id: string | null; role: string }
 
@@ -20,7 +21,7 @@ async function getCaller(supabase: Awaited<ReturnType<typeof createClient>>) {
   const caller = profileRaw as ProfileRow | null
   if (!caller || !isBoardOrAbove(caller.role)) return null
 
-  return { ...caller, clubId: caller.active_club_id ?? caller.club_id }
+  return { ...caller, userId: user.id, clubId: caller.active_club_id ?? caller.club_id }
 }
 
 export async function PATCH(
@@ -31,6 +32,8 @@ export async function PATCH(
   const supabase = await createClient()
   const caller = await getCaller(supabase)
   if (!caller) return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
+  const tv1 = await guardTenant({ id: caller.userId, role: caller.role, club_id: caller.club_id, active_club_id: caller.active_club_id }, caller.clubId)
+  if (tv1) return tv1
 
   let body: Record<string, unknown>
   try {
@@ -68,6 +71,8 @@ export async function DELETE(
   const supabase = await createClient()
   const caller = await getCaller(supabase)
   if (!caller) return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
+  const tv2 = await guardTenant({ id: caller.userId, role: caller.role, club_id: caller.club_id, active_club_id: caller.active_club_id }, caller.clubId)
+  if (tv2) return tv2
 
   const admin = createAdminClient()
 
