@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
+import { guardTenant } from '@/lib/tenant'
 
 type ProfileRow = { club_id: string; active_club_id: string | null; role: string }
 
@@ -12,6 +13,12 @@ async function getCallerClub(supabase: Awaited<ReturnType<typeof createClient>>,
     .eq('id', userId)
     .single()
   return data as ProfileRow | null
+}
+
+async function tenantCheck(userId: string, caller: ProfileRow) {
+  const clubId = caller.active_club_id ?? caller.club_id
+  const v = await guardTenant({ id: userId, role: caller.role, club_id: caller.club_id, active_club_id: caller.active_club_id }, clubId)
+  return { clubId, violation: v }
 }
 
 export type MemberDetail = {
@@ -55,7 +62,8 @@ export async function GET(
   if (!caller || !isBoardOrAbove(caller.role)) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
-  const clubId = caller.active_club_id ?? caller.club_id
+  const { clubId, violation: v1 } = await tenantCheck(user.id, caller)
+  if (v1) return v1
 
   const admin = createAdminClient()
 
@@ -106,7 +114,8 @@ export async function PATCH(
   if (!caller || !isBoardOrAbove(caller.role)) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
-  const clubId = caller.active_club_id ?? caller.club_id
+  const { clubId, violation: v2 } = await tenantCheck(user.id, caller)
+  if (v2) return v2
 
   const body = (await req.json()) as Partial<{
     full_name: string
@@ -160,7 +169,8 @@ export async function DELETE(
   if (!caller || !isBoardOrAbove(caller.role)) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
-  const clubId = caller.active_club_id ?? caller.club_id
+  const { clubId, violation: v3 } = await tenantCheck(user.id, caller)
+  if (v3) return v3
 
   const admin = createAdminClient()
 

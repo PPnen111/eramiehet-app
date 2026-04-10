@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
+import { guardTenant } from '@/lib/tenant'
 import { reminderHtml, reminderSubject, type ReminderEmailData } from '@/lib/emails/reminder'
 
 const FROM = 'JahtiPro <noreply@jahtipro.fi>'
@@ -25,6 +26,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
   const clubId = caller.active_club_id ?? caller.club_id
+  const rv = await guardTenant({ id: user.id, role: caller.role, club_id: caller.club_id, active_club_id: caller.active_club_id }, clubId)
+  if (rv) return rv
 
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {

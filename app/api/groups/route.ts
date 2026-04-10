@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isAdminOrAbove } from '@/lib/auth'
+import { guardTenant } from '@/lib/tenant'
 
 type GroupRow = {
   id: string
@@ -69,6 +70,8 @@ export async function GET() {
 
   const clubId = p.active_club_id ?? p.club_id
   if (!clubId) return NextResponse.json({ error: 'Ei seuraa' }, { status: 400 })
+  const gv1 = await guardTenant({ id: user.id, role: p.role ?? 'member', club_id: p.club_id, active_club_id: p.active_club_id }, clubId)
+  if (gv1) return gv1
 
   // Admin/superadmin: see all groups. Leader: see own groups only.
   if (!isAdminOrAbove(p.role)) {
@@ -139,6 +142,8 @@ export async function POST(req: NextRequest) {
 
   const clubId = p?.active_club_id ?? p?.club_id
   if (!clubId) return NextResponse.json({ error: 'Ei seuraa' }, { status: 400 })
+  const gv2 = await guardTenant({ id: user.id, role: p?.role ?? 'member', club_id: p?.club_id ?? null, active_club_id: p?.active_club_id ?? null }, clubId)
+  if (gv2) return gv2
 
   const body = await req.json() as unknown
   const { name, description } = body as { name?: string; description?: string }

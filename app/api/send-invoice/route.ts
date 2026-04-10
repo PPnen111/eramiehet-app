@@ -3,6 +3,7 @@ import { Resend } from 'resend'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
+import { guardTenant, getActorContext } from '@/lib/tenant'
 import { invoiceHtml, invoiceSubject, type InvoiceEmailData } from '@/lib/emails/invoice'
 
 const FROM = 'JahtiPro <noreply@jahtipro.fi>'
@@ -82,6 +83,11 @@ export async function POST(req: NextRequest) {
   }
 
   const payment = paymentRaw as PaymentRow
+
+  // Tenant guard: verify payment belongs to actor's club
+  const actor = await getActorContext(user.id)
+  const iv = await guardTenant(actor, payment.club_id)
+  if (iv) return iv
 
   // Fetch member profile
   const { data: profileRaw } = await admin

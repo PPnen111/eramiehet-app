@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
+import { guardTenant } from '@/lib/tenant'
 
 type ProfileRow = { club_id: string; active_club_id: string | null; role: string; id: string }
 
@@ -33,6 +34,8 @@ export async function PATCH(
   if (!caller || !isBoardOrAbove(caller.role)) {
     return NextResponse.json({ error: 'Ei oikeuksia' }, { status: 403 })
   }
+  const bv1 = await guardTenant({ id: caller.id, role: caller.role, club_id: caller.club_id, active_club_id: caller.active_club_id }, caller.clubId)
+  if (bv1) return bv1
 
   let body: Record<string, unknown>
   try {
@@ -129,6 +132,8 @@ export async function DELETE(
   const supabase = await createClient()
   const caller = await getCaller(supabase)
   if (!caller) return NextResponse.json({ error: 'Ei kirjautunut' }, { status: 401 })
+  const bv2 = await guardTenant({ id: caller.id, role: caller.role, club_id: caller.club_id, active_club_id: caller.active_club_id }, caller.clubId)
+  if (bv2) return bv2
 
   const admin = createAdminClient()
 
