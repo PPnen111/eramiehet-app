@@ -149,6 +149,19 @@ export default async function DashboardPage() {
     clubCreatedAt !== null &&
     new Date(clubCreatedAt) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 
+  // Check onboarding (skip for superadmin)
+  if (profileRole !== 'superadmin' && activeClubId) {
+    const { data: obRaw } = await supabase
+      .from('onboarding')
+      .select('completed_at')
+      .eq('club_id', activeClubId)
+      .maybeSingle()
+    const ob = obRaw as { completed_at: string | null } | null
+    if (ob && !ob.completed_at) {
+      redirect('/onboarding')
+    }
+  }
+
   // Fetch user's groups
   type MyGroupMembership = {
     group_id: string
