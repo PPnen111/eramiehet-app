@@ -1,12 +1,16 @@
 import Link from 'next/link'
+import CloseTabButton from './close-tab-button'
 
 export default function TietosuojaPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-10 pb-24">
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="mb-6 inline-block text-sm text-green-400 hover:text-green-300">
-          ← Etusivulle
-        </Link>
+        <div className="mb-6 flex items-center justify-between">
+          <Link href="/" className="text-sm text-green-400 hover:text-green-300">
+            ← Etusivulle
+          </Link>
+          <CloseTabButton />
+        </div>
 
         <h1 className="mb-1 text-3xl font-extrabold text-white">Tietosuojaseloste</h1>
         <p className="mb-10 text-sm text-green-500">Päivitetty 11.4.2026</p>

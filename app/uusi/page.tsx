@@ -122,7 +122,7 @@ export default function UusiPage() {
 
           <p className="text-center text-xs text-green-700">
             Jättämällä tiedot hyväksyt{' '}
-            <Link href="/tietosuoja" className="underline hover:text-green-500">tietosuojaselosteen</Link>
+            <a href="/tietosuoja" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-500">tietosuojaselosteen</a>
           </p>
         </form>
 
