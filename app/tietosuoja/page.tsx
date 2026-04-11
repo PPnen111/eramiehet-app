@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import BackButton from './back-button'
 import CloseTabButton from './close-tab-button'
 
 export default function TietosuojaPage() {
@@ -6,9 +7,7 @@ export default function TietosuojaPage() {
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-10 pb-24">
       <div className="mx-auto max-w-2xl">
         <div className="mb-6 flex items-center justify-between">
-          <Link href="/" className="text-sm text-green-400 hover:text-green-300">
-            ← Etusivulle
-          </Link>
+          <BackButton />
           <CloseTabButton />
         </div>
 

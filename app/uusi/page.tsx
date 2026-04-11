@@ -57,15 +57,21 @@ export default function UusiPage() {
       <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center px-4">
         <div className="mx-auto max-w-md text-center space-y-6">
           <CheckCircle size={64} className="mx-auto text-green-400" />
-          <h1 className="text-2xl font-bold text-white">Kiitos! Rekisteröitymisenne on vastaanotettu.</h1>
+          <h1 className="text-2xl font-bold text-white">Tilisi on luotu!</h1>
           <p className="text-green-300">
-            Aktivoimme tilanne pian ja lähetämme kirjautumistiedot sähköpostiin{' '}
+            Olemme lähettäneet aktivointiviestin osoitteeseen{' '}
             <span className="font-semibold text-white">{form.contact_email}</span>.
-            Tämä kestää vain pari minuuttia.
+            Tarkista sähköpostisi ja aseta salasanasi.
           </p>
-          <Link href="/" className="inline-block rounded-lg bg-green-700 px-6 py-3 text-sm font-semibold text-white hover:bg-green-600 transition-colors">
-            Takaisin etusivulle
-          </Link>
+          <a
+            href="https://jahtipro.fi/login"
+            className="inline-block rounded-xl bg-green-600 px-8 py-3.5 text-base font-bold text-white hover:bg-green-500 transition-colors"
+          >
+            Kirjaudu JahtiProhon →
+          </a>
+          <p className="text-xs text-green-600">
+            Ensimmäinen kirjautuminen ohjaa sinut käyttöönotto-oppaaseen.
+          </p>
         </div>
       </main>
     )
