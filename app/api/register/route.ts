@@ -45,7 +45,16 @@ export async function POST(req: NextRequest) {
       html: `<h2 style="color:#166534">JahtiPro</h2>
 <p>Hei ${contactName},</p>
 <p>Kiitos kiinnostuksestasi JahtiProta kohtaan!</p>
-<p>Olemme vastaanottaneet rekisteröitymispyyntönne seuralle <strong>${clubName}</strong>. Aktivoimme tilanne parin minuutin sisällä ja lähetämme teille kirjautumistiedot sähköpostitse.</p>
+<p>Olemme vastaanottaneet rekisteröitymispyyntönne seuralle <strong>${clubName}</strong>. Aktivoimme tilanne parin minuutin sisällä.</p>
+<p>Kun saat aktivointiviestin, pääset kirjautumaan täältä:</p>
+<a href="https://jahtipro.fi/login" style="background-color:#16a34a;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;margin:16px 0;font-weight:bold;">Kirjaudu JahtiProhon →</a>
+<p style="font-size:12px;color:#6b7280;">Tai kopioi osoite selaimeen: https://jahtipro.fi/login</p>
+<p>Kirjautumissivulla voit asettaa salasanasi:</p>
+<ol>
+<li>Klikkaa "Unohdin salasanan"</li>
+<li>Syötä tämä sähköpostiosoite</li>
+<li>Saat salasanan asetuslinkin sähköpostiisi</li>
+</ol>
 <p style="margin-top:24px;">Terveisin,<br/>Pekka Paunonen<br/>JahtiPro<br/>info@jahtipro.fi</p>`.trim(),
     }).catch(() => {})
 

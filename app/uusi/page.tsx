@@ -107,7 +107,7 @@ export default function UusiPage() {
           </div>
           <div className="flex items-center gap-3">
             <input type="checkbox" id="cabin" checked={form.has_cabin} onChange={(e) => set('has_cabin', e.target.checked)} className="h-4 w-4 rounded border-green-700 bg-green-950 text-green-500" />
-            <label htmlFor="cabin" className="text-sm text-green-300">Seuralla on eräkämppä tai eräkartano</label>
+            <label htmlFor="cabin" className="text-sm text-green-300">Onko teillä tällä hetkellä varattavia tiloja tai eräkoteja/mökkejä?</label>
           </div>
           <div>
             <label className="mb-1 block text-xs text-green-600">Kampanjakoodi (valinnainen)</label>
