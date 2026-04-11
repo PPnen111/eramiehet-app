@@ -21,10 +21,10 @@ export default function TietosuojaPage() {
               Yhteyshenkilö: Pekka Paunonen<br />
               Sähköposti:{' '}
               <a
-                href="mailto:paunonen@gmail.com"
+                href="mailto:info@jahtipro.fi"
                 className="text-green-400 underline hover:text-green-300"
               >
-                paunonen@gmail.com
+                info@jahtipro.fi
               </a>
             </p>
           </section>
@@ -103,10 +103,10 @@ export default function TietosuojaPage() {
             <p>
               Tietosuojaan liittyvissä kysymyksissä ota yhteyttä:{' '}
               <a
-                href="mailto:paunonen@gmail.com"
+                href="mailto:info@jahtipro.fi"
                 className="text-green-400 underline hover:text-green-300"
               >
-                paunonen@gmail.com
+                info@jahtipro.fi
               </a>
             </p>
           </section>

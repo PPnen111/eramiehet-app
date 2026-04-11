@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 <tr><td style="padding:4px 12px 4px 0;color:#6b7280;">Eräpäivä:</td><td><strong>${dueDate}</strong></td></tr>
 </table>
 <p>Palvelu on käytössänne välittömästi.</p>
-<p>Lisätietoja: <a href="mailto:paunonen@gmail.com">paunonen@gmail.com</a></p>
+<p>Lisätietoja: <a href="mailto:info@jahtipro.fi">info@jahtipro.fi</a></p>
 <p style="margin-top:24px;">Terveisin,<br/>JahtiPro-tiimi</p>`.trim(),
     }).catch(() => {})
 

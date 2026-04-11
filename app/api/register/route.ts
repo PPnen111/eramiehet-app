@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     // Notification to admin
     await resend.emails.send({
       from: 'JahtiPro <info@jahtipro.fi>',
-      to: 'paunonen@gmail.com',
+      to: 'info@jahtipro.fi',
       subject: `🔔 Uusi rekisteröityminen: ${clubName}`,
       html: `<h2 style="color:#166534">Uusi rekisteröityminen</h2>
 <table style="margin:16px 0;">
