@@ -265,7 +265,7 @@ export default function OnboardingWizard({ clubName }: Props) {
             </div>
 
             <button onClick={() => void completeOnboarding()} disabled={busy} className="w-full rounded-xl bg-green-600 py-3.5 text-base font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors">
-              {busy ? 'Viimeistellään...' : 'Siirry dashboardiin →'}
+              {busy ? 'Viimeistellään...' : 'Siirry seuran etusivulle →'}
             </button>
           </div>
         )}
