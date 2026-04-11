@@ -14,6 +14,7 @@ const roleLabel: Record<string, string> = {
   admin: 'Ylläpitäjä',
   board_member: 'Johtokunta',
   member: 'Jäsen',
+  superadmin: 'Superadmin',
 }
 
 export default function ClubSelector({ clubs }: { clubs: Club[] }) {

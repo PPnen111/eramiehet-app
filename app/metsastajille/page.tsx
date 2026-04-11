@@ -12,6 +12,7 @@ import {
   FolderOpen,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 type DocRow = {
   id: string
@@ -72,7 +73,9 @@ export default async function MetsastajillePage() {
     )
   }
 
-  const { data: raw } = await supabase
+  const admin = createAdminClient()
+
+  const { data: raw } = await admin
     .from('documents')
     .select('id, name, category, storage_path')
     .eq('club_id', profile.club_id)
@@ -82,7 +85,7 @@ export default async function MetsastajillePage() {
 
   const docsWithUrls = await Promise.all(
     docs.map(async (doc) => {
-      const { data } = await supabase.storage
+      const { data } = await admin.storage
         .from('documents')
         .createSignedUrl(doc.storage_path, 3600)
       return { ...doc, url: data?.signedUrl ?? null }

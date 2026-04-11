@@ -10,6 +10,7 @@ import {
   Map,
   Settings,
   Settings2,
+  Building2,
   PlusCircle,
   CalendarPlus,
   Shield,
@@ -47,7 +48,7 @@ const COMMON_MODULES: ModuleItem[] = [
   },
   {
     title: 'Saalisilmoitus',
-    description: 'Ilmoita saaliisi nopeasti.',
+    description: 'Erämiesten oma saalistilasto',
     href: '/saalis',
     icon: Target,
   },
@@ -147,6 +148,19 @@ export default async function DashboardPage() {
   const isNewClub =
     clubCreatedAt !== null &&
     new Date(clubCreatedAt) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+
+  // Check onboarding (skip for superadmin)
+  if (profileRole !== 'superadmin' && activeClubId) {
+    const { data: obRaw } = await supabase
+      .from('onboarding')
+      .select('completed_at')
+      .eq('club_id', activeClubId)
+      .maybeSingle()
+    const ob = obRaw as { completed_at: string | null } | null
+    if (ob && !ob.completed_at) {
+      redirect('/onboarding')
+    }
+  }
 
   // Fetch user's groups
   type MyGroupMembership = {
@@ -287,9 +301,20 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* Superadmin-linkki */}
+        {/* Superadmin-linkit */}
         {isSuperAdmin(profileRole) && (
-          <div className="mb-4">
+          <div className="mb-4 space-y-2">
+            <Link
+              href="/operaattori"
+              className="flex items-center gap-3 rounded-xl border border-green-600 bg-green-900/30 px-4 py-3 text-sm font-semibold text-green-200 hover:bg-green-900/50 transition-colors"
+            >
+              <Building2 size={16} />
+              <div className="flex-1">
+                <span>Operaattori</span>
+                <p className="text-xs font-normal text-green-500">Seurat, myyntiputki, KPI</p>
+              </div>
+              <span className="text-xs text-green-400">Avaa →</span>
+            </Link>
             <Link
               href="/superadmin"
               className="flex items-center gap-3 rounded-xl border border-yellow-700 bg-yellow-900/20 px-4 py-3 text-sm font-semibold text-yellow-300 hover:bg-yellow-900/40 transition-colors"

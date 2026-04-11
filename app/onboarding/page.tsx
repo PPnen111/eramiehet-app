@@ -21,7 +21,7 @@ export default async function OnboardingPage() {
   const { data: clubRaw } = await supabase
     .from('clubs')
     .select('name')
-    .eq('id', profile.club_id)
+    .eq('id', profile!.club_id!)
     .single()
 
   const clubName = (clubRaw as { name: string | null } | null)?.name ?? null

@@ -8,6 +8,7 @@ import LandingV2 from './landing-v2'
 import FeedbackTab from './feedback-tab'
 import SubscriptionsTab from './subscriptions-tab'
 import UsageTab from './usage-tab'
+import DevelopmentTab from './development-tab'
 import CreateUserForm from './create-user-form'
 import type { Stats, UserRow, EnhancedClub } from './analytics-tab'
 import type { FeedbackRow } from './feedback-tab'
@@ -29,7 +30,7 @@ interface Props {
   clubs: { id: string; name: string }[]
 }
 
-type Tab = 'analytics' | 'usage' | 'subscriptions' | 'feedback' | 'info' | 'landing-v1' | 'landing-v2'
+type Tab = 'analytics' | 'usage' | 'subscriptions' | 'feedback' | 'development' | 'info' | 'landing-v1' | 'landing-v2'
 
 export default function SuperadminTabs({
   stats,
@@ -52,6 +53,7 @@ export default function SuperadminTabs({
     { id: 'usage', label: 'Käyttöanalyysi 📊' },
     { id: 'subscriptions', label: 'Tilaukset' },
     { id: 'feedback', label: 'Palautteet 💬', badge: unreadFeedbackCount },
+    { id: 'development', label: 'Kehitys ✅' },
     { id: 'info', label: 'Tietoa sovelluksesta' },
     { id: 'landing-v1', label: 'Landing V1 — Tumma' },
     { id: 'landing-v2', label: 'Landing V2 — Vaalea' },
@@ -98,6 +100,7 @@ export default function SuperadminTabs({
       )}
       {activeTab === 'subscriptions' && <SubscriptionsTab subscriptions={subscriptions} />}
       {activeTab === 'feedback' && <FeedbackTab rows={feedbackRows} />}
+      {activeTab === 'development' && <DevelopmentTab />}
       {activeTab === 'info' && <InfoTab />}
       {activeTab === 'landing-v1' && (
         <div className="overflow-hidden rounded-2xl border border-green-800 shadow-2xl">
