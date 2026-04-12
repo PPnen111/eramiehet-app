@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import { getActorContext, getEffectiveClubId, guardTenant } from '@/lib/tenant'
+import { checkPlanLimit, limitExceededResponse } from '@/lib/plan-limits'
 import { welcomeHtml, welcomeSubject } from '@/lib/emails/welcome'
 
 export type MemberWithStatus = {
@@ -188,6 +189,10 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: 'Virheellinen pyyntö' }, { status: 400 })
   }
+
+  // Plan limit check
+  const memberLimit = await checkPlanLimit(clubId, 'members')
+  if (!memberLimit.allowed) return limitExceededResponse(memberLimit)
 
   const fullName = body.full_name?.trim()
   if (!fullName) {

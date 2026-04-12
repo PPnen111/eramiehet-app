@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { checkPlanLimit, limitExceededResponse } from '@/lib/plan-limits'
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
@@ -30,6 +31,9 @@ export async function POST(request: NextRequest) {
   if (!file || !name || !category || !clubId) {
     return NextResponse.json({ error: 'Puuttuvia kenttiä' }, { status: 400 })
   }
+
+  const docLimit = await checkPlanLimit(clubId, 'documents')
+  if (!docLimit.allowed) return limitExceededResponse(docLimit)
 
   if (p.role !== 'superadmin' && p.club_id !== clubId) {
     return NextResponse.json({ error: 'Ei oikeuksia tähän seuraan' }, { status: 403 })
