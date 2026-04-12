@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/browser'
 import { X } from 'lucide-react'
+import PlanLimitModal from '@/app/components/plan-limit-modal'
 
 type Document = {
   id: string
@@ -38,6 +39,7 @@ export default function TabDocuments({ clubId }: Props) {
   const [file, setFile] = useState<File | null>(null)
   const [formError, setFormError] = useState('')
   const [formOpen, setFormOpen] = useState(false)
+  const [limitModal, setLimitModal] = useState<{ message: string; planLabel: string } | null>(null)
   const [preview, setPreview] = useState<PreviewState>(null)
   const [loadingPreview, setLoadingPreview] = useState<string | null>(null)
 
@@ -67,9 +69,14 @@ export default function TabDocuments({ clubId }: Props) {
     fd.append('club_id', clubId)
 
     const res = await fetch('/api/documents/upload', { method: 'POST', body: fd })
-    const data = await res.json().catch(() => ({})) as { error?: string; buckets?: string[] }
+    const data = await res.json().catch(() => ({})) as { error?: string; buckets?: string[]; limit_exceeded?: boolean; plan_label?: string }
 
     if (!res.ok) {
+      if (data.limit_exceeded) {
+        setLimitModal({ message: data.error ?? 'Raja täynnä', planLabel: data.plan_label ?? '' })
+        setUploading(false)
+        return
+      }
       const bucketInfo = data.buckets ? ` (buckets: ${data.buckets.join(', ') || 'ei yhtään'})` : ''
       setFormError((data.error ?? 'Lataus epäonnistui') + bucketInfo)
       setUploading(false)
@@ -223,6 +230,11 @@ export default function TabDocuments({ clubId }: Props) {
           </div>
         )}
       </div>
+
+      {/* Plan limit modal */}
+      {limitModal && (
+        <PlanLimitModal message={limitModal.message} planLabel={limitModal.planLabel} onClose={() => setLimitModal(null)} />
+      )}
 
       {/* Preview modal */}
       {preview && (

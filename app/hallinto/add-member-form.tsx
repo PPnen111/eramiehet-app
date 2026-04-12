@@ -19,9 +19,10 @@ const BILLING_METHODS = [
 interface Props {
   onDone: (message: string) => void
   onCancel: () => void
+  onLimitExceeded?: (info: { message: string; planLabel: string }) => void
 }
 
-export default function AddMemberForm({ onDone, onCancel }: Props) {
+export default function AddMemberForm({ onDone, onCancel, onLimitExceeded }: Props) {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -72,8 +73,13 @@ export default function AddMemberForm({ onDone, onCancel }: Props) {
         }),
       })
 
-      const data = (await res.json()) as { error?: string; invited?: boolean }
+      const data = (await res.json()) as { error?: string; invited?: boolean; limit_exceeded?: boolean; plan_label?: string }
       if (!res.ok) {
+        if (data.limit_exceeded && onLimitExceeded) {
+          onLimitExceeded({ message: data.error ?? 'Raja täynnä', planLabel: data.plan_label ?? '' })
+          setSaving(false)
+          return
+        }
         setError(data.error ?? 'Tallennus epäonnistui')
         setSaving(false)
         return

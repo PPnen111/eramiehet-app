@@ -331,6 +331,10 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
             setTimeout(() => setToast(null), 4000)
           }}
           onCancel={() => setAddMemberOpen(false)}
+          onLimitExceeded={(info) => {
+            setAddMemberOpen(false)
+            setLimitModal(info)
+          }}
         />
       )}
 
