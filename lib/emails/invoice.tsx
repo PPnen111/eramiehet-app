@@ -6,6 +6,9 @@ export type InvoiceEmailData = {
   dueDate: string | null
   paymentId: string
   adminEmail: string
+  referenceNumber?: string | null
+  bankIban?: string | null
+  bankBic?: string | null
 }
 
 function formatEuros(cents: number): string {
@@ -92,7 +95,8 @@ export function invoiceHtml(data: InvoiceEmailData): string {
                 <tr>
                   <td style="padding:16px 20px;">
                     <p style="margin:0;font-size:11px;color:#888888;text-transform:uppercase;letter-spacing:0.5px;">Viitenumero</p>
-                    <p style="margin:4px 0 0;font-size:14px;font-family:monospace;color:#333333;letter-spacing:1px;">${shortRef(data.paymentId)}</p>
+                    <p style="margin:4px 0 0;font-size:14px;font-family:monospace;color:#333333;letter-spacing:1px;">${data.referenceNumber ?? shortRef(data.paymentId)}</p>
+                    ${data.bankIban ? `<p style="margin:12px 0 0;font-size:11px;color:#888888;text-transform:uppercase;letter-spacing:0.5px;">Tilinumero</p><p style="margin:4px 0 0;font-size:14px;font-family:monospace;color:#333333;">${data.bankIban}${data.bankBic ? ` (${data.bankBic})` : ''}</p>` : ''}
                   </td>
                 </tr>
               </table>

@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/browser'
+import { Plus, Pencil, Trash2, Star } from 'lucide-react'
 
 type ClubInfo = {
   name: string
@@ -161,6 +162,112 @@ export default function TabClubInfo({ clubId }: Props) {
       >
         {saving ? 'Tallennetaan...' : 'Tallenna tiedot'}
       </button>
+
+      {/* Bank accounts section */}
+      <BankAccountsSection clubId={clubId} />
     </form>
+  )
+}
+
+// ─── Bank Accounts ─────────────────────────────────────────────
+
+type BankAccount = { id: string; account_name: string; iban: string; bic: string | null; is_default: boolean }
+
+function BankAccountsSection({ clubId }: { clubId: string }) {
+  const [accounts, setAccounts] = useState<BankAccount[]>([])
+  const [loading, setLoading] = useState(true)
+  const [formOpen, setFormOpen] = useState(false)
+  const [editId, setEditId] = useState<string | null>(null)
+  const [af, setAf] = useState({ account_name: '', iban: '', bic: '', is_default: false })
+  const [busy, setBusy] = useState(false)
+  const [toast, setToast] = useState('')
+
+  const load = useCallback(async () => {
+    setLoading(true)
+    const res = await fetch('/api/club/bank-accounts')
+    if (res.ok) {
+      const d = (await res.json()) as { accounts: BankAccount[] }
+      setAccounts(d.accounts)
+    }
+    setLoading(false)
+  }, [])
+
+  useEffect(() => { void load() }, [load])
+
+  const openNew = () => { setEditId(null); setAf({ account_name: '', iban: '', bic: '', is_default: accounts.length === 0 }); setFormOpen(true) }
+  const openEdit = (a: BankAccount) => { setEditId(a.id); setAf({ account_name: a.account_name, iban: a.iban, bic: a.bic ?? '', is_default: a.is_default }); setFormOpen(true) }
+
+  const save = async () => {
+    setBusy(true)
+    const url = editId ? `/api/club/bank-accounts/${editId}` : '/api/club/bank-accounts'
+    await fetch(url, { method: editId ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(af) })
+    setBusy(false)
+    setFormOpen(false)
+    setToast(editId ? 'Tili päivitetty' : 'Tili lisätty')
+    setTimeout(() => setToast(''), 3000)
+    void load()
+  }
+
+  const del = async (id: string) => {
+    if (!confirm('Poistetaanko tilinumero?')) return
+    await fetch(`/api/club/bank-accounts/${id}`, { method: 'DELETE' })
+    setToast('Tili poistettu')
+    setTimeout(() => setToast(''), 3000)
+    void load()
+  }
+
+  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500'
+  const labelCls = 'mb-1 block text-sm text-green-300'
+
+  return (
+    <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Tilinumerot</h2>
+        <button onClick={openNew} className="flex items-center gap-1 rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600">
+          <Plus size={12} /> Lisää tilinumero
+        </button>
+      </div>
+
+      {toast && <p className="rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">{toast}</p>}
+
+      {loading ? <p className="text-sm text-green-500">Ladataan...</p> : accounts.length === 0 ? (
+        <p className="text-sm text-green-600">Ei tilinumeroita. Lisää seuran tilinumero laskuja varten.</p>
+      ) : (
+        <div className="space-y-2">
+          {accounts.map((a) => (
+            <div key={a.id} className="flex items-center justify-between rounded-lg border border-green-900/40 bg-white/[0.02] px-3 py-2 text-sm">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-white">{a.account_name}</span>
+                  {a.is_default && <Star size={12} className="text-yellow-400" />}
+                </div>
+                <p className="text-xs text-green-400">{a.iban}{a.bic ? ` · ${a.bic}` : ''}</p>
+              </div>
+              <div className="flex items-center gap-1">
+                <button onClick={() => openEdit(a)} className="rounded-md p-1 text-green-600 hover:text-green-300"><Pencil size={12} /></button>
+                <button onClick={() => void del(a.id)} className="rounded-md p-1 text-red-500 hover:text-red-300"><Trash2 size={12} /></button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {formOpen && (
+        <div className="rounded-xl border border-green-700 bg-green-900/20 p-4 space-y-3">
+          <h3 className="text-sm font-semibold text-white">{editId ? 'Muokkaa tiliä' : 'Lisää tilinumero'}</h3>
+          <div><label className={labelCls}>Tilin nimi *</label><input type="text" value={af.account_name} onChange={(e) => setAf((f) => ({ ...f, account_name: e.target.value }))} className={inputCls} placeholder="esim. Päätiili" /></div>
+          <div><label className={labelCls}>IBAN *</label><input type="text" value={af.iban} onChange={(e) => setAf((f) => ({ ...f, iban: e.target.value }))} className={inputCls} placeholder="FI12 3456 7890 1234 56" /></div>
+          <div><label className={labelCls}>BIC</label><input type="text" value={af.bic} onChange={(e) => setAf((f) => ({ ...f, bic: e.target.value }))} className={inputCls} placeholder="NDEAFIHH" /></div>
+          <label className="flex items-center gap-2 text-sm text-green-300">
+            <input type="checkbox" checked={af.is_default} onChange={(e) => setAf((f) => ({ ...f, is_default: e.target.checked }))} className="h-4 w-4 rounded border-green-700 bg-green-950" />
+            Aseta oletustiliksi
+          </label>
+          <div className="flex gap-2">
+            <button onClick={() => void save()} disabled={busy || !af.account_name.trim() || !af.iban.trim()} className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Tallennetaan...' : 'Tallenna'}</button>
+            <button onClick={() => setFormOpen(false)} className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300">Peruuta</button>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

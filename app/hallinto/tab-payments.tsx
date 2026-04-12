@@ -840,6 +840,7 @@ export default function TabPayments({ clubId }: Props) {
                         <p className="text-xs text-green-400">
                           {profileName ?? '—'}
                           {p.due_date && ` · eräpäivä ${formatDate(p.due_date)}`}
+                          {p.reference_number && ` · viite ${p.reference_number}`}
                         </p>
                         {p.sent_at && (
                           <p className="text-xs text-green-600">
