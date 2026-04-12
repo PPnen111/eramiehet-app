@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import PlanLimitModal from '@/app/components/plan-limit-modal'
 
 type GroupMember = {
   id: string
@@ -35,6 +36,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
   const [loading, setLoading] = useState(true)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [limitModal, setLimitModal] = useState<{ message: string; planLabel: string } | null>(null)
 
   // Create group form
   const [createOpen, setCreateOpen] = useState(false)
@@ -86,8 +88,12 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
       setCreateOpen(false)
       await loadGroups()
     } else {
-      const d = await res.json().catch(() => ({})) as { error?: string }
-      showToast(d.error ?? 'Ryhmän luonti epäonnistui', 'err')
+      const d = await res.json().catch(() => ({})) as { error?: string; limit_exceeded?: boolean; plan_label?: string }
+      if (d.limit_exceeded) {
+        setLimitModal({ message: d.error ?? 'Raja täynnä', planLabel: d.plan_label ?? '' })
+      } else {
+        showToast(d.error ?? 'Ryhmän luonti epäonnistui', 'err')
+      }
     }
   }
 
@@ -488,6 +494,9 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
         >
           {toast.msg}
         </div>
+      )}
+      {limitModal && (
+        <PlanLimitModal message={limitModal.message} planLabel={limitModal.planLabel} onClose={() => setLimitModal(null)} />
       )}
     </>
   )
