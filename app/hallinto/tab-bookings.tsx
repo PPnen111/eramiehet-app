@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { Pencil, Trash2, X } from 'lucide-react'
+import { Pencil, Trash2, X, Receipt } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate } from '@/lib/format'
 
@@ -110,6 +110,15 @@ export default function TabBookings({ clubId }: Props) {
   const [editError, setEditError] = useState('')
   const [filterLocation, setFilterLocation] = useState<string>('all')
 
+  // Invoice modal state
+  const [invoiceBookingId, setInvoiceBookingId] = useState<string | null>(null)
+  const [invoiceEmail, setInvoiceEmail] = useState('')
+  const [invoiceDesc, setInvoiceDesc] = useState('')
+  const [invoiceAmount, setInvoiceAmount] = useState('')
+  const [invoiceDue, setInvoiceDue] = useState('')
+  const [invoiceBusy, setInvoiceBusy] = useState(false)
+  const [invoiceError, setInvoiceError] = useState('')
+
   const showToast = (message: string, type: 'success' | 'error') => {
     const id = crypto.randomUUID()
     setToasts((prev) => [...prev, { id, message, type }])
@@ -192,6 +201,38 @@ export default function TabBookings({ clubId }: Props) {
     } else {
       const data = (await res.json()) as { error?: string }
       showToast(data.error ?? 'Poisto epäonnistui', 'error')
+    }
+  }
+
+  const openInvoiceModal = (b: ParsedBooking) => {
+    setInvoiceBookingId(b.id)
+    setInvoiceEmail('')
+    setInvoiceDesc(`${locationLabel[b.location] ?? b.location} varaus ${b.starts_on}–${b.ends_on}`)
+    setInvoiceAmount('')
+    setInvoiceDue(new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10))
+    setInvoiceError('')
+  }
+
+  const sendInvoice = async () => {
+    if (!invoiceBookingId || !invoiceEmail || !invoiceAmount) { setInvoiceError('Täytä pakolliset kentät.'); return }
+    setInvoiceBusy(true)
+    const res = await fetch(`/api/bookings/${invoiceBookingId}/invoice`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        booker_email: invoiceEmail,
+        description: invoiceDesc,
+        amount_cents: Math.round(parseFloat(invoiceAmount.replace(',', '.')) * 100),
+        due_date: invoiceDue,
+      }),
+    })
+    setInvoiceBusy(false)
+    if (res.ok) {
+      showToast('Lasku lähetetty ja lisätty maksulistalle', 'success')
+      setInvoiceBookingId(null)
+    } else {
+      const d = (await res.json()) as { error?: string }
+      setInvoiceError(d.error ?? 'Lähetys epäonnistui')
     }
   }
 
@@ -306,6 +347,15 @@ export default function TabBookings({ clubId }: Props) {
                     )}
                   </div>
                   <div className="flex shrink-0 items-center gap-1">
+                    {b.status === 'confirmed' && (
+                      <button
+                        onClick={() => openInvoiceModal(b)}
+                        title="Lähetä lasku"
+                        className="rounded-md p-1.5 text-amber-500 hover:bg-amber-900/30 hover:text-amber-300 transition-colors"
+                      >
+                        <Receipt size={13} />
+                      </button>
+                    )}
                     <button
                       onClick={() => openEdit(b)}
                       title="Muokkaa"
@@ -440,6 +490,32 @@ export default function TabBookings({ clubId }: Props) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Invoice modal */}
+      {invoiceBookingId && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setInvoiceBookingId(null)} />
+          <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-6 shadow-2xl space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="font-bold text-white">Lähetä lasku varaajalle</h2>
+              <button onClick={() => setInvoiceBookingId(null)} className="text-green-500 hover:text-green-300"><X size={16} /></button>
+            </div>
+            <div><label className={labelCls}>Varaajan sähköposti *</label><input type="email" value={invoiceEmail} onChange={(e) => setInvoiceEmail(e.target.value)} className={inputCls} placeholder="varaaja@esimerkki.fi" /></div>
+            <div><label className={labelCls}>Laskun kuvaus</label><input type="text" value={invoiceDesc} onChange={(e) => setInvoiceDesc(e.target.value)} className={inputCls} /></div>
+            <div><label className={labelCls}>Summa (€) *</label><input type="text" inputMode="decimal" value={invoiceAmount} onChange={(e) => setInvoiceAmount(e.target.value)} className={inputCls} placeholder="esim. 80" /></div>
+            <div><label className={labelCls}>Eräpäivä</label><input type="date" value={invoiceDue} onChange={(e) => setInvoiceDue(e.target.value)} className={inputCls} /></div>
+            {invoiceError && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{invoiceError}</p>}
+            <div className="flex gap-2">
+              <button onClick={() => void sendInvoice()} disabled={invoiceBusy} className="flex-1 rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50">
+                {invoiceBusy ? 'Lähetetään...' : 'Lähetä lasku'}
+              </button>
+              <button onClick={() => setInvoiceBookingId(null)} className="rounded-lg border border-green-800 px-4 py-2.5 text-sm text-green-300 hover:bg-white/5">
+                Peruuta
+              </button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   )
