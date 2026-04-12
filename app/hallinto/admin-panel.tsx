@@ -5,17 +5,19 @@ import TabMembers from './tab-members'
 import TabPayments from './tab-payments'
 import TabDocuments from './tab-documents'
 import TabBookings from './tab-bookings'
+import TabRentalLocations from './tab-rental-locations'
 import TabGroups from './tab-groups'
 import TabClubInfo from './tab-club-info'
 import TabPlan from './tab-plan'
 import type { AdminMember } from './page'
 
-type Tab = 'jasenet' | 'maksut' | 'dokumentit' | 'varaukset' | 'ryhmat' | 'seuran-tiedot' | 'paketti'
+type Tab = 'jasenet' | 'maksut' | 'dokumentit' | 'varaukset' | 'kohteet' | 'ryhmat' | 'seuran-tiedot' | 'paketti'
 
 const tabs: { id: Tab; label: string }[] = [
   { id: 'jasenet', label: 'Jäsenet' },
   { id: 'maksut', label: 'Maksut' },
   { id: 'varaukset', label: 'Varaukset' },
+  { id: 'kohteet', label: 'Vuokrattavat' },
   { id: 'dokumentit', label: 'Dokumentit' },
   { id: 'ryhmat', label: 'Ryhmät' },
   { id: 'seuran-tiedot', label: 'Seuran tiedot' },
@@ -57,6 +59,7 @@ export default function AdminPanel({ clubId, initialMembers, isAdmin }: Props) {
       {active === 'jasenet' && <TabMembers clubId={clubId} initialMembers={initialMembers} />}
       {active === 'maksut' && <TabPayments clubId={clubId} />}
       {active === 'varaukset' && <TabBookings clubId={clubId} />}
+      {active === 'kohteet' && <TabRentalLocations clubId={clubId} />}
       {active === 'dokumentit' && <TabDocuments clubId={clubId} />}
       {active === 'ryhmat' && <TabGroups clubId={clubId} clubMembers={clubMembers} isAdmin={isAdmin} />}
       {active === 'seuran-tiedot' && <TabClubInfo clubId={clubId} />}
