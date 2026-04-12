@@ -7,9 +7,10 @@ import TabDocuments from './tab-documents'
 import TabBookings from './tab-bookings'
 import TabGroups from './tab-groups'
 import TabClubInfo from './tab-club-info'
+import TabPlan from './tab-plan'
 import type { AdminMember } from './page'
 
-type Tab = 'jasenet' | 'maksut' | 'dokumentit' | 'varaukset' | 'ryhmat' | 'seuran-tiedot'
+type Tab = 'jasenet' | 'maksut' | 'dokumentit' | 'varaukset' | 'ryhmat' | 'seuran-tiedot' | 'paketti'
 
 const tabs: { id: Tab; label: string }[] = [
   { id: 'jasenet', label: 'Jäsenet' },
@@ -18,6 +19,7 @@ const tabs: { id: Tab; label: string }[] = [
   { id: 'dokumentit', label: 'Dokumentit' },
   { id: 'ryhmat', label: 'Ryhmät' },
   { id: 'seuran-tiedot', label: 'Seuran tiedot' },
+  { id: 'paketti', label: 'Paketti' },
 ]
 
 interface Props {
@@ -58,6 +60,7 @@ export default function AdminPanel({ clubId, initialMembers, isAdmin }: Props) {
       {active === 'dokumentit' && <TabDocuments clubId={clubId} />}
       {active === 'ryhmat' && <TabGroups clubId={clubId} clubMembers={clubMembers} isAdmin={isAdmin} />}
       {active === 'seuran-tiedot' && <TabClubInfo clubId={clubId} />}
+      {active === 'paketti' && <TabPlan clubId={clubId} />}
     </div>
   )
 }

@@ -9,6 +9,7 @@ import {
   Sun,
   FileText,
   Download,
+  ExternalLink,
   FolderOpen,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
@@ -129,17 +130,22 @@ export default async function MetsastajillePage() {
                     className="flex items-center justify-between rounded-xl border border-green-800 bg-white/5 px-4 py-3"
                   >
                     <p className="font-medium text-white">{doc.name}</p>
-                    {doc.url ? (
-                      <a
-                        href={doc.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-green-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 transition-colors"
-                      >
-                        <Download size={12} />
-                        Lataa
-                      </a>
-                    ) : (
+                    {doc.url ? (() => {
+                      const isPdf = doc.name.toLowerCase().endsWith('.pdf') || doc.storage_path.toLowerCase().endsWith('.pdf')
+                      const href = isPdf ? doc.url + '#toolbar=1' : doc.url
+                      return (
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          {...(!isPdf ? { download: doc.name } : {})}
+                          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-green-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 transition-colors"
+                        >
+                          {isPdf ? <ExternalLink size={12} /> : <Download size={12} />}
+                          {isPdf ? 'Avaa' : 'Lataa'}
+                        </a>
+                      )
+                    })() : (
                       <span className="text-xs text-green-700">Ei saatavilla</span>
                     )}
                   </div>

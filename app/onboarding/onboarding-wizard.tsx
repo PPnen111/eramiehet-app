@@ -1,304 +1,273 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { CheckCircle2, Circle, Users, CalendarDays, FileText, PartyPopper, ArrowRight } from 'lucide-react'
+import { Building2, Users, BookOpen, CheckCircle, Plus, Trash2 } from 'lucide-react'
 
-const STORAGE_KEY = 'onboarding_completed'
+type OnboardingData = {
+  step: number
+  step1_completed: boolean
+  step2_completed: boolean
+  step3_completed: boolean
+  members_imported: number | null
+  completed_at: string | null
+}
+
+type ClubData = {
+  name: string | null
+  business_id: string | null
+  street_address: string | null
+  postal_address: string | null
+  email: string | null
+  phone: string | null
+}
 
 const STEPS = [
-  { id: 1, title: 'Tervetuloa!', icon: PartyPopper },
-  { id: 2, title: 'Kutsu jäseniä', icon: Users },
-  { id: 3, title: 'Tapahtumat', icon: CalendarDays },
-  { id: 4, title: 'Dokumentit', icon: FileText },
-  { id: 5, title: 'Valmista!', icon: CheckCircle2 },
+  { num: 1, title: 'Seuran tiedot', icon: Building2 },
+  { num: 2, title: 'Tuo jäsenet', icon: Users },
+  { num: 3, title: 'Ohjeet', icon: BookOpen },
 ]
 
-interface Props {
-  clubName: string | null
-}
+const FEATURES = [
+  { emoji: '👥', title: 'Jäsenet', desc: 'Hallitse seurasi jäsenistöä. Lisää jäseniä, lähetä kutsuja ja pidä rekisteri ajan tasalla.', where: 'Hallinto → Jäsenet' },
+  { emoji: '💰', title: 'Maksut', desc: 'Lähetä jäsenmaksulaskuja ja seuraa maksujen tilannetta helposti.', where: 'Hallinto → Maksut' },
+  { emoji: '📅', title: 'Tapahtumat', desc: 'Luo kokouksia, talkoita ja metsästyspäiviä. Jäsenet näkevät tapahtumat omalla sivullaan.', where: 'Tapahtumat → Uusi tapahtuma' },
+  { emoji: '🦌', title: 'Saalis', desc: 'Kirjaa saalisilmoitukset helposti kentältä puhelimella. Tilastot kertyvät automaattisesti.', where: 'Saalis → Ilmoita saalis' },
+  { emoji: '🏠', title: 'Eräkartano', desc: 'Jos seurallanne on eräkämppä tai mökki, voit ottaa varauskalenterin käyttöön.', where: 'Hallinto → Seuran tiedot' },
+  { emoji: '📄', title: 'Dokumentit', desc: 'Jaa seuran asiakirjat, säännöt ja pöytäkirjat kaikkien jäsenten saataville.', where: 'Dokumentit' },
+]
+
+interface Props { clubName: string | null }
 
 export default function OnboardingWizard({ clubName }: Props) {
   const router = useRouter()
+  const [ob, setOb] = useState<OnboardingData | null>(null)
   const [step, setStep] = useState(1)
-  const [inviteEmail, setInviteEmail] = useState('')
-  const [inviteStatus, setInviteStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
-  const [inviteError, setInviteError] = useState('')
-  const [invitedEmails, setInvitedEmails] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
+  const [busy, setBusy] = useState(false)
+  const [done, setDone] = useState(false)
 
-  async function sendInvite(e: React.FormEvent) {
-    e.preventDefault()
-    if (!inviteEmail.includes('@')) return
-    setInviteStatus('sending')
-    setInviteError('')
-    try {
-      const res = await fetch('/api/invite', {
+  // Step 1 form
+  const [s1, setS1] = useState({ name: '', business_id: '', street_address: '', postal_code: '', postal_address: '', email: '', phone: '' })
+  // Step 2 form
+  const [manualMembers, setManualMembers] = useState([{ name: '', email: '' }])
+
+  const load = useCallback(async () => {
+    setLoading(true)
+    const res = await fetch('/api/onboarding')
+    if (res.ok) {
+      const d = (await res.json()) as { onboarding: OnboardingData | null; club: ClubData | null; club_id: string }
+      setOb(d.onboarding)
+      if (d.onboarding) {
+        setStep(Math.min(d.onboarding.step, 3))
+        if (d.onboarding.completed_at) setDone(true)
+      }
+      if (d.club) {
+        const pa = d.club.postal_address ?? ''
+        const parts = pa.match(/^(\d{5})\s+(.+)$/)
+        setS1({
+          name: d.club.name ?? '',
+          business_id: d.club.business_id ?? '',
+          street_address: d.club.street_address ?? '',
+          postal_code: parts ? parts[1] : '',
+          postal_address: parts ? parts[2] : pa,
+          email: d.club.email ?? '',
+          phone: d.club.phone ?? '',
+        })
+      }
+    }
+    setLoading(false)
+  }, [])
+
+  useEffect(() => { void load() }, [load])
+
+  const patchOnboarding = async (update: Record<string, unknown>) => {
+    await fetch('/api/onboarding', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(update),
+    })
+  }
+
+  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-4 py-3 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
+  const labelCls = 'mb-1 block text-sm text-green-300'
+
+  // ── Step handlers ──
+
+  const submitStep1 = async () => {
+    setBusy(true)
+    const postalFull = [s1.postal_code, s1.postal_address].filter(Boolean).join(' ')
+    await fetch('/api/club-info', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: s1.name,
+        business_id: s1.business_id,
+        street_address: s1.street_address,
+        postal_address: postalFull,
+        email: s1.email,
+        phone: s1.phone,
+      }),
+    })
+    await patchOnboarding({ step1_completed: true, step: 2 })
+    setBusy(false)
+    setStep(2)
+  }
+
+  const submitStep2Manual = async () => {
+    setBusy(true)
+    const validMembers = manualMembers.filter((m) => m.name.trim())
+    for (const m of validMembers) {
+      await fetch('/api/members', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: inviteEmail }),
+        body: JSON.stringify({ full_name: m.name.trim(), email: m.email.trim() || null, send_invite: false }),
       })
-      if (!res.ok) {
-        const d = await res.json().catch(() => ({})) as { error?: string }
-        setInviteError(d.error ?? 'Kutsu epäonnistui')
-        setInviteStatus('error')
-      } else {
-        setInvitedEmails((prev) => [...prev, inviteEmail])
-        setInviteEmail('')
-        setInviteStatus('sent')
-        setTimeout(() => setInviteStatus('idle'), 3000)
-      }
-    } catch {
-      setInviteError('Verkkovirhe. Yritä uudelleen.')
-      setInviteStatus('error')
     }
+    await patchOnboarding({ step2_completed: true, step: 3, members_imported: validMembers.length })
+    setBusy(false)
+    setStep(3)
   }
 
-  function complete() {
-    localStorage.setItem(STORAGE_KEY, 'true')
+  const skipStep2 = async () => {
+    await patchOnboarding({ step2_completed: true, step: 3, members_imported: 0 })
+    setStep(3)
+  }
+
+  const completeOnboarding = async () => {
+    setBusy(true)
+    await patchOnboarding({ step3_completed: true })
+    await fetch('/api/onboarding/complete', { method: 'POST' })
+    setBusy(false)
     router.push('/dashboard')
+    router.refresh()
   }
 
-  const labelClass = 'mb-1 block text-sm text-green-300'
-  const inputClass =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center">
+        <p className="text-green-500">Ladataan...</p>
+      </main>
+    )
+  }
+
+  if (done) {
+    router.push('/dashboard')
+    return null
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
       <div className="mx-auto max-w-lg">
-
-        {/* Progress bar */}
+        {/* Progress */}
         <div className="mb-8">
-          <div className="mb-2 flex justify-between text-xs text-green-500">
-            <span>Käyttöönotto</span>
-            <span>Vaihe {step} / {STEPS.length}</span>
-          </div>
-          <div className="h-1.5 w-full rounded-full bg-green-900">
-            <div
-              className="h-1.5 rounded-full bg-green-500 transition-all duration-500"
-              style={{ width: `${((step - 1) / (STEPS.length - 1)) * 100}%` }}
-            />
-          </div>
-          <div className="mt-3 flex justify-between">
+          <p className="text-center text-sm text-green-400 mb-3">Vaihe {step} / 3</p>
+          <div className="flex justify-center gap-3">
             {STEPS.map((s) => {
               const Icon = s.icon
-              const done = step > s.id
-              const active = step === s.id
+              const isDone = step > s.num
+              const isCurrent = step === s.num
               return (
-                <div key={s.id} className="flex flex-col items-center gap-1">
-                  <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-colors ${
-                      done
-                        ? 'border-green-500 bg-green-500 text-white'
-                        : active
-                        ? 'border-green-400 bg-green-900 text-green-400'
-                        : 'border-green-800 bg-green-950 text-green-700'
-                    }`}
-                  >
-                    {done ? <CheckCircle2 size={16} /> : <Icon size={14} />}
+                <div key={s.num} className="flex flex-col items-center gap-1">
+                  <div className={`h-10 w-10 rounded-full flex items-center justify-center ${isDone ? 'bg-green-600' : isCurrent ? 'bg-green-700 ring-2 ring-green-400' : 'bg-green-900/40'}`}>
+                    <Icon size={18} className={isDone || isCurrent ? 'text-white' : 'text-green-700'} />
                   </div>
-                  <span
-                    className={`hidden text-xs sm:block ${active ? 'text-green-300' : 'text-green-700'}`}
-                  >
-                    {s.title}
-                  </span>
+                  <span className={`text-[10px] ${isCurrent ? 'text-green-300' : 'text-green-700'}`}>{s.title}</span>
                 </div>
               )
             })}
           </div>
         </div>
 
-        {/* Step 1: Welcome */}
+        {/* ── STEP 1: Seuran tiedot ── */}
         {step === 1 && (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-6">
-            <div className="mb-4 text-4xl">🎉</div>
-            <h1 className="mb-2 text-2xl font-bold text-white">
-              Tervetuloa{clubName ? `, ${clubName}!` : '!'}
-            </h1>
-            <p className="mb-6 text-sm leading-6 text-green-300">
-              Seuranne on nyt rekisteröity JahtiProiin. Käydään yhdessä läpi muutama
-              perusvaihe, niin pääsette alkuun nopeasti.
-            </p>
-            <ul className="mb-6 space-y-2 text-sm text-green-400">
-              {STEPS.slice(1).map((s) => {
-                const Icon = s.icon
-                return (
-                  <li key={s.id} className="flex items-center gap-2">
-                    <Circle size={14} className="shrink-0" />
-                    {s.title}
-                  </li>
-                )
-              })}
-            </ul>
-            <button
-              onClick={() => setStep(2)}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-700 py-3 text-sm font-semibold text-white hover:bg-green-600"
-            >
-              Aloitetaan <ArrowRight size={16} />
+          <div className="rounded-2xl border border-green-800 bg-white/5 p-6 space-y-4">
+            <div className="text-center mb-4">
+              <Building2 size={32} className="mx-auto text-green-400 mb-2" />
+              <h2 className="text-xl font-bold text-white">Tervetuloa JahtiProhon!</h2>
+              <p className="text-sm text-green-400 mt-1">Täytä seurasi perustiedot. Voit muokata näitä myöhemmin.</p>
+            </div>
+            <div><label className={labelCls}>Seuran nimi *</label><input type="text" value={s1.name} onChange={(e) => setS1((f) => ({ ...f, name: e.target.value }))} className={inputCls} /></div>
+            <div><label className={labelCls}>Y-tunnus</label><input type="text" value={s1.business_id} onChange={(e) => setS1((f) => ({ ...f, business_id: e.target.value }))} className={inputCls} placeholder="1234567-8" /></div>
+            <div><label className={labelCls}>Katuosoite</label><input type="text" value={s1.street_address} onChange={(e) => setS1((f) => ({ ...f, street_address: e.target.value }))} className={inputCls} /></div>
+            <div className="grid grid-cols-3 gap-3">
+              <div><label className={labelCls}>Postinumero</label><input type="text" value={s1.postal_code} onChange={(e) => setS1((f) => ({ ...f, postal_code: e.target.value.replace(/\D/g, '').slice(0, 5) }))} className={inputCls} placeholder="00100" maxLength={5} inputMode="numeric" /></div>
+              <div className="col-span-2"><label className={labelCls}>Postitoimipaikka</label><input type="text" value={s1.postal_address} onChange={(e) => setS1((f) => ({ ...f, postal_address: e.target.value }))} className={inputCls} placeholder="Helsinki" /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><label className={labelCls}>Sähköposti</label><input type="email" value={s1.email} onChange={(e) => setS1((f) => ({ ...f, email: e.target.value }))} className={inputCls} /></div>
+              <div><label className={labelCls}>Puhelin</label><input type="tel" value={s1.phone} onChange={(e) => setS1((f) => ({ ...f, phone: e.target.value }))} className={inputCls} /></div>
+            </div>
+            <button onClick={() => void submitStep1()} disabled={busy || !s1.name.trim()} className="w-full rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors">
+              {busy ? 'Tallennetaan...' : 'Tallenna ja jatka →'}
             </button>
           </div>
         )}
 
-        {/* Step 2: Invite members */}
+        {/* ── STEP 2: Tuo jäsenet ── */}
         {step === 2 && (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-6">
-            <div className="mb-1 text-2xl">👥</div>
-            <h2 className="mb-1 text-xl font-bold text-white">Kutsu jäseniä</h2>
-            <p className="mb-5 text-sm text-green-400">
-              Lähetä sähköpostikutsuja seuran jäsenille. Voit kutsua lisää myöhemmin Hallinto-osiosta.
-            </p>
-            <form onSubmit={sendInvite} className="mb-4 space-y-3">
-              <div>
-                <label className={labelClass}>Sähköpostiosoite</label>
-                <input
-                  type="email"
-                  value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-                  placeholder="jäsen@example.com"
-                  className={inputClass}
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={inviteStatus === 'sending'}
-                className="w-full rounded-lg bg-green-700 py-2 text-sm font-semibold text-white disabled:opacity-50 hover:bg-green-600"
-              >
-                {inviteStatus === 'sending' ? 'Lähetetään...' : 'Lähetä kutsu'}
-              </button>
-              {inviteStatus === 'sent' && (
-                <p className="text-center text-sm text-green-400">✓ Kutsu lähetetty!</p>
-              )}
-              {inviteStatus === 'error' && (
-                <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{inviteError}</p>
-              )}
-            </form>
-            {invitedEmails.length > 0 && (
-              <div className="mb-4 rounded-lg border border-green-800 bg-green-950 px-3 py-2">
-                <p className="mb-1 text-xs text-green-500">Kutsutut:</p>
-                {invitedEmails.map((email) => (
-                  <p key={email} className="text-xs text-green-300">✓ {email}</p>
-                ))}
-              </div>
-            )}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setStep(3)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600"
-              >
-                Jatka <ArrowRight size={14} />
-              </button>
-              <button
-                onClick={() => setStep(3)}
-                className="rounded-xl border border-green-800 px-4 py-2.5 text-sm text-green-400 hover:bg-white/5"
-              >
-                Ohita
-              </button>
+          <div className="rounded-2xl border border-green-800 bg-white/5 p-6 space-y-4">
+            <div className="text-center mb-4">
+              <Users size={32} className="mx-auto text-green-400 mb-2" />
+              <h2 className="text-xl font-bold text-white">Lisää seurasi jäsenet</h2>
+              <p className="text-sm text-green-400 mt-1">Tuo jäsenet tai lisää käsin. Voit myös ohittaa ja palata myöhemmin.</p>
             </div>
-          </div>
-        )}
-
-        {/* Step 3: Create first event */}
-        {step === 3 && (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-6">
-            <div className="mb-1 text-2xl">📅</div>
-            <h2 className="mb-1 text-xl font-bold text-white">Luo ensimmäinen tapahtuma</h2>
-            <p className="mb-5 text-sm text-green-400">
-              Talkoot, kokoukset, jahdit – lisää seuran ensimmäinen tapahtuma nyt tai myöhemmin.
-            </p>
-            <Link
-              href="/tapahtumat"
-              className="mb-4 flex items-center justify-between rounded-xl border border-green-700 bg-green-900/40 px-4 py-3 text-sm font-semibold text-green-200 hover:bg-green-900/70"
-            >
-              <span>Avaa tapahtumat</span>
-              <ArrowRight size={14} />
-            </Link>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setStep(4)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600"
-              >
-                Jatka <ArrowRight size={14} />
-              </button>
-              <button
-                onClick={() => setStep(4)}
-                className="rounded-xl border border-green-800 px-4 py-2.5 text-sm text-green-400 hover:bg-white/5"
-              >
-                Ohita
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 4: Add documents */}
-        {step === 4 && (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-6">
-            <div className="mb-1 text-2xl">📄</div>
-            <h2 className="mb-1 text-xl font-bold text-white">Lisää dokumentteja</h2>
-            <p className="mb-5 text-sm text-green-400">
-              Lataa seuran säännöt, pöytäkirjat ja muut tärkeät asiakirjat hallintopaneeliin.
-            </p>
-            <Link
-              href="/hallinto"
-              className="mb-4 flex items-center justify-between rounded-xl border border-green-700 bg-green-900/40 px-4 py-3 text-sm font-semibold text-green-200 hover:bg-green-900/70"
-            >
-              <span>Avaa hallinto</span>
-              <ArrowRight size={14} />
-            </Link>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setStep(5)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600"
-              >
-                Jatka <ArrowRight size={14} />
-              </button>
-              <button
-                onClick={() => setStep(5)}
-                className="rounded-xl border border-green-800 px-4 py-2.5 text-sm text-green-400 hover:bg-white/5"
-              >
-                Ohita
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 5: All done */}
-        {step === 5 && (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-6 text-center">
-            <div className="mb-3 text-5xl">✅</div>
-            <h2 className="mb-2 text-2xl font-bold text-white">Kaikki valmista!</h2>
-            <p className="mb-6 text-sm leading-6 text-green-400">
-              Seuran perustiedot on nyt kunnossa. Voit aina palata muokkaamaan tietoja hallintopaneelista.
-            </p>
-            <div className="mb-6 space-y-2 text-left">
-              {[
-                'Seura rekisteröity',
-                'Jäsenet kutsuttu',
-                'Tapahtumat-osio käytössä',
-                'Dokumentit-osio käytössä',
-              ].map((item) => (
-                <div key={item} className="flex items-center gap-2 text-sm text-green-300">
-                  <CheckCircle2 size={16} className="shrink-0 text-green-500" />
-                  {item}
+            <div className="space-y-2">
+              {manualMembers.map((m, i) => (
+                <div key={i} className="flex gap-2">
+                  <input type="text" value={m.name} onChange={(e) => { const arr = [...manualMembers]; arr[i] = { ...arr[i], name: e.target.value }; setManualMembers(arr) }} placeholder="Nimi" className={inputCls} />
+                  <input type="email" value={m.email} onChange={(e) => { const arr = [...manualMembers]; arr[i] = { ...arr[i], email: e.target.value }; setManualMembers(arr) }} placeholder="Sähköposti (valinnainen)" className={inputCls} />
+                  {manualMembers.length > 1 && (
+                    <button onClick={() => setManualMembers((a) => a.filter((_, j) => j !== i))} className="shrink-0 text-red-500 hover:text-red-300"><Trash2 size={14} /></button>
+                  )}
                 </div>
               ))}
+              <button onClick={() => setManualMembers((a) => [...a, { name: '', email: '' }])} className="flex items-center gap-1 text-xs text-green-400 hover:text-green-300">
+                <Plus size={12} /> Lisää rivi
+              </button>
             </div>
-            <button
-              onClick={complete}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-700 py-3 text-sm font-semibold text-white hover:bg-green-600"
-            >
-              Siirry sovellukseen <ArrowRight size={16} />
+            <button onClick={() => void submitStep2Manual()} disabled={busy || !manualMembers.some((m) => m.name.trim())} className="w-full rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors">
+              {busy ? 'Tallennetaan...' : 'Tallenna ja jatka →'}
+            </button>
+            <button onClick={() => void skipStep2()} className="w-full text-center text-xs text-green-600 hover:text-green-400">
+              ⏭️ Ohita toistaiseksi — voit tuoda jäsenet myöhemmin hallintosivulta
             </button>
           </div>
         )}
 
-        {step > 1 && (
-          <button
-            onClick={() => setStep((s) => s - 1)}
-            className="mt-4 text-sm text-green-500 hover:text-green-300"
-          >
-            ← Takaisin
-          </button>
+        {/* ── STEP 3: Ohjeet ── */}
+        {step === 3 && (
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-green-800 bg-white/5 p-6">
+              <div className="text-center mb-6">
+                <BookOpen size={32} className="mx-auto text-green-400 mb-2" />
+                <h2 className="text-xl font-bold text-white">Seuranne on valmis — näin pääset alkuun</h2>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {FEATURES.map((f, i) => (
+                  <div key={i} className="rounded-xl border border-green-900/40 bg-white/[0.03] p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-lg">{f.emoji}</span>
+                      <h3 className="font-semibold text-white">{f.title}</h3>
+                    </div>
+                    <p className="text-xs text-green-300 leading-relaxed mb-2">{f.desc}</p>
+                    <p className="text-[10px] text-green-600">Löydät tämän: {f.where}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 rounded-xl border border-green-700/40 bg-green-900/20 px-4 py-3">
+                <p className="text-sm text-green-300">
+                  💡 <strong className="text-white">Vinkki:</strong> Aloita tuomalla jäsenlistasi Hallinto → Jäsenet → Tuo jäseniä (CSV/Excel)
+                </p>
+              </div>
+            </div>
+
+            <button onClick={() => void completeOnboarding()} disabled={busy} className="w-full rounded-xl bg-green-600 py-3.5 text-base font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors">
+              {busy ? 'Viimeistellään...' : 'Siirry seuran etusivulle →'}
+            </button>
+          </div>
         )}
       </div>
     </main>

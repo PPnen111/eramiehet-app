@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   LayoutDashboard, Users, TrendingUp, Bell, Map,
-  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare, AlertTriangle, Download, Wallet, Shield, Zap,
+  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare, AlertTriangle, Download, Wallet, Shield, Zap, ClipboardList, Check,
 } from 'lucide-react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/format'
@@ -116,7 +116,20 @@ type Summary = {
   feed: SummaryFeed[]
 }
 
-type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'budget' | 'security' | 'automation' | 'strategy'
+type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'registrations' | 'budget' | 'security' | 'automation' | 'strategy'
+
+type Registration = {
+  id: string
+  club_name: string
+  contact_name: string
+  contact_email: string
+  contact_phone: string | null
+  estimated_members: number | null
+  has_cabin: boolean
+  status: string
+  promo_code: string | null
+  created_at: string
+}
 
 const PIPELINE_STATUSES = [
   { value: 'lead', label: 'Lead', cls: 'bg-stone-700 text-stone-200' },
@@ -168,6 +181,8 @@ export default function OperatorDashboard() {
   const [kpi, setKpi] = useState<KPI>({ active_clubs: 0, total_members: 0, trial_count: 0, trial_expiring_14d: 0, signup_count: 0, signups_this_week: 0 })
   const [pipeline, setPipeline] = useState<PipelineEntry[]>([])
   const [signups, setSignups] = useState<Signup[]>([])
+  const [registrations, setRegistrations] = useState<Registration[]>([])
+  const [approveBusy, setApproveBusy] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   // Pipeline form
@@ -189,11 +204,12 @@ export default function OperatorDashboard() {
 
   const loadAll = useCallback(async () => {
     setLoading(true)
-    const [clubsRes, pipeRes, signupsRes, summaryRes] = await Promise.all([
+    const [clubsRes, pipeRes, signupsRes, summaryRes, regsRes] = await Promise.all([
       fetch('/api/operator/clubs'),
       fetch('/api/operator/pipeline'),
       fetch('/api/operator/signups').catch(() => null),
       fetch('/api/operator/summary').catch(() => null),
+      fetch('/api/operator/registrations').catch(() => null),
     ])
 
     if (clubsRes.ok) {
@@ -212,6 +228,10 @@ export default function OperatorDashboard() {
     if (summaryRes?.ok) {
       const d = (await summaryRes.json()) as Summary
       setSummary(d)
+    }
+    if (regsRes?.ok) {
+      const d = (await regsRes.json()) as { registrations: Registration[] }
+      setRegistrations(d.registrations)
     }
     setLoading(false)
   }, [])
@@ -299,6 +319,21 @@ export default function OperatorDashboard() {
     setNewNote('')
     showToast('Muistiinpano tallennettu')
     void loadAll()
+  }
+
+  // ── Approve registration ───────────────────────────────────────
+
+  const approveRegistration = async (regId: string) => {
+    setApproveBusy(regId)
+    const res = await fetch(`/api/operator/approve-registration/${regId}`, { method: 'POST' })
+    setApproveBusy(null)
+    if (res.ok) {
+      showToast('Seura aktivoitu ja tervetuloviesti lähetetty!')
+      void loadAll()
+    } else {
+      const d = (await res.json()) as { error?: string }
+      showToast(d.error ?? 'Hyväksyntä epäonnistui')
+    }
   }
 
   // ── Remind ────────────────────────────────────────────────────
@@ -402,6 +437,7 @@ export default function OperatorDashboard() {
           {tabBtn('clubs', 'Seurat', <Users size={14} />)}
           {tabBtn('pipeline', 'Myyntiputki', <TrendingUp size={14} />)}
           {tabBtn('signups', 'Kiinnostusilmoitukset', <Bell size={14} />, signups.length)}
+          {tabBtn('registrations', 'Rekisteröitymiset', <ClipboardList size={14} />, registrations.filter((r) => r.status === 'pending').length)}
           {tabBtn('budget', 'Talous', <Wallet size={14} />)}
           {tabBtn('security', 'Tietoturva & GDPR', <Shield size={14} />)}
           {tabBtn('automation', 'Automaatiot', <Zap size={14} />)}
@@ -773,6 +809,64 @@ export default function OperatorDashboard() {
                   ))}
                   {signups.length === 0 && (
                     <tr><td colSpan={4} className="px-4 py-6 text-center text-sm text-green-600">Ei ilmoittautumisia.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ═══ TAB: REGISTRATIONS ═══ */}
+        {tab === 'registrations' && (
+          <div className="rounded-2xl border border-green-800 bg-white/5 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[800px] text-sm">
+                <thead>
+                  <tr className="border-b border-green-800 bg-green-950">
+                    <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-green-400">Seuran nimi</th>
+                    <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-green-400">Yhteyshenkilö</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Jäseniä</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Eräkartano</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Koodi</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Ilmoittautunut</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Tila</th>
+                    <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Toiminnot</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {registrations.map((r) => (
+                    <tr key={r.id} className="border-b border-green-900/30 hover:bg-white/[0.03]">
+                      <td className="px-3 py-2.5 font-medium text-white">{r.club_name}</td>
+                      <td className="px-3 py-2.5">
+                        <p className="text-white">{r.contact_name}</p>
+                        <p className="text-xs text-green-500">{r.contact_email}</p>
+                        {r.contact_phone && <p className="text-xs text-green-600">{r.contact_phone}</p>}
+                      </td>
+                      <td className="px-3 py-2.5 text-center text-green-300">{r.estimated_members ?? '—'}</td>
+                      <td className="px-3 py-2.5 text-center text-xs">{r.has_cabin ? '✅' : '—'}</td>
+                      <td className="px-3 py-2.5 text-center text-xs text-green-500">{r.promo_code ?? '—'}</td>
+                      <td className="px-3 py-2.5 text-center text-xs text-green-500">{formatDate(r.created_at)}</td>
+                      <td className="px-3 py-2.5 text-center">
+                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                          r.status === 'approved' ? 'bg-green-800 text-green-200' : r.status === 'rejected' ? 'bg-red-900 text-red-200' : 'bg-amber-900 text-amber-200'
+                        }`}>{r.status === 'approved' ? 'Hyväksytty' : r.status === 'rejected' ? 'Hylätty' : 'Odottaa'}</span>
+                      </td>
+                      <td className="px-3 py-2.5 text-center">
+                        {r.status === 'pending' && (
+                          <button
+                            onClick={() => void approveRegistration(r.id)}
+                            disabled={approveBusy === r.id}
+                            className="flex items-center gap-1 rounded-lg bg-green-700 px-3 py-1 text-xs font-semibold text-white hover:bg-green-600 disabled:opacity-50 mx-auto"
+                          >
+                            <Check size={12} />
+                            {approveBusy === r.id ? '...' : 'Hyväksy'}
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {registrations.length === 0 && (
+                    <tr><td colSpan={8} className="px-4 py-6 text-center text-sm text-green-600">Ei rekisteröitymispyyntöjä.</td></tr>
                   )}
                 </tbody>
               </table>

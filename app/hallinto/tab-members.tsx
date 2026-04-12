@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Trash2, Mail, ChevronRight, UserPlus } from 'lucide-react'
+import PlanLimitModal from '@/app/components/plan-limit-modal'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate } from '@/lib/format'
 import type { AdminMember } from './page'
@@ -63,6 +64,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const [approvingMember, setApprovingMember] = useState<string | null>(null)
   const [addMemberOpen, setAddMemberOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
+  const [limitModal, setLimitModal] = useState<{ message: string; planLabel: string } | null>(null)
 
   const fetchMembers = useCallback(async () => {
     setLoadingMembers(true)
@@ -329,6 +331,15 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
             setTimeout(() => setToast(null), 4000)
           }}
           onCancel={() => setAddMemberOpen(false)}
+        />
+      )}
+
+      {/* Plan limit modal */}
+      {limitModal && (
+        <PlanLimitModal
+          message={limitModal.message}
+          planLabel={limitModal.planLabel}
+          onClose={() => setLimitModal(null)}
         />
       )}
 

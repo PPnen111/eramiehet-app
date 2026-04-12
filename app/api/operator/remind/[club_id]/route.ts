@@ -60,7 +60,7 @@ export async function POST(
       <p>Hei,</p>
       <p>JahtiPro-trialanne on <strong>${daysLeft ?? '?'} päivää</strong> jäljellä.</p>
       <p>Haluatteko jatkaa palvelun käyttöä? Olemme mielellämme yhteydessä ja kerromme lisää.</p>
-      <p>Ota yhteyttä: <a href="mailto:paunonen@gmail.com">paunonen@gmail.com</a></p>
+      <p>Ota yhteyttä: <a href="mailto:info@jahtipro.fi">info@jahtipro.fi</a></p>
       <p style="margin-top:24px;">Terveisin,<br/>Pekka Paunonen<br/>JahtiPro</p>
     `.trim(),
   })

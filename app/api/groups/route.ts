@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { isAdminOrAbove } from '@/lib/auth'
 import { guardTenant } from '@/lib/tenant'
+import { checkPlanLimit, limitExceededResponse } from '@/lib/plan-limits'
 
 type GroupRow = {
   id: string
@@ -144,6 +145,9 @@ export async function POST(req: NextRequest) {
   if (!clubId) return NextResponse.json({ error: 'Ei seuraa' }, { status: 400 })
   const gv2 = await guardTenant({ id: user.id, role: p?.role ?? 'member', club_id: p?.club_id ?? null, active_club_id: p?.active_club_id ?? null }, clubId)
   if (gv2) return gv2
+
+  const groupLimit = await checkPlanLimit(clubId, 'groups')
+  if (!groupLimit.allowed) return limitExceededResponse(groupLimit)
 
   const body = await req.json() as unknown
   const { name, description } = body as { name?: string; description?: string }
