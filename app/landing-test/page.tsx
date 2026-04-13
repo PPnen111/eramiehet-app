@@ -206,7 +206,7 @@ export default function LandingTestPage() {
               </div>
             ))}
           </div>
-          <p className="mt-6 text-xs text-green-700">Kaikki hinnat sis. ALV 0% (laskutus yritykselle)</p>
+          <p className="mt-6 text-xs text-green-700">Kaikki hinnat sis. ALV 25,5%</p>
         </div>
       </section>
 
@@ -223,7 +223,6 @@ export default function LandingTestPage() {
           <FAQ q="Tarvitaanko käyttöön teknistä osaamista?" a="Ei tarvita. JahtiPro on suunniteltu tavalliseen seurakäyttöön, joten sen käyttö ei vaadi teknistä taustaa. Tavoitteena on, että palvelu on selkeä ja helppo käyttää myös niille, jotka eivät käytä digitaalisia työkaluja paljon." />
           <FAQ q="Toimiiko JahtiPro puhelimella?" a="Kyllä. JahtiPro on suunniteltu toimimaan sujuvasti mobiililaitteilla ilman erillistä sovellusta. Tietoja voi tarkistaa ja käyttää helposti myös maastossa, kokouksissa ja liikkeellä ollessa." />
           <FAQ q="Ovatko seuran tiedot turvassa?" a="Kyllä. Jokaisen seuran tiedot ovat täysin erillään muista seuroista. Käyttöoikeuksia voidaan rajata käyttäjäroolien mukaan, joten oikeat tiedot ovat oikeiden henkilöiden saatavilla. JahtiPro on GDPR-yhteensopiva." />
-          <FAQ q="Mitä JahtiPro maksaa?" a="JahtiPro hinnoitellaan vuosimaksulla, jotta kulut ovat seuralle ennakoitavia. Jahti Start: 225 €/vuosi (50 jäsentä). Jahti Plus: 395 €/vuosi (150 jäsentä). Jahti Pro: 625 €/vuosi (rajaton). Kaikki paketit sisältävät 14 päivän ilmaisen kokeilun. Lisätietoja: info@jahtipro.fi" />
         </div>
       </section>
 
