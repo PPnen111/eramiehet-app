@@ -6,7 +6,6 @@ import { Trash2, Check, Bell, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate, formatEuros } from '@/lib/format'
 import { generateReferenceNumber } from '@/lib/utils/reference-number'
-import InvoicePreviewModal, { type InvoicePreviewPayment } from '@/app/components/invoice-preview-modal'
 
 const PAYMENT_TYPES = [
   { value: 'jäsenmaksu', label: 'Jäsenmaksu' },
@@ -102,13 +101,11 @@ export default function TabPayments({ clubId }: Props) {
 
   const [members, setMembers] = useState<MemberOption[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
-  const [clubName, setClubName] = useState('Metsästysseura')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
   const [remindBusy, setRemindBusy] = useState<string | null>(null)
   const [bulkRemindBusy, setBulkRemindBusy] = useState(false)
   const [toasts, setToasts] = useState<Toast[]>([])
-  const [previewPayment, setPreviewPayment] = useState<Payment | null>(null)
   const [pdfModal, setPdfModal] = useState<Payment | null>(null)
   const [pdfName, setPdfName] = useState('')
   const [pdfEmail, setPdfEmail] = useState('')
@@ -152,7 +149,7 @@ export default function TabPayments({ clubId }: Props) {
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [{ data: mData }, { data: pData }, { data: clubData }] = await Promise.all([
+    const [{ data: mData }, { data: pData }] = await Promise.all([
       supabase
         .from('profiles')
         .select('id, full_name, email')
@@ -165,11 +162,9 @@ export default function TabPayments({ clubId }: Props) {
         )
         .eq('club_id', clubId)
         .order('due_date', { ascending: false, nullsFirst: false }),
-      supabase.from('clubs').select('name').eq('id', clubId).single(),
     ])
     setMembers((mData ?? []) as unknown as MemberOption[])
     setPayments((pData ?? []) as unknown as Payment[])
-    setClubName((clubData as { name: string } | null)?.name ?? 'Metsästysseura')
     setLoading(false)
   }, [clubId, supabase])
 
@@ -908,13 +903,6 @@ export default function TabPayments({ clubId }: Props) {
                       )}
 
                       <button
-                        onClick={() => setPreviewPayment(p)}
-                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
-                      >
-                        Esikatsele
-                      </button>
-
-                      <button
                         onClick={() => void deletePayment(p.id)}
                         disabled={isBusy}
                         title="Poista lasku"
@@ -930,18 +918,6 @@ export default function TabPayments({ clubId }: Props) {
             )
           })}
         </div>
-      )}
-
-      {previewPayment && (
-        <InvoicePreviewModal
-          payment={previewPayment as unknown as InvoicePreviewPayment}
-          memberName={
-            (previewPayment.profiles as unknown as { full_name: string | null } | null)
-              ?.full_name ?? null
-          }
-          clubName={clubName}
-          onClose={() => setPreviewPayment(null)}
-        />
       )}
 
       {/* PDF Invoice modal */}
