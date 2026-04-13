@@ -178,9 +178,14 @@ async function generateReport(): Promise<{ html: string; subject: string }> {
 
 // GET — Vercel cron trigger
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret) {
+    console.warn('[CRON] CRON_SECRET not set — skipping auth check in development')
+  } else {
+    const authHeader = req.headers.get('authorization')
+    if (authHeader !== `Bearer ${cronSecret}`) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
   }
 
   const apiKey = process.env.RESEND_API_KEY
