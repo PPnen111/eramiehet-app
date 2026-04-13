@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import { generateInvoicePDF, type InvoiceData } from '@/lib/pdf/invoice-template'
 import { getNextInvoiceNumber } from '@/lib/invoice-number'
+import { generateEpcQrDataUrl } from '@/lib/pdf/epc-qr'
 
 export async function GET(req: NextRequest) {
   const paymentId = req.nextUrl.searchParams.get('payment_id')
@@ -54,6 +55,21 @@ export async function GET(req: NextRequest) {
     vat_total: 0,
     total: amountEur,
     notes: '14 päivän maksuehto.',
+  }
+
+  // Generate EPC QR code if bank details available
+  if (data.bank_iban && data.bank_bic && data.total > 0) {
+    try {
+      data.qrCodeDataUrl = await generateEpcQrDataUrl({
+        recipientName: data.issuer_name,
+        iban: data.bank_iban,
+        bic: data.bank_bic,
+        amount: data.total,
+        reference: data.reference_number,
+      })
+    } catch (e) {
+      console.error('QR generation failed:', e)
+    }
   }
 
   const pdfBuffer = await generateInvoicePDF(data)

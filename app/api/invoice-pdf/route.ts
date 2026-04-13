@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import { generateInvoicePDF, type InvoiceData } from '@/lib/pdf/invoice-template'
 import { getNextInvoiceNumber } from '@/lib/invoice-number'
+import { generateEpcQrDataUrl } from '@/lib/pdf/epc-qr'
 
 async function getCallerClub() {
   const supabase = await createClient()
@@ -79,6 +80,21 @@ export async function POST(req: NextRequest) {
 
   const invoiceData = await buildInvoiceData(admin, caller.clubId, payment, { name: body.recipient_name ?? 'Jäsen', address: body.recipient_address, postal: body.recipient_postal }, body.notes)
 
+  // Generate EPC QR code if bank details available
+  if (invoiceData.bank_iban && invoiceData.bank_bic && invoiceData.total > 0) {
+    try {
+      invoiceData.qrCodeDataUrl = await generateEpcQrDataUrl({
+        recipientName: invoiceData.issuer_name,
+        iban: invoiceData.bank_iban,
+        bic: invoiceData.bank_bic,
+        amount: invoiceData.total,
+        reference: invoiceData.reference_number,
+      })
+    } catch (e) {
+      console.error('QR generation failed:', e)
+    }
+  }
+
   // Generate PDF
   const pdfBuffer = await generateInvoicePDF(invoiceData)
 
@@ -98,6 +114,7 @@ export async function POST(req: NextRequest) {
 <p><strong>Summa:</strong> ${amountEur} €<br/>
 <strong>Eräpäivä:</strong> ${invoiceData.due_date}<br/>
 <strong>Viitenumero:</strong> ${invoiceData.reference_number}</p>
+<p style="font-size:12px;color:#6b7280;">Laskulle on lisätty QR-koodi helpottamaan maksamista. Skannaa koodi pankkisovelluksellasi — maksutiedot täyttyvät automaattisesti.</p>
 <p>Terveisin,<br/>${invoiceData.issuer_name}</p>`,
     attachments: [{
       filename: `lasku-${invoiceData.invoice_number}.pdf`,
