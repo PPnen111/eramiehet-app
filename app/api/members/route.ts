@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { isBoardOrAbove } from '@/lib/auth'
 import { getActorContext, getEffectiveClubId, guardTenant } from '@/lib/tenant'
 import { checkPlanLimit, limitExceededResponse } from '@/lib/plan-limits'
+import { createAuditEvent } from '@/lib/audit'
 import { welcomeHtml, welcomeSubject } from '@/lib/emails/welcome'
 
 export type MemberWithStatus = {
@@ -138,6 +139,8 @@ export async function GET(_req: NextRequest) {
       })
     }
   }
+
+  void createAuditEvent({ actor_id: user.id, actor_role: caller.role, club_id: clubId, action: 'member.list', resource_type: 'members', outcome: 'success', metadata: { count: members.length } })
 
   return NextResponse.json({ members })
 }
