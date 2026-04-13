@@ -214,14 +214,16 @@ export default function LandingTestPage() {
       <section id="faq" className="py-20 px-4 bg-green-900/10">
         <div className="mx-auto max-w-2xl">
           <h2 className="text-3xl font-bold text-white text-center mb-8">Usein kysytyt kysymykset</h2>
-          <FAQ q="Onko JahtiPro ilmainen?" a="14 päivän kokeilu on täysin ilmainen ilman luottokorttia tai sitoumuksia. Kokeilun jälkeen voit valita sopivimman paketin tai lopettaa ilman kuluja." />
-          <FAQ q="Toimiiko JahtiPro puhelimella?" a="Kyllä — JahtiPro on suunniteltu mobiili edellä. Toimii kaikilla älypuhelimilla suoraan selaimessa ilman erillistä sovellusta. Ei tarvitse ladata mitään." />
-          <FAQ q="Miten jäsenet pääsevät mukaan?" a="Ylläpitäjä lähettää kutsun sähköpostiin. Jäsen kirjautuu sisään ja pääsee heti käyttämään sovellusta. Jäsenet voi myös lisätä rekisteriin ilman sovellustunnuksia." />
-          <FAQ q="Voiko vanhoja jäsentietoja tuoda?" a="Kyllä — jäsenet voi tuoda suoraan Excel- tai CSV-tiedostosta. Tuonti onnistuu muutamassa minuutissa." />
-          <FAQ q="Onko tiedot turvassa?" a="Kyllä — jokaisen seuran tiedot ovat täysin erillään muista seuroista. Sovellus käyttää SSL-salausta ja tiedot tallennetaan EU-alueella sijaitseville palvelimille. JahtiPro on GDPR-yhteensopiva." />
-          <FAQ q="Mitä tapahtuu kun kokeilu päättyy?" a="Saat sähköpostimuistutuksen ennen kokeilun päättymistä. Voit jatkaa valitsemalla sopivan paketin tai lopettaa ilman sitoumuksia. Tietosi säilyvät tallessa." />
-          <FAQ q="Voinko vaihtaa pakettia myöhemmin?" a="Kyllä — voit päivittää pakettia milloin tahansa. Ota yhteyttä info@jahtipro.fi niin hoidetaan muutos nopeasti." />
-          <FAQ q="Onko sopimusta tai sitoutumisaikaa?" a="Ei pitkiä sopimuksia. Laskutus on vuosittaista mutta voit lopettaa ennen seuraavaa laskutuskautta ilman lisäkuluja." />
+          <FAQ q="Mikä JahtiPro on?" a="JahtiPro on metsästysseuroille suunniteltu palvelu, joka kokoaa seuran tärkeät tiedot ja toiminnot yhteen paikkaan. Sen avulla jäsenasiat, viestintä, tapahtumat, dokumentit ja käytännön hallinta pysyvät paremmin järjestyksessä." />
+          <FAQ q="Kenelle JahtiPro sopii?" a="JahtiPro sopii metsästysseuroille, jotka haluavat helpottaa arkea, vähentää manuaalista työtä ja pitää seuran asiat selkeästi hallinnassa. Palvelu sopii sekä pienille että suuremmille seuroille." />
+          <FAQ q="Mitä JahtiPro sisältää?" a="JahtiPro sisältää jäsenrekisterin, jäsenmaksujen hallinnan, tapahtumat ja ilmoittautumiset, dokumentit ja pöytäkirjat, saalisilmoitukset sekä vuokrattavien kohteiden hallinnan. Kokonaisuus riippuu valitusta paketista." />
+          <FAQ q="Voiko palvelua räätälöidä meidän seuralle?" a="Kyllä voi. JahtiPro on rakennettu niin, että sitä voidaan mukauttaa seuran omiin tarpeisiin. Tämä on hyödyllistä erityisesti silloin, jos seuralla on omia toimintatapoja, erityisiä rooleja tai tarvetta lisäominaisuuksille. Ota yhteyttä info@jahtipro.fi niin jutellaan lisää." />
+          <FAQ q="Voiko JahtiProlla hallita vuokrapaikkoja tai muita seuran kohteita?" a="Kyllä. JahtiProhon voidaan sisällyttää myös eräkartanoiden, saunojen, ampumaratojen ja muiden seurakohtaisten kohteiden varauskalenteri. Hyväksyjille lähtee ilmoitus automaattisesti ja laskun voi lähettää suoraan sovelluksesta." />
+          <FAQ q="Kuinka käyttöönotto toimii?" a="Käyttöönotto on tehty mahdollisimman helpoksi. Rekisteröidy osoitteessa jahtipro.fi/uusi, täytä seuran perustiedot ja tuo jäsenet Excel-tiedostosta. Palvelu on käytössä minuuteissa. Kaikkea ei tarvitse rakentaa kerralla valmiiksi." />
+          <FAQ q="Tarvitaanko käyttöön teknistä osaamista?" a="Ei tarvita. JahtiPro on suunniteltu tavalliseen seurakäyttöön, joten sen käyttö ei vaadi teknistä taustaa. Tavoitteena on, että palvelu on selkeä ja helppo käyttää myös niille, jotka eivät käytä digitaalisia työkaluja paljon." />
+          <FAQ q="Toimiiko JahtiPro puhelimella?" a="Kyllä. JahtiPro on suunniteltu toimimaan sujuvasti mobiililaitteilla ilman erillistä sovellusta. Tietoja voi tarkistaa ja käyttää helposti myös maastossa, kokouksissa ja liikkeellä ollessa." />
+          <FAQ q="Ovatko seuran tiedot turvassa?" a="Kyllä. Jokaisen seuran tiedot ovat täysin erillään muista seuroista. Käyttöoikeuksia voidaan rajata käyttäjäroolien mukaan, joten oikeat tiedot ovat oikeiden henkilöiden saatavilla. JahtiPro on GDPR-yhteensopiva." />
+          <FAQ q="Mitä JahtiPro maksaa?" a="JahtiPro hinnoitellaan vuosimaksulla, jotta kulut ovat seuralle ennakoitavia. Jahti Start: 225 €/vuosi (50 jäsentä). Jahti Plus: 395 €/vuosi (150 jäsentä). Jahti Pro: 625 €/vuosi (rajaton). Kaikki paketit sisältävät 14 päivän ilmaisen kokeilun. Lisätietoja: info@jahtipro.fi" />
         </div>
       </section>
 
