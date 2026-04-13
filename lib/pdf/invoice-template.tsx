@@ -1,5 +1,5 @@
 import React from 'react'
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer'
 
 export interface InvoiceData {
   issuer_name: string
@@ -22,6 +22,7 @@ export interface InvoiceData {
   vat_total: number
   total: number
   notes?: string
+  qrCodeDataUrl?: string
 }
 
 const formatEur = (amount: number) => amount.toFixed(2).replace('.', ',') + ' €'
@@ -46,6 +47,9 @@ const s = StyleSheet.create({
   divider: { borderBottomWidth: 1, borderBottomColor: '#166534', marginVertical: 10 },
   footer: { marginTop: 20, padding: 10, backgroundColor: '#f0f7f0', borderRadius: 4 },
   footerText: { fontSize: 8, color: '#444444', lineHeight: 1.5 },
+  qrSection: { alignItems: 'center' as const, marginTop: 8, padding: 6, borderWidth: 1, borderColor: '#d1d5db', borderRadius: 4 },
+  qrLabel: { fontSize: 7, color: '#374151', marginBottom: 4, textAlign: 'center' as const },
+  qrSubLabel: { fontSize: 6, color: '#6b7280', marginTop: 3, textAlign: 'center' as const },
 })
 
 function InvoiceDocument({ data }: { data: InvoiceData }) {
@@ -91,6 +95,13 @@ function InvoiceDocument({ data }: { data: InvoiceData }) {
             {data.bank_bic && <Text style={s.text}>BIC: {data.bank_bic}</Text>}
             <Text style={s.text}>Viitenumero: {data.reference_number}</Text>
             <Text style={[s.text, s.bold]}>Summa: {formatEur(data.total)}</Text>
+            {data.qrCodeDataUrl && (
+              <View style={s.qrSection}>
+                <Text style={s.qrLabel}>Skannaa QR-koodi pankkisovelluksella</Text>
+                <Image src={data.qrCodeDataUrl} style={{ width: 80, height: 80 }} />
+                <Text style={s.qrSubLabel}>Maksutiedot täyttyvät automaattisesti</Text>
+              </View>
+            )}
           </View>
         </View>
 
