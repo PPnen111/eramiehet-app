@@ -105,7 +105,6 @@ export default function TabPayments({ clubId }: Props) {
   const [clubName, setClubName] = useState('Metsästysseura')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
-  const [invoiceBusy, setInvoiceBusy] = useState<string | null>(null)
   const [remindBusy, setRemindBusy] = useState<string | null>(null)
   const [bulkRemindBusy, setBulkRemindBusy] = useState(false)
   const [toasts, setToasts] = useState<Toast[]>([])
@@ -237,30 +236,6 @@ export default function TabPayments({ clubId }: Props) {
     }
   }
 
-  const sendInvoice = async (paymentId: string) => {
-    setInvoiceBusy(paymentId)
-    try {
-      const res = await fetch('/api/send-invoice', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payment_id: paymentId }),
-      })
-      if (res.ok) {
-        await supabase
-          .from('payments')
-          .update({ sent_at: new Date().toISOString() })
-          .eq('id', paymentId)
-        showToast('Lasku lähetetty!', 'success')
-        void load()
-      } else {
-        const data = (await res.json()) as { error?: string }
-        showToast(data.error ?? 'Lähetys epäonnistui.', 'error')
-      }
-    } catch {
-      showToast('Verkkovirhe. Yritä uudelleen.', 'error')
-    }
-    setInvoiceBusy(null)
-  }
 
   const sendReminder = async (paymentId: string) => {
     setRemindBusy(paymentId)
@@ -843,7 +818,7 @@ export default function TabPayments({ clubId }: Props) {
             const profileName = (
               p.profiles as unknown as { full_name: string | null } | null
             )?.full_name
-            const isBusy = busy === p.id || invoiceBusy === p.id
+            const isBusy = busy === p.id
             const isPaid = p.status === 'paid'
             const isOD = effectiveStatus === 'overdue'
 
@@ -903,15 +878,23 @@ export default function TabPayments({ clubId }: Props) {
                     </div>
 
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {!isPaid && !p.sent_at && (
+                      {!isPaid && (
                         <button
-                          onClick={() => void sendInvoice(p.id)}
-                          disabled={isBusy}
-                          className="rounded-lg border border-green-700 px-3 py-1 text-xs font-semibold text-green-300 hover:bg-green-800/40 disabled:opacity-50"
+                          onClick={() => openPdfModal(p)}
+                          className="rounded-lg bg-green-800 px-3 py-1 text-xs font-semibold text-white hover:bg-green-700"
                         >
-                          {invoiceBusy === p.id ? 'Lähetetään...' : 'Lähetä sähköpostilla'}
+                          Lähetä PDF-lasku
                         </button>
                       )}
+
+                      <a
+                        href={`/api/invoice-pdf/preview?payment_id=${p.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
+                      >
+                        Lataa PDF
+                      </a>
 
                       {isOD && (
                         <button
@@ -930,22 +913,6 @@ export default function TabPayments({ clubId }: Props) {
                       >
                         Esikatsele
                       </button>
-
-                      <button
-                        onClick={() => openPdfModal(p)}
-                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
-                      >
-                        Lähetä PDF
-                      </button>
-
-                      <a
-                        href={`/api/invoice-pdf/preview?payment_id=${p.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
-                      >
-                        Lataa PDF
-                      </a>
 
                       <button
                         onClick={() => void deletePayment(p.id)}
