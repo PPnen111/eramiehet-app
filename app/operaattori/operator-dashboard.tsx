@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   LayoutDashboard, Users, TrendingUp, Bell, Map,
-  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare, AlertTriangle, Download, Wallet, Shield, Zap, ClipboardList, Check,
+  Building2, Pencil, Trash2, Plus, X, ChevronLeft, MessageSquare, AlertTriangle, Download, Wallet, Shield, Zap, ClipboardList, Check, Mail,
 } from 'lucide-react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/format'
@@ -340,6 +340,7 @@ export default function OperatorDashboard() {
 
   const [remindBusy, setRemindBusy] = useState<string | null>(null)
   const [bulkRemindBusy, setBulkRemindBusy] = useState(false)
+  const [reportBusy, setReportBusy] = useState(false)
 
   const sendRemind = async (clubId: string) => {
     setRemindBusy(clubId)
@@ -380,6 +381,14 @@ export default function OperatorDashboard() {
     a.download = `jahtipro-seurat-${new Date().toISOString().slice(0, 10)}.csv`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  const sendMorningReport = async () => {
+    setReportBusy(true)
+    const res = await fetch('/api/cron/morning-report', { method: 'POST' })
+    setReportBusy(false)
+    if (res.ok) showToast('Aamuraportti lähetetty sähköpostiin')
+    else showToast('Lähetys epäonnistui')
   }
 
   // ── Render helpers ────────────────────────────────────────────
@@ -596,6 +605,9 @@ export default function OperatorDashboard() {
                   </button>
                   <button onClick={downloadCsv} className="flex items-center gap-1.5 rounded-lg border border-green-800 px-3 py-2.5 text-xs font-semibold text-green-300 hover:bg-white/5 transition-colors">
                     <Download size={13} /> Lataa raportti (CSV)
+                  </button>
+                  <button onClick={() => void sendMorningReport()} disabled={reportBusy} className="flex items-center gap-1.5 rounded-lg border border-green-800 px-3 py-2.5 text-xs font-semibold text-green-300 hover:bg-white/5 disabled:opacity-50 transition-colors">
+                    <Mail size={13} /> {reportBusy ? 'Lähetetään...' : 'Lähetä aamuraportti nyt'}
                   </button>
                 </div>
               </div>
