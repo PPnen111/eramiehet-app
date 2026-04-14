@@ -230,6 +230,18 @@ export async function POST(req: NextRequest) {
   const errorCount = results.filter((r) => r.status === 'error').length
   const errorDetails = results.filter((r) => r.status === 'error')
 
+  // Build import_rows with { name, status, reason? } for each processed row
+  const importRows = results.map((r) => {
+    // Parse reason from note (e.g. "jo rekisterissä (nimi)" → "nimi")
+    const m = r.note.match(/jo rekisterissä \((.+)\)/)
+    return {
+      name: r.nimi,
+      status: r.status,
+      ...(r.status === 'skipped' && m ? { reason: m[1] } : {}),
+      ...(r.status === 'error' ? { reason: r.note } : {}),
+    }
+  })
+
   // Log import
   const { data: logRow } = await admin
     .from('member_imports')
@@ -241,6 +253,7 @@ export async function POST(req: NextRequest) {
       skip_count: skipCount + nameSkipped,
       error_count: errorCount,
       errors: errorDetails.length > 0 ? errorDetails : null,
+      import_rows: importRows,
     })
     .select('id')
     .single()

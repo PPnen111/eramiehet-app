@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { Trash2, Mail, ChevronRight, UserPlus } from 'lucide-react'
+import { Trash2, Mail, ChevronRight, ChevronDown, UserPlus } from 'lucide-react'
 import PlanLimitModal from '@/app/components/plan-limit-modal'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate } from '@/lib/format'
@@ -12,6 +12,8 @@ import CsvImport from './csv-import'
 import ExcelImportForm from './excel-import-form'
 import AddMemberForm from './add-member-form'
 
+type ImportRowDetail = { name: string; status: 'success' | 'skipped' | 'error'; reason?: string }
+
 type ImportLog = {
   id: string
   total_rows: number
@@ -19,6 +21,7 @@ type ImportLog = {
   skip_count: number
   error_count: number
   created_at: string
+  import_rows: ImportRowDetail[] | null
 }
 
 interface Props {
@@ -61,6 +64,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const [importOpen, setImportOpen] = useState(false)
   const [importMode, setImportMode] = useState<'file' | 'form'>('file')
   const [importLogs, setImportLogs] = useState<ImportLog[]>([])
+  const [expandedLogId, setExpandedLogId] = useState<string | null>(null)
   const [approvingMember, setApprovingMember] = useState<string | null>(null)
   const [addMemberOpen, setAddMemberOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
@@ -79,7 +83,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const loadImportLogs = useCallback(async () => {
     const { data } = await supabase
       .from('member_imports')
-      .select('id, total_rows, success_count, skip_count, error_count, created_at')
+      .select('id, total_rows, success_count, skip_count, error_count, created_at, import_rows')
       .eq('club_id', clubId)
       .order('created_at', { ascending: false })
       .limit(3)
@@ -199,16 +203,45 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
         {importLogs.length > 0 && !importOpen && (
           <div className="mt-3 space-y-1.5">
             <p className="text-xs font-semibold uppercase tracking-wider text-green-600">Viimeisimmät tuonnit</p>
-            {importLogs.map((log) => (
-              <div key={log.id} className="flex items-center justify-between rounded-lg border border-green-900 bg-white/[0.03] px-3 py-2 text-xs">
-                <span className="text-green-400">{formatDate(log.created_at)}</span>
-                <span className="text-green-300">
-                  {log.total_rows} riviä · <span className="text-green-200">{log.success_count} tuotu</span>
-                  {log.skip_count > 0 && <span className="text-yellow-400"> · {log.skip_count} ohitettu</span>}
-                  {log.error_count > 0 && <span className="text-red-400"> · {log.error_count} virheitä</span>}
-                </span>
-              </div>
-            ))}
+            {importLogs.map((log) => {
+              const isOpen = expandedLogId === log.id
+              const hasDetails = log.import_rows && log.import_rows.length > 0
+              return (
+                <div key={log.id} className="rounded-lg border border-green-900 bg-white/[0.03] overflow-hidden">
+                  <button
+                    onClick={() => setExpandedLogId(isOpen ? null : log.id)}
+                    className="flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-white/[0.02] transition-colors"
+                    disabled={!hasDetails}
+                  >
+                    <span className="text-green-400">{formatDate(log.created_at)}</span>
+                    <span className="flex items-center gap-2">
+                      <span className="text-green-300">
+                        {log.total_rows} riviä · <span className="text-green-200">{log.success_count} tuotu</span>
+                        {log.skip_count > 0 && <span className="text-yellow-400"> · {log.skip_count} ohitettu</span>}
+                        {log.error_count > 0 && <span className="text-red-400"> · {log.error_count} virheitä</span>}
+                      </span>
+                      {hasDetails && <ChevronDown size={12} className={`text-green-600 transition-transform ${isOpen ? 'rotate-180' : ''}`} />}
+                    </span>
+                  </button>
+                  {isOpen && hasDetails && (
+                    <div className="border-t border-green-900/50 bg-green-950/30 px-3 py-2 space-y-1 max-h-64 overflow-y-auto">
+                      {log.import_rows!.map((row, i) => {
+                        const icon = row.status === 'success' ? '✅' : row.status === 'error' ? '❌' : '⏭'
+                        const textCls = row.status === 'success' ? 'text-green-300' : row.status === 'error' ? 'text-red-300' : 'text-stone-400'
+                        const label = row.status === 'success' ? 'tuotu' : row.status === 'error' ? `virhe${row.reason ? ' — ' + row.reason : ''}` : `ohitettu${row.reason ? ' (' + row.reason + ')' : ''}`
+                        return (
+                          <div key={i} className={`flex items-center gap-2 text-xs ${textCls}`}>
+                            <span className="w-4 shrink-0">{icon}</span>
+                            <span className="font-medium text-white">{row.name}</span>
+                            <span className="text-green-600">— {label}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         )}
       </section>

@@ -162,6 +162,16 @@ export async function POST(req: NextRequest) {
   const errorCount = results.filter((r) => r.status === 'error').length
   const errorDetails = results.filter((r) => r.status === 'error')
 
+  const importRows = results.map((r) => {
+    const m = r.note.match(/jo rekisterissä \((.+)\)/)
+    return {
+      name: r.nimi,
+      status: r.status,
+      ...(r.status === 'skipped' && m ? { reason: m[1] } : {}),
+      ...(r.status === 'error' ? { reason: r.note } : {}),
+    }
+  })
+
   // Log import
   const { data: logRow } = await admin
     .from('member_imports')
@@ -173,6 +183,7 @@ export async function POST(req: NextRequest) {
       skip_count: skipCount,
       error_count: errorCount,
       errors: errorDetails.length > 0 ? errorDetails : null,
+      import_rows: importRows,
     })
     .select('id')
     .single()
