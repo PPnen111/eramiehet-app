@@ -163,11 +163,10 @@ export async function POST(req: NextRequest) {
   const errorDetails = results.filter((r) => r.status === 'error')
 
   const importRows = results.map((r) => {
-    const m = r.note.match(/jo rekisterissä \((.+)\)/)
     return {
       name: r.nimi,
       status: r.status,
-      ...(r.status === 'skipped' && m ? { reason: m[1] } : {}),
+      ...(r.status === 'skipped' ? { reason: 'jo rekisterissä' } : {}),
       ...(r.status === 'error' ? { reason: r.note } : {}),
     }
   })

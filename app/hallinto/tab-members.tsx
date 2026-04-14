@@ -228,7 +228,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                       {log.import_rows!.map((row, i) => {
                         const icon = row.status === 'success' ? '✅' : row.status === 'error' ? '❌' : '⏭'
                         const textCls = row.status === 'success' ? 'text-green-300' : row.status === 'error' ? 'text-red-300' : 'text-stone-400'
-                        const label = row.status === 'success' ? 'tuotu' : row.status === 'error' ? `virhe${row.reason ? ' — ' + row.reason : ''}` : `ohitettu${row.reason ? ' (' + row.reason + ')' : ''}`
+                        const label = row.status === 'success' ? 'tuotu' : row.status === 'error' ? `virhe${row.reason ? ': ' + row.reason : ''}` : 'jo rekisterissä'
                         return (
                           <div key={i} className={`flex items-center gap-2 text-xs ${textCls}`}>
                             <span className="w-4 shrink-0">{icon}</span>
