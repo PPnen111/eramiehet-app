@@ -176,6 +176,25 @@ export default function LandingTestPage() {
         </div>
       </section>
 
+      {/* ═══ MIKSI JAHTIPRO ═══ */}
+      <section className="py-20 px-4">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="text-3xl font-bold text-white text-center mb-8">Miksi tämä on tehty?</h2>
+          <div className="rounded-2xl border-l-4 border-green-500 bg-green-900/20 p-8">
+            <p className="text-4xl text-green-600 mb-4 leading-none">&ldquo;</p>
+            <div className="space-y-4 text-green-200 leading-relaxed">
+              <p>Ohjelma syntyi tarpeesta koota mahdollisimman moni toiminto yhteen palveluun, koska liian moni toiminto on erillään. Päätimme koota ne yhteen – mahdollisimman helposti käytettäväksi, juuri metsästykseen.</p>
+              <p>Moni tekee töitä vapaaehtoistyönä ja halusta pitää pyörät pyörimässä historiallisissa seuroissa, mutta aikaa menee todella paljon hallintoon ja viestintään.</p>
+              <p>Toivottavasti tämä tuo teille helpotusta ja vapauttaa aikaa itse rakkaaseen harrastukseen.</p>
+            </div>
+            <div className="mt-6 text-sm italic text-green-400">
+              <p>– Pekka Paunonen, JahtiPron kehittäjä</p>
+              <p className="text-green-600">yhdessä Kyyjärven Erämiesten kanssa</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══ PRICING ═══ */}
       <section id="pricing" className="py-20 px-4">
         <div className="mx-auto max-w-5xl text-center">
