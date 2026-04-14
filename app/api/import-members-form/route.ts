@@ -66,19 +66,38 @@ export async function POST(req: NextRequest) {
     const full_name = r.nimi.trim()
     const email = r.sahkoposti?.trim() || null
 
-    // Check duplicate by email in member_registry (only if email provided)
+    // Duplicate check — priority: email → name (case-insensitive)
+    let duplicate = false
+    let duplicateReason = ''
+
     if (email) {
-      const { data: existingByEmail } = await admin
+      const { data } = await admin
         .from('member_registry')
         .select('id')
         .eq('club_id', clubId)
         .eq('email', email)
         .maybeSingle()
+      if (data) { duplicate = true; duplicateReason = 'sähköposti' }
+    }
 
-      if (existingByEmail) {
-        results.push({ nimi: full_name, status: 'skipped', note: 'jo rekisterissä' })
-        continue
+    if (!duplicate && full_name) {
+      const { data } = await admin
+        .from('member_registry')
+        .select('id, full_name')
+        .eq('club_id', clubId)
+        .ilike('full_name', full_name)
+      if (data && data.length > 0) {
+        const normalized = full_name.toLowerCase()
+        const match = (data as { id: string; full_name: string | null }[]).find(
+          (m) => (m.full_name ?? '').trim().toLowerCase() === normalized
+        )
+        if (match) { duplicate = true; duplicateReason = 'nimi' }
       }
+    }
+
+    if (duplicate) {
+      results.push({ nimi: full_name, status: 'skipped', note: `jo rekisterissä (${duplicateReason})` })
+      continue
     }
 
     // Insert into member_registry — email NOT required
