@@ -179,18 +179,16 @@ export default function LandingTestPage() {
       {/* ═══ MIKSI JAHTIPRO ═══ */}
       <section className="py-20 px-4">
         <div className="mx-auto max-w-2xl">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">Miksi tämä on tehty?</h2>
+          <h2 className="text-3xl font-bold text-white text-center mb-8">Miksi JahtiPro on tehty?</h2>
           <div className="rounded-2xl border-l-4 border-green-500 bg-green-900/20 p-8">
-            <p className="text-4xl text-green-600 mb-4 leading-none">&ldquo;</p>
             <div className="space-y-4 text-green-200 leading-relaxed">
-              <p>Ohjelma syntyi tarpeesta koota mahdollisimman moni toiminto yhteen palveluun, koska liian moni toiminto on erillään. Päätimme koota ne yhteen – mahdollisimman helposti käytettäväksi, juuri metsästykseen.</p>
-              <p>Moni tekee töitä vapaaehtoistyönä ja halusta pitää pyörät pyörimässä historiallisissa seuroissa, mutta aikaa menee todella paljon hallintoon ja viestintään.</p>
-              <p>Toivottavasti tämä tuo teille helpotusta ja vapauttaa aikaa itse rakkaaseen harrastukseen.</p>
+              <p>JahtiPro tehtiin, koska metsästysseuran arjessa liian moni asia on hajallaan. Jäsentiedot, viestintä, tapahtumat, dokumentit ja käytännön järjestelyt vievät aikaa etenkin silloin, kun seuraa pyöritetään vapaaehtoisvoimin.</p>
+              <p>Monessa seurassa sama haaste toistuu: tärkeää työtä tehdään paljon, mutta hallinto kuormittaa turhaan.</p>
+              <p>JahtiPro kokoaa seuran tärkeät toiminnot yhteen paikkaan, jotta arki olisi sujuvampaa ja aikaa jäisi enemmän itse metsästykseen ja seuran toimintaan. Palvelu on rakennettu yhdessä Kyyjärven Erämiesten kanssa — käytännön tarpeesta, oikeille metsästäjille.</p>
             </div>
-            <div className="mt-6 text-sm italic text-green-400">
-              <p>– Pekka Paunonen, JahtiPron kehittäjä</p>
-              <p className="text-green-600">yhdessä Kyyjärven Erämiesten kanssa</p>
-            </div>
+            <div className="my-6 border-t border-green-700/50" />
+            <p className="text-xl italic text-green-300 leading-relaxed">&ldquo;Toivottavasti tämä tuo teille helpotusta ja vapauttaa aikaa itse rakkaaseen harrastukseen.&rdquo;</p>
+            <p className="mt-4 text-sm italic text-green-400">– Pekka Paunonen, JahtiPron kehittäjä</p>
           </div>
         </div>
       </section>
