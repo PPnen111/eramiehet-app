@@ -66,89 +66,68 @@ export async function POST(req: NextRequest) {
     const full_name = r.nimi.trim()
     const email = r.sahkoposti?.trim() || null
 
-    if (!email) {
-      results.push({ nimi: full_name, status: 'skipped', note: 'ei sähköpostia' })
-      continue
-    }
+    // Check duplicate by email in member_registry (only if email provided)
+    if (email) {
+      const { data: existingByEmail } = await admin
+        .from('member_registry')
+        .select('id')
+        .eq('club_id', clubId)
+        .eq('email', email)
+        .maybeSingle()
 
-    // Skip if already a member of this club
-    const { data: existing } = await admin
-      .from('profiles')
-      .select('id')
-      .eq('email', email)
-      .eq('club_id', clubId)
-      .maybeSingle()
-
-    if (existing) {
-      results.push({ nimi: full_name, status: 'skipped', note: 'jo jäsen' })
-      continue
-    }
-
-    // Create auth user
-    const { data: newAuthUser, error: authError } = await admin.auth.admin.createUser({
-      email,
-      email_confirm: true,
-      password: crypto.randomUUID(),
-      user_metadata: { full_name },
-    })
-
-    if (authError || !newAuthUser?.user) {
-      if (authError?.message?.includes('already been registered') || authError?.code === 'email_exists') {
-        const { data: existingProfile } = await admin
-          .from('profiles')
-          .select('id')
-          .eq('email', email)
-          .maybeSingle()
-
-        if (!existingProfile) {
-          results.push({ nimi: full_name, status: 'error', note: authError?.message ?? 'Auth-virhe' })
-          continue
-        }
-
-        const { error: profileError } = await admin.from('profiles').upsert({
-          id: existingProfile.id,
-          club_id: clubId,
-          active_club_id: clubId,
-          full_name,
-          email,
-          phone: r.puhelin || null,
-          role: r.rooli || 'member',
-          member_status: 'active',
-          join_date: r.liittynyt || today,
-        })
-
-        if (profileError) {
-          results.push({ nimi: full_name, status: 'error', note: profileError.message })
-        } else {
-          results.push({ nimi: full_name, status: 'success', note: email })
-        }
+      if (existingByEmail) {
+        results.push({ nimi: full_name, status: 'skipped', note: 'jo rekisterissä' })
         continue
       }
-
-      results.push({ nimi: full_name, status: 'error', note: authError?.message ?? 'Auth-virhe' })
-      continue
     }
 
-    const userId = newAuthUser.user.id
-
-    const { error: profileError } = await admin.from('profiles').upsert({
-      id: userId,
+    // Insert into member_registry — email NOT required
+    const { error: regError } = await admin.from('member_registry').insert({
       club_id: clubId,
-      active_club_id: clubId,
       full_name,
       email,
       phone: r.puhelin || null,
-      role: r.rooli || 'member',
-      member_status: 'active',
-      join_date: r.liittynyt || today,
     })
 
-    if (profileError) {
-      results.push({ nimi: full_name, status: 'error', note: profileError.message })
+    if (regError) {
+      results.push({ nimi: full_name, status: 'error', note: regError.message })
       continue
     }
 
-    results.push({ nimi: full_name, status: 'success', note: email })
+    // If email provided, also create auth user + profile
+    if (email) {
+      const { data: existingProfile } = await admin
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .eq('club_id', clubId)
+        .maybeSingle()
+
+      if (!existingProfile) {
+        const { data: newAuthUser } = await admin.auth.admin.createUser({
+          email,
+          email_confirm: true,
+          password: crypto.randomUUID(),
+          user_metadata: { full_name },
+        })
+
+        if (newAuthUser?.user) {
+          await admin.from('profiles').upsert({
+            id: newAuthUser.user.id,
+            club_id: clubId,
+            active_club_id: clubId,
+            full_name,
+            email,
+            phone: r.puhelin || null,
+            role: r.rooli || 'member',
+            member_status: 'active',
+            join_date: r.liittynyt || today,
+          })
+        }
+      }
+    }
+
+    results.push({ nimi: full_name, status: 'success', note: email ?? 'ei sähköpostia' })
   }
 
   const successCount = results.filter((r) => r.status === 'success').length
