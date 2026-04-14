@@ -57,7 +57,7 @@ export default function LandingTestPage() {
         <div className="mx-auto max-w-6xl grid gap-12 lg:grid-cols-2 items-center">
           <div>
             <h1 className="text-4xl font-extrabold leading-tight text-white lg:text-5xl">
-              Metsästysseurasi hallinta — <span className="text-green-400">helposti</span>
+              Käytä aikasi <span className="text-green-400">rakkaaseen harrastukseen.</span><br />Vähemmän hallintoon ja viestintään.
             </h1>
             <p className="mt-4 text-lg text-green-300 leading-relaxed">
               Jäsenrekisteri, maksut, saalisilmoitukset ja eräkartanon varaukset yhdessä sovelluksessa. Suunniteltu suomalaisille metsästysseuroille.
@@ -173,6 +173,25 @@ export default function LandingTestPage() {
             </div>
           </div>
           <p className="mt-4 text-xs text-green-700">Lisää arvosteluja tulossa</p>
+        </div>
+      </section>
+
+      {/* ═══ MIKSI JAHTIPRO ═══ */}
+      <section className="py-20 px-4">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="text-3xl font-bold text-white text-center mb-8">Miksi tämä on tehty?</h2>
+          <div className="rounded-2xl border-l-4 border-green-500 bg-green-900/20 p-8">
+            <p className="text-4xl text-green-600 mb-4 leading-none">&ldquo;</p>
+            <div className="space-y-4 text-green-200 leading-relaxed">
+              <p>Ohjelma syntyi tarpeesta koota mahdollisimman moni toiminto yhteen palveluun, koska liian moni toiminto on erillään. Päätimme koota ne yhteen – mahdollisimman helposti käytettäväksi, juuri metsästykseen.</p>
+              <p>Moni tekee töitä vapaaehtoistyönä ja halusta pitää pyörät pyörimässä historiallisissa seuroissa, mutta aikaa menee todella paljon hallintoon ja viestintään.</p>
+              <p>Toivottavasti tämä tuo teille helpotusta ja vapauttaa aikaa itse rakkaaseen harrastukseen.</p>
+            </div>
+            <div className="mt-6 text-sm italic text-green-400">
+              <p>– Pekka Paunonen, JahtiPron kehittäjä</p>
+              <p className="text-green-600">yhdessä Kyyjärven Erämiesten kanssa</p>
+            </div>
+          </div>
         </div>
       </section>
 
