@@ -82,17 +82,18 @@ export async function POST(req: NextRequest) {
     }
 
     // Insert into member_registry — email NOT required
-    const { error: regError } = await admin.from('member_registry').insert({
+    const { data: regRow, error: regError } = await admin.from('member_registry').insert({
       club_id: clubId,
       full_name,
       email,
       phone: r.puhelin || null,
-    })
+    }).select('id').single()
 
-    if (regError) {
-      results.push({ nimi: full_name, status: 'error', note: regError.message })
+    if (regError || !regRow) {
+      results.push({ nimi: full_name, status: 'error', note: regError?.message ?? 'unknown' })
       continue
     }
+    const registryId = (regRow as { id: string }).id
 
     // If email provided, also create auth user + profile
     if (email) {
@@ -103,7 +104,9 @@ export async function POST(req: NextRequest) {
         .eq('club_id', clubId)
         .maybeSingle()
 
-      if (!existingProfile) {
+      let profileId: string | null = (existingProfile as { id: string } | null)?.id ?? null
+
+      if (!profileId) {
         const { data: newAuthUser } = await admin.auth.admin.createUser({
           email,
           email_confirm: true,
@@ -112,8 +115,9 @@ export async function POST(req: NextRequest) {
         })
 
         if (newAuthUser?.user) {
+          profileId = newAuthUser.user.id
           await admin.from('profiles').upsert({
-            id: newAuthUser.user.id,
+            id: profileId,
             club_id: clubId,
             active_club_id: clubId,
             full_name,
@@ -124,6 +128,10 @@ export async function POST(req: NextRequest) {
             join_date: r.liittynyt || today,
           })
         }
+      }
+
+      if (profileId) {
+        await admin.from('member_registry').update({ profile_id: profileId }).eq('id', registryId)
       }
     }
 
