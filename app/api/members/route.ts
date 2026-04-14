@@ -105,8 +105,25 @@ export async function GET(_req: NextRequest) {
     }
   }
 
-  // Build member list: registry entries + any profile-only entries not in registry
-  const registryProfileIds = new Set(registry.map((r) => r.profile_id).filter(Boolean))
+  // Build email → profile lookup to match unlinked registry rows
+  const profileByEmail = new Map<string, { id: string; full_name: string | null; email: string | null; phone: string | null; role: string; member_status: string; member_type: string | null }>()
+  for (const p of profileMap.values()) {
+    if (p.email) profileByEmail.set(p.email.toLowerCase(), p)
+  }
+
+  // Auto-link: for registry rows without profile_id but matching email in profiles,
+  // backfill profile_id in DB (fire and forget) and use linked profile here
+  const linkedProfileIds = new Set<string>()
+  for (const r of registry) {
+    if (!r.profile_id && r.email) {
+      const match = profileByEmail.get(r.email.toLowerCase())
+      if (match) {
+        r.profile_id = match.id
+        void admin.from('member_registry').update({ profile_id: match.id }).eq('id', r.id)
+      }
+    }
+    if (r.profile_id) linkedProfileIds.add(r.profile_id)
+  }
 
   const members: MemberWithStatus[] = registry.map((r) => {
     const profile = r.profile_id ? profileMap.get(r.profile_id) : null
@@ -123,9 +140,9 @@ export async function GET(_req: NextRequest) {
     }
   })
 
-  // Add profile-only members (have profiles entry but no registry entry)
+  // Add profile-only members (have profiles entry but NOT linked to any registry row)
   for (const p of profileMap.values()) {
-    if (!registryProfileIds.has(p.id)) {
+    if (!linkedProfileIds.has(p.id)) {
       members.push({
         id: p.id,
         full_name: p.full_name,

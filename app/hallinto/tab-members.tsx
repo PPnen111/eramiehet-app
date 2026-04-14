@@ -11,6 +11,7 @@ import type { MemberWithStatus } from '@/app/api/members/route'
 import CsvImport from './csv-import'
 import ExcelImportForm from './excel-import-form'
 import AddMemberForm from './add-member-form'
+import EditRegistryMember from './edit-registry-member'
 
 type ImportLog = {
   id: string
@@ -65,6 +66,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const [addMemberOpen, setAddMemberOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const [limitModal, setLimitModal] = useState<{ message: string; planLabel: string } | null>(null)
+  const [editRegistryId, setEditRegistryId] = useState<string | null>(null)
 
   const fetchMembers = useCallback(async () => {
     setLoadingMembers(true)
@@ -116,10 +118,11 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
     }
   }
 
-  const removeMember = async (id: string, name: string) => {
+  const removeMember = async (id: string, name: string, profileId: string | null) => {
     if (!confirm(`Haluatko varmasti poistaa jäsenen ${name} seurasta?`)) return
     setDeletingMember(id)
-    const res = await fetch(`/api/members/${id}`, { method: 'DELETE' })
+    const url = profileId ? `/api/members/${profileId}` : `/api/members/registry/${id}`
+    const res = await fetch(url, { method: 'DELETE' })
     setDeletingMember(null)
     if (res.ok) void fetchMembers()
   }
@@ -270,9 +273,11 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
         )}
 
         <div className="divide-y divide-green-900/40 rounded-2xl border border-green-800 bg-white/5 overflow-hidden">
-          {rest.map((m) => (
-            <div key={m.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors">
-              <Link href={`/jasenet/${m.id}`} className="min-w-0 flex-1">
+          {rest.map((m) => {
+            const hasProfile = !!m.profile_id
+            const targetHref = hasProfile ? `/jasenet/${m.profile_id}` : null
+            const rowContent = (
+              <>
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium text-white">{m.full_name ?? '—'}</span>
                   <span className={`text-xs ${STATUS_COLOR[m.member_status] ?? 'text-stone-400'}`}>
@@ -284,7 +289,19 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                   {m.email && <span className="truncate">{m.email}</span>}
                   {m.member_type && <span>{m.member_type}</span>}
                 </div>
-              </Link>
+              </>
+            )
+            return (
+            <div key={m.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors">
+              {targetHref ? (
+                <Link href={targetHref} className="min-w-0 flex-1">
+                  {rowContent}
+                </Link>
+              ) : (
+                <button onClick={() => setEditRegistryId(m.id)} className="min-w-0 flex-1 text-left">
+                  {rowContent}
+                </button>
+              )}
 
               <div className="shrink-0 flex items-center gap-1.5">
                 {m.member_status === 'no_account' ? (
@@ -308,7 +325,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                   </button>
                 )}
                 <button
-                  onClick={() => void removeMember(m.id, m.full_name ?? '—')}
+                  onClick={() => void removeMember(m.id, m.full_name ?? '—', m.profile_id)}
                   disabled={deletingMember === m.id}
                   title="Poista seurasta"
                   className="rounded-md p-1.5 text-stone-600 hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
@@ -318,7 +335,8 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                 <ChevronRight size={14} className="text-green-800" />
               </div>
             </div>
-          ))}
+            )
+          })}
           {loadingMembers && rest.length === 0 && (
             <p className="px-4 py-6 text-sm text-green-600">Ladataan jäseniä...</p>
           )}
@@ -351,6 +369,15 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
           message={limitModal.message}
           planLabel={limitModal.planLabel}
           onClose={() => setLimitModal(null)}
+        />
+      )}
+
+      {/* Edit registry member modal */}
+      {editRegistryId && (
+        <EditRegistryMember
+          memberId={editRegistryId}
+          onClose={() => setEditRegistryId(null)}
+          onSaved={() => { void fetchMembers(); setToast('Jäsen päivitetty'); setTimeout(() => setToast(null), 3000) }}
         />
       )}
 
