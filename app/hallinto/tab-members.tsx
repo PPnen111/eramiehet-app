@@ -147,6 +147,13 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Tuo jäseniä</h2>
             <p className="text-xs text-green-600">CSV tai Excel (.xlsx)</p>
+            <a
+              href="/jahtipro-jasenpohja.xlsx"
+              download="jahtipro-jasenpohja.xlsx"
+              className="mt-1 inline-block text-xs text-green-400 underline hover:text-green-300"
+            >
+              ⬇ Lataa Excel-pohja
+            </a>
           </div>
           <button
             onClick={() => setImportOpen((v) => !v)}
