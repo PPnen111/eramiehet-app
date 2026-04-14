@@ -11,7 +11,6 @@ import type { MemberWithStatus } from '@/app/api/members/route'
 import CsvImport from './csv-import'
 import ExcelImportForm from './excel-import-form'
 import AddMemberForm from './add-member-form'
-import EditRegistryMember from './edit-registry-member'
 
 type ImportLog = {
   id: string
@@ -66,7 +65,6 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   const [addMemberOpen, setAddMemberOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const [limitModal, setLimitModal] = useState<{ message: string; planLabel: string } | null>(null)
-  const [editRegistryId, setEditRegistryId] = useState<string | null>(null)
 
   const fetchMembers = useCallback(async () => {
     setLoadingMembers(true)
@@ -274,10 +272,10 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
 
         <div className="divide-y divide-green-900/40 rounded-2xl border border-green-800 bg-white/5 overflow-hidden">
           {rest.map((m) => {
-            const hasProfile = !!m.profile_id
-            const targetHref = hasProfile ? `/jasenet/${m.profile_id}` : null
-            const rowContent = (
-              <>
+            const targetHref = m.profile_id ? `/jasenet/${m.profile_id}` : `/jasenet/registry/${m.id}`
+            return (
+            <div key={m.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors">
+              <Link href={targetHref} className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium text-white">{m.full_name ?? '—'}</span>
                   <span className={`text-xs ${STATUS_COLOR[m.member_status] ?? 'text-stone-400'}`}>
@@ -289,19 +287,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                   {m.email && <span className="truncate">{m.email}</span>}
                   {m.member_type && <span>{m.member_type}</span>}
                 </div>
-              </>
-            )
-            return (
-            <div key={m.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors">
-              {targetHref ? (
-                <Link href={targetHref} className="min-w-0 flex-1">
-                  {rowContent}
-                </Link>
-              ) : (
-                <button onClick={() => setEditRegistryId(m.id)} className="min-w-0 flex-1 text-left">
-                  {rowContent}
-                </button>
-              )}
+              </Link>
 
               <div className="shrink-0 flex items-center gap-1.5">
                 {m.member_status === 'no_account' ? (
@@ -369,15 +355,6 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
           message={limitModal.message}
           planLabel={limitModal.planLabel}
           onClose={() => setLimitModal(null)}
-        />
-      )}
-
-      {/* Edit registry member modal */}
-      {editRegistryId && (
-        <EditRegistryMember
-          memberId={editRegistryId}
-          onClose={() => setEditRegistryId(null)}
-          onSaved={() => { void fetchMembers(); setToast('Jäsen päivitetty'); setTimeout(() => setToast(null), 3000) }}
         />
       )}
 
