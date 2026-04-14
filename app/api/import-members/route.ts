@@ -232,12 +232,10 @@ export async function POST(req: NextRequest) {
 
   // Build import_rows with { name, status, reason? } for each processed row
   const importRows = results.map((r) => {
-    // Parse reason from note (e.g. "jo rekisterissä (nimi)" → "nimi")
-    const m = r.note.match(/jo rekisterissä \((.+)\)/)
     return {
       name: r.nimi,
       status: r.status,
-      ...(r.status === 'skipped' && m ? { reason: m[1] } : {}),
+      ...(r.status === 'skipped' ? { reason: 'jo rekisterissä' } : {}),
       ...(r.status === 'error' ? { reason: r.note } : {}),
     }
   })
