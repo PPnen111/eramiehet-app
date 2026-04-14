@@ -57,7 +57,7 @@ export default function LandingTestPage() {
         <div className="mx-auto max-w-6xl grid gap-12 lg:grid-cols-2 items-center">
           <div>
             <h1 className="text-4xl font-extrabold leading-tight text-white lg:text-5xl">
-              Metsästysseurasi hallinta — <span className="text-green-400">helposti</span>
+              Käytä aikasi <span className="text-green-400">rakkaaseen harrastukseen.</span><br />Vähemmän hallintoon ja viestintään.
             </h1>
             <p className="mt-4 text-lg text-green-300 leading-relaxed">
               Jäsenrekisteri, maksut, saalisilmoitukset ja eräkartanon varaukset yhdessä sovelluksessa. Suunniteltu suomalaisille metsästysseuroille.
