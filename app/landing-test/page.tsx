@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {
   Users, CreditCard, Target, Calendar, Home, FileText,
   ChevronDown, Play, Menu, X, CheckCircle, XCircle,
-  ClipboardList, MessageSquare, Coins, BookOpen, Building, Ticket,
+  ClipboardList, MessageSquare, Coins, BookOpen, Building, Ticket, Shield,
 } from 'lucide-react'
 
 function FAQ({ q, a }: { q: string; a: string }) {
@@ -108,6 +108,7 @@ export default function LandingTestPage() {
               { icon: Target, title: 'Saaliit vihkoon', text: 'Saalisilmoitukset paperille tai tekstiviestillä. Tilastojen kokoaminen vie tunteja.' },
               { icon: Building, title: 'Eräkartanon varaukset soitellen', text: 'Varauskalenteri puuttuu. Päällekkäisiä varauksia tulee, viestittely lisääntyy.' },
               { icon: Ticket, title: 'Vierasluvat hukassa', text: 'Luvat sovitaan WhatsAppissa, tekstiviestillä tai sähköpostitse. Tieto hajoaa eri kanaviin — kukaan ei muista mitä on sovittu, ja maksun periminen jää helposti tekemättä.' },
+              { icon: Shield, title: 'Oikeudet yhdellä ihmisellä', text: 'Seuran tiedot ja hallinto ovat yhden henkilön takana. Kun sihteeri vaihtuu, tieto katoaa ja tunnukset kiertävät kädestä käteen.' },
             ].map((c, i) => (
               <div key={i} className="rounded-2xl border border-green-800 bg-green-900/30 p-6 text-left">
                 <c.icon size={28} className="text-green-500 mb-3" />
@@ -133,6 +134,7 @@ export default function LandingTestPage() {
               { icon: Home, title: 'Eräkartanon varaukset', text: 'Varauskalenteri eräkartanolle, saunalle tai ampumaradalle. Hyväksyjille ilmoitus automaattisesti. Lähetä lasku varauksesta.', badge: 'Plus ja Pro', accent: false },
               { icon: FileText, title: 'Dokumentit', text: 'Jaa seuran asiakirjat, säännöt ja pöytäkirjat kaikkien jäsenten saataville. Turvallisesti tallessa pilvessä.', badge: 'Kaikki paketit', accent: false },
               { icon: Ticket, title: 'Vierasluvat', text: 'Ei enää lupasopimuksia WhatsAppissa tai sähköpostiketjuissa. Myönnä vierasluvat digitaalisesti, lähetä lasku suoraan sovelluksesta ja seuraa maksun tilaa muiden jäsenmaksujen rinnalla. Kaikki luvat tallessa yhdessä paikassa — historia löytyy aina tarvittaessa.', badge: 'Kaikki paketit', accent: true },
+              { icon: Shield, title: 'Roolit ja käyttöoikeudet', text: 'Jaa oikeudet helposti — puheenjohtaja, sihteeri, hallitus tai tavallinen jäsen. Jokainen näkee ja tekee juuri sen mitä pitääkin. Uusi henkilö pääsee mukaan minuuteissa. Lisää rooleja tulossa.', badge: 'Kaikki paketit', accent: false },
             ].map((f, i) => (
               <div key={i} className={`rounded-2xl border p-6 text-left ${f.accent ? 'border-green-500 bg-green-900/40 ring-2 ring-green-500/30' : 'border-green-800 bg-green-900/30'}`}>
                 <f.icon size={28} className="text-green-400 mb-3" />
@@ -241,6 +243,7 @@ export default function LandingTestPage() {
           <FAQ q="Voiko JahtiProlla hallita vuokrapaikkoja tai muita seuran kohteita?" a="Kyllä. JahtiProhon voidaan sisällyttää myös eräkartanoiden, saunojen, ampumaratojen ja muiden seurakohtaisten kohteiden varauskalenteri. Hyväksyjille lähtee ilmoitus automaattisesti ja laskun voi lähettää suoraan sovelluksesta." />
           <FAQ q="Kuinka käyttöönotto toimii?" a="Käyttöönotto on tehty mahdollisimman helpoksi. Rekisteröidy osoitteessa jahtipro.fi/uusi, täytä seuran perustiedot ja tuo jäsenet Excel-tiedostosta. Palvelu on käytössä minuuteissa. Kaikkea ei tarvitse rakentaa kerralla valmiiksi." />
           <FAQ q="Tarvitaanko käyttöön teknistä osaamista?" a="Ei tarvita. JahtiPro on suunniteltu tavalliseen seurakäyttöön, joten sen käyttö ei vaadi teknistä taustaa. Tavoitteena on, että palvelu on selkeä ja helppo käyttää myös niille, jotka eivät käytä digitaalisia työkaluja paljon." />
+          <FAQ q="Voiko eri jäsenille antaa erilaisia oikeuksia?" a="Kyllä. JahtiProssa on valmiit roolit: ylläpitäjä, hallitus ja jäsen. Uuden henkilön lisääminen ja oikeuksien muuttaminen onnistuu muutamalla klikkauksella — ei teknistä osaamista tarvita. Lisää rooleja on tulossa." />
           <FAQ q="Toimiiko JahtiPro puhelimella?" a="Kyllä. JahtiPro on suunniteltu toimimaan sujuvasti mobiililaitteilla ilman erillistä sovellusta. Tietoja voi tarkistaa ja käyttää helposti myös maastossa, kokouksissa ja liikkeellä ollessa." />
           <FAQ q="Ovatko seuran tiedot turvassa?" a="Kyllä. Jokaisen seuran tiedot ovat täysin erillään muista seuroista. Käyttöoikeuksia voidaan rajata käyttäjäroolien mukaan, joten oikeat tiedot ovat oikeiden henkilöiden saatavilla. JahtiPro on GDPR-yhteensopiva." />
         </div>
