@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {
   Users, CreditCard, Target, Calendar, Home, FileText,
   ChevronDown, Play, Menu, X, CheckCircle, XCircle,
-  ClipboardList, MessageSquare, Coins, BookOpen, Building,
+  ClipboardList, MessageSquare, Coins, BookOpen, Building, Ticket,
 } from 'lucide-react'
 
 function FAQ({ q, a }: { q: string; a: string }) {
@@ -107,6 +107,7 @@ export default function LandingTestPage() {
               { icon: Coins, title: 'Jäsenmaksut käsin', text: 'Maksujen seuranta on työlästä. Kuka on maksanut, kuka ei — vaikea pitää kirjaa.' },
               { icon: Target, title: 'Saaliit vihkoon', text: 'Saalisilmoitukset paperille tai tekstiviestillä. Tilastojen kokoaminen vie tunteja.' },
               { icon: Building, title: 'Eräkartanon varaukset soitellen', text: 'Varauskalenteri puuttuu. Päällekkäisiä varauksia tulee, viestittely lisääntyy.' },
+              { icon: Ticket, title: 'Vierasluvat hukassa', text: 'Luvat sovitaan WhatsAppissa, tekstiviestillä tai sähköpostitse. Tieto hajoaa eri kanaviin — kukaan ei muista mitä on sovittu, ja maksun periminen jää helposti tekemättä.' },
             ].map((c, i) => (
               <div key={i} className="rounded-2xl border border-green-800 bg-green-900/30 p-6 text-left">
                 <c.icon size={28} className="text-green-500 mb-3" />
@@ -125,14 +126,15 @@ export default function LandingTestPage() {
           <p className="mt-2 text-green-400">JahtiPro korvaa Excelin, WhatsAppin ja paperilaput yhdellä helpolla sovelluksella</p>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: Users, title: 'Jäsenhallinta', text: 'Täydellinen jäsenrekisteri. Tuo jäsenet Excelistä tai lisää käsin. Kutsu jäsenet sovellukseen sähköpostilla.', badge: 'Kaikki paketit' },
-              { icon: CreditCard, title: 'Laskutus ja maksut', text: 'Lähetä jäsenmaksulaskut sähköpostilla. Seuraa maksujen tilannetta reaaliajassa. Lähetä muistutuksia yhdellä klikkauksella.', badge: 'Kaikki paketit' },
-              { icon: Target, title: 'Saalisilmoitukset', text: 'Kirjaa saalis kentällä puhelimella. Tilastot kertyvät automaattisesti. Seuraa seuran saalistilastoja vuosittain.', badge: 'Kaikki paketit' },
-              { icon: Calendar, title: 'Tapahtumat', text: 'Luo kokouksia, talkoita ja metsästyspäiviä. Jäsenet näkevät tapahtumat omalla etusivullaan. Ilmoittautumiset helposti.', badge: 'Kaikki paketit' },
-              { icon: Home, title: 'Eräkartanon varaukset', text: 'Varauskalenteri eräkartanolle, saunalle tai ampumaradalle. Hyväksyjille ilmoitus automaattisesti. Lähetä lasku varauksesta.', badge: 'Plus ja Pro' },
-              { icon: FileText, title: 'Dokumentit', text: 'Jaa seuran asiakirjat, säännöt ja pöytäkirjat kaikkien jäsenten saataville. Turvallisesti tallessa pilvessä.', badge: 'Kaikki paketit' },
+              { icon: Users, title: 'Jäsenhallinta', text: 'Täydellinen jäsenrekisteri. Tuo jäsenet Excelistä tai lisää käsin. Kutsu jäsenet sovellukseen sähköpostilla.', badge: 'Kaikki paketit', accent: false },
+              { icon: CreditCard, title: 'Laskutus ja maksut', text: 'Lähetä jäsenmaksulaskut sähköpostilla. Seuraa maksujen tilannetta reaaliajassa. Lähetä muistutuksia yhdellä klikkauksella.', badge: 'Kaikki paketit', accent: false },
+              { icon: Target, title: 'Saalisilmoitukset', text: 'Kirjaa saalis kentällä puhelimella. Tilastot kertyvät automaattisesti. Seuraa seuran saalistilastoja vuosittain.', badge: 'Kaikki paketit', accent: false },
+              { icon: Calendar, title: 'Tapahtumat', text: 'Luo kokouksia, talkoita ja metsästyspäiviä. Jäsenet näkevät tapahtumat omalla etusivullaan. Ilmoittautumiset helposti.', badge: 'Kaikki paketit', accent: false },
+              { icon: Home, title: 'Eräkartanon varaukset', text: 'Varauskalenteri eräkartanolle, saunalle tai ampumaradalle. Hyväksyjille ilmoitus automaattisesti. Lähetä lasku varauksesta.', badge: 'Plus ja Pro', accent: false },
+              { icon: FileText, title: 'Dokumentit', text: 'Jaa seuran asiakirjat, säännöt ja pöytäkirjat kaikkien jäsenten saataville. Turvallisesti tallessa pilvessä.', badge: 'Kaikki paketit', accent: false },
+              { icon: Ticket, title: 'Vierasluvat', text: 'Ei enää lupasopimuksia WhatsAppissa tai sähköpostiketjuissa. Myönnä vierasluvat digitaalisesti, lähetä lasku suoraan sovelluksesta ja seuraa maksun tilaa muiden jäsenmaksujen rinnalla. Kaikki luvat tallessa yhdessä paikassa — historia löytyy aina tarvittaessa.', badge: 'Kaikki paketit', accent: true },
             ].map((f, i) => (
-              <div key={i} className="rounded-2xl border border-green-800 bg-green-900/30 p-6 text-left">
+              <div key={i} className={`rounded-2xl border p-6 text-left ${f.accent ? 'border-green-500 bg-green-900/40 ring-2 ring-green-500/30' : 'border-green-800 bg-green-900/30'}`}>
                 <f.icon size={28} className="text-green-400 mb-3" />
                 <h3 className="font-semibold text-white mb-1">{f.title}</h3>
                 <p className="text-sm text-green-300 leading-relaxed mb-3">{f.text}</p>
@@ -234,13 +236,13 @@ export default function LandingTestPage() {
           <FAQ q="Mikä JahtiPro on?" a="JahtiPro on metsästysseuroille suunniteltu palvelu, joka kokoaa seuran tärkeät tiedot ja toiminnot yhteen paikkaan. Sen avulla jäsenasiat, viestintä, tapahtumat, dokumentit ja käytännön hallinta pysyvät paremmin järjestyksessä." />
           <FAQ q="Kenelle JahtiPro sopii?" a="JahtiPro sopii metsästysseuroille, jotka haluavat helpottaa arkea, vähentää manuaalista työtä ja pitää seuran asiat selkeästi hallinnassa. Palvelu sopii sekä pienille että suuremmille seuroille." />
           <FAQ q="Mitä JahtiPro sisältää?" a="JahtiPro sisältää jäsenrekisterin, jäsenmaksujen hallinnan, tapahtumat ja ilmoittautumiset, dokumentit ja pöytäkirjat, saalisilmoitukset sekä vuokrattavien kohteiden hallinnan. Kokonaisuus riippuu valitusta paketista." />
+          <FAQ q="Miten vierasluvat toimivat JahtiProssa?" a="Vierasluvat hallitaan kokonaan sovelluksessa — ei enää WhatsApp-viestejä, sähköpostiketjuja tai tekstiviestejä. Seuran hallitus tai ylläpitäjä voi myöntää luvan yksittäiselle henkilölle muutamalla klikkauksella. Luvat tallentuvat automaattisesti järjestelmään, joten historia on aina saatavilla. Luvan saaja saa tiedon sähköpostitse. Luvasta voi lähettää laskun suoraan sovelluksesta — maksun seuranta siirtyy automaattisesti maksujen hallintaan muiden maksujen rinnalle." />
           <FAQ q="Voiko palvelua räätälöidä meidän seuralle?" a="Kyllä voi. JahtiPro on rakennettu niin, että sitä voidaan mukauttaa seuran omiin tarpeisiin. Tämä on hyödyllistä erityisesti silloin, jos seuralla on omia toimintatapoja, erityisiä rooleja tai tarvetta lisäominaisuuksille. Ota yhteyttä info@jahtipro.fi niin jutellaan lisää." />
           <FAQ q="Voiko JahtiProlla hallita vuokrapaikkoja tai muita seuran kohteita?" a="Kyllä. JahtiProhon voidaan sisällyttää myös eräkartanoiden, saunojen, ampumaratojen ja muiden seurakohtaisten kohteiden varauskalenteri. Hyväksyjille lähtee ilmoitus automaattisesti ja laskun voi lähettää suoraan sovelluksesta." />
           <FAQ q="Kuinka käyttöönotto toimii?" a="Käyttöönotto on tehty mahdollisimman helpoksi. Rekisteröidy osoitteessa jahtipro.fi/uusi, täytä seuran perustiedot ja tuo jäsenet Excel-tiedostosta. Palvelu on käytössä minuuteissa. Kaikkea ei tarvitse rakentaa kerralla valmiiksi." />
           <FAQ q="Tarvitaanko käyttöön teknistä osaamista?" a="Ei tarvita. JahtiPro on suunniteltu tavalliseen seurakäyttöön, joten sen käyttö ei vaadi teknistä taustaa. Tavoitteena on, että palvelu on selkeä ja helppo käyttää myös niille, jotka eivät käytä digitaalisia työkaluja paljon." />
           <FAQ q="Toimiiko JahtiPro puhelimella?" a="Kyllä. JahtiPro on suunniteltu toimimaan sujuvasti mobiililaitteilla ilman erillistä sovellusta. Tietoja voi tarkistaa ja käyttää helposti myös maastossa, kokouksissa ja liikkeellä ollessa." />
           <FAQ q="Ovatko seuran tiedot turvassa?" a="Kyllä. Jokaisen seuran tiedot ovat täysin erillään muista seuroista. Käyttöoikeuksia voidaan rajata käyttäjäroolien mukaan, joten oikeat tiedot ovat oikeiden henkilöiden saatavilla. JahtiPro on GDPR-yhteensopiva." />
-          <FAQ q="Voiko palvelua räätälöidä meidän seuralle?" a="Kyllä voi. JahtiPro on rakennettu joustavasti, ja monia asioita voi muokata suoraan sovelluksessa itse. Jos seurallanne on erityisiä tarpeita, omia toimintatapoja tai toiveita lisäominaisuuksista — jutellaan. Räätälöidään yhdessä teille sopiva ratkaisu. Ota yhteyttä: info@jahtipro.fi" />
         </div>
       </section>
 
