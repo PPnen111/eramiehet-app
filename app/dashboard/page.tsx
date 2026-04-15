@@ -5,6 +5,7 @@ import {
   BookOpen,
   Target,
   Tent,
+  Ticket,
   Users,
   CreditCard,
   Map,
@@ -47,13 +48,13 @@ const COMMON_MODULES: ModuleItem[] = [
     icon: BookOpen,
   },
   {
-    title: 'Saalisilmoitus',
+    title: 'Riistanhallinta',
     description: 'Erämiesten oma saalistilasto',
     href: '/saalis',
     icon: Target,
   },
   {
-    title: 'Eräkartano',
+    title: 'Paikkavaraukset',
     description: 'Tee varaus eräkartanoon.',
     href: '/erakartano',
     icon: Tent,
@@ -396,6 +397,38 @@ export default async function DashboardPage() {
             ))}
           </div>
         )}
+
+        {/* Vierasluvat */}
+        <div className="mb-4 rounded-2xl border border-green-800 bg-white/5 p-5">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Ticket size={18} className="text-green-400" />
+              <h2 className="font-semibold text-white">Vierasluvat</h2>
+              <span className="rounded-full bg-green-800/60 px-2 py-0.5 text-xs font-medium text-green-200">0</span>
+            </div>
+            <span className="rounded-full border border-green-700/50 bg-green-900/30 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-green-400">
+              Tulossa pian
+            </span>
+          </div>
+          <p className="text-sm text-green-400">Ei aktiivisia vieraslupia</p>
+          <p className="mt-1 text-xs text-green-600">
+            Kun vierasluvat-ominaisuus on käytössä, näet täältä voimassa olevat luvat (vieraan nimi, isäntä, alue ja maksun tila).
+          </p>
+          <div className="mt-4 flex gap-2">
+            <Link
+              href="/vierasluvat"
+              className="flex-1 rounded-lg border border-green-700 bg-green-900/40 px-3 py-2 text-center text-xs font-semibold text-green-300 hover:bg-green-900/70 transition-colors"
+            >
+              Myönnä uusi lupa
+            </Link>
+            <Link
+              href="/vierasluvat"
+              className="flex-1 rounded-lg border border-green-800 px-3 py-2 text-center text-xs font-semibold text-green-400 hover:bg-white/5 transition-colors"
+            >
+              Näytä kaikki
+            </Link>
+          </div>
+        </div>
 
         {/* Moduulit */}
         <div className="grid grid-cols-2 gap-3">
