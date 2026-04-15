@@ -16,6 +16,7 @@ type PaymentRow = {
   amount_cents: number
   due_date: string | null
   status: string
+  reference_number: string | null
 }
 
 type ProfileRow = {
@@ -74,7 +75,7 @@ export async function POST(req: NextRequest) {
   // Fetch payment
   const { data: paymentRaw, error: paymentError } = await admin
     .from('payments')
-    .select('id, club_id, profile_id, description, amount_cents, due_date, status')
+    .select('id, club_id, profile_id, description, amount_cents, due_date, status, reference_number')
     .eq('id', paymentId)
     .single()
 
@@ -132,6 +133,15 @@ export async function POST(req: NextRequest) {
     if (ap.email) adminEmail = ap.email
   }
 
+  // Fetch default bank account
+  const { data: bankRaw } = await admin
+    .from('club_bank_accounts')
+    .select('iban, bic')
+    .eq('club_id', payment.club_id)
+    .eq('is_default', true)
+    .maybeSingle()
+  const bank = bankRaw as { iban: string; bic: string | null } | null
+
   const emailData: InvoiceEmailData = {
     memberName: profile.full_name ?? 'Jäsen',
     clubName,
@@ -140,6 +150,9 @@ export async function POST(req: NextRequest) {
     dueDate: payment.due_date,
     paymentId: payment.id,
     adminEmail,
+    referenceNumber: payment.reference_number,
+    bankIban: bank?.iban ?? null,
+    bankBic: bank?.bic ?? null,
   }
 
   const resend = new Resend(apiKey)

@@ -14,6 +14,7 @@ type ValidationError = { row: number; field: string; message: string }
 type ImportResult = {
   success: number
   skipped: number
+  name_skipped?: number
   errors: number
   error_details: string[]
   debug?: { header_row: number; headers: string[] }
@@ -323,12 +324,22 @@ export default function CsvImport({ onImportDone }: Props) {
                 Tuotu onnistuneesti: <span className="font-semibold text-white">{result.success}</span> jäsentä
               </span>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <SkipForward size={14} className="text-yellow-400" />
-              <span className="text-green-300">
-                Ohitettu (jo olemassa): <span className="font-semibold text-white">{result.skipped}</span> jäsentä
-              </span>
-            </div>
+            {result.skipped > 0 && (
+              <div className="flex items-center gap-2 text-sm">
+                <SkipForward size={14} className="text-yellow-400" />
+                <span className="text-green-300">
+                  Ohitettu (jo olemassa): <span className="font-semibold text-white">{result.skipped}</span> jäsentä
+                </span>
+              </div>
+            )}
+            {(result.name_skipped ?? 0) > 0 && (
+              <div className="flex items-center gap-2 text-sm">
+                <SkipForward size={14} className="text-yellow-400" />
+                <span className="text-green-300">
+                  Ohitettu (nimi puuttui): <span className="font-semibold text-white">{result.name_skipped}</span> riviä
+                </span>
+              </div>
+            )}
             {result.errors > 0 && (
               <div className="flex items-start gap-2 text-sm">
                 <AlertCircle size={14} className="mt-0.5 shrink-0 text-red-400" />

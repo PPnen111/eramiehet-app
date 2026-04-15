@@ -322,6 +322,13 @@ export default async function DashboardPage() {
               <Settings size={16} />
               <span>Superadmin-paneeli</span>
             </Link>
+            <Link
+              href="/profiili/mfa"
+              className="flex items-center gap-3 rounded-xl border border-green-800 bg-green-900/10 px-4 py-3 text-sm text-green-300 hover:bg-green-900/30 transition-colors"
+            >
+              <Shield size={16} />
+              <span>Kaksivaiheinen tunnistautuminen (2FA)</span>
+            </Link>
           </div>
         )}
 

@@ -87,10 +87,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Tuetut tiedostomuodot: .csv, .xlsx' }, { status: 400 })
   }
 
-  // Only import rows with email (required for auth user creation)
+  // Only skip rows where name is completely missing
   const rows = parsedRows.filter((r) => r.nimi.trim())
+  const nameSkipped = parsedRows.length - rows.length
   if (rows.length === 0) {
-    return NextResponse.json({ error: 'Ei jäseniä tuotavaksi' }, { status: 400 })
+    return NextResponse.json({ error: 'Ei jäseniä tuotavaksi — nimi puuttuu kaikilta riveiltä' }, { status: 400 })
   }
 
   const admin = createAdminClient()
@@ -101,95 +102,58 @@ export async function POST(req: NextRequest) {
   for (const r of rows) {
     const full_name = r.nimi.trim()
     const email = r.sahkoposti.trim() || null
+    const memberNumber = r.jasennumero?.trim() || null
 
-    if (!email) {
-      results.push({ nimi: full_name, status: 'skipped', note: 'ei sähköpostia' })
-      continue
+    // Duplicate check — priority: email → member_number → name (case-insensitive)
+    let duplicate = false
+    let duplicateReason = ''
+
+    if (email) {
+      const { data } = await admin
+        .from('member_registry')
+        .select('id')
+        .eq('club_id', clubId)
+        .eq('email', email)
+        .maybeSingle()
+      if (data) { duplicate = true; duplicateReason = 'sähköposti' }
     }
 
-    // Skip if already a member of this club
-    const { data: existing } = await admin
-      .from('profiles')
-      .select('id')
-      .eq('email', email)
-      .eq('club_id', clubId)
-      .maybeSingle()
-
-    if (existing) {
-      results.push({ nimi: full_name, status: 'skipped', note: 'jo jäsen' })
-      continue
+    if (!duplicate && memberNumber) {
+      const { data } = await admin
+        .from('member_registry')
+        .select('id')
+        .eq('club_id', clubId)
+        .eq('member_number', memberNumber)
+        .maybeSingle()
+      if (data) { duplicate = true; duplicateReason = 'jäsennumero' }
     }
 
-    // Create auth user — this also ensures profiles_id_fkey is satisfied
-    const { data: newAuthUser, error: authError } = await admin.auth.admin.createUser({
-      email,
-      email_confirm: true,
-      password: crypto.randomUUID(),
-      user_metadata: { full_name },
-    })
-
-    if (authError || !newAuthUser?.user) {
-      // If user already exists in auth.users but not in this club's profiles, try to use them
-      if (authError?.message?.includes('already been registered') || authError?.code === 'email_exists') {
-        // Look up existing auth user via profiles (they may be in another club)
-        const { data: existingProfile } = await admin
-          .from('profiles')
-          .select('id')
-          .eq('email', email)
-          .maybeSingle()
-
-        if (!existingProfile) {
-          results.push({ nimi: full_name, status: 'error', note: authError?.message ?? 'Auth-virhe' })
-          continue
-        }
-
-        // Upsert the profile for this club
-        const { error: profileError } = await admin.from('profiles').upsert({
-          id: existingProfile.id,
-          club_id: clubId,
-          active_club_id: clubId,
-          full_name,
-          email,
-          phone: r.puhelin || null,
-          role: 'member',
-          member_status: 'active',
-          join_date: parseDate(r.liittynyt) ?? today,
-          member_number: r.jasennumero || null,
-          birth_date: parseDate(r.syntymaaika),
-          member_type: r.jasenlaji || null,
-          street_address: r.katuosoite || null,
-          postal_code: r.postinumero || null,
-          city: r.postitoimipaikka || null,
-          home_municipality: r.kotikunta || null,
-          billing_method: r.laskutustapa || null,
-          additional_info: r.lisatiedot || null,
-        })
-
-        if (profileError) {
-          results.push({ nimi: full_name, status: 'error', note: profileError.message })
-        } else {
-          results.push({ nimi: full_name, status: 'success', note: email })
-        }
-        continue
+    if (!duplicate && full_name) {
+      const { data } = await admin
+        .from('member_registry')
+        .select('id, full_name')
+        .eq('club_id', clubId)
+        .ilike('full_name', full_name)
+      if (data && data.length > 0) {
+        const normalized = full_name.toLowerCase()
+        const match = (data as { id: string; full_name: string | null }[]).find(
+          (m) => (m.full_name ?? '').trim().toLowerCase() === normalized
+        )
+        if (match) { duplicate = true; duplicateReason = 'nimi' }
       }
+    }
 
-      results.push({ nimi: full_name, status: 'error', note: authError?.message ?? 'Auth-virhe' })
+    if (duplicate) {
+      results.push({ nimi: full_name, status: 'skipped', note: `jo rekisterissä (${duplicateReason})` })
       continue
     }
 
-    const userId = newAuthUser.user.id
-
-    // Upsert profile with all fields
-    const { error: profileError } = await admin.from('profiles').upsert({
-      id: userId,
+    // Insert into member_registry — email NOT required
+    const { data: regRow, error: regError } = await admin.from('member_registry').insert({
       club_id: clubId,
-      active_club_id: clubId,
       full_name,
       email,
       phone: r.puhelin || null,
-      role: 'member',
-      member_status: 'active',
-      join_date: parseDate(r.liittynyt) ?? today,
       member_number: r.jasennumero || null,
       birth_date: parseDate(r.syntymaaika),
       member_type: r.jasenlaji || null,
@@ -199,15 +163,66 @@ export async function POST(req: NextRequest) {
       home_municipality: r.kotikunta || null,
       billing_method: r.laskutustapa || null,
       additional_info: r.lisatiedot || null,
-    })
+    }).select('id').single()
 
-    if (profileError) {
-      console.error('Profile upsert error:', profileError)
-      results.push({ nimi: full_name, status: 'error', note: profileError.message })
+    if (regError || !regRow) {
+      console.error('Member registry insert error:', regError)
+      results.push({ nimi: full_name, status: 'error', note: regError?.message ?? 'unknown' })
       continue
     }
+    const registryId = (regRow as { id: string }).id
 
-    results.push({ nimi: full_name, status: 'success', note: email })
+    // If email provided, also create auth user + profile (so they can log in)
+    if (email) {
+      const { data: existingProfile } = await admin
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .eq('club_id', clubId)
+        .maybeSingle()
+
+      let profileId: string | null = (existingProfile as { id: string } | null)?.id ?? null
+
+      if (!profileId) {
+        const { data: newAuthUser } = await admin.auth.admin.createUser({
+          email,
+          email_confirm: true,
+          password: crypto.randomUUID(),
+          user_metadata: { full_name },
+        })
+
+        if (newAuthUser?.user) {
+          profileId = newAuthUser.user.id
+          await admin.from('profiles').upsert({
+            id: profileId,
+            club_id: clubId,
+            active_club_id: clubId,
+            full_name,
+            email,
+            phone: r.puhelin || null,
+            role: 'member',
+            member_status: 'active',
+            join_date: parseDate(r.liittynyt) ?? today,
+            member_number: r.jasennumero || null,
+            birth_date: parseDate(r.syntymaaika),
+            member_type: r.jasenlaji || null,
+            street_address: r.katuosoite || null,
+            postal_code: r.postinumero || null,
+            city: r.postitoimipaikka || null,
+            home_municipality: r.kotikunta || null,
+            billing_method: r.laskutustapa || null,
+            additional_info: r.lisatiedot || null,
+          })
+        }
+      }
+
+      // Back-link registry to profile to prevent duplicates in member list
+      if (profileId) {
+        await admin.from('member_registry').update({ profile_id: profileId }).eq('id', registryId)
+      }
+    }
+
+    results.push({ nimi: full_name, status: 'success', note: email ?? 'ei sähköpostia' })
   }
 
   const successCount = results.filter((r) => r.status === 'success').length
@@ -215,17 +230,28 @@ export async function POST(req: NextRequest) {
   const errorCount = results.filter((r) => r.status === 'error').length
   const errorDetails = results.filter((r) => r.status === 'error')
 
+  // Build import_rows with { name, status, reason? } for each processed row
+  const importRows = results.map((r) => {
+    return {
+      name: r.nimi,
+      status: r.status,
+      ...(r.status === 'skipped' ? { reason: 'jo rekisterissä' } : {}),
+      ...(r.status === 'error' ? { reason: r.note } : {}),
+    }
+  })
+
   // Log import
   const { data: logRow } = await admin
     .from('member_imports')
     .insert({
       club_id: clubId,
       imported_by: user.id,
-      total_rows: rows.length,
+      total_rows: parsedRows.length,
       success_count: successCount,
-      skip_count: skipCount,
+      skip_count: skipCount + nameSkipped,
       error_count: errorCount,
       errors: errorDetails.length > 0 ? errorDetails : null,
+      import_rows: importRows,
     })
     .select('id')
     .single()
@@ -235,6 +261,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     success: successCount,
     skipped: skipCount,
+    name_skipped: nameSkipped,
     errors: errorCount,
     import_id: importId,
     error_details: errorDetails.map((e) => `${e.nimi}: ${e.note}`),

@@ -66,95 +66,110 @@ export async function POST(req: NextRequest) {
     const full_name = r.nimi.trim()
     const email = r.sahkoposti?.trim() || null
 
-    if (!email) {
-      results.push({ nimi: full_name, status: 'skipped', note: 'ei sähköpostia' })
-      continue
+    // Duplicate check — priority: email → name (case-insensitive)
+    let duplicate = false
+    let duplicateReason = ''
+
+    if (email) {
+      const { data } = await admin
+        .from('member_registry')
+        .select('id')
+        .eq('club_id', clubId)
+        .eq('email', email)
+        .maybeSingle()
+      if (data) { duplicate = true; duplicateReason = 'sähköposti' }
     }
 
-    // Skip if already a member of this club
-    const { data: existing } = await admin
-      .from('profiles')
-      .select('id')
-      .eq('email', email)
-      .eq('club_id', clubId)
-      .maybeSingle()
-
-    if (existing) {
-      results.push({ nimi: full_name, status: 'skipped', note: 'jo jäsen' })
-      continue
-    }
-
-    // Create auth user
-    const { data: newAuthUser, error: authError } = await admin.auth.admin.createUser({
-      email,
-      email_confirm: true,
-      password: crypto.randomUUID(),
-      user_metadata: { full_name },
-    })
-
-    if (authError || !newAuthUser?.user) {
-      if (authError?.message?.includes('already been registered') || authError?.code === 'email_exists') {
-        const { data: existingProfile } = await admin
-          .from('profiles')
-          .select('id')
-          .eq('email', email)
-          .maybeSingle()
-
-        if (!existingProfile) {
-          results.push({ nimi: full_name, status: 'error', note: authError?.message ?? 'Auth-virhe' })
-          continue
-        }
-
-        const { error: profileError } = await admin.from('profiles').upsert({
-          id: existingProfile.id,
-          club_id: clubId,
-          active_club_id: clubId,
-          full_name,
-          email,
-          phone: r.puhelin || null,
-          role: r.rooli || 'member',
-          member_status: 'active',
-          join_date: r.liittynyt || today,
-        })
-
-        if (profileError) {
-          results.push({ nimi: full_name, status: 'error', note: profileError.message })
-        } else {
-          results.push({ nimi: full_name, status: 'success', note: email })
-        }
-        continue
+    if (!duplicate && full_name) {
+      const { data } = await admin
+        .from('member_registry')
+        .select('id, full_name')
+        .eq('club_id', clubId)
+        .ilike('full_name', full_name)
+      if (data && data.length > 0) {
+        const normalized = full_name.toLowerCase()
+        const match = (data as { id: string; full_name: string | null }[]).find(
+          (m) => (m.full_name ?? '').trim().toLowerCase() === normalized
+        )
+        if (match) { duplicate = true; duplicateReason = 'nimi' }
       }
+    }
 
-      results.push({ nimi: full_name, status: 'error', note: authError?.message ?? 'Auth-virhe' })
+    if (duplicate) {
+      results.push({ nimi: full_name, status: 'skipped', note: `jo rekisterissä (${duplicateReason})` })
       continue
     }
 
-    const userId = newAuthUser.user.id
-
-    const { error: profileError } = await admin.from('profiles').upsert({
-      id: userId,
+    // Insert into member_registry — email NOT required
+    const { data: regRow, error: regError } = await admin.from('member_registry').insert({
       club_id: clubId,
-      active_club_id: clubId,
       full_name,
       email,
       phone: r.puhelin || null,
-      role: r.rooli || 'member',
-      member_status: 'active',
-      join_date: r.liittynyt || today,
-    })
+    }).select('id').single()
 
-    if (profileError) {
-      results.push({ nimi: full_name, status: 'error', note: profileError.message })
+    if (regError || !regRow) {
+      results.push({ nimi: full_name, status: 'error', note: regError?.message ?? 'unknown' })
       continue
     }
+    const registryId = (regRow as { id: string }).id
 
-    results.push({ nimi: full_name, status: 'success', note: email })
+    // If email provided, also create auth user + profile
+    if (email) {
+      const { data: existingProfile } = await admin
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .eq('club_id', clubId)
+        .maybeSingle()
+
+      let profileId: string | null = (existingProfile as { id: string } | null)?.id ?? null
+
+      if (!profileId) {
+        const { data: newAuthUser } = await admin.auth.admin.createUser({
+          email,
+          email_confirm: true,
+          password: crypto.randomUUID(),
+          user_metadata: { full_name },
+        })
+
+        if (newAuthUser?.user) {
+          profileId = newAuthUser.user.id
+          await admin.from('profiles').upsert({
+            id: profileId,
+            club_id: clubId,
+            active_club_id: clubId,
+            full_name,
+            email,
+            phone: r.puhelin || null,
+            role: r.rooli || 'member',
+            member_status: 'active',
+            join_date: r.liittynyt || today,
+          })
+        }
+      }
+
+      if (profileId) {
+        await admin.from('member_registry').update({ profile_id: profileId }).eq('id', registryId)
+      }
+    }
+
+    results.push({ nimi: full_name, status: 'success', note: email ?? 'ei sähköpostia' })
   }
 
   const successCount = results.filter((r) => r.status === 'success').length
   const skipCount = results.filter((r) => r.status === 'skipped').length
   const errorCount = results.filter((r) => r.status === 'error').length
   const errorDetails = results.filter((r) => r.status === 'error')
+
+  const importRows = results.map((r) => {
+    return {
+      name: r.nimi,
+      status: r.status,
+      ...(r.status === 'skipped' ? { reason: 'jo rekisterissä' } : {}),
+      ...(r.status === 'error' ? { reason: r.note } : {}),
+    }
+  })
 
   // Log import
   const { data: logRow } = await admin
@@ -167,6 +182,7 @@ export async function POST(req: NextRequest) {
       skip_count: skipCount,
       error_count: errorCount,
       errors: errorDetails.length > 0 ? errorDetails : null,
+      import_rows: importRows,
     })
     .select('id')
     .single()

@@ -33,9 +33,14 @@ export async function POST(req: NextRequest) {
       user_metadata: { full_name: contactName },
     })
     if (authError || !authData?.user) {
+      console.error('[REGISTER] Auth user creation failed:', authError?.message)
+      if (authError?.message?.includes('already been registered') || authError?.code === 'email_exists') {
+        return NextResponse.json({ error: 'Tällä sähköpostilla on jo tili. Kirjaudu sisään osoitteessa jahtipro.fi/login' }, { status: 409 })
+      }
       throw new Error(authError?.message ?? 'Auth user creation failed')
     }
     const userId = authData.user.id
+    console.log('[REGISTER] Auth user created:', userId)
 
     // 2. Create club
     const { data: clubRaw, error: clubError } = await admin
@@ -43,8 +48,12 @@ export async function POST(req: NextRequest) {
       .insert({ name: clubName })
       .select('id')
       .single()
-    if (clubError || !clubRaw) throw new Error(clubError?.message ?? 'Club creation failed')
+    if (clubError || !clubRaw) {
+      console.error('[REGISTER] Club creation failed:', clubError?.message)
+      throw new Error(clubError?.message ?? 'Club creation failed')
+    }
     const clubId = (clubRaw as { id: string }).id
+    console.log('[REGISTER] Club created:', clubId)
 
     // 3. Create profile
     await admin.from('profiles').upsert({
@@ -143,9 +152,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('[REGISTER] Error:', err)
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[REGISTER] Full error:', message)
     return NextResponse.json(
-      { error: 'Rekisteröityminen epäonnistui. Yritä uudelleen.' },
+      { error: 'Rekisteröityminen epäonnistui. Ota yhteyttä info@jahtipro.fi' },
       { status: 500 }
     )
   }

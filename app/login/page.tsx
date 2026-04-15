@@ -43,6 +43,18 @@ export default function LoginPage() {
       return
     }
 
+    // Check if user has MFA enrolled
+    const { data: factors } = await supabase.auth.mfa.listFactors()
+    const hasMFA = factors?.totp && factors.totp.length > 0
+
+    if (hasMFA) {
+      const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+      if (aal?.currentLevel !== 'aal2') {
+        router.push('/mfa-verify')
+        return
+      }
+    }
+
     router.push('/dashboard')
     router.refresh()
   }

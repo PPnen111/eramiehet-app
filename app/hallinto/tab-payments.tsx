@@ -2,12 +2,10 @@
 
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Trash2, Check, Bell } from 'lucide-react'
+import { Trash2, Check, Bell, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate, formatEuros } from '@/lib/format'
 import { generateReferenceNumber } from '@/lib/utils/reference-number'
-import InvoicePreviewModal, { type InvoicePreviewPayment } from '@/app/components/invoice-preview-modal'
 
 const PAYMENT_TYPES = [
   { value: 'jäsenmaksu', label: 'Jäsenmaksu' },
@@ -103,14 +101,18 @@ export default function TabPayments({ clubId }: Props) {
 
   const [members, setMembers] = useState<MemberOption[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
-  const [clubName, setClubName] = useState('Metsästysseura')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState<string | null>(null)
-  const [invoiceBusy, setInvoiceBusy] = useState<string | null>(null)
   const [remindBusy, setRemindBusy] = useState<string | null>(null)
   const [bulkRemindBusy, setBulkRemindBusy] = useState(false)
   const [toasts, setToasts] = useState<Toast[]>([])
-  const [previewPayment, setPreviewPayment] = useState<Payment | null>(null)
+  const [pdfModal, setPdfModal] = useState<Payment | null>(null)
+  const [pdfName, setPdfName] = useState('')
+  const [pdfEmail, setPdfEmail] = useState('')
+  const [pdfAddress, setPdfAddress] = useState('')
+  const [pdfPostal, setPdfPostal] = useState('')
+  const [pdfNotes, setPdfNotes] = useState('14 päivän maksuehto. Kiitos!')
+  const [pdfBusy, setPdfBusy] = useState(false)
   const [filter, setFilter] = useState<FilterType>('unpaid')
 
   // Form section
@@ -147,7 +149,7 @@ export default function TabPayments({ clubId }: Props) {
 
   const load = useCallback(async () => {
     setLoading(true)
-    const [{ data: mData }, { data: pData }, { data: clubData }] = await Promise.all([
+    const [{ data: mData }, { data: pData }] = await Promise.all([
       supabase
         .from('profiles')
         .select('id, full_name, email')
@@ -160,11 +162,9 @@ export default function TabPayments({ clubId }: Props) {
         )
         .eq('club_id', clubId)
         .order('due_date', { ascending: false, nullsFirst: false }),
-      supabase.from('clubs').select('name').eq('id', clubId).single(),
     ])
     setMembers((mData ?? []) as unknown as MemberOption[])
     setPayments((pData ?? []) as unknown as Payment[])
-    setClubName((clubData as { name: string } | null)?.name ?? 'Metsästysseura')
     setLoading(false)
   }, [clubId, supabase])
 
@@ -231,30 +231,6 @@ export default function TabPayments({ clubId }: Props) {
     }
   }
 
-  const sendInvoice = async (paymentId: string) => {
-    setInvoiceBusy(paymentId)
-    try {
-      const res = await fetch('/api/send-invoice', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payment_id: paymentId }),
-      })
-      if (res.ok) {
-        await supabase
-          .from('payments')
-          .update({ sent_at: new Date().toISOString() })
-          .eq('id', paymentId)
-        showToast('Lasku lähetetty!', 'success')
-        void load()
-      } else {
-        const data = (await res.json()) as { error?: string }
-        showToast(data.error ?? 'Lähetys epäonnistui.', 'error')
-      }
-    } catch {
-      showToast('Verkkovirhe. Yritä uudelleen.', 'error')
-    }
-    setInvoiceBusy(null)
-  }
 
   const sendReminder = async (paymentId: string) => {
     setRemindBusy(paymentId)
@@ -297,6 +273,42 @@ export default function TabPayments({ clubId }: Props) {
       showToast('Verkkovirhe.', 'error')
     }
     setBulkRemindBusy(false)
+  }
+
+  const openPdfModal = (p: Payment) => {
+    setPdfModal(p)
+    const profileName = (p.profiles as unknown as { full_name: string | null } | null)?.full_name
+    setPdfName(profileName ?? '')
+    setPdfEmail('')
+    setPdfAddress('')
+    setPdfPostal('')
+    setPdfNotes('14 päivän maksuehto. Kiitos!')
+  }
+
+  const sendPdfInvoice = async () => {
+    if (!pdfModal || !pdfEmail.trim()) return
+    setPdfBusy(true)
+    const res = await fetch('/api/invoice-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        payment_id: pdfModal.id,
+        recipient_email: pdfEmail,
+        recipient_name: pdfName || undefined,
+        recipient_address: pdfAddress || undefined,
+        recipient_postal: pdfPostal || undefined,
+        notes: pdfNotes || undefined,
+      }),
+    })
+    setPdfBusy(false)
+    if (res.ok) {
+      showToast('PDF-lasku lähetetty sähköpostiin', 'success')
+      setPdfModal(null)
+      void load()
+    } else {
+      const d = (await res.json()) as { error?: string }
+      showToast(d.error ?? 'Lähetys epäonnistui', 'error')
+    }
   }
 
   const resetSingleForm = () => {
@@ -801,7 +813,7 @@ export default function TabPayments({ clubId }: Props) {
             const profileName = (
               p.profiles as unknown as { full_name: string | null } | null
             )?.full_name
-            const isBusy = busy === p.id || invoiceBusy === p.id
+            const isBusy = busy === p.id
             const isPaid = p.status === 'paid'
             const isOD = effectiveStatus === 'overdue'
 
@@ -840,6 +852,7 @@ export default function TabPayments({ clubId }: Props) {
                         <p className="text-xs text-green-400">
                           {profileName ?? '—'}
                           {p.due_date && ` · eräpäivä ${formatDate(p.due_date)}`}
+                          {p.reference_number && ` · viite ${p.reference_number}`}
                         </p>
                         {p.sent_at && (
                           <p className="text-xs text-green-600">
@@ -860,15 +873,23 @@ export default function TabPayments({ clubId }: Props) {
                     </div>
 
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {!isPaid && !p.sent_at && (
+                      {!isPaid && (
                         <button
-                          onClick={() => void sendInvoice(p.id)}
-                          disabled={isBusy}
-                          className="rounded-lg border border-green-700 px-3 py-1 text-xs font-semibold text-green-300 hover:bg-green-800/40 disabled:opacity-50"
+                          onClick={() => openPdfModal(p)}
+                          className="rounded-lg bg-green-800 px-3 py-1 text-xs font-semibold text-white hover:bg-green-700"
                         >
-                          {invoiceBusy === p.id ? 'Lähetetään...' : 'Lähetä sähköpostilla'}
+                          Lähetä PDF-lasku
                         </button>
                       )}
+
+                      <a
+                        href={`/api/invoice-pdf/preview?payment_id=${p.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
+                      >
+                        Lataa PDF
+                      </a>
 
                       {isOD && (
                         <button
@@ -880,20 +901,6 @@ export default function TabPayments({ clubId }: Props) {
                           {remindBusy === p.id ? 'Lähetetään...' : 'Lähetä muistutus'}
                         </button>
                       )}
-
-                      <button
-                        onClick={() => setPreviewPayment(p)}
-                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
-                      >
-                        Esikatsele
-                      </button>
-
-                      <Link
-                        href={`/laskut/${p.id}`}
-                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
-                      >
-                        Tulosta PDF
-                      </Link>
 
                       <button
                         onClick={() => void deletePayment(p.id)}
@@ -913,16 +920,25 @@ export default function TabPayments({ clubId }: Props) {
         </div>
       )}
 
-      {previewPayment && (
-        <InvoicePreviewModal
-          payment={previewPayment as unknown as InvoicePreviewPayment}
-          memberName={
-            (previewPayment.profiles as unknown as { full_name: string | null } | null)
-              ?.full_name ?? null
-          }
-          clubName={clubName}
-          onClose={() => setPreviewPayment(null)}
-        />
+      {/* PDF Invoice modal */}
+      {pdfModal && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setPdfModal(null)} />
+          <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-6 shadow-2xl space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="font-bold text-white">Lähetä PDF-lasku</h2>
+              <button onClick={() => setPdfModal(null)} className="text-green-500 hover:text-green-300"><X size={16} /></button>
+            </div>
+            <div><label className="mb-1 block text-xs text-green-400">Vastaanottajan nimi</label><input type="text" value={pdfName} onChange={(e) => setPdfName(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" /></div>
+            <div><label className="mb-1 block text-xs text-green-400">Sähköposti *</label><input type="email" value={pdfEmail} onChange={(e) => setPdfEmail(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" placeholder="vastaanottaja@esimerkki.fi" /></div>
+            <div><label className="mb-1 block text-xs text-green-400">Osoite</label><input type="text" value={pdfAddress} onChange={(e) => setPdfAddress(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" /></div>
+            <div><label className="mb-1 block text-xs text-green-400">Postinumero ja -toimipaikka</label><input type="text" value={pdfPostal} onChange={(e) => setPdfPostal(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" /></div>
+            <div><label className="mb-1 block text-xs text-green-400">Lisätiedot</label><input type="text" value={pdfNotes} onChange={(e) => setPdfNotes(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" /></div>
+            <button onClick={() => void sendPdfInvoice()} disabled={pdfBusy || !pdfEmail.trim()} className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50">
+              {pdfBusy ? 'Lähetetään...' : 'Lähetä PDF-lasku →'}
+            </button>
+          </div>
+        </>
       )}
     </div>
   )
