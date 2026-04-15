@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import {
   Users, CreditCard, Target, Calendar, Home, FileText,
-  ChevronDown, Play, Menu, X, CheckCircle, XCircle,
+  ChevronDown, Menu, X, CheckCircle, XCircle,
   ClipboardList, MessageSquare, Coins, BookOpen, Building, Ticket, Shield,
 } from 'lucide-react'
 
@@ -60,15 +60,12 @@ export default function LandingTestPage() {
               Käytä aikasi <span className="text-green-400">rakkaaseen harrastukseen.</span><br />Vähemmän hallintoon ja viestintään.
             </h1>
             <p className="mt-4 text-lg text-green-300 leading-relaxed">
-              Jäsenrekisteri, maksut, saalisilmoitukset ja eräkartanon varaukset yhdessä sovelluksessa. Suunniteltu suomalaisille metsästysseuroille.
+              Jäsenrekisteri, maksut, saalisilmoitukset ja paikkavaraukset yhdessä sovelluksessa. Suunniteltu suomalaisille metsästysseuroille.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/uusi" className="rounded-xl bg-green-600 px-6 py-3.5 text-base font-bold text-white hover:bg-green-500 transition-colors">
                 Aloita ilmainen 14 pv kokeilu →
               </Link>
-              <a href="#video" className="rounded-xl border border-green-700 px-6 py-3.5 text-base font-semibold text-green-300 hover:bg-green-900/40 transition-colors">
-                Katso esittely
-              </a>
             </div>
             <p className="mt-4 text-sm text-green-500">
               ✓ Ei luottokorttia &nbsp; ✓ Ei sitoumuksia &nbsp; ✓ Valmis 5 minuutissa
@@ -147,36 +144,22 @@ export default function LandingTestPage() {
         </div>
       </section>
 
-      {/* ═══ VIDEO ═══ */}
-      <section id="video" className="py-20 px-4">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-bold text-white">Katso miten JahtiPro toimii</h2>
-          <p className="mt-2 text-green-400">3 minuuttia — näet kaiken oleellisen</p>
-          <div className="mt-8 rounded-2xl border border-green-800 bg-green-900/30 flex flex-col items-center justify-center h-80">
-            <Play size={48} className="text-green-500 mb-3" />
-            <p className="text-green-500">[Video tulossa]</p>
-            <p className="text-xs text-green-700 mt-1">Esittelyvideo lisätään pian</p>
-          </div>
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <div className="rounded-xl border border-green-800 bg-green-900/20 flex items-center justify-center h-40 text-sm text-green-600">[Kuvakaappaus: Jäsenhallinta]</div>
-            <div className="rounded-xl border border-green-800 bg-green-900/20 flex items-center justify-center h-40 text-sm text-green-600">[Kuvakaappaus: Maksut]</div>
-          </div>
-        </div>
-      </section>
-
       {/* ═══ TESTIMONIAL ═══ */}
       <section id="testimonial" className="py-20 px-4 bg-green-900/10">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold text-white mb-8">Mitä käyttäjät sanovat</h2>
-          <div className="rounded-2xl border border-green-800 bg-green-900/30 p-8">
+          <div className="rounded-2xl border border-green-800 bg-green-900/30 p-8 text-left">
             <p className="text-4xl text-green-600 mb-4">&ldquo;</p>
-            <p className="text-lg italic text-green-200 leading-relaxed">[Testimonial tulossa — Jari Simola, Kyyjärven Erämiehet]</p>
+            <div className="space-y-4 text-lg italic text-green-200 leading-relaxed">
+              <p>Aiemmin meidän seurassa tieto oli hajallaan: WhatsApp-ryhmässä tiedotteet ja pöytäkirjat hukkuivat muun keskustelun sekaan, kotisivut olivat erikseen, jäsenlaskutus omassa paikassaan ja vierasluvat hoidettiin erillisten ohjeiden mukaan. Vieraslupametsästyksen seuraaminen oli käytännössä mahdotonta.</p>
+              <p>JahtiPro kokosi kaiken yhteen. Nyt näemme reaaliajassa ketä on vieraana, onko maksut hoidettu ja kuka toimii isäntänä. Lisäksi jäsenten saalistilastot ovat helposti saatavilla, mikä antaa hyvän kokonaiskuvan alueen riistakannasta. Myös tiedot riistapelloista, ruokintapaikoista ja nuolukivistä löytyvät yhdestä paikasta – ja nähdään suoraan, kuka niitä hoitaa ja missä kunnossa ne ovat.</p>
+              <p>Arki on selkeytynyt huomattavasti ja turha säätö on jäänyt pois. Tämä on juuri sellainen ratkaisu, jota meidän seurassa tarvittiin.</p>
+            </div>
             <div className="mt-6">
               <p className="font-semibold text-white">Jari Simola</p>
-              <p className="text-sm text-green-500">Hallituksen jäsen, Kyyjärven Erämiehet</p>
+              <p className="text-sm text-green-500">Hallituksen puheenjohtaja, Kyyjärven Erämiehet</p>
             </div>
           </div>
-          <p className="mt-4 text-xs text-green-700">Lisää arvosteluja tulossa</p>
         </div>
       </section>
 
@@ -211,8 +194,6 @@ export default function LandingTestPage() {
               <div key={i} className={`rounded-2xl border p-6 text-left relative ${p.popular ? 'border-green-500 bg-green-900/40 ring-2 ring-green-500/30' : 'border-green-800 bg-green-900/20'}`}>
                 {p.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-green-600 px-3 py-0.5 text-xs font-bold text-white">Suosituin</span>}
                 <h3 className="text-lg font-bold text-white">{p.name}</h3>
-                <p className="mt-2"><span className="text-3xl font-extrabold text-white">{p.price} €</span><span className="text-green-400">/vuosi</span></p>
-                <p className="text-sm text-green-500">({p.monthly} €/kk)</p>
                 <ul className="mt-6 space-y-2">
                   {p.features.map((f, j) => (
                     <li key={j} className="flex items-center gap-2 text-sm text-green-200"><CheckCircle size={14} className="text-green-400 shrink-0" />{f}</li>
@@ -227,7 +208,6 @@ export default function LandingTestPage() {
               </div>
             ))}
           </div>
-          <p className="mt-6 text-xs text-green-700">Kaikki hinnat sis. ALV 25,5%</p>
         </div>
       </section>
 
@@ -239,7 +219,7 @@ export default function LandingTestPage() {
           <FAQ q="Kenelle JahtiPro sopii?" a="JahtiPro sopii metsästysseuroille, jotka haluavat helpottaa arkea, vähentää manuaalista työtä ja pitää seuran asiat selkeästi hallinnassa. Palvelu sopii sekä pienille että suuremmille seuroille." />
           <FAQ q="Mitä JahtiPro sisältää?" a="JahtiPro sisältää jäsenrekisterin, jäsenmaksujen hallinnan, tapahtumat ja ilmoittautumiset, dokumentit ja pöytäkirjat, saalisilmoitukset sekä vuokrattavien kohteiden hallinnan. Kokonaisuus riippuu valitusta paketista." />
           <FAQ q="Miten vierasluvat toimivat JahtiProssa?" a="Vierasluvat hallitaan kokonaan sovelluksessa — ei enää WhatsApp-viestejä, sähköpostiketjuja tai tekstiviestejä. Seuran hallitus tai ylläpitäjä voi myöntää luvan yksittäiselle henkilölle muutamalla klikkauksella. Luvat tallentuvat automaattisesti järjestelmään, joten historia on aina saatavilla. Luvan saaja saa tiedon sähköpostitse. Luvasta voi lähettää laskun suoraan sovelluksesta — maksun seuranta siirtyy automaattisesti maksujen hallintaan muiden maksujen rinnalle." />
-          <FAQ q="Voiko palvelua räätälöidä meidän seuralle?" a="Kyllä voi. JahtiPro on rakennettu niin, että sitä voidaan mukauttaa seuran omiin tarpeisiin. Tämä on hyödyllistä erityisesti silloin, jos seuralla on omia toimintatapoja, erityisiä rooleja tai tarvetta lisäominaisuuksille. Ota yhteyttä info@jahtipro.fi niin jutellaan lisää." />
+          <FAQ q="Voiko palvelua räätälöidä meidän seuralle?" a="Kyllä voi. JahtiPro on rakennettu joustavasti, ja monia asioita voi muokata suoraan sovelluksessa itse. Jos seurallanne on erityisiä tarpeita, omia toimintatapoja tai toiveita lisäominaisuuksista — jutellaan. Räätälöidään yhdessä teille sopiva ratkaisu. Ota yhteyttä: info@jahtipro.fi" />
           <FAQ q="Voiko JahtiProlla hallita vuokrapaikkoja tai muita seuran kohteita?" a="Kyllä. JahtiProhon voidaan sisällyttää myös eräkartanoiden, saunojen, ampumaratojen ja muiden seurakohtaisten kohteiden varauskalenteri. Hyväksyjille lähtee ilmoitus automaattisesti ja laskun voi lähettää suoraan sovelluksesta." />
           <FAQ q="Kuinka käyttöönotto toimii?" a="Käyttöönotto on tehty mahdollisimman helpoksi. Rekisteröidy osoitteessa jahtipro.fi/uusi, täytä seuran perustiedot ja tuo jäsenet Excel-tiedostosta. Palvelu on käytössä minuuteissa. Kaikkea ei tarvitse rakentaa kerralla valmiiksi." />
           <FAQ q="Tarvitaanko käyttöön teknistä osaamista?" a="Ei tarvita. JahtiPro on suunniteltu tavalliseen seurakäyttöön, joten sen käyttö ei vaadi teknistä taustaa. Tavoitteena on, että palvelu on selkeä ja helppo käyttää myös niille, jotka eivät käytä digitaalisia työkaluja paljon." />
