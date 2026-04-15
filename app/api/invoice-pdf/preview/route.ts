@@ -20,9 +20,53 @@ export async function GET(req: NextRequest) {
   const clubId = profile.active_club_id ?? profile.club_id
 
   const admin = createAdminClient()
-  const { data: paymentRaw } = await admin.from('payments').select('id, description, amount_cents, due_date, reference_number').eq('id', paymentId).eq('club_id', clubId).single()
+  const { data: paymentRaw } = await admin
+    .from('payments')
+    .select('id, description, amount_cents, due_date, reference_number, profile_id, registry_member_id')
+    .eq('id', paymentId)
+    .eq('club_id', clubId)
+    .single()
   if (!paymentRaw) return new Response('Not found', { status: 404 })
-  const payment = paymentRaw as { id: string; description: string; amount_cents: number; due_date: string | null; reference_number: string | null }
+  const payment = paymentRaw as {
+    id: string
+    description: string
+    amount_cents: number
+    due_date: string | null
+    reference_number: string | null
+    profile_id: string | null
+    registry_member_id: string | null
+  }
+
+  // Recipient info
+  let recipientName = 'Jäsen'
+  let recipientAddress: string | undefined
+  let recipientPostal: string | undefined
+
+  if (payment.registry_member_id) {
+    const { data: regRaw } = await admin
+      .from('member_registry')
+      .select('full_name, street_address, postal_code, city')
+      .eq('id', payment.registry_member_id)
+      .maybeSingle()
+    const reg = regRaw as { full_name: string | null; street_address: string | null; postal_code: string | null; city: string | null } | null
+    if (reg) {
+      recipientName = reg.full_name ?? recipientName
+      recipientAddress = reg.street_address ?? undefined
+      recipientPostal = [reg.postal_code, reg.city].filter(Boolean).join(' ') || undefined
+    }
+  } else if (payment.profile_id) {
+    const { data: pfRaw } = await admin
+      .from('profiles')
+      .select('full_name, street_address, postal_code, city')
+      .eq('id', payment.profile_id)
+      .maybeSingle()
+    const pf = pfRaw as { full_name: string | null; street_address: string | null; postal_code: string | null; city: string | null } | null
+    if (pf) {
+      recipientName = pf.full_name ?? recipientName
+      recipientAddress = pf.street_address ?? undefined
+      recipientPostal = [pf.postal_code, pf.city].filter(Boolean).join(' ') || undefined
+    }
+  }
 
   // Club info
   const { data: clubRaw } = await admin.from('clubs').select('name, business_id, street_address, postal_address, email, phone').eq('id', clubId).single()
@@ -43,7 +87,9 @@ export async function GET(req: NextRequest) {
     issuer_email: club?.email ?? undefined,
     issuer_phone: club?.phone ?? undefined,
     issuer_business_id: club?.business_id ?? undefined,
-    recipient_name: 'Jäsen',
+    recipient_name: recipientName,
+    recipient_address: recipientAddress,
+    recipient_postal: recipientPostal,
     invoice_number: invoiceNumber,
     invoice_date: today,
     due_date: dueDate,
@@ -77,7 +123,7 @@ export async function GET(req: NextRequest) {
   return new Response(new Uint8Array(pdfBuffer), {
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename="lasku-${invoiceNumber}.pdf"`,
+      'Content-Disposition': `inline; filename="lasku-${invoiceNumber}.pdf"`,
     },
   })
 }

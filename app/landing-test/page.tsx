@@ -240,6 +240,7 @@ export default function LandingTestPage() {
           <FAQ q="Tarvitaanko käyttöön teknistä osaamista?" a="Ei tarvita. JahtiPro on suunniteltu tavalliseen seurakäyttöön, joten sen käyttö ei vaadi teknistä taustaa. Tavoitteena on, että palvelu on selkeä ja helppo käyttää myös niille, jotka eivät käytä digitaalisia työkaluja paljon." />
           <FAQ q="Toimiiko JahtiPro puhelimella?" a="Kyllä. JahtiPro on suunniteltu toimimaan sujuvasti mobiililaitteilla ilman erillistä sovellusta. Tietoja voi tarkistaa ja käyttää helposti myös maastossa, kokouksissa ja liikkeellä ollessa." />
           <FAQ q="Ovatko seuran tiedot turvassa?" a="Kyllä. Jokaisen seuran tiedot ovat täysin erillään muista seuroista. Käyttöoikeuksia voidaan rajata käyttäjäroolien mukaan, joten oikeat tiedot ovat oikeiden henkilöiden saatavilla. JahtiPro on GDPR-yhteensopiva." />
+          <FAQ q="Voiko palvelua räätälöidä meidän seuralle?" a="Kyllä voi. JahtiPro on rakennettu joustavasti, ja monia asioita voi muokata suoraan sovelluksessa itse. Jos seurallanne on erityisiä tarpeita, omia toimintatapoja tai toiveita lisäominaisuuksista — jutellaan. Räätälöidään yhdessä teille sopiva ratkaisu. Ota yhteyttä: info@jahtipro.fi" />
         </div>
       </section>
 

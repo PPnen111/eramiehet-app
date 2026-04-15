@@ -138,10 +138,17 @@ function InvoiceModal({ member, onClose }: { member: RegistryMember; onClose: ()
   const [description, setDescription] = useState('Jäsenmaksu 2026')
   const [amount, setAmount] = useState('')
   const [dueDate, setDueDate] = useState(new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10))
+  const [referenceNumber, setReferenceNumber] = useState('')
+  const [notes, setNotes] = useState('')
   const [email, setEmail] = useState(member.email ?? '')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const [done, setDone] = useState(false)
+  const [done, setDone] = useState<{ mode: 'email' | 'print'; paymentId: string } | null>(null)
+
+  const billingLower = (member.billing_method ?? '').toLowerCase().trim()
+  const isKirje = billingLower === 'kirje' || billingLower === 'paperilasku' || billingLower === 'posti'
+  const willUsePrint = isKirje || !member.email
+  const deliveryLabel = willUsePrint ? 'Kirje (paperilasku)' : 'Sähköposti'
 
   const send = async () => {
     setBusy(true)
@@ -149,27 +156,57 @@ function InvoiceModal({ member, onClose }: { member: RegistryMember; onClose: ()
     const cents = Math.round(parseFloat(amount.replace(',', '.')) * 100)
     if (isNaN(cents) || cents <= 0) { setError('Tarkista summa'); setBusy(false); return }
 
-    // First create the payment row if we have a profile_id, else use a registry-linked variant
-    if (!member.profile_id) {
-      setError('Jäsenellä ei ole sovellustunnusta — lasku tulee toistaiseksi lähettää manuaalisesti.')
-      setBusy(false)
-      return
-    }
-
-    // Create payment + send PDF invoice
-    const payRes = await fetch('/api/members/' + member.profile_id + '/invoice-create', {
+    // Step 1: create payment row for registry member
+    const payRes = await fetch(`/api/members/registry/${member.id}/invoice`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ description, amount_cents: cents, due_date: dueDate }),
+      body: JSON.stringify({
+        description,
+        amount_cents: cents,
+        due_date: dueDate,
+        reference_number: referenceNumber || undefined,
+        notes: notes || undefined,
+      }),
     }).catch(() => null)
 
     if (!payRes || !payRes.ok) {
-      setError('Laskun luonti epäonnistui')
+      const err = payRes ? await payRes.json().catch(() => ({})) as { error?: string } : {}
+      setError(err.error ?? 'Laskun luonti epäonnistui')
       setBusy(false)
       return
     }
+
+    const data = (await payRes.json()) as { payment_id: string; delivery_mode: 'email' | 'print' }
+    const paymentId = data.payment_id
+    const mode = data.delivery_mode
+
+    // Step 2: deliver based on mode
+    if (mode === 'email') {
+      const sendRes = await fetch('/api/invoice-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          payment_id: paymentId,
+          recipient_email: email,
+          recipient_name: member.full_name ?? '',
+          recipient_address: member.street_address ?? undefined,
+          recipient_postal: [member.postal_code, member.city].filter(Boolean).join(' ') || undefined,
+        }),
+      }).catch(() => null)
+
+      if (!sendRes || !sendRes.ok) {
+        setError('Lasku luotu, mutta sähköpostin lähetys epäonnistui. Voit ladata PDF:n manuaalisesti.')
+        setDone({ mode: 'print', paymentId })
+        setBusy(false)
+        return
+      }
+    } else {
+      // Open PDF in new tab for printing
+      window.open(`/api/invoice-pdf/preview?payment_id=${paymentId}`, '_blank', 'noopener,noreferrer')
+    }
+
     setBusy(false)
-    setDone(true)
+    setDone({ mode, paymentId })
   }
 
   const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500'
@@ -178,32 +215,49 @@ function InvoiceModal({ member, onClose }: { member: RegistryMember; onClose: ()
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-6 shadow-2xl space-y-3">
+      <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-6 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">
           <h2 className="font-bold text-white">Lähetä lasku</h2>
           <button onClick={onClose} className="text-green-500"><X size={16} /></button>
         </div>
         {done ? (
           <div className="space-y-3">
-            <p className="text-sm text-green-300">✅ Lasku luotu</p>
+            <p className="text-sm text-green-300">
+              {done.mode === 'email' ? '✅ Lasku lähetetty sähköpostiin' : '✅ Lasku avattu tulostettavaksi'}
+            </p>
+            {done.mode === 'print' && (
+              <a
+                href={`/api/invoice-pdf/preview?payment_id=${done.paymentId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full rounded-lg border border-green-700 py-2 text-center text-sm text-green-300 hover:bg-white/5"
+              >
+                Avaa PDF uudelleen
+              </a>
+            )}
             <button onClick={onClose} className="w-full rounded-lg bg-green-700 py-2 text-sm font-semibold text-white">Sulje</button>
           </div>
         ) : (
           <>
-            {!member.email && (
-              <p className="rounded-lg bg-blue-900/30 px-3 py-2 text-xs text-blue-200">
-                Ei sähköpostia — postitse lähetettävä lasku
-              </p>
-            )}
-            <div><label className={labelCls}>Kuvaus</label><input type="text" value={description} onChange={(e) => setDescription(e.target.value)} className={inputCls} /></div>
+            <div>
+              <label className={labelCls}>Vastaanottaja</label>
+              <p className="rounded-lg bg-white/5 px-3 py-2 text-sm text-green-200">{member.full_name ?? '—'}</p>
+            </div>
+            <div>
+              <label className={labelCls}>Laskutustapa</label>
+              <p className="rounded-lg bg-white/5 px-3 py-2 text-sm text-green-200">{deliveryLabel}</p>
+            </div>
             <div><label className={labelCls}>Summa (€)</label><input type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} className={inputCls} placeholder="80,00" /></div>
             <div><label className={labelCls}>Eräpäivä</label><input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={inputCls} /></div>
-            {member.email && (
+            <div><label className={labelCls}>Viite</label><input type="text" value={referenceNumber} onChange={(e) => setReferenceNumber(e.target.value)} className={inputCls} placeholder="automaattinen jos tyhjä" /></div>
+            <div><label className={labelCls}>Kuvaus</label><input type="text" value={description} onChange={(e) => setDescription(e.target.value)} className={inputCls} /></div>
+            <div><label className={labelCls}>Lisätiedot</label><textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className={inputCls} /></div>
+            {!willUsePrint && member.email && (
               <div><label className={labelCls}>Sähköposti</label><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} /></div>
             )}
             {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-xs text-red-300">{error}</p>}
             <button onClick={() => void send()} disabled={busy} className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white disabled:opacity-50">
-              {busy ? 'Lähetetään...' : member.email ? 'Lähetä sähköpostilla' : 'Luo postitettava lasku'}
+              {busy ? 'Käsitellään...' : willUsePrint ? 'Luo ja avaa tulostettavaksi' : 'Lähetä sähköpostilla'}
             </button>
           </>
         )}
