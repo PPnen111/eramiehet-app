@@ -236,7 +236,7 @@ export default function LandingTestPage() {
           <p className="mt-2 text-green-400">Valitse seurallesi sopiva paketti. Kaikki paketit sisältävät 14 pv ilmaisen kokeilun.</p>
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
             {[
-              { name: 'Jahti Start', price: '225', monthly: '18,75', popular: false, features: ['50 jäsentä', '100 MB tallennustila', '1 vuokrattava kohde', '10 dokumenttia', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat'], missing: ['Useita vuokrattavia kohteita', 'Laaja raportointi'] },
+              { name: 'Jahti Start', price: '225', monthly: '18,75', popular: false, features: ['50 jäsentä', '100 MB tallennustila', '1 vuokrattava kohde', '10 dokumenttia', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat'], missing: ['Vierasluvat', 'Useita vuokrattavia kohteita', 'Laaja raportointi'] },
               { name: 'Jahti Plus', price: '395', monthly: '32,92', popular: true, features: ['150 jäsentä', '500 MB tallennustila', '3 vuokrattavaa kohdetta', '50 dokumenttia', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat', 'Useita vuokrattavia kohteita', 'Vierasluvat'], missing: ['Laaja raportointi'] },
               { name: 'Jahti Pro', price: '625', monthly: '52,08', popular: false, features: ['Rajaton jäsenmäärä', '5 GB tallennustila', 'Rajaton kohteet', 'Rajaton dokumentit', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat', 'Useita vuokrattavia kohteita', 'Vierasluvat', 'Laaja raportointi (tulossa)'], missing: [] },
             ].map((p, i) => (
