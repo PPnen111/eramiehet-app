@@ -8,7 +8,7 @@ import {
   Ticket,
   Users,
   CreditCard,
-  Map,
+  Map as MapIcon,
   Settings,
   Settings2,
   Building2,
@@ -60,6 +60,12 @@ const COMMON_MODULES: ModuleItem[] = [
     icon: Tent,
   },
   {
+    title: 'Vierasluvat',
+    description: 'Myönnetyt vierasluvat ja laskutus.',
+    href: '/vierasluvat',
+    icon: Ticket,
+  },
+  {
     title: 'Maksut',
     description: 'Jäsenmaksut ja maksutilanne.',
     href: '/maksut',
@@ -69,7 +75,7 @@ const COMMON_MODULES: ModuleItem[] = [
     title: 'Karttatunnukset',
     description: 'Karttapalvelujen tunnukset.',
     href: '/karttatunnukset',
-    icon: Map,
+    icon: MapIcon,
   },
 ]
 
@@ -214,6 +220,65 @@ export default async function DashboardPage() {
     }
   } catch {
     // admin client may not be available locally
+  }
+
+  // Active guest permits for this club (status='active' AND valid_until >= today)
+  type GuestPermitDash = {
+    id: string
+    guest_name: string
+    area: string | null
+    host_profile_id: string | null
+    host_registry_id: string | null
+    payment_id: string | null
+  }
+  let guestPermitCount = 0
+  let guestPermitPreview: { id: string; guest_name: string; host_name: string | null; area: string | null; payment_status: 'paid' | 'pending' | 'none' }[] = []
+  if (activeClubId) {
+    try {
+      const admin = createAdminClient()
+      const today = new Date().toISOString().slice(0, 10)
+      const { data: permitsRaw } = await admin
+        .from('guest_permits')
+        .select('id, guest_name, area, host_profile_id, host_registry_id, payment_id, valid_until')
+        .eq('club_id', activeClubId)
+        .eq('status', 'active')
+        .or(`valid_until.gte.${today},valid_until.is.null`)
+        .order('created_at', { ascending: false })
+      const permits = (permitsRaw ?? []) as (GuestPermitDash & { valid_until: string | null })[]
+      guestPermitCount = permits.length
+
+      const slice = permits.slice(0, 3)
+      const hostProfileIds = [...new Set(slice.map((p) => p.host_profile_id).filter((x): x is string => !!x))]
+      const hostRegistryIds = [...new Set(slice.map((p) => p.host_registry_id).filter((x): x is string => !!x))]
+      const paymentIds = [...new Set(slice.map((p) => p.payment_id).filter((x): x is string => !!x))]
+
+      const [{ data: pfData }, { data: rgData }, { data: payData }] = await Promise.all([
+        hostProfileIds.length > 0
+          ? admin.from('profiles').select('id, full_name').in('id', hostProfileIds)
+          : Promise.resolve({ data: [] as { id: string; full_name: string | null }[] }),
+        hostRegistryIds.length > 0
+          ? admin.from('member_registry').select('id, full_name').in('id', hostRegistryIds)
+          : Promise.resolve({ data: [] as { id: string; full_name: string | null }[] }),
+        paymentIds.length > 0
+          ? admin.from('payments').select('id, status').in('id', paymentIds)
+          : Promise.resolve({ data: [] as { id: string; status: string }[] }),
+      ])
+      const pfMap = new Map(((pfData ?? []) as { id: string; full_name: string | null }[]).map((p) => [p.id, p.full_name]))
+      const rgMap = new Map(((rgData ?? []) as { id: string; full_name: string | null }[]).map((r) => [r.id, r.full_name]))
+      const payMap = new Map(((payData ?? []) as { id: string; status: string }[]).map((p) => [p.id, p.status]))
+
+      guestPermitPreview = slice.map((p) => {
+        const host_name = p.host_profile_id
+          ? (pfMap.get(p.host_profile_id) ?? null)
+          : p.host_registry_id
+          ? (rgMap.get(p.host_registry_id) ?? null)
+          : null
+        const ps = p.payment_id ? (payMap.get(p.payment_id) === 'paid' ? 'paid' : 'pending') : 'none'
+        return { id: p.id, guest_name: p.guest_name, host_name, area: p.area, payment_status: ps as 'paid' | 'pending' | 'none' }
+      })
+    } catch {
+      // silent fail — card falls back to 0
+    }
   }
 
   // Role comes from profiles directly; superadmin lives on profiles.role
@@ -400,27 +465,47 @@ export default async function DashboardPage() {
 
         {/* Vierasluvat */}
         <div className="mb-4 rounded-2xl border border-green-800 bg-white/5 p-5">
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Ticket size={18} className="text-green-400" />
-              <h2 className="font-semibold text-white">Vierasluvat</h2>
-              <span className="rounded-full bg-green-800/60 px-2 py-0.5 text-xs font-medium text-green-200">0</span>
-            </div>
-            <span className="rounded-full border border-green-700/50 bg-green-900/30 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-green-400">
-              Tulossa pian
+          <div className="mb-3 flex items-center gap-2">
+            <Ticket size={18} className="text-green-400" />
+            <h2 className="font-semibold text-white">Vierasluvat</h2>
+            <span className="rounded-full bg-green-800/60 px-2 py-0.5 text-xs font-medium text-green-200">
+              {guestPermitCount}
             </span>
           </div>
-          <p className="text-sm text-green-400">Ei aktiivisia vieraslupia</p>
-          <p className="mt-1 text-xs text-green-600">
-            Kun vierasluvat-ominaisuus on käytössä, näet täältä voimassa olevat luvat (vieraan nimi, isäntä, alue ja maksun tila).
-          </p>
+          {guestPermitCount === 0 ? (
+            <p className="text-sm text-green-400">Ei aktiivisia vieraslupia</p>
+          ) : (
+            <ul className="space-y-1.5">
+              {guestPermitPreview.map((p) => {
+                const statusLabel =
+                  p.payment_status === 'paid'
+                    ? '✅ Maksettu'
+                    : p.payment_status === 'pending'
+                    ? '⏳ Odottaa'
+                    : 'Ei laskutettu'
+                const parts = [p.guest_name, p.host_name ?? '—', p.area ?? '—', statusLabel]
+                return (
+                  <li key={p.id} className="truncate text-xs text-green-300">
+                    {parts.join(' | ')}
+                  </li>
+                )
+              })}
+              {guestPermitCount > guestPermitPreview.length && (
+                <li className="text-xs text-green-600">
+                  + {guestPermitCount - guestPermitPreview.length} muuta
+                </li>
+              )}
+            </ul>
+          )}
           <div className="mt-4 flex gap-2">
-            <Link
-              href="/vierasluvat"
-              className="flex-1 rounded-lg border border-green-700 bg-green-900/40 px-3 py-2 text-center text-xs font-semibold text-green-300 hover:bg-green-900/70 transition-colors"
-            >
-              Myönnä uusi lupa
-            </Link>
+            {isBoardOrAbove(role) && (
+              <Link
+                href="/vierasluvat"
+                className="flex-1 rounded-lg border border-green-700 bg-green-900/40 px-3 py-2 text-center text-xs font-semibold text-green-300 hover:bg-green-900/70 transition-colors"
+              >
+                Myönnä uusi lupa
+              </Link>
+            )}
             <Link
               href="/vierasluvat"
               className="flex-1 rounded-lg border border-green-800 px-3 py-2 text-center text-xs font-semibold text-green-400 hover:bg-white/5 transition-colors"
