@@ -66,6 +66,16 @@ export async function GET(req: NextRequest) {
       recipientAddress = pf.street_address ?? undefined
       recipientPostal = [pf.postal_code, pf.city].filter(Boolean).join(' ') || undefined
     }
+  } else {
+    // Fallback: guest permit payments are linked via guest_permits.payment_id
+    const { data: permitRaw } = await admin
+      .from('guest_permits')
+      .select('guest_name')
+      .eq('payment_id', payment.id)
+      .eq('club_id', clubId)
+      .maybeSingle()
+    const permit = permitRaw as { guest_name: string | null } | null
+    if (permit?.guest_name) recipientName = permit.guest_name
   }
 
   // Club info
