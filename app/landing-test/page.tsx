@@ -102,10 +102,10 @@ export default function LandingTestPage() {
               { icon: ClipboardList, title: 'Jäsenlista Excelissä', text: 'Tiedosto vanhenee, pyörii sähköpostissa eikä ole koskaan ajan tasalla.' },
               { icon: MessageSquare, title: 'Tieto hukkuu WhatsAppiin', text: 'Tärkeät ilmoitukset katoavat viestien sekaan. Kaikki eivät näe kaikkea.' },
               { icon: Coins, title: 'Jäsenmaksut käsin', text: 'Maksujen seuranta on työlästä. Kuka on maksanut, kuka ei — vaikea pitää kirjaa.' },
-              { icon: Target, title: 'Saaliit vihkoon', text: 'Saalisilmoitukset paperille tai tekstiviestillä. Tilastojen kokoaminen vie tunteja.' },
-              { icon: Building, title: 'Eräkartanon varaukset soitellen', text: 'Varauskalenteri puuttuu. Päällekkäisiä varauksia tulee, viestittely lisääntyy.' },
-              { icon: Ticket, title: 'Vierasluvat hukassa', text: 'Luvat sovitaan WhatsAppissa, tekstiviestillä tai sähköpostitse. Tieto hajoaa eri kanaviin — kukaan ei muista mitä on sovittu, ja maksun periminen jää helposti tekemättä.' },
-              { icon: Shield, title: 'Oikeudet yhdellä ihmisellä', text: 'Seuran tiedot ja hallinto ovat yhden henkilön takana. Kun sihteeri vaihtuu, tieto katoaa ja tunnukset kiertävät kädestä käteen.' },
+              { icon: Target, title: 'Saalistilasto vaikea koota', text: 'Seurakohtainen saaliskirjanpito on hajallaan ja vuositason seuranta työlästä. JahtiPro mahdollistaa tarkan tiedon seuran riistakannasta ja sen verotuksesta — helpottaen paikallista seurantaa juuri niin tarkasti kuin tarvitaan.' },
+              { icon: Building, title: 'Varattavien tilojen varaukset soitellen', text: 'Seuralla on vuokrauskohteita mutta varauskalenteri puuttuu. Varaukset sovitaan soittelemalla ja viestittelemällä — päällekkäisiä varauksia syntyy ja viestinvaihto lisääntyy turhaan.' },
+              { icon: Ticket, title: 'Vierasluvat hukassa', text: 'Maksut kerätään käteisellä tai seuran tilille, seuranta pahimmillaan kerran vuodessa — eikä kukaan muista kuka oli vieraana ja kenen seurassa.' },
+              { icon: Shield, title: 'Tieto sihteerin tikulla tai mustassa vihkossa', text: 'Seuran pöytäkirjat ja dokumentit löytyvät usein vain sihteerin muistitikulta tai siitä yhdestä kansiosta — jos silloinkin. JahtiProssa kaikki on kaikkien jäsenten saatavilla juuri silloin kun tietoa tarvitaan.' },
             ].map((c, i) => (
               <div key={i} className="rounded-2xl border border-green-800 bg-green-900/30 p-6 text-left">
                 <c.icon size={28} className="text-green-500 mb-3" />
@@ -121,7 +121,7 @@ export default function LandingTestPage() {
       <section id="features" className="py-20 px-4 bg-green-900/10">
         <div className="mx-auto max-w-5xl text-center">
           <h2 className="text-3xl font-bold text-white">Kaikki yhdessä paikassa</h2>
-          <p className="mt-2 text-green-400">JahtiPro korvaa Excelin, WhatsAppin ja paperilaput yhdellä helpolla sovelluksella</p>
+          <p className="mt-2 text-green-400">JahtiPro korvaa Excelin, WhatsAppin, pöytäkirjamappien ja muistitikkujen viidakon yhdellä helpolla sovelluksella.</p>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { icon: Users, title: 'Jäsenhallinta', text: 'Täydellinen jäsenrekisteri. Tuo jäsenet Excelistä tai lisää käsin. Kutsu jäsenet sovellukseen sähköpostilla.', badge: 'Kaikki paketit', accent: false },
