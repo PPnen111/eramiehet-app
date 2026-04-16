@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Users, CreditCard, Target, Calendar, Home, FileText,
@@ -11,7 +11,7 @@ import {
 function FAQ({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border-b border-green-800">
+    <div className="scroll-animate border-b border-green-800">
       <button onClick={() => setOpen(!open)} className="flex w-full items-center justify-between py-4 text-left">
         <span className="font-medium text-white">{q}</span>
         <ChevronDown size={18} className={`text-green-500 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -24,6 +24,25 @@ function FAQ({ q, a }: { q: string; a: string }) {
 export default function LandingTestPage() {
   const [menuOpen, setMenuOpen] = useState(false)
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1 },
+    )
+
+    const elements = document.querySelectorAll('.scroll-animate')
+    elements.forEach((el) => observer.observe(el))
+
+    return () => observer.disconnect()
+  }, [])
+
   const navLinks = [
     { label: 'Ominaisuudet', href: '#features' },
     { label: 'Hinnoittelu', href: '#pricing' },
@@ -32,6 +51,28 @@ export default function LandingTestPage() {
 
   return (
     <div className="min-h-screen bg-green-950 text-white" style={{ scrollBehavior: 'smooth' }}>
+      <style>{`
+        .scroll-animate {
+          opacity: 0;
+          transform: translateY(20px);
+          transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .scroll-animate.animate-in {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .hover-lift {
+          transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .hover-lift:hover {
+          transform: translateY(-4px);
+          border-color: #1a5c2a;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        .scroll-animate.hover-lift.animate-in:hover {
+          transform: translateY(-4px);
+        }
+      `}</style>
       {/* ═══ NAVBAR ═══ */}
       <nav className="fixed top-0 z-50 w-full border-b border-green-800/50 bg-green-950/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
@@ -95,8 +136,8 @@ export default function LandingTestPage() {
       {/* ═══ PROBLEM ═══ */}
       <section className="py-20 px-4">
         <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold text-white">Tunnistatko nämä haasteet?</h2>
-          <p className="mt-2 text-green-400">Useimmat metsästysseurat kärsivät samoista ongelmista</p>
+          <h2 className="scroll-animate text-3xl font-bold text-white">Tunnistatko nämä haasteet?</h2>
+          <p className="scroll-animate mt-2 text-green-400">Useimmat metsästysseurat kärsivät samoista ongelmista</p>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { icon: ClipboardList, title: 'Jäsenlista Excelissä', text: 'Tiedosto vanhenee, pyörii sähköpostissa eikä ole koskaan ajan tasalla.' },
@@ -107,7 +148,11 @@ export default function LandingTestPage() {
               { icon: Ticket, title: 'Vierasluvat hukassa', text: 'Maksut kerätään käteisellä tai seuran tilille, seuranta pahimmillaan kerran vuodessa — eikä kukaan muista kuka oli vieraana ja kenen seurassa.' },
               { icon: Shield, title: 'Tieto sihteerin tikulla tai mustassa vihkossa', text: 'Seuran pöytäkirjat ja dokumentit löytyvät usein vain sihteerin muistitikulta tai siitä yhdestä kansiosta — jos silloinkin. JahtiProssa kaikki on kaikkien jäsenten saatavilla juuri silloin kun tietoa tarvitaan.' },
             ].map((c, i) => (
-              <div key={i} className="rounded-2xl border border-green-800 bg-green-900/30 p-6 text-left">
+              <div
+                key={i}
+                style={{ transitionDelay: `${i * 100}ms` }}
+                className="scroll-animate hover-lift rounded-2xl border border-green-800 bg-green-900/30 p-6 text-left"
+              >
                 <c.icon size={28} className="text-green-500 mb-3" />
                 <h3 className="font-semibold text-white mb-1">{c.title}</h3>
                 <p className="text-sm text-green-300 leading-relaxed">{c.text}</p>
@@ -120,8 +165,8 @@ export default function LandingTestPage() {
       {/* ═══ FEATURES ═══ */}
       <section id="features" className="py-20 px-4 bg-green-900/10">
         <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold text-white">Kaikki yhdessä paikassa</h2>
-          <p className="mt-2 text-green-400">JahtiPro korvaa Excelin, WhatsAppin, pöytäkirjamappien ja muistitikkujen viidakon yhdellä helpolla sovelluksella.</p>
+          <h2 className="scroll-animate text-3xl font-bold text-white">Kaikki yhdessä paikassa</h2>
+          <p className="scroll-animate mt-2 text-green-400">JahtiPro korvaa Excelin, WhatsAppin, pöytäkirjamappien ja muistitikkujen viidakon yhdellä helpolla sovelluksella.</p>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { icon: Users, title: 'Jäsenhallinta', text: 'Täydellinen jäsenrekisteri. Tuo jäsenet Excelistä tai lisää käsin. Kutsu jäsenet sovellukseen sähköpostilla.', badge: 'Kaikki paketit', accent: false },
@@ -133,7 +178,11 @@ export default function LandingTestPage() {
               { icon: Ticket, title: 'Vierasluvat', text: 'Ei enää lupasopimuksia WhatsAppissa tai sähköpostiketjuissa. Myönnä vierasluvat digitaalisesti, lähetä lasku suoraan sovelluksesta ja seuraa maksun tilaa muiden jäsenmaksujen rinnalla. Kaikki luvat tallessa yhdessä paikassa — historia löytyy aina tarvittaessa.', badge: 'Kaikki paketit', accent: true },
               { icon: Shield, title: 'Roolit ja käyttöoikeudet', text: 'Jaa oikeudet helposti — puheenjohtaja, sihteeri, hallitus tai tavallinen jäsen. Jokainen näkee ja tekee juuri sen mitä pitääkin. Uusi henkilö pääsee mukaan minuuteissa. Lisää rooleja tulossa.', badge: 'Kaikki paketit', accent: false },
             ].map((f, i) => (
-              <div key={i} className={`rounded-2xl border p-6 text-left ${f.accent ? 'border-green-500 bg-green-900/40 ring-2 ring-green-500/30' : 'border-green-800 bg-green-900/30'}`}>
+              <div
+                key={i}
+                style={{ transitionDelay: `${i * 100}ms` }}
+                className={`scroll-animate hover-lift rounded-2xl border p-6 text-left ${f.accent ? 'border-green-500 bg-green-900/40 ring-2 ring-green-500/30' : 'border-green-800 bg-green-900/30'}`}
+              >
                 <f.icon size={28} className="text-green-400 mb-3" />
                 <h3 className="font-semibold text-white mb-1">{f.title}</h3>
                 <p className="text-sm text-green-300 leading-relaxed mb-3">{f.text}</p>
@@ -147,8 +196,8 @@ export default function LandingTestPage() {
       {/* ═══ TESTIMONIAL ═══ */}
       <section id="testimonial" className="py-20 px-4 bg-green-900/10">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold text-white mb-8">Mitä käyttäjät sanovat</h2>
-          <div className="rounded-2xl border border-green-800 bg-green-900/30 p-8 text-left">
+          <h2 className="scroll-animate text-3xl font-bold text-white mb-8">Mitä käyttäjät sanovat</h2>
+          <div className="scroll-animate rounded-2xl border border-green-800 bg-green-900/30 p-8 text-left">
             <p className="text-4xl text-green-600 mb-4">&ldquo;</p>
             <div className="space-y-4 text-lg italic text-green-200 leading-relaxed">
               <p>Aiemmin meidän seurassa tieto oli hajallaan: WhatsApp-ryhmässä tiedotteet ja pöytäkirjat hukkuivat muun keskustelun sekaan, kotisivut olivat erikseen, jäsenlaskutus omassa paikassaan ja vierasluvat hoidettiin erillisten ohjeiden mukaan. Vieraslupametsästyksen seuraaminen oli käytännössä mahdotonta.</p>
@@ -166,8 +215,8 @@ export default function LandingTestPage() {
       {/* ═══ MIKSI JAHTIPRO ═══ */}
       <section className="py-20 px-4">
         <div className="mx-auto max-w-2xl">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">Miksi JahtiPro on tehty?</h2>
-          <div className="rounded-2xl border-l-4 border-green-500 bg-green-900/20 p-8">
+          <h2 className="scroll-animate text-3xl font-bold text-white text-center mb-8">Miksi JahtiPro on tehty?</h2>
+          <div className="scroll-animate rounded-2xl border-l-4 border-green-500 bg-green-900/20 p-8">
             <div className="space-y-4 text-green-200 leading-relaxed">
               <p>JahtiPro tehtiin, koska metsästysseuran arjessa liian moni asia on hajallaan. Jäsentiedot, viestintä, tapahtumat, dokumentit ja käytännön järjestelyt vievät aikaa etenkin silloin, kun seuraa pyöritetään vapaaehtoisvoimin.</p>
               <p>Monessa seurassa sama haaste toistuu: tärkeää työtä tehdään paljon, mutta hallinto kuormittaa turhaan.</p>
@@ -214,7 +263,7 @@ export default function LandingTestPage() {
       {/* ═══ FAQ ═══ */}
       <section id="faq" className="py-20 px-4 bg-green-900/10">
         <div className="mx-auto max-w-2xl">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">Usein kysytyt kysymykset</h2>
+          <h2 className="scroll-animate text-3xl font-bold text-white text-center mb-8">Usein kysytyt kysymykset</h2>
           <FAQ q="Mikä JahtiPro on?" a="JahtiPro on metsästysseuroille suunniteltu palvelu, joka kokoaa seuran tärkeät tiedot ja toiminnot yhteen paikkaan. Sen avulla jäsenasiat, viestintä, tapahtumat, dokumentit ja käytännön hallinta pysyvät paremmin järjestyksessä." />
           <FAQ q="Kenelle JahtiPro sopii?" a="JahtiPro sopii metsästysseuroille, jotka haluavat helpottaa arkea, vähentää manuaalista työtä ja pitää seuran asiat selkeästi hallinnassa. Palvelu sopii sekä pienille että suuremmille seuroille." />
           <FAQ q="Mitä JahtiPro sisältää?" a="JahtiPro sisältää jäsenrekisterin, jäsenmaksujen hallinnan, tapahtumat ja ilmoittautumiset, dokumentit ja pöytäkirjat, saalisilmoitukset sekä vuokrattavien kohteiden hallinnan. Kokonaisuus riippuu valitusta paketista." />
