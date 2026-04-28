@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 
 type SubscriptionRow = {
   status: string
+  plan: string | null
   trial_ends_at: string | null
 }
 
@@ -42,7 +43,7 @@ export default async function TrialBanner() {
   try {
     const { data: subRaw } = await admin
       .from('subscriptions')
-      .select('status, trial_ends_at')
+      .select('status, plan, trial_ends_at')
       .eq('club_id', profile.club_id)
       .order('created_at', { ascending: false })
       .limit(1)
@@ -54,8 +55,23 @@ export default async function TrialBanner() {
   if (!sub) return null
   if (sub.status === 'active') return null
 
+  const isDemo = sub.plan === 'demo'
   const isExpired = sub.status === 'expired' || (sub.trial_ends_at ? daysUntil(sub.trial_ends_at) <= 0 : false)
   const daysLeft = sub.trial_ends_at ? daysUntil(sub.trial_ends_at) : null
+
+  // Demo banner — always visible while demo is active
+  if (isDemo && !isExpired && daysLeft !== null) {
+    return (
+      <div className="w-full bg-green-800 px-4 py-2.5 text-center text-sm font-medium text-green-100">
+        Demo-tunnus — voimassa {daysLeft} päivää.{' '}
+        Haluatko ottaa JahtiPron käyttöön omalle seurallesi?{' '}
+        <a href="mailto:info@jahtipro.fi" className="underline font-bold hover:opacity-80">
+          Ota yhteyttä
+        </a>
+      </div>
+    )
+  }
+
   const isWarning = !isExpired && daysLeft !== null && daysLeft <= 7
 
   if (!isExpired && !isWarning) return null

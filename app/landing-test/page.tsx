@@ -107,6 +107,9 @@ export default function LandingTestPage() {
               <Link href="/uusi" className="rounded-xl bg-green-600 px-6 py-3.5 text-base font-bold text-white hover:bg-green-500 transition-colors">
                 Aloita ilmainen 14 pv kokeilu →
               </Link>
+              <Link href="/demo" className="rounded-xl border border-green-700 px-6 py-3.5 text-base font-semibold text-green-300 hover:bg-green-900/40 transition-colors">
+                Kokeile demoa ensin →
+              </Link>
             </div>
             <p className="mt-4 text-sm text-green-500">
               ✓ Ei luottokorttia &nbsp; ✓ Ei sitoumuksia &nbsp; ✓ Valmis 5 minuutissa
