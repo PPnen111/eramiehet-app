@@ -37,6 +37,21 @@ export async function POST(request: NextRequest) {
       metadata: metadata ?? null,
     })
 
+    // Update last_seen_at (throttled to once per hour)
+    const { data: profileCheck } = await admin
+      .from('profiles')
+      .select('last_seen_at, total_sessions')
+      .eq('id', user.id)
+      .single()
+    const p = profileCheck as { last_seen_at: string | null; total_sessions: number | null } | null
+    const lastSeen = p?.last_seen_at ? new Date(p.last_seen_at).getTime() : 0
+    if (Date.now() - lastSeen > 3600000) {
+      await admin.from('profiles').update({
+        last_seen_at: new Date().toISOString(),
+        total_sessions: (p?.total_sessions ?? 0) + 1,
+      }).eq('id', user.id)
+    }
+
     return NextResponse.json({ ok: true })
   } catch {
     // Never block the UI — always return success
