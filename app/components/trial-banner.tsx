@@ -66,7 +66,11 @@ export default async function TrialBanner() {
         Demo-tunnus — voimassa {daysLeft} päivää.{' '}
         Haluatko ottaa JahtiPron käyttöön omalle seurallesi?{' '}
         <a href="mailto:info@jahtipro.fi" className="underline font-bold hover:opacity-80">
-          Ota yhteyttä
+          info@jahtipro.fi
+        </a>{' '}
+        tai{' '}
+        <a href="tel:+358503480996" className="underline font-bold hover:opacity-80">
+          0503480996
         </a>
       </div>
     )
