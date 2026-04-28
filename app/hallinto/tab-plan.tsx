@@ -127,7 +127,6 @@ export default function TabPlan({ clubId, clubName }: Props) {
               </tr>
             </thead>
             <tbody className="text-green-300">
-              <tr className="border-b border-green-900/30"><td className="px-3 py-2">Hinta</td>{PLANS.map((p) => <td key={p.plan} className="px-3 py-2 text-center">{p.price}</td>)}</tr>
               <tr className="border-b border-green-900/30"><td className="px-3 py-2">Jäseniä</td>{PLANS.map((p) => <td key={p.plan} className="px-3 py-2 text-center">{p.members}</td>)}</tr>
               <tr className="border-b border-green-900/30"><td className="px-3 py-2">Vuokratilat</td>{PLANS.map((p) => <td key={p.plan} className="px-3 py-2 text-center">{p.locations}</td>)}</tr>
               <tr className="border-b border-green-900/30"><td className="px-3 py-2">Dokumentit</td>{PLANS.map((p) => <td key={p.plan} className="px-3 py-2 text-center">{p.docs}</td>)}</tr>
