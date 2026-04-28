@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-const DEMO_CLUB_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+const SEED_CLUB_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
 
 function generatePassword(): string {
   const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789'
@@ -11,6 +11,47 @@ function generatePassword(): string {
     pw += chars[Math.floor(Math.random() * chars.length)]
   }
   return pw
+}
+
+async function seedDemoClub(admin: ReturnType<typeof createAdminClient>, newClubId: string) {
+  const { data: members } = await admin
+    .from('member_registry')
+    .select('full_name, phone, member_number, member_type, street_address, postal_code, city, billing_method')
+    .eq('club_id', SEED_CLUB_ID)
+  if (members && members.length > 0) {
+    const rows = (members as Record<string, unknown>[]).map((m) => ({ ...m, club_id: newClubId }))
+    await admin.from('member_registry').insert(rows)
+  }
+
+  // payments
+  const { data: payments } = await admin
+    .from('payments')
+    .select('description, amount_cents, due_date, status, payment_type')
+    .eq('club_id', SEED_CLUB_ID)
+  if (payments && payments.length > 0) {
+    const rows = (payments as Record<string, unknown>[]).map((p) => ({ ...p, club_id: newClubId }))
+    await admin.from('payments').insert(rows)
+  }
+
+  // saalis
+  const { data: saalis } = await admin
+    .from('saalis')
+    .select('reporter_name, elain, maara, sukupuoli, ika_luokka, paikka, kuvaus, pvm')
+    .eq('club_id', SEED_CLUB_ID)
+  if (saalis && saalis.length > 0) {
+    const rows = (saalis as Record<string, unknown>[]).map((s) => ({ ...s, club_id: newClubId }))
+    await admin.from('saalis').insert(rows)
+  }
+
+  // guest_permits
+  const { data: permits } = await admin
+    .from('guest_permits')
+    .select('guest_name, guest_email, area, valid_from, valid_until, price_cents, status, notes')
+    .eq('club_id', SEED_CLUB_ID)
+  if (permits && permits.length > 0) {
+    const rows = (permits as Record<string, unknown>[]).map((g) => ({ ...g, club_id: newClubId }))
+    await admin.from('guest_permits').insert(rows)
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -28,9 +69,6 @@ export async function POST(req: NextRequest) {
 
   const admin = createAdminClient()
 
-  // Check if email already exists
-  const { data: existingUsers } = await admin.auth.admin.listUsers({ perPage: 1 })
-  // listUsers doesn't filter by email — use a different approach
   const { data: existingProfile } = await admin
     .from('profiles')
     .select('id')
@@ -68,36 +106,60 @@ export async function POST(req: NextRequest) {
     const userId = authData.user.id
     const trialEndsAt = new Date(Date.now() + 14 * 86400000)
 
-    // 2. Create profile
+    // 2. Create personal demo club
+    const { data: clubRaw, error: clubError } = await admin
+      .from('clubs')
+      .insert({
+        name: 'Demo Erämiehet',
+        is_demo: true,
+        demo_expires_at: trialEndsAt.toISOString(),
+        demo_created_for_email: email,
+      })
+      .select('id')
+      .single()
+
+    if (clubError || !clubRaw) {
+      throw new Error(clubError?.message ?? 'Club creation failed')
+    }
+    const clubId = (clubRaw as { id: string }).id
+
+    // 3. Create profile
     await admin.from('profiles').upsert({
       id: userId,
       full_name: email.split('@')[0],
       email,
-      club_id: DEMO_CLUB_ID,
-      active_club_id: DEMO_CLUB_ID,
+      club_id: clubId,
+      active_club_id: clubId,
       role: 'admin',
       member_status: 'active',
       join_date: new Date().toISOString().slice(0, 10),
     })
 
-    // 3. Add to club_members
+    // 4. Add to club_members
     await admin.from('club_members').insert({
-      club_id: DEMO_CLUB_ID,
+      club_id: clubId,
       profile_id: userId,
       role: 'admin',
       status: 'active',
     })
 
-    // 4. Create subscription
+    // 5. Create subscription
     await admin.from('subscriptions').insert({
-      club_id: DEMO_CLUB_ID,
+      club_id: clubId,
       status: 'trial',
       plan: 'demo',
       trial_starts_at: new Date().toISOString(),
       trial_ends_at: trialEndsAt.toISOString(),
     })
 
-    // 5. Send welcome email
+    // 6. Copy seed data
+    try {
+      await seedDemoClub(admin, clubId)
+    } catch (e) {
+      console.error('[DEMO] Seed data copy failed (non-fatal):', e)
+    }
+
+    // 7. Send welcome email
     const expiryDate = trialEndsAt.toLocaleDateString('fi-FI')
     const apiKey = process.env.RESEND_API_KEY
     if (apiKey) {

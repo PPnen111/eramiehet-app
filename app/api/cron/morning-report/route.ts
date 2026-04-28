@@ -158,6 +158,81 @@ async function generateReport(): Promise<{ html: string; subject: string }> {
     html += '<p style="color:#6b7280;">Ei uusia rekisteröitymisiä.</p>'
   }
 
+  // Demo testers
+  const { data: demoClubsRaw } = await admin
+    .from('clubs')
+    .select('id, demo_created_for_email, demo_expires_at, created_at')
+    .eq('is_demo', true)
+    .gt('demo_expires_at', now)
+    .order('created_at', { ascending: false })
+  const demoClubs = (demoClubsRaw ?? []) as { id: string; demo_created_for_email: string | null; demo_expires_at: string | null; created_at: string }[]
+
+  type DemoTester = { email: string; expires: string; last_seen: string | null; total_sessions: number; created: string }
+  const demoTesters: DemoTester[] = []
+
+  for (const dc of demoClubs) {
+    const { data: cmRaw } = await admin
+      .from('club_members')
+      .select('profile_id')
+      .eq('club_id', dc.id)
+      .eq('role', 'admin')
+      .limit(1)
+    const cm = (cmRaw ?? []) as { profile_id: string }[]
+    if (cm.length > 0) {
+      const { data: pRaw } = await admin
+        .from('profiles')
+        .select('last_seen_at, total_sessions')
+        .eq('id', cm[0].profile_id)
+        .single()
+      const prof = pRaw as { last_seen_at: string | null; total_sessions: number | null } | null
+      demoTesters.push({
+        email: dc.demo_created_for_email ?? '?',
+        expires: dc.demo_expires_at ? new Date(dc.demo_expires_at).toLocaleDateString('fi-FI') : '?',
+        last_seen: prof?.last_seen_at ?? null,
+        total_sessions: prof?.total_sessions ?? 0,
+        created: dc.created_at,
+      })
+    }
+  }
+
+  // Expired demos cleaned in last 24h
+  const yesterday24h = new Date(Date.now() - 86400000).toISOString()
+  const { count: expiredDemoCount } = await admin
+    .from('clubs')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_demo', true)
+    .lt('demo_expires_at', now)
+    .gt('demo_expires_at', yesterday24h)
+
+  html += `<h3 style="color:#166534;margin-top:24px;">📊 Demo-testaajat (${demoTesters.length} aktiivista)</h3>`
+  if (demoTesters.length > 0) {
+    for (const dt of demoTesters) {
+      const lastSeenStr = dt.last_seen
+        ? new Date(dt.last_seen).toLocaleString('fi-FI', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+        : 'ei ole kirjautunut'
+      const sessionsStr = dt.total_sessions > 0 ? `${dt.total_sessions} kertaa` : '0 kertaa (ei ole kirjautunut)'
+      const icon = dt.total_sessions > 0 ? '✅' : '⏳'
+      html += `<div style="margin:12px 0;padding:8px 12px;border-left:3px solid #166534;background:#f0fdf4;">
+<p style="margin:0;font-weight:bold;">${icon} ${dt.email}</p>
+<p style="margin:2px 0;font-size:13px;color:#6b7280;">Kirjautunut: ${sessionsStr}</p>
+<p style="margin:2px 0;font-size:13px;color:#6b7280;">Viimeksi: ${lastSeenStr}</p>
+<p style="margin:2px 0;font-size:13px;color:#6b7280;">Vanhenee: ${dt.expires}</p>
+</div>`
+    }
+  } else {
+    html += '<p style="color:#6b7280;">Ei aktiivisia demo-testaajia.</p>'
+  }
+  if ((expiredDemoCount ?? 0) > 0) {
+    html += `<p>🗑 Vanhentuneet ja siivottu tänään: <strong>${expiredDemoCount}</strong></p>`
+  }
+
+  // Auto-cleanup expired demo clubs (cascade deletes members, payments, etc.)
+  await admin
+    .from('clubs')
+    .delete()
+    .eq('is_demo', true)
+    .lt('demo_expires_at', yesterday24h)
+
   html += `<h3 style="color:#166534;margin-top:24px;">⏰ Trialit päättymässä (7 pv)</h3>`
   if (expiring.length > 0) {
     html += '<table style="border-collapse:collapse;width:100%;">'
