@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       email,
       club_id: DEMO_CLUB_ID,
       active_club_id: DEMO_CLUB_ID,
-      role: 'member',
+      role: 'admin',
       member_status: 'active',
       join_date: new Date().toISOString().slice(0, 10),
     })
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
     await admin.from('club_members').insert({
       club_id: DEMO_CLUB_ID,
       profile_id: userId,
-      role: 'member',
+      role: 'admin',
       status: 'active',
     })
 
