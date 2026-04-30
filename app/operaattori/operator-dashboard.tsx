@@ -11,6 +11,8 @@ import GrowthStrategy from '@/app/kehitys/growth-strategy'
 import SecurityPlan from '@/app/kehitys/security-plan'
 import AutomationPlan from '@/app/kehitys/automation-plan'
 import BudgetTab from './budget-tab'
+import CrmTab from './crm-tab'
+import EmailTab from './email-tab'
 import { InfoTooltip } from '@/app/components/info-tooltip'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -116,7 +118,7 @@ type Summary = {
   feed: SummaryFeed[]
 }
 
-type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'registrations' | 'budget' | 'security' | 'automation' | 'strategy'
+type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'registrations' | 'budget' | 'crm' | 'emails' | 'security' | 'automation' | 'strategy'
 
 type Registration = {
   id: string
@@ -447,6 +449,8 @@ export default function OperatorDashboard() {
           {tabBtn('pipeline', 'Myyntiputki', <TrendingUp size={14} />)}
           {tabBtn('signups', 'Kiinnostusilmoitukset', <Bell size={14} />, signups.length)}
           {tabBtn('registrations', 'Rekisteröitymiset', <ClipboardList size={14} />, registrations.filter((r) => r.status === 'pending').length)}
+          {tabBtn('crm', 'CRM', <Users size={14} />)}
+          {tabBtn('emails', 'Sähköpostit', <Mail size={14} />)}
           {tabBtn('budget', 'Talous', <Wallet size={14} />)}
           {tabBtn('security', 'Tietoturva & GDPR', <Shield size={14} />)}
           {tabBtn('automation', 'Automaatiot', <Zap size={14} />)}
@@ -885,6 +889,12 @@ export default function OperatorDashboard() {
             </div>
           </div>
         )}
+
+        {/* ═══ TAB: CRM ═══ */}
+        {tab === 'crm' && <CrmTab />}
+
+        {/* ═══ TAB: EMAILS ═══ */}
+        {tab === 'emails' && <EmailTab />}
 
         {/* ═══ TAB: BUDGET ═══ */}
         {tab === 'budget' && <BudgetTab clubs={clubs.map((c) => ({ id: c.id, name: c.name }))} />}

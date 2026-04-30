@@ -159,7 +159,17 @@ export async function POST(req: NextRequest) {
       console.error('[DEMO] Seed data copy failed (non-fatal):', e)
     }
 
-    // 7. Send welcome email
+    // 7. Auto-sync to CRM
+    await admin.from('crm_contacts').insert({
+      club_id: clubId,
+      name: email.split('@')[0],
+      email,
+      club_name: 'Demo Erämiehet',
+      status: 'demo',
+      source: 'landing',
+    })
+
+    // 8. Send welcome email
     const expiryDate = trialEndsAt.toLocaleDateString('fi-FI')
     const apiKey = process.env.RESEND_API_KEY
     if (apiKey) {
