@@ -106,7 +106,17 @@ export async function POST(req: NextRequest) {
       approved_at: new Date().toISOString(),
     })
 
-    // 8. Send activation email
+    // 8. Auto-sync to CRM
+    await admin.from('crm_contacts').insert({
+      club_id: clubId,
+      name: contactName,
+      email: contactEmail,
+      club_name: clubName,
+      status: 'trial',
+      source: 'landing',
+    })
+
+    // 9. Send activation email
     const apiKey = process.env.RESEND_API_KEY
     if (apiKey) {
       const resend = new Resend(apiKey)
