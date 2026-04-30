@@ -118,7 +118,7 @@ type Summary = {
   feed: SummaryFeed[]
 }
 
-type Tab = 'overview' | 'clubs' | 'pipeline' | 'signups' | 'registrations' | 'budget' | 'crm' | 'emails' | 'security' | 'automation' | 'strategy'
+type Tab = 'overview' | 'clubs' | 'signups' | 'registrations' | 'budget' | 'crm' | 'emails' | 'security' | 'automation' | 'strategy'
 
 type Registration = {
   id: string
@@ -446,7 +446,6 @@ export default function OperatorDashboard() {
         <div className="flex flex-wrap gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
           {tabBtn('overview', 'Yleiskatsaus', <LayoutDashboard size={14} />)}
           {tabBtn('clubs', 'Seurat', <Users size={14} />)}
-          {tabBtn('pipeline', 'Myyntiputki', <TrendingUp size={14} />)}
           {tabBtn('signups', 'Kiinnostusilmoitukset', <Bell size={14} />, signups.length)}
           {tabBtn('registrations', 'Rekisteröitymiset', <ClipboardList size={14} />, registrations.filter((r) => r.status === 'pending').length)}
           {tabBtn('crm', 'CRM', <Users size={14} />)}
@@ -517,7 +516,7 @@ export default function OperatorDashboard() {
               </button>
 
               {/* Card 2: Myynti & Markkinointi */}
-              <button onClick={() => setTab('pipeline')} className="rounded-2xl border border-green-800 bg-white/5 p-5 text-left hover:bg-white/[0.07] transition-colors">
+              <button onClick={() => setTab('crm')} className="rounded-2xl border border-green-800 bg-white/5 p-5 text-left hover:bg-white/[0.07] transition-colors">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-lg">📈</span>
                   <h3 className="font-semibold text-white">Myynti & Markkinointi <InfoTooltip title="Myynti & Markkinointi" content={['Liidit: mahdolliset asiakkaat jotka ovat osoittaneet kiinnostusta', 'Won: liideistä muuttuneita maksavia asiakkaita', 'Konversio: kuinka moni liideistä on muuttunut asiakkaaksi (%)']} /></h3>
@@ -601,7 +600,7 @@ export default function OperatorDashboard() {
               <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
                 <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">Pikavalinnat</h3>
                 <div className="flex flex-col gap-2">
-                  <button onClick={() => { openNewPipeline(); setTab('pipeline') }} className="flex items-center gap-1.5 rounded-lg bg-green-700 px-3 py-2.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors">
+                  <button onClick={() => { openNewPipeline(); setTab('crm') }} className="flex items-center gap-1.5 rounded-lg bg-green-700 px-3 py-2.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors">
                     <Plus size={13} /> Lisää prospekti
                   </button>
                   <button onClick={() => void sendBulkRemind()} disabled={bulkRemindBusy} className="flex items-center gap-1.5 rounded-lg bg-red-900/60 px-3 py-2.5 text-xs font-semibold text-red-200 hover:bg-red-800/60 disabled:opacity-50 transition-colors">
@@ -701,91 +700,6 @@ export default function OperatorDashboard() {
           </div>
         )}
 
-        {/* ═══ TAB: PIPELINE ═══ */}
-        {tab === 'pipeline' && (() => {
-          const wonCount = pipeline.filter((p) => p.status === 'won').length
-          const convRate = pipeline.length > 0 ? Math.round((wonCount / pipeline.length) * 100) : 0
-          const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
-          const addedThisWeek = pipeline.filter((p) => p.created_at >= weekAgo).length
-          return (
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => openNewPipeline()}
-                className="flex items-center gap-1.5 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
-              >
-                <Plus size={15} />
-                Uusi prospekti
-              </button>
-              <span className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-green-400">Konversio: {convRate}% <InfoTooltip title="Konversio %" content="Kuinka moni kaikista liideistä on muuttunut maksavaksi asiakkaaksi. Hyvä SaaS-konversio on 10-25%." /></span>
-              {addedThisWeek > 0 && <span className="rounded-lg bg-white/5 px-3 py-1.5 text-xs text-green-400">+{addedThisWeek} tällä viikolla</span>}
-            </div>
-
-            <div className="rounded-2xl border border-green-800 bg-white/5 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[900px] text-sm">
-                  <thead>
-                    <tr className="border-b border-green-800 bg-green-950">
-                      <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-green-400">Seura</th>
-                      <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-green-400">Yhteyshenkilö</th>
-                      <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Status</th>
-                      <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Jäseniä (arv.)</th>
-                      <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-green-400">Seuraava toimenpide</th>
-                      <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-green-400">Muistiinpanot</th>
-                      <th className="px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-green-400">Toiminnot</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pipeline.map((e) => {
-                      const overdue = e.next_action_date && e.next_action_date < today
-                      return (
-                        <tr key={e.id} className="border-b border-green-900/30 hover:bg-white/[0.03]">
-                          <td className="px-3 py-2.5 font-medium text-white">{e.club_name}</td>
-                          <td className="px-3 py-2.5">
-                            <p className="text-white">{e.contact_name ?? '—'}</p>
-                            {e.contact_email && <p className="text-xs text-green-500">{e.contact_email}</p>}
-                          </td>
-                          <td className="px-3 py-2.5 text-center">
-                            <select
-                              value={e.status}
-                              onChange={(ev) => void updatePipelineStatus(e.id, ev.target.value)}
-                              className={`rounded-full border-0 px-2 py-0.5 text-xs font-medium outline-none cursor-pointer ${statusBadge(e.status)}`}
-                            >
-                              {PIPELINE_STATUSES.map((s) => (
-                                <option key={s.value} value={s.value}>{s.label}</option>
-                              ))}
-                            </select>
-                          </td>
-                          <td className="px-3 py-2.5 text-center text-green-300">{e.estimated_members ?? '—'}</td>
-                          <td className="px-3 py-2.5">
-                            {e.next_action && <p className="text-white text-xs">{e.next_action}</p>}
-                            {e.next_action_date && (
-                              <p className={`text-xs ${overdue ? 'text-red-400 font-semibold' : 'text-green-500'}`}>
-                                {formatDate(e.next_action_date)}
-                              </p>
-                            )}
-                          </td>
-                          <td className="px-3 py-2.5 text-xs text-green-400 max-w-[150px] truncate">{e.notes ?? ''}</td>
-                          <td className="px-3 py-2.5 text-center">
-                            <div className="flex items-center justify-center gap-1">
-                              <button onClick={() => openEditPipeline(e)} className="rounded-md p-1 text-green-600 hover:text-green-300"><Pencil size={13} /></button>
-                              <button onClick={() => void deletePipeline(e.id)} className="rounded-md p-1 text-red-500 hover:text-red-300"><Trash2 size={13} /></button>
-                            </div>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                    {pipeline.length === 0 && (
-                      <tr><td colSpan={7} className="px-4 py-6 text-center text-sm text-green-600">Ei prospekteja.</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          )
-        })()}
-
         {/* ═══ TAB: SIGNUPS ═══ */}
         {tab === 'signups' && (
           <div className="rounded-2xl border border-green-800 bg-white/5 overflow-hidden">
@@ -814,7 +728,7 @@ export default function OperatorDashboard() {
                               status: 'lead',
                               source: 'launch_signup',
                             })
-                            setTab('pipeline')
+                            setTab('crm')
                           }}
                           className="rounded-lg bg-green-800 px-3 py-1 text-xs font-semibold text-white hover:bg-green-700"
                         >
