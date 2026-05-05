@@ -42,3 +42,7 @@ next-env.d.ts
 
 # Member data - contains personal info, never commit
 scripts/members.json
+
+# Sentry
+.env.sentry-build-plugin
+.sentryclirc
