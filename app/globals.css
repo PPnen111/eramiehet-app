@@ -41,3 +41,31 @@ body {
 .animate-fade-in {
   animation: fade-in 0.15s ease-out both;
 }
+
+.light-theme {
+  --background: #f5f0e8;
+  --background-secondary: #ffffff;
+  --background-card: #ffffff;
+
+  --foreground: #1a1a1a;
+  --foreground-secondary: #4a4a4a;
+  --foreground-muted: #888888;
+
+  --primary: #2d6a2d;
+  --primary-hover: #235223;
+  --primary-foreground: #ffffff;
+
+  --sidebar-bg: #1e3d1e;
+  --sidebar-text: #ffffff;
+  --sidebar-active: #2d6a2d;
+
+  --border: #e0d8cc;
+  --border-secondary: #d0c8bc;
+
+  --card: #ffffff;
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  --success: #2d6a2d;
+  --warning: #b45309;
+  --danger: #dc2626;
+}
