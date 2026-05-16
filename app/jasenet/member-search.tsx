@@ -11,7 +11,7 @@ const roleLabel: Record<string, string> = {
 
 const roleBadge: Record<string, string> = {
   admin: 'bg-[#1e3d1e] text-green-100',
-  board_member: 'bg-blue-800 text-blue-200',
+  board_member: 'bg-blue-800 text-[#185fa5]',
   member: 'bg-stone-600 text-[#1a1a1a]',
 }
 
@@ -24,7 +24,7 @@ const statusLabel: Record<string, string> = {
 const statusBadge: Record<string, string> = {
   active: 'bg-[#1e3d1e] text-[#1a1a1a]',
   pending: 'bg-[#fef3c7] text-[#92400e]',
-  inactive: 'bg-red-900 text-red-200',
+  inactive: 'bg-[#fef2f2] text-[#991b1b]',
 }
 
 function formatDate(iso: string) {

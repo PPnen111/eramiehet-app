@@ -60,7 +60,7 @@ export default function RegistryMemberDetail({ member }: Props) {
         <div className="flex items-start justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold text-[#1a1a1a]">{form.full_name ?? '—'}</h1>
-            <p className="mt-1 text-xs text-blue-400">📋 Ei sovellustunnusta</p>
+            <p className="mt-1 text-xs text-[#1e40af]">📋 Ei sovellustunnusta</p>
           </div>
           <div className="flex gap-2">
             <button onClick={() => setInvoiceOpen(true)} className="flex items-center gap-1.5 rounded-lg bg-[#1e3d1e] px-3 py-2 text-xs font-semibold text-white hover:bg-[#162d16]">
@@ -70,7 +70,7 @@ export default function RegistryMemberDetail({ member }: Props) {
         </div>
 
         {!form.email && (
-          <div className="rounded-xl border border-blue-800/50 bg-blue-900/20 px-4 py-3 text-sm text-blue-200">
+          <div className="rounded-xl border border-[#bfdbfe]/50 bg-[#e6f1fb] px-4 py-3 text-sm text-[#185fa5]">
             <Info size={14} className="inline mr-1" />
             Ei sähköpostia — lasku postitetaan
           </div>
@@ -113,14 +113,14 @@ export default function RegistryMemberDetail({ member }: Props) {
           <div><label className={labelCls}>Lisätiedot</label><textarea value={form.additional_info ?? ''} onChange={(e) => set('additional_info', e.target.value)} rows={3} className={inputCls} /></div>
         </section>
 
-        {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>}
+        {error && <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{error}</p>}
         {saved && <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1e3d1e]">Tallennettu ✓</p>}
 
         <div className="flex flex-wrap gap-2">
           <button onClick={() => void save()} disabled={saving || !form.full_name?.trim()} className="flex-1 rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors">
             {saving ? 'Tallennetaan...' : 'Tallenna muutokset'}
           </button>
-          <button onClick={() => void remove()} disabled={deleting} className="rounded-xl border border-red-800 px-4 py-3 text-sm font-semibold text-red-400 hover:bg-red-900/20 disabled:opacity-50 transition-colors">
+          <button onClick={() => void remove()} disabled={deleting} className="rounded-xl border border-[#fca5a5] px-4 py-3 text-sm font-semibold text-[#991b1b] hover:bg-[#fef2f2] disabled:opacity-50 transition-colors">
             <Trash2 size={14} className="inline mr-1" /> Poista
           </button>
         </div>
@@ -255,7 +255,7 @@ function InvoiceModal({ member, onClose }: { member: RegistryMember; onClose: ()
             {!willUsePrint && member.email && (
               <div><label className={labelCls}>Sähköposti</label><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} /></div>
             )}
-            {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-xs text-red-300">{error}</p>}
+            {error && <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-xs text-[#991b1b]">{error}</p>}
             <button onClick={() => void send()} disabled={busy} className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white disabled:opacity-50">
               {busy ? 'Käsitellään...' : willUsePrint ? 'Luo ja avaa tulostettavaksi' : 'Lähetä sähköpostilla'}
             </button>

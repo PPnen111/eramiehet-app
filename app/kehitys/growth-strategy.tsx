@@ -41,9 +41,9 @@ export default function GrowthStrategy() {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-900/60 bg-red-900/10 px-5 py-8 text-center">
-        <FileText size={32} className="mx-auto mb-3 text-red-400" />
-        <p className="text-sm text-red-300">{error}</p>
+      <div className="rounded-2xl border border-[#fca5a5] bg-[#fef2f2] px-5 py-8 text-center">
+        <FileText size={32} className="mx-auto mb-3 text-[#991b1b]" />
+        <p className="text-sm text-[#991b1b]">{error}</p>
       </div>
     )
   }

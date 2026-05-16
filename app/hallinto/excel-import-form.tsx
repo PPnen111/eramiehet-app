@@ -164,7 +164,7 @@ export default function ExcelImportForm({ onImportDone }: Props) {
             <tr className="border-b border-[#e0d8cc] bg-white">
               <th className="w-8 px-2 py-2 text-center text-xs font-medium text-[#888888]">#</th>
               <th className="min-w-[160px] px-2 py-2 text-left text-xs font-medium text-[#2d6a2d]">
-                Nimi <span className="text-red-400">*</span>
+                Nimi <span className="text-[#991b1b]">*</span>
               </th>
               <th className="min-w-[180px] px-2 py-2 text-left text-xs font-medium text-[#2d6a2d]">Sähköposti</th>
               <th className="min-w-[130px] px-2 py-2 text-left text-xs font-medium text-[#2d6a2d]">Puhelin</th>
@@ -190,7 +190,7 @@ export default function ExcelImportForm({ onImportDone }: Props) {
                     }`}
                   />
                   {getFieldError(i, 'nimi') && (
-                    <p className="mt-0.5 text-[10px] text-red-400">{getFieldError(i, 'nimi')}</p>
+                    <p className="mt-0.5 text-[10px] text-[#991b1b]">{getFieldError(i, 'nimi')}</p>
                   )}
                 </td>
                 <td className="px-1 py-1">
@@ -206,7 +206,7 @@ export default function ExcelImportForm({ onImportDone }: Props) {
                     }`}
                   />
                   {getFieldError(i, 'sahkoposti') && (
-                    <p className="mt-0.5 text-[10px] text-red-400">{getFieldError(i, 'sahkoposti')}</p>
+                    <p className="mt-0.5 text-[10px] text-[#991b1b]">{getFieldError(i, 'sahkoposti')}</p>
                   )}
                 </td>
                 <td className="px-1 py-1">
@@ -247,7 +247,7 @@ export default function ExcelImportForm({ onImportDone }: Props) {
                   <button
                     onClick={() => removeRow(i)}
                     disabled={rows.length <= 1}
-                    className="rounded-md p-1 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-20 transition-colors"
+                    className="rounded-md p-1 text-[#888888] hover:bg-[#fee2e2] hover:text-[#991b1b] disabled:opacity-20 transition-colors"
                     title="Poista rivi"
                   >
                     <Trash2 size={13} />
@@ -286,15 +286,15 @@ export default function ExcelImportForm({ onImportDone }: Props) {
 
       {/* Error message */}
       {error && (
-        <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>
+        <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{error}</p>
       )}
 
       {/* Validation errors summary */}
       {validationErrors.length > 0 && (
-        <div className="rounded-xl border border-red-900 bg-red-900/20 p-3 space-y-1">
-          <p className="text-xs font-semibold text-red-300">Korjaa virheet ennen tuontia:</p>
+        <div className="rounded-xl border border-[#fca5a5] bg-[#fef2f2] p-3 space-y-1">
+          <p className="text-xs font-semibold text-[#991b1b]">Korjaa virheet ennen tuontia:</p>
           {validationErrors.map((e, i) => (
-            <p key={i} className="text-xs text-red-400">
+            <p key={i} className="text-xs text-[#991b1b]">
               Rivi {e.rowIndex + 1} · {e.field}: {e.message}
             </p>
           ))}
@@ -332,15 +332,15 @@ export default function ExcelImportForm({ onImportDone }: Props) {
             </div>
             {result.errors > 0 && (
               <div className="flex items-start gap-2 text-sm">
-                <AlertCircle size={14} className="mt-0.5 shrink-0 text-red-400" />
+                <AlertCircle size={14} className="mt-0.5 shrink-0 text-[#991b1b]" />
                 <div>
-                  <span className="text-red-300">
+                  <span className="text-[#991b1b]">
                     Virheitä: <span className="font-semibold text-[#1a1a1a]">{result.errors}</span> jäsentä
                   </span>
                   {result.error_details.length > 0 && (
                     <ul className="mt-1 space-y-0.5">
                       {result.error_details.map((d, i) => (
-                        <li key={i} className="text-xs text-red-400">{d}</li>
+                        <li key={i} className="text-xs text-[#991b1b]">{d}</li>
                       ))}
                     </ul>
                   )}

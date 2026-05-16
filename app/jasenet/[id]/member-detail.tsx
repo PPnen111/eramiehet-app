@@ -19,7 +19,7 @@ const STATUS_OPTIONS = [
 
 const ROLE_BADGE: Record<string, string> = {
   admin: 'bg-[#fef3c7]/60 text-[#92400e]',
-  board_member: 'bg-blue-900/60 text-blue-300',
+  board_member: 'bg-[#e6f1fb]/60 text-[#185fa5]',
   member: 'bg-[#f0ebe3] text-[#1e3d1e]',
   superadmin: 'bg-purple-900/60 text-purple-300',
 }
@@ -27,7 +27,7 @@ const ROLE_BADGE: Record<string, string> = {
 const PAYMENT_STATUS_STYLE: Record<string, string> = {
   paid: 'text-[#2d6a2d]',
   pending: 'text-[#b45309]',
-  overdue: 'text-red-400',
+  overdue: 'text-[#991b1b]',
 }
 
 const PAYMENT_STATUS_LABEL: Record<string, string> = {
@@ -373,7 +373,7 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
             <span className="text-sm text-[#2d6a2d]">Tallennettu ✓</span>
           )}
           {saveError && (
-            <span className="text-sm text-red-400">{saveError}</span>
+            <span className="text-sm text-[#991b1b]">{saveError}</span>
           )}
         </div>
       </div>

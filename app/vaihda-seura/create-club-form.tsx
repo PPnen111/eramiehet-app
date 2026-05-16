@@ -72,7 +72,7 @@ export default function CreateClubForm() {
             className="w-full rounded-xl border border-[#e0d8cc] bg-[#f5f0e8]/60 px-4 py-3 text-sm text-[#1a1a1a] placeholder-[#888888] focus:border-[#2d6a2d] focus:outline-none"
           />
         </div>
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-[#991b1b]">{error}</p>}
         <div className="flex gap-3">
           <button
             type="button"

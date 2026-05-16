@@ -16,7 +16,7 @@ const typeLabels: Record<string, string> = {
 
 const typeBadge: Record<string, string> = {
   talkoot: 'bg-[#fde9a8] text-[#92400e]',
-  ampumaharjoitus: 'bg-blue-900 text-blue-200',
+  ampumaharjoitus: 'bg-[#e6f1fb] text-[#185fa5]',
   kokous: 'bg-purple-900 text-purple-200',
   metsastyspaiva: 'bg-[#f0ebe3] text-[#1a1a1a]',
   kilpailu: 'bg-[#fef3c7] text-[#92400e]',

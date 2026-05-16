@@ -218,7 +218,7 @@ export default function OnboardingWizard({ clubName }: Props) {
                   <input type="text" value={m.name} onChange={(e) => { const arr = [...manualMembers]; arr[i] = { ...arr[i], name: e.target.value }; setManualMembers(arr) }} placeholder="Nimi" className={inputCls} />
                   <input type="email" value={m.email} onChange={(e) => { const arr = [...manualMembers]; arr[i] = { ...arr[i], email: e.target.value }; setManualMembers(arr) }} placeholder="Sähköposti (valinnainen)" className={inputCls} />
                   {manualMembers.length > 1 && (
-                    <button onClick={() => setManualMembers((a) => a.filter((_, j) => j !== i))} className="shrink-0 text-red-500 hover:text-red-300"><Trash2 size={14} /></button>
+                    <button onClick={() => setManualMembers((a) => a.filter((_, j) => j !== i))} className="shrink-0 text-[#dc2626] hover:text-[#991b1b]"><Trash2 size={14} /></button>
                   )}
                 </div>
               ))}

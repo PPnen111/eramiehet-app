@@ -285,7 +285,7 @@ export default function AddMemberForm({ onDone, onCancel, onLimitExceeded }: Pro
 
           {/* Error */}
           {error && (
-            <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>
+            <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{error}</p>
           )}
 
           {/* Buttons */}

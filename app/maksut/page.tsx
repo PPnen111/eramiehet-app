@@ -16,7 +16,7 @@ type Payment = {
 const statusConfig: Record<string, { label: string; cls: string }> = {
   paid: { label: 'Maksettu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
   pending: { label: 'Odottaa', cls: 'bg-[#fef3c7] text-[#92400e]' },
-  overdue: { label: 'Myöhässä', cls: 'bg-red-900 text-red-200' },
+  overdue: { label: 'Myöhässä', cls: 'bg-[#fef2f2] text-[#991b1b]' },
 }
 
 

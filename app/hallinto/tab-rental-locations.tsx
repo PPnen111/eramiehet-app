@@ -14,9 +14,9 @@ type Toast = { msg: string; type: 'ok' | 'err' }
 
 const TYPES = [
   { value: 'erakartano', label: 'Eräkartano', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
-  { value: 'takkatupa', label: 'Takkatupa', cls: 'bg-blue-900 text-blue-200' },
+  { value: 'takkatupa', label: 'Takkatupa', cls: 'bg-[#e6f1fb] text-[#185fa5]' },
   { value: 'sauna', label: 'Sauna', cls: 'bg-orange-900 text-orange-200' },
-  { value: 'ampumarata', label: 'Ampumarata', cls: 'bg-red-900 text-red-200' },
+  { value: 'ampumarata', label: 'Ampumarata', cls: 'bg-[#fef2f2] text-[#991b1b]' },
   { value: 'nylkyvaja', label: 'Nylkyvaja', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
   { value: 'majoitustilat', label: 'Majoitustilat', cls: 'bg-purple-900 text-purple-200' },
   { value: 'muu', label: 'Muu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
@@ -129,7 +129,7 @@ export default function TabRentalLocations({ clubId }: Props) {
 
   return (
     <div className="space-y-4">
-      {toast && <div className={`rounded-xl px-4 py-3 text-sm font-medium ${toast.type === 'ok' ? 'bg-[#eaf3de] text-[#1a1a1a]' : 'bg-red-900/60 text-red-200'}`}>{toast.msg}</div>}
+      {toast && <div className={`rounded-xl px-4 py-3 text-sm font-medium ${toast.type === 'ok' ? 'bg-[#eaf3de] text-[#1a1a1a]' : 'bg-[#fee2e2] text-[#991b1b]'}`}>{toast.msg}</div>}
 
       <button onClick={openNew} className="flex items-center gap-1.5 rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] transition-colors">
         <Plus size={15} /> Lisää kohde
@@ -164,7 +164,7 @@ export default function TabRentalLocations({ clubId }: Props) {
                       <td className="px-3 py-2.5 text-center">
                         <div className="flex items-center justify-center gap-1">
                           <button onClick={() => void openEdit(loc)} className="rounded-md p-1 text-[#888888] hover:text-[#1e3d1e]"><Pencil size={13} /></button>
-                          <button onClick={() => void deleteLocation(loc.id)} className="rounded-md p-1 text-red-500 hover:text-red-300"><Trash2 size={13} /></button>
+                          <button onClick={() => void deleteLocation(loc.id)} className="rounded-md p-1 text-[#dc2626] hover:text-[#991b1b]"><Trash2 size={13} /></button>
                         </div>
                       </td>
                     </tr>
@@ -216,7 +216,7 @@ export default function TabRentalLocations({ clubId }: Props) {
                     </div>
                     <div className="flex flex-col gap-1 items-center shrink-0">
                       <button onClick={() => { const arr = [...approvers]; arr.forEach((x, j) => { x.is_primary = j === i }); setApprovers(arr) }} className={`text-xs px-1.5 py-0.5 rounded ${a.is_primary ? 'text-[#92400e]' : 'text-[#2d6a2d]'}`} title="Ensisijainen">☆</button>
-                      {approvers.length > 1 && <button onClick={() => setApprovers((arr) => arr.filter((_, j) => j !== i))} className="text-red-500 hover:text-red-300"><Trash2 size={12} /></button>}
+                      {approvers.length > 1 && <button onClick={() => setApprovers((arr) => arr.filter((_, j) => j !== i))} className="text-[#dc2626] hover:text-[#991b1b]"><Trash2 size={12} /></button>}
                     </div>
                   </div>
                 ))}

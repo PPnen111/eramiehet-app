@@ -204,7 +204,7 @@ function PermitCard({
           <button
             onClick={() => void cancel()}
             disabled={busy}
-            className="rounded-lg border border-red-800 px-3 py-1.5 text-xs font-semibold text-red-300 hover:bg-red-900/20 disabled:opacity-50 transition-colors"
+            className="rounded-lg border border-[#fca5a5] px-3 py-1.5 text-xs font-semibold text-[#991b1b] hover:bg-[#fef2f2] disabled:opacity-50 transition-colors"
           >
             Peruuta
           </button>
@@ -354,7 +354,7 @@ function NewPermitModal({
         </div>
 
         {error && (
-          <p className="flex items-start gap-1.5 rounded-lg bg-red-900/40 px-3 py-2 text-xs text-red-300">
+          <p className="flex items-start gap-1.5 rounded-lg bg-[#fee2e2] px-3 py-2 text-xs text-[#991b1b]">
             <AlertCircle size={13} className="shrink-0 mt-0.5" />
             {error}
           </p>
@@ -508,7 +508,7 @@ function InvoiceModal({ permit, onClose }: { permit: PermitView; onClose: () => 
               <label className={labelCls}>Lisätiedot</label>
               <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} className={inputCls} />
             </div>
-            {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-xs text-red-300">{error}</p>}
+            {error && <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-xs text-[#991b1b]">{error}</p>}
             <button
               onClick={() => void send()}
               disabled={busy}

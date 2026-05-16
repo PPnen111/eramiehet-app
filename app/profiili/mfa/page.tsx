@@ -123,7 +123,7 @@ export default function MfaSetupPage() {
         </div>
 
         {success && <p className="rounded-lg bg-white px-4 py-3 text-sm text-[#1e3d1e]">{success}</p>}
-        {error && <p className="rounded-lg bg-red-900/40 px-4 py-3 text-sm text-red-300">{error}</p>}
+        {error && <p className="rounded-lg bg-[#fee2e2] px-4 py-3 text-sm text-[#991b1b]">{error}</p>}
 
         {/* Status */}
         <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
@@ -188,7 +188,7 @@ export default function MfaSetupPage() {
 
         {/* Unenroll */}
         {isEnrolled && (
-          <button onClick={() => void unenroll()} disabled={busy} className="w-full rounded-xl border border-red-800 py-3 text-sm font-semibold text-red-400 hover:bg-red-900/20 disabled:opacity-50 transition-colors">
+          <button onClick={() => void unenroll()} disabled={busy} className="w-full rounded-xl border border-[#fca5a5] py-3 text-sm font-semibold text-[#991b1b] hover:bg-[#fef2f2] disabled:opacity-50 transition-colors">
             {busy ? 'Poistetaan...' : 'Poista 2FA käytöstä'}
           </button>
         )}

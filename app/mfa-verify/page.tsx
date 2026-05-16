@@ -99,7 +99,7 @@ export default function MfaVerifyPage() {
             className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-4 text-center text-3xl tracking-[0.6em] text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d] font-mono"
           />
 
-          {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-center text-red-300">{error}</p>}
+          {error && <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-center text-[#991b1b]">{error}</p>}
 
           <button
             onClick={() => void verify()}

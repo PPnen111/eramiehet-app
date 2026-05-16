@@ -47,7 +47,7 @@ function FlowCard({ title, steps }: { title: string; steps: string[] }) {
 }
 
 const PRIO: Record<string, string> = {
-  MUST: 'bg-red-900/30 text-red-300 border-red-800/40',
+  MUST: 'bg-[#fee2e2] text-[#991b1b] border-[#fecaca]',
   SHOULD: 'bg-[#fef3c7] text-[#92400e] border-[#fcd34d]/40',
 }
 

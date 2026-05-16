@@ -32,11 +32,11 @@ export default function DeleteSaalisButton({ saalisId }: Props) {
       <button
         onClick={handleDelete}
         disabled={loading}
-        className="rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+        className="rounded-lg px-2 py-1 text-xs text-[#991b1b] hover:bg-[#fee2e2] disabled:opacity-50"
       >
         {loading ? '...' : 'Poista'}
       </button>
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs text-[#991b1b]">{error}</p>}
     </div>
   )
 }

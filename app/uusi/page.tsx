@@ -120,7 +120,7 @@ export default function UusiPage() {
             <input type="text" value={form.promo_code} onChange={(e) => set('promo_code', e.target.value)} placeholder="" className="w-full rounded-lg border border-[#e0d8cc] bg-white px-3 py-2 text-xs text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]" />
           </div>
 
-          {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>}
+          {error && <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{error}</p>}
 
           <button type="submit" disabled={busy} className="w-full rounded-xl bg-green-600 py-3.5 text-base font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors">
             {busy ? 'Lähetetään...' : 'Aloita kokeilu →'}

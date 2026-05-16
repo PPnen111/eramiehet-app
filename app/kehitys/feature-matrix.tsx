@@ -121,13 +121,13 @@ const FEATURES: Feature[] = [
 const CELL: Record<Access, { icon: string; cls: string; label: string }> = {
   full: { icon: '\u2705', cls: 'text-[#1e3d1e]', label: 'Täysi pääsy' },
   read: { icon: '\uD83D\uDC41', cls: 'text-[#92400e]', label: 'Vain luku' },
-  none: { icon: '\u274C', cls: 'text-red-400', label: 'Ei pääsyä' },
+  none: { icon: '\u274C', cls: 'text-[#991b1b]', label: 'Ei pääsyä' },
 }
 
 const ROW_BG: Record<Access, string> = {
   full: 'bg-white',
   read: 'bg-[#fef3c7]/10',
-  none: 'bg-red-900/5',
+  none: 'bg-[#fef2f2]',
 }
 
 export default function FeatureMatrix() {
