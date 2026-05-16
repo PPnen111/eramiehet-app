@@ -54,32 +54,32 @@ export default function EditCabinInfoForm({ clubId, initialPricing, initialInstr
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-2xl border border-green-800 bg-white/5 p-5"
+      className="space-y-6 rounded-2xl border border-[#e0d8cc] bg-white p-5"
     >
       <div>
-        <label className="mb-1 block text-sm font-semibold text-green-300">Hinnasto</label>
+        <label className="mb-1 block text-sm font-semibold text-[#1e3d1e]">Hinnasto</label>
         <textarea
           value={pricing}
           onChange={(e) => setPricing(e.target.value)}
           rows={6}
           placeholder="Kirjoita hinnasto tähän..."
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-semibold text-green-300">Ohjeet</label>
+        <label className="mb-1 block text-sm font-semibold text-[#1e3d1e]">Ohjeet</label>
         <textarea
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)}
           rows={8}
           placeholder="Kirjoita käyttöohjeet tähän..."
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-semibold text-green-300">
+        <label className="mb-1 block text-sm font-semibold text-[#1e3d1e]">
           Varauspyyntöjen vastaanottaja
         </label>
         <input
@@ -87,16 +87,16 @@ export default function EditCabinInfoForm({ clubId, initialPricing, initialInstr
           value={notificationEmail}
           onChange={(e) => setNotificationEmail(e.target.value)}
           placeholder="esim. toiminnanjohtaja@seura.fi"
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
         />
-        <p className="mt-1 text-xs text-green-600">
+        <p className="mt-1 text-xs text-[#888888]">
           Tähän osoitteeseen lähetetään ilmoitus uusista varauspyynnöistä. Jos tyhjä, menee seuran
           admineille.
         </p>
       </div>
 
-      <div className="rounded-xl border border-green-800 bg-white/[0.03] p-4 space-y-3">
-        <label className="block text-sm font-semibold text-green-300">
+      <div className="rounded-xl border border-[#e0d8cc] bg-white/[0.03] p-4 space-y-3">
+        <label className="block text-sm font-semibold text-[#1e3d1e]">
           Varausten hyväksyjä
         </label>
         <div>
@@ -105,7 +105,7 @@ export default function EditCabinInfoForm({ clubId, initialPricing, initialInstr
             value={approverName}
             onChange={(e) => setApproverName(e.target.value)}
             placeholder="Nimi (esim. Matti Metsästäjä)"
-            className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+            className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
           />
         </div>
         <div>
@@ -114,10 +114,10 @@ export default function EditCabinInfoForm({ clubId, initialPricing, initialInstr
             value={approverEmail}
             onChange={(e) => setApproverEmail(e.target.value)}
             placeholder="Sähköposti (esim. matti@seura.fi)"
-            className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+            className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
           />
         </div>
-        <p className="text-xs text-green-600">
+        <p className="text-xs text-[#888888]">
           Hyväksyjä saa ilmoituksen uusista varauspyynnöistä ja voi hyväksyä/hylätä ne hallintosivulla.
         </p>
       </div>
@@ -130,14 +130,14 @@ export default function EditCabinInfoForm({ clubId, initialPricing, initialInstr
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+          className="flex-1 rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50"
         >
           {loading ? 'Tallennetaan...' : 'Tallenna'}
         </button>
         <button
           type="button"
           onClick={() => router.push('/erakartano')}
-          className="rounded-lg border border-green-800 px-4 py-2.5 text-sm text-green-300 hover:border-green-600"
+          className="rounded-lg border border-[#e0d8cc] px-4 py-2.5 text-sm text-[#1e3d1e] hover:border-green-600"
         >
           Peruuta
         </button>

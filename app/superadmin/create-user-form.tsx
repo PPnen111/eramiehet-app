@@ -59,8 +59,8 @@ export default function CreateUserForm({ clubs }: Props) {
   }
 
   const inputClass =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
-  const labelClass = 'mb-1 block text-xs text-green-400'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
+  const labelClass = 'mb-1 block text-xs text-[#2d6a2d]'
 
   return (
     <div className="mb-6 space-y-2">
@@ -68,17 +68,17 @@ export default function CreateUserForm({ clubs }: Props) {
         <>
           <button
             onClick={() => setOpen(true)}
-            className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+            className="rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] transition-colors"
           >
             + Luo uusi käyttäjä
           </button>
           {success && (
-            <p className="rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">{success}</p>
+            <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1e3d1e]">{success}</p>
           )}
         </>
       ) : (
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
-          <h3 className="mb-4 font-semibold text-white">Luo uusi käyttäjä</h3>
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
+          <h3 className="mb-4 font-semibold text-[#1a1a1a]">Luo uusi käyttäjä</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -124,7 +124,7 @@ export default function CreateUserForm({ clubs }: Props) {
                   value={clubId}
                   onChange={(e) => setClubId(e.target.value)}
                   required
-                  className="w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
+                  className="w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
                 >
                   {clubs.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -138,7 +138,7 @@ export default function CreateUserForm({ clubs }: Props) {
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
+                  className="w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
                 >
                   <option value="member">Jäsen</option>
                   <option value="board_member">Hallitus</option>
@@ -155,14 +155,14 @@ export default function CreateUserForm({ clubs }: Props) {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+                className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
               >
                 {loading ? 'Luodaan...' : 'Luo käyttäjä'}
               </button>
               <button
                 type="button"
                 onClick={() => { setOpen(false); setError('') }}
-                className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300 hover:bg-white/5"
+                className="rounded-lg border border-[#e0d8cc] px-4 py-2 text-sm text-[#1e3d1e] hover:bg-white"
               >
                 Peruuta
               </button>

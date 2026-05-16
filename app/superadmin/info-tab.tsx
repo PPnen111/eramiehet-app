@@ -66,9 +66,9 @@ const BENEFITS = [
   {
     icon: Shield,
     title: 'Puheenjohtaja / Hallitus',
-    color: 'text-green-300',
-    borderColor: 'border-green-700',
-    bgColor: 'bg-green-900/20',
+    color: 'text-[#1e3d1e]',
+    borderColor: 'border-[#e0d8cc]',
+    bgColor: 'bg-white',
     items: [
       'Säästät 5–10 tuntia kuukaudessa',
       'Jäsenrekisteri aina ajan tasalla',
@@ -161,21 +161,21 @@ export default function InfoTab() {
 
       {/* ── Section 1: Mitä sovellus tekee ── */}
       <section>
-        <h2 className="mb-1 text-xl font-bold text-white">Mitä JahtiPro tekee?</h2>
-        <p className="mb-6 text-sm text-green-400">
+        <h2 className="mb-1 text-xl font-bold text-[#1a1a1a]">Mitä JahtiPro tekee?</h2>
+        <p className="mb-6 text-sm text-[#2d6a2d]">
           Kaikki metsästysseuran tarvitsemat työkalut yhdessä mobiilisovelluksessa.
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map(({ icon: Icon, title, desc }) => (
             <div
               key={title}
-              className="rounded-2xl border border-green-800 bg-white/5 p-4 transition-colors hover:border-green-600 hover:bg-white/[0.08]"
+              className="rounded-2xl border border-[#e0d8cc] bg-white p-4 transition-colors hover:border-green-600 hover:bg-white/[0.08]"
             >
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-green-800/60">
-                <Icon size={20} className="text-green-300" strokeWidth={1.5} />
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#eaf3de]">
+                <Icon size={20} className="text-[#1e3d1e]" strokeWidth={1.5} />
               </div>
-              <h3 className="mb-1.5 font-semibold text-white">{title}</h3>
-              <p className="text-xs leading-relaxed text-green-400">{desc}</p>
+              <h3 className="mb-1.5 font-semibold text-[#1a1a1a]">{title}</h3>
+              <p className="text-xs leading-relaxed text-[#2d6a2d]">{desc}</p>
             </div>
           ))}
         </div>
@@ -183,8 +183,8 @@ export default function InfoTab() {
 
       {/* ── Section 2: Hyödyt ── */}
       <section>
-        <h2 className="mb-1 text-xl font-bold text-white">Hyödyt eri käyttäjille</h2>
-        <p className="mb-6 text-sm text-green-400">
+        <h2 className="mb-1 text-xl font-bold text-[#1a1a1a]">Hyödyt eri käyttäjille</h2>
+        <p className="mb-6 text-sm text-[#2d6a2d]">
           Sovellus palvelee jokaista seuran jäsentä heidän roolinsa mukaan.
         </p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -199,8 +199,8 @@ export default function InfoTab() {
               </div>
               <ul className="mt-3 space-y-2">
                 {items.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-green-300">
-                    <Check size={14} className="mt-0.5 shrink-0 text-green-500" strokeWidth={2.5} />
+                  <li key={item} className="flex items-start gap-2 text-sm text-[#1e3d1e]">
+                    <Check size={14} className="mt-0.5 shrink-0 text-[#4a4a4a]" strokeWidth={2.5} />
                     {item}
                   </li>
                 ))}
@@ -212,16 +212,16 @@ export default function InfoTab() {
 
       {/* ── Section 3: Hinnoittelu ── */}
       <section>
-        <h2 className="mb-1 text-xl font-bold text-white">Hinnoittelu</h2>
-        <p className="mb-6 text-sm text-green-400">Kuukausimaksu sisältää kaikki päivitykset.</p>
+        <h2 className="mb-1 text-xl font-bold text-[#1a1a1a]">Hinnoittelu</h2>
+        <p className="mb-6 text-sm text-[#2d6a2d]">Kuukausimaksu sisältää kaikki päivitykset.</p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {PLANS.map(({ name, price, badge, highlight, features }) => (
             <div
               key={name}
               className={`relative rounded-2xl border p-5 ${
                 highlight
-                  ? 'border-green-500 bg-green-900/30 ring-1 ring-green-500/40'
-                  : 'border-green-800 bg-white/5'
+                  ? 'border-green-500 bg-white ring-1 ring-green-500/40'
+                  : 'border-[#e0d8cc] bg-white'
               }`}
             >
               {badge && (
@@ -229,15 +229,15 @@ export default function InfoTab() {
                   {badge}
                 </span>
               )}
-              <p className={`font-bold ${highlight ? 'text-green-300' : 'text-white'}`}>{name}</p>
+              <p className={`font-bold ${highlight ? 'text-[#1e3d1e]' : 'text-[#1a1a1a]'}`}>{name}</p>
               <p className="mt-2 flex items-baseline gap-1">
-                <span className="text-3xl font-bold text-white">{price}€</span>
-                <span className="text-sm text-green-500">/kk</span>
+                <span className="text-3xl font-bold text-[#1a1a1a]">{price}€</span>
+                <span className="text-sm text-[#4a4a4a]">/kk</span>
               </p>
               <ul className="mt-4 space-y-2">
                 {features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-green-300">
-                    <Check size={14} className="mt-0.5 shrink-0 text-green-500" strokeWidth={2.5} />
+                  <li key={f} className="flex items-start gap-2 text-sm text-[#1e3d1e]">
+                    <Check size={14} className="mt-0.5 shrink-0 text-[#4a4a4a]" strokeWidth={2.5} />
                     {f}
                   </li>
                 ))}
@@ -249,16 +249,16 @@ export default function InfoTab() {
 
       {/* ── Section 4: Tekninen info ── */}
       <section>
-        <h2 className="mb-1 text-xl font-bold text-white">Tekninen info</h2>
-        <p className="mb-4 text-sm text-green-400">Sovelluksen tekniset tiedot superadminille.</p>
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
+        <h2 className="mb-1 text-xl font-bold text-[#1a1a1a]">Tekninen info</h2>
+        <p className="mb-4 text-sm text-[#2d6a2d]">Sovelluksen tekniset tiedot superadminille.</p>
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {TECH.map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-800/40">
-                  <Icon size={15} className="text-green-400" strokeWidth={1.5} />
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#1e3d1e]/40">
+                  <Icon size={15} className="text-[#2d6a2d]" strokeWidth={1.5} />
                 </div>
-                <span className="text-sm text-green-300">{label}</span>
+                <span className="text-sm text-[#1e3d1e]">{label}</span>
               </div>
             ))}
           </div>

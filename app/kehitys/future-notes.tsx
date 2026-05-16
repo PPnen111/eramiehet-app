@@ -52,7 +52,7 @@ export default function FutureNotes() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 size={24} className="animate-spin text-green-500" />
+        <Loader2 size={24} className="animate-spin text-[#4a4a4a]" />
       </div>
     )
   }
@@ -60,22 +60,22 @@ export default function FutureNotes() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-bold text-white">Visio & Tulevaisuus</h2>
-            <p className="text-xs text-green-600 mt-0.5">
+            <h2 className="text-lg font-bold text-[#1a1a1a]">Visio & Tulevaisuus</h2>
+            <p className="text-xs text-[#888888] mt-0.5">
               Vain superadmin näkee tämän sivun
             </p>
           </div>
           <div className="flex items-center gap-2">
             {saved && (
-              <span className="text-xs text-green-400">Tallennettu ✓</span>
+              <span className="text-xs text-[#2d6a2d]">Tallennettu ✓</span>
             )}
             <button
               onClick={() => void save()}
               disabled={saving}
-              className="flex items-center gap-1.5 rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+              className="flex items-center gap-1.5 rounded-lg bg-[#1e3d1e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
             >
               <Save size={14} />
               {saving ? 'Tallennetaan...' : 'Tallenna'}
@@ -88,7 +88,7 @@ export default function FutureNotes() {
           onChange={(e) => setContent(e.target.value)}
           rows={20}
           placeholder={"Tuotevisio 2026–2027\n\n• Mobiilisovellus (React Native)\n• Karttaintegraatio\n• Saalistilastojen analytiikka\n• Maksuliikenteen automatisointi\n• ...\n\nKirjoita vapaasti visioita, ideoita ja muistiinpanoja..."}
-          className="w-full rounded-xl border border-green-800 bg-white/10 px-4 py-3 text-sm text-white placeholder-green-700 outline-none focus:border-green-500 resize-y leading-relaxed"
+          className="w-full rounded-xl border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-3 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d] resize-y leading-relaxed"
         />
 
         {error && (
@@ -97,8 +97,8 @@ export default function FutureNotes() {
       </div>
 
       {/* Instructions */}
-      <div className="rounded-xl border border-green-900 bg-white/[0.03] px-4 py-3">
-        <p className="text-xs text-green-600">
+      <div className="rounded-xl border border-[#e0d8cc] bg-white/[0.03] px-4 py-3">
+        <p className="text-xs text-[#888888]">
           Tämä on yksityinen muistio. Vain superadmin-roolin käyttäjät voivat nähdä ja muokata tätä sisältöä.
           Tiedot tallennetaan Supabase-tietokantaan RLS-suojattuna.
         </p>

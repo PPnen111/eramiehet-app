@@ -119,32 +119,32 @@ const FEATURES: Feature[] = [
 ]
 
 const CELL: Record<Access, { icon: string; cls: string; label: string }> = {
-  full: { icon: '\u2705', cls: 'text-green-300', label: 'Täysi pääsy' },
-  read: { icon: '\uD83D\uDC41', cls: 'text-yellow-300', label: 'Vain luku' },
+  full: { icon: '\u2705', cls: 'text-[#1e3d1e]', label: 'Täysi pääsy' },
+  read: { icon: '\uD83D\uDC41', cls: 'text-[#92400e]', label: 'Vain luku' },
   none: { icon: '\u274C', cls: 'text-red-400', label: 'Ei pääsyä' },
 }
 
 const ROW_BG: Record<Access, string> = {
-  full: 'bg-green-900/10',
-  read: 'bg-yellow-900/10',
+  full: 'bg-white',
+  read: 'bg-[#fef3c7]/10',
   none: 'bg-red-900/5',
 }
 
 export default function FeatureMatrix() {
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-green-800 bg-white/5 overflow-hidden">
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px] text-sm">
             <thead>
-              <tr className="border-b border-green-800 bg-green-950">
-                <th className="sticky left-0 z-10 bg-green-950 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-green-400">
+              <tr className="border-b border-[#e0d8cc] bg-[#f5f0e8]">
+                <th className="sticky left-0 z-10 bg-[#f5f0e8] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">
                   Ominaisuus
                 </th>
                 {ROLES.map((r) => (
                   <th
                     key={r.key}
-                    className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-green-400"
+                    className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]"
                   >
                     {r.label}
                   </th>
@@ -162,12 +162,12 @@ export default function FeatureMatrix() {
                 return (
                   <tr
                     key={i}
-                    className={`border-b border-green-900/30 ${ROW_BG[rowType]} hover:bg-white/[0.04] transition-colors`}
+                    className={`border-b border-[#e0d8cc]/30 ${ROW_BG[rowType]} hover:bg-white/[0.04] transition-colors`}
                   >
                     <td className="sticky left-0 z-10 bg-inherit px-4 py-2.5">
                       <div>
-                        <p className="font-medium text-white">{f.name}</p>
-                        <p className="text-xs text-green-600">{f.description}</p>
+                        <p className="font-medium text-[#1a1a1a]">{f.name}</p>
+                        <p className="text-xs text-[#888888]">{f.description}</p>
                       </div>
                     </td>
                     {ROLES.map((r) => {
@@ -192,20 +192,20 @@ export default function FeatureMatrix() {
       </div>
 
       {/* Legend */}
-      <div className="rounded-xl border border-green-900 bg-white/[0.03] px-4 py-3">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-600">Selite</p>
+      <div className="rounded-xl border border-[#e0d8cc] bg-white/[0.03] px-4 py-3">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#888888]">Selite</p>
         <div className="flex flex-wrap gap-4">
           {Object.entries(CELL).map(([key, val]) => (
             <div key={key} className="flex items-center gap-1.5">
               <span className="text-sm">{val.icon}</span>
-              <span className="text-xs text-green-300">{val.label}</span>
+              <span className="text-xs text-[#1e3d1e]">{val.label}</span>
             </div>
           ))}
         </div>
-        <p className="mt-2 text-xs text-green-700">
+        <p className="mt-2 text-xs text-[#2d6a2d]">
           Roolit periytyvät: Superadmin &gt; Admin &gt; Hallituksen jäsen &gt; Jäsen
         </p>
-        <p className="mt-1 text-xs text-green-700">
+        <p className="mt-1 text-xs text-[#2d6a2d]">
           Päivitetty: 6.4.2026
         </p>
       </div>

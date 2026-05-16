@@ -62,7 +62,7 @@ export default async function TrialBanner() {
   // Demo banner — always visible while demo is active
   if (isDemo && !isExpired && daysLeft !== null) {
     return (
-      <div className="w-full bg-green-800 px-4 py-2.5 text-center text-sm font-medium text-green-100">
+      <div className="w-full bg-[#1e3d1e] px-4 py-2.5 text-center text-sm font-medium text-[#1a1a1a]">
         Demo-tunnus — voimassa {daysLeft} päivää.{' '}
         Haluatko ottaa JahtiPron käyttöön omalle seurallesi?{' '}
         <a href="mailto:info@jahtipro.fi" className="underline font-bold hover:opacity-80">

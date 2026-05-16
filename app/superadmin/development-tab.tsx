@@ -81,7 +81,7 @@ const CHECKLIST: CheckItem[] = [
 const STORAGE_KEY = 'jahtipro-checklist-user'
 
 const STATUS_COLORS: Record<Status, string> = {
-  none: 'bg-stone-700',
+  none: 'bg-[#1e3d1e]',
   green: 'bg-green-500',
   yellow: 'bg-yellow-400',
   red: 'bg-red-500',
@@ -95,7 +95,7 @@ const STATUS_RING: Record<Status, string> = {
 }
 
 const CLAUDE_COLORS: Record<Status, string> = {
-  none: 'bg-stone-700',
+  none: 'bg-[#1e3d1e]',
   green: 'bg-green-500',
   yellow: 'bg-yellow-400',
   red: 'bg-red-500',
@@ -141,13 +141,13 @@ export default function DevelopmentTab() {
   return (
     <div className="space-y-6">
       {/* Header + legend */}
-      <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
-        <h2 className="text-lg font-bold text-white">
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+        <h2 className="text-lg font-bold text-[#1a1a1a]">
           Tehtävä 00: Tarkastuslista ennen kutsuja
         </h2>
 
         {/* Legend */}
-        <div className="flex flex-wrap gap-4 text-xs text-green-300">
+        <div className="flex flex-wrap gap-4 text-xs text-[#1e3d1e]">
           <div className="flex items-center gap-2">
             <span className="inline-block h-3 w-3 rounded-full bg-green-500" />
             Toimii
@@ -161,40 +161,40 @@ export default function DevelopmentTab() {
             Ei toimi
           </div>
           <div className="flex items-center gap-2">
-            <span className="inline-block h-3 w-3 rounded-full bg-stone-700" />
+            <span className="inline-block h-3 w-3 rounded-full bg-[#1e3d1e]" />
             Ei testattu
           </div>
         </div>
 
         {/* Summary */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-xl border border-green-800 bg-white/[0.03] p-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-green-600 mb-2">Claude (koodiarvio)</p>
+          <div className="rounded-xl border border-[#e0d8cc] bg-white/[0.03] p-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#888888] mb-2">Claude (koodiarvio)</p>
             <div className="flex items-center gap-3 text-sm">
-              <span className="flex items-center gap-1 text-green-400"><span className="inline-block h-2.5 w-2.5 rounded-full bg-green-500" />{claudeGreens}</span>
-              <span className="flex items-center gap-1 text-yellow-400"><span className="inline-block h-2.5 w-2.5 rounded-full bg-yellow-400" />{claudeYellows}</span>
+              <span className="flex items-center gap-1 text-[#2d6a2d]"><span className="inline-block h-2.5 w-2.5 rounded-full bg-green-500" />{claudeGreens}</span>
+              <span className="flex items-center gap-1 text-[#b45309]"><span className="inline-block h-2.5 w-2.5 rounded-full bg-yellow-400" />{claudeYellows}</span>
               <span className="flex items-center gap-1 text-red-400"><span className="inline-block h-2.5 w-2.5 rounded-full bg-red-500" />{claudeReds}</span>
             </div>
           </div>
-          <div className="rounded-xl border border-green-800 bg-white/[0.03] p-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-green-600 mb-2">Sinun testaus</p>
+          <div className="rounded-xl border border-[#e0d8cc] bg-white/[0.03] p-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#888888] mb-2">Sinun testaus</p>
             <div className="flex items-center gap-2">
-              <div className="flex-1 h-2.5 rounded-full bg-green-900/50 overflow-hidden">
+              <div className="flex-1 h-2.5 rounded-full bg-[#f0ebe3] overflow-hidden">
                 <div className="h-full rounded-full bg-green-500 transition-all duration-300" style={{ width: `${userPercent}%` }} />
               </div>
-              <span className="text-sm font-semibold text-green-300">{userGreens}/{total}</span>
+              <span className="text-sm font-semibold text-[#1e3d1e]">{userGreens}/{total}</span>
             </div>
           </div>
         </div>
 
         {userPercent < 100 && (
-          <div className="flex items-center gap-2 text-sm text-yellow-400">
+          <div className="flex items-center gap-2 text-sm text-[#b45309]">
             <AlertTriangle size={14} />
             <span>Klikkaa omaa ympyrää vaihtaaksesi tilaa: harmaa → vihreä → keltainen → punainen</span>
           </div>
         )}
         {userPercent === 100 && (
-          <p className="text-sm text-green-400 font-semibold">
+          <p className="text-sm text-[#2d6a2d] font-semibold">
             Kaikki testattu — valmis kutsujen lähettämiseen!
           </p>
         )}
@@ -204,13 +204,13 @@ export default function DevelopmentTab() {
       {categories.map((cat) => {
         const items = CHECKLIST.filter((item) => item.category === cat)
         return (
-          <div key={cat} className="rounded-2xl border border-green-800 bg-white/5 p-4">
+          <div key={cat} className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
                 {cat}
               </h3>
               {/* Column headers */}
-              <div className="flex items-center gap-4 text-[10px] uppercase tracking-wider text-green-700">
+              <div className="flex items-center gap-4 text-[10px] uppercase tracking-wider text-[#2d6a2d]">
                 <span className="w-10 text-center">Claude</span>
                 <span className="w-10 text-center">Sinä</span>
               </div>
@@ -225,12 +225,12 @@ export default function DevelopmentTab() {
                   >
                     {/* Label + description */}
                     <div className="flex-1 min-w-0">
-                      <span className="text-sm text-white">{item.label}</span>
+                      <span className="text-sm text-[#1a1a1a]">{item.label}</span>
                       {item.description && (
-                        <p className="mt-0.5 text-xs text-green-600">{item.description}</p>
+                        <p className="mt-0.5 text-xs text-[#888888]">{item.description}</p>
                       )}
                       {item.claudeNote && (
-                        <p className="mt-0.5 text-xs text-green-800 group-hover:text-green-600 transition-colors">
+                        <p className="mt-0.5 text-xs text-[#1e3d1e] group-hover:text-[#888888] transition-colors">
                           Claude: {item.claudeNote}
                         </p>
                       )}

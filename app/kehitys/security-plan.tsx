@@ -14,18 +14,18 @@ function Section({
 }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="rounded-xl border border-green-800 bg-white/5 overflow-hidden">
+    <div className="rounded-xl border border-[#e0d8cc] bg-white overflow-hidden">
       <button
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between px-5 py-3.5 text-left hover:bg-white/[0.03] transition-colors"
       >
-        <h3 className="font-semibold text-white">{title}</h3>
+        <h3 className="font-semibold text-[#1a1a1a]">{title}</h3>
         <ChevronDown
           size={16}
-          className={`text-green-500 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`text-[#4a4a4a] transition-transform ${open ? 'rotate-180' : ''}`}
         />
       </button>
-      {open && <div className="border-t border-green-900/40 px-5 py-4">{children}</div>}
+      {open && <div className="border-t border-[#e0d8cc]/40 px-5 py-4">{children}</div>}
     </div>
   )
 }
@@ -34,7 +34,7 @@ function Badge({ color, children }: { color: 'red' | 'yellow'; children: React.R
   const cls =
     color === 'red'
       ? 'border-red-800/60 bg-red-900/20 text-red-300'
-      : 'border-yellow-800/60 bg-yellow-900/20 text-yellow-300'
+      : 'border-[#fcd34d]/60 bg-[#fef3c7] text-[#92400e]'
   return (
     <div className={`rounded-lg border px-4 py-2.5 text-sm ${cls}`}>{children}</div>
   )
@@ -44,21 +44,21 @@ export default function SecurityPlan() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="rounded-2xl border border-green-800 bg-white/5 p-5 text-center">
-        <h2 className="text-xl font-bold text-white">JahtiPro Security & GDPR Control Plane</h2>
-        <p className="mt-1 text-sm text-green-500">Tekninen suunnitelma v1.0</p>
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 text-center">
+        <h2 className="text-xl font-bold text-[#1a1a1a]">JahtiPro Security & GDPR Control Plane</h2>
+        <p className="mt-1 text-sm text-[#4a4a4a]">Tekninen suunnitelma v1.0</p>
       </div>
 
       {/* 1. Executive Summary */}
       <Section title="1. Executive Summary" defaultOpen>
-        <div className="space-y-3 text-sm text-green-200 leading-relaxed">
+        <div className="space-y-3 text-sm text-[#1a1a1a] leading-relaxed">
           <p>
             JahtiPro on multi-tenant SaaS-palvelu, jossa jokainen metsästysseura on oman jäsendatansa
             rekisterinpitäjä ja JahtiPro toimii henkilötietojen käsittelijänä. Rakennettava Security &
             GDPR Control Plane ei ole erillinen raporttityökalu, vaan sovellukseen sisäänrakennettu
             valvontakerros joka:
           </p>
-          <ul className="list-disc pl-5 space-y-1 text-green-300">
+          <ul className="list-disc pl-5 space-y-1 text-[#1e3d1e]">
             <li>Pakottaa oikeudet jokaisessa API-kutsussa</li>
             <li>Eristää tenant-datan arkkitehtuuritasolla</li>
             <li>Lokittaa kaikki kriittiset tapahtumat muuttumattomasti</li>
@@ -85,25 +85,25 @@ export default function SecurityPlan() {
       <Section title="3. Suositeltu ensimmäinen toteutus (MVP)">
         <div className="space-y-2 text-sm">
           {/* Progress */}
-          <div className="mb-3 rounded-lg bg-green-900/20 px-4 py-3">
+          <div className="mb-3 rounded-lg bg-white px-4 py-3">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-sm font-medium text-green-300">MVP-edistyminen: 2/5 valmis (40%)</span>
+              <span className="text-sm font-medium text-[#1e3d1e]">MVP-edistyminen: 2/5 valmis (40%)</span>
             </div>
-            <div className="h-2 rounded-full bg-green-900/40 overflow-hidden">
+            <div className="h-2 rounded-full bg-white overflow-hidden">
               <div className="h-full rounded-full bg-green-500" style={{ width: '40%' }} />
             </div>
           </div>
 
           {/* Done items */}
-          <div className="flex items-start gap-3 rounded-lg border border-green-600/40 bg-green-900/20 px-4 py-2.5">
-            <span className="mt-0.5 text-green-400">✅</span>
-            <span className="flex-1 text-green-300 line-through">AuditEvent-taulu + createAuditEvent() + sanitizeForAudit()</span>
-            <span className="shrink-0 rounded bg-green-800 px-1.5 py-0.5 text-[10px] font-semibold text-green-200">TEHTY</span>
+          <div className="flex items-start gap-3 rounded-lg border border-green-600/40 bg-white px-4 py-2.5">
+            <span className="mt-0.5 text-[#2d6a2d]">✅</span>
+            <span className="flex-1 text-[#1e3d1e] line-through">AuditEvent-taulu + createAuditEvent() + sanitizeForAudit()</span>
+            <span className="shrink-0 rounded bg-[#1e3d1e] px-1.5 py-0.5 text-[10px] font-semibold text-[#1a1a1a]">TEHTY</span>
           </div>
-          <div className="flex items-start gap-3 rounded-lg border border-green-600/40 bg-green-900/20 px-4 py-2.5">
-            <span className="mt-0.5 text-green-400">✅</span>
-            <span className="flex-1 text-green-300 line-through">assertTenantScope() jokaiseen API-reitiin</span>
-            <span className="shrink-0 rounded bg-green-800 px-1.5 py-0.5 text-[10px] font-semibold text-green-200">TEHTY</span>
+          <div className="flex items-start gap-3 rounded-lg border border-green-600/40 bg-white px-4 py-2.5">
+            <span className="mt-0.5 text-[#2d6a2d]">✅</span>
+            <span className="flex-1 text-[#1e3d1e] line-through">assertTenantScope() jokaiseen API-reitiin</span>
+            <span className="shrink-0 rounded bg-[#1e3d1e] px-1.5 py-0.5 text-[10px] font-semibold text-[#1a1a1a]">TEHTY</span>
           </div>
 
           {/* Pending items */}
@@ -112,10 +112,10 @@ export default function SecurityPlan() {
             ['SupportAccessGrant + JIT-prosessi superadminille', '1-2 pv'],
             ['Yksinkertainen audit explorer kehityssivulle', '1 pv'],
           ].map(([task, est], i) => (
-            <div key={i} className="flex items-start gap-3 rounded-lg border border-green-900/40 bg-white/[0.02] px-4 py-2.5">
-              <span className="mt-0.5 text-green-700">☐</span>
-              <span className="flex-1 text-green-200">{task}</span>
-              <span className="shrink-0 text-xs text-green-600">{est}</span>
+            <div key={i} className="flex items-start gap-3 rounded-lg border border-[#e0d8cc]/40 bg-white/[0.02] px-4 py-2.5">
+              <span className="mt-0.5 text-[#2d6a2d]">☐</span>
+              <span className="flex-1 text-[#1a1a1a]">{task}</span>
+              <span className="shrink-0 text-xs text-[#888888]">{est}</span>
             </div>
           ))}
         </div>
@@ -172,13 +172,13 @@ export default function SecurityPlan() {
               ],
             },
           ].map((p, i) => (
-            <div key={i} className="rounded-lg border border-green-900/40 bg-white/[0.02] p-4">
+            <div key={i} className="rounded-lg border border-[#e0d8cc]/40 bg-white/[0.02] p-4">
               <div className="flex items-center gap-2 mb-2">
                 <span>{p.badge}</span>
-                <h4 className="font-semibold text-white">{p.phase}</h4>
-                <span className="text-xs text-green-600">— {p.subtitle}</span>
+                <h4 className="font-semibold text-[#1a1a1a]">{p.phase}</h4>
+                <span className="text-xs text-[#888888]">— {p.subtitle}</span>
               </div>
-              <ul className="list-disc pl-5 space-y-0.5 text-sm text-green-300">
+              <ul className="list-disc pl-5 space-y-0.5 text-sm text-[#1e3d1e]">
                 {p.items.map((item, j) => (
                   <li key={j}>{item}</li>
                 ))}
@@ -190,9 +190,9 @@ export default function SecurityPlan() {
 
       {/* 5. Top 10 backlog */}
       <Section title="5. Top 10 backlog">
-        <ol className="list-decimal pl-5 space-y-1.5 text-sm text-green-200">
-          <li className="text-green-500 line-through">AuditEvent-taulu + createAuditEvent() + sanitizeForAudit() <span className="rounded bg-green-800 px-1 py-0.5 text-[10px] font-semibold text-green-200 no-underline">✅ TEHTY</span></li>
-          <li className="text-green-500 line-through">assertTenantScope() jokaiseen API-reitiin <span className="rounded bg-green-800 px-1 py-0.5 text-[10px] font-semibold text-green-200 no-underline">✅ TEHTY</span></li>
+        <ol className="list-decimal pl-5 space-y-1.5 text-sm text-[#1a1a1a]">
+          <li className="text-[#4a4a4a] line-through">AuditEvent-taulu + createAuditEvent() + sanitizeForAudit() <span className="rounded bg-[#1e3d1e] px-1 py-0.5 text-[10px] font-semibold text-[#1a1a1a] no-underline">✅ TEHTY</span></li>
+          <li className="text-[#4a4a4a] line-through">assertTenantScope() jokaiseen API-reitiin <span className="rounded bg-[#1e3d1e] px-1 py-0.5 text-[10px] font-semibold text-[#1a1a1a] no-underline">✅ TEHTY</span></li>
           <li>RBAC palvelukerroksessa (ei vain UI:ssa)</li>
           <li>SupportAccessGrant + JIT-prosessi superadminille</li>
           <li>SecurityIncident + BreachCase -workflow</li>
@@ -206,17 +206,17 @@ export default function SecurityPlan() {
 
       {/* 6. Top 10 audit-lokitapahtumaa */}
       <Section title="6. Top 10 pakollista audit-lokitapahtumaa">
-        <ol className="list-decimal pl-5 space-y-1.5 text-sm text-green-200">
-          <li><code className="text-green-400">login.success</code> / <code className="text-green-400">login.failed</code></li>
-          <li><code className="text-green-400">member.list</code> (kuka katsoi, montako jäsentä)</li>
-          <li><code className="text-green-400">document.download</code> (kuka latasi, mikä dokumentti)</li>
-          <li><code className="text-green-400">payment.list</code> (kuka katsoi, montako tietuetta)</li>
-          <li><code className="text-green-400">role.changed</code> (kuka muutti, kenen rooli, vanha/uusi arvo)</li>
-          <li><code className="text-green-400">member.deleted</code> (kuka poisti, kenen tiedot)</li>
-          <li><code className="text-green-400">support_access.granted</code> / <code className="text-green-400">support_access.used</code></li>
-          <li><code className="text-green-400">privacy_request.opened</code> / <code className="text-green-400">privacy_request.completed</code></li>
-          <li><code className="text-green-400">secret.viewed</code> (karttakirjautuminen katsottu)</li>
-          <li><code className="text-green-400">tenant_violation.attempted</code> (cross-tenant yritys)</li>
+        <ol className="list-decimal pl-5 space-y-1.5 text-sm text-[#1a1a1a]">
+          <li><code className="text-[#2d6a2d]">login.success</code> / <code className="text-[#2d6a2d]">login.failed</code></li>
+          <li><code className="text-[#2d6a2d]">member.list</code> (kuka katsoi, montako jäsentä)</li>
+          <li><code className="text-[#2d6a2d]">document.download</code> (kuka latasi, mikä dokumentti)</li>
+          <li><code className="text-[#2d6a2d]">payment.list</code> (kuka katsoi, montako tietuetta)</li>
+          <li><code className="text-[#2d6a2d]">role.changed</code> (kuka muutti, kenen rooli, vanha/uusi arvo)</li>
+          <li><code className="text-[#2d6a2d]">member.deleted</code> (kuka poisti, kenen tiedot)</li>
+          <li><code className="text-[#2d6a2d]">support_access.granted</code> / <code className="text-[#2d6a2d]">support_access.used</code></li>
+          <li><code className="text-[#2d6a2d]">privacy_request.opened</code> / <code className="text-[#2d6a2d]">privacy_request.completed</code></li>
+          <li><code className="text-[#2d6a2d]">secret.viewed</code> (karttakirjautuminen katsottu)</li>
+          <li><code className="text-[#2d6a2d]">tenant_violation.attempted</code> (cross-tenant yritys)</li>
         </ol>
       </Section>
 
@@ -225,10 +225,10 @@ export default function SecurityPlan() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[500px] text-sm">
             <thead>
-              <tr className="border-b border-green-800 text-left">
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Taulu</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Tarkoitus</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Prioriteetti</th>
+              <tr className="border-b border-[#e0d8cc] text-left">
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Taulu</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Tarkoitus</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Prioriteetti</th>
               </tr>
             </thead>
             <tbody>
@@ -246,9 +246,9 @@ export default function SecurityPlan() {
                 ['ComplianceIssue', 'Konfiguraatio-ongelmat', '🟢 Vaihe 3'],
                 ['DataClassification', 'Tietoluokkien määrittely', '🟢 Vaihe 3'],
               ].map(([name, desc, prio], i) => (
-                <tr key={i} className="border-b border-green-900/30 hover:bg-white/[0.03]">
-                  <td className="px-3 py-2 font-mono text-xs text-green-300">{name}</td>
-                  <td className="px-3 py-2 text-green-200">{desc}</td>
+                <tr key={i} className="border-b border-[#e0d8cc]/30 hover:bg-white/[0.03]">
+                  <td className="px-3 py-2 font-mono text-xs text-[#1e3d1e]">{name}</td>
+                  <td className="px-3 py-2 text-[#1a1a1a]">{desc}</td>
                   <td className="px-3 py-2 text-xs">{prio}</td>
                 </tr>
               ))}
@@ -262,11 +262,11 @@ export default function SecurityPlan() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[700px] text-sm">
             <thead>
-              <tr className="border-b border-green-800 text-left">
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Riski</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Ehkäisevä kontrolli</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Havaitseva kontrolli</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Audit evidence</th>
+              <tr className="border-b border-[#e0d8cc] text-left">
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Riski</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Ehkäisevä kontrolli</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Havaitseva kontrolli</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Audit evidence</th>
               </tr>
             </thead>
             <tbody>
@@ -279,11 +279,11 @@ export default function SecurityPlan() {
                 ['72h breach-ilmoitus', 'Reaaliaikainen anomaliahavaitseminen', 'SecurityIncident → BreachCase', 'BreachCase-taulu'],
                 ['Superadminin väärinkäyttö', 'JIT SupportAccessGrant vaaditaan', 'superadmin_anomaly', 'SupportAccessGrant + AuditEvent'],
               ].map(([risk, prevent, detect, evidence], i) => (
-                <tr key={i} className="border-b border-green-900/30 hover:bg-white/[0.03]">
-                  <td className="px-3 py-2 font-medium text-white">{risk}</td>
-                  <td className="px-3 py-2 text-green-300">{prevent}</td>
-                  <td className="px-3 py-2 text-green-300">{detect}</td>
-                  <td className="px-3 py-2 text-xs text-green-400">{evidence}</td>
+                <tr key={i} className="border-b border-[#e0d8cc]/30 hover:bg-white/[0.03]">
+                  <td className="px-3 py-2 font-medium text-[#1a1a1a]">{risk}</td>
+                  <td className="px-3 py-2 text-[#1e3d1e]">{prevent}</td>
+                  <td className="px-3 py-2 text-[#1e3d1e]">{detect}</td>
+                  <td className="px-3 py-2 text-xs text-[#2d6a2d]">{evidence}</td>
                 </tr>
               ))}
             </tbody>
@@ -292,8 +292,8 @@ export default function SecurityPlan() {
       </Section>
 
       {/* Footer */}
-      <div className="rounded-xl border border-green-900 bg-white/[0.03] px-4 py-3 text-center">
-        <p className="text-xs text-green-700">
+      <div className="rounded-xl border border-[#e0d8cc] bg-white/[0.03] px-4 py-3 text-center">
+        <p className="text-xs text-[#2d6a2d]">
           Dokumentti päivitetty: huhtikuu 2026 | Versio 1.0 | Luottamuksellinen
         </p>
       </div>

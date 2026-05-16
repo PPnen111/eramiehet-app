@@ -50,8 +50,8 @@ function formatFinnishDate(dateStr: string | null): string {
 }
 
 const inputClass =
-  'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500 disabled:opacity-50 disabled:cursor-not-allowed'
-const labelClass = 'mb-1 block text-xs font-medium text-green-400'
+  'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d] disabled:opacity-50 disabled:cursor-not-allowed'
+const labelClass = 'mb-1 block text-xs font-medium text-[#2d6a2d]'
 
 export default function ProfiiliForm({ email, profile, clubName }: Props) {
   const router = useRouter()
@@ -196,27 +196,27 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
   const memberId = profile?.id ? profile.id.slice(0, 8).toUpperCase() : '–'
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-lg">
         {/* Back link */}
         <Link
           href="/dashboard"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-green-400 hover:text-green-300"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-[#2d6a2d] hover:text-[#1e3d1e]"
         >
           <ArrowLeft size={15} />
           Takaisin
         </Link>
 
-        <h1 className="mb-6 text-2xl font-bold text-white">Profiili</h1>
+        <h1 className="mb-6 text-2xl font-bold text-[#1a1a1a]">Profiili</h1>
 
         {/* ── Section 1: Perustiedot ── */}
-        <section className="mb-4 rounded-2xl border border-green-800 bg-white/5 p-5">
+        <section className="mb-4 rounded-2xl border border-[#e0d8cc] bg-white p-5">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-semibold text-white">Perustiedot</h2>
+            <h2 className="font-semibold text-[#1a1a1a]">Perustiedot</h2>
             {!editingPerus ? (
               <button
                 onClick={() => { setEditingPerus(true); setPerusMsg(null) }}
-                className="flex items-center gap-1.5 rounded-lg border border-green-700 px-2.5 py-1 text-xs font-medium text-green-300 hover:bg-green-900/40 transition-colors"
+                className="flex items-center gap-1.5 rounded-lg border border-[#e0d8cc] px-2.5 py-1 text-xs font-medium text-[#1e3d1e] hover:bg-white transition-colors"
               >
                 <Pencil size={12} />
                 Muokkaa
@@ -226,7 +226,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
                 <button
                   onClick={handleSavePerus}
                   disabled={savingPerus}
-                  className="flex items-center gap-1.5 rounded-lg bg-green-700 px-2.5 py-1 text-xs font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+                  className="flex items-center gap-1.5 rounded-lg bg-[#1e3d1e] px-2.5 py-1 text-xs font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
                 >
                   <Check size={12} />
                   {savingPerus ? 'Tallennetaan...' : 'Tallenna'}
@@ -234,7 +234,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
                 <button
                   onClick={handleCancelPerus}
                   disabled={savingPerus}
-                  className="flex items-center gap-1.5 rounded-lg border border-green-800 px-2.5 py-1 text-xs text-green-400 hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-1.5 rounded-lg border border-[#e0d8cc] px-2.5 py-1 text-xs text-[#2d6a2d] hover:bg-white transition-colors"
                 >
                   <X size={12} />
                   Peruuta
@@ -281,7 +281,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
             <p
               className={`mt-3 rounded-lg px-3 py-2 text-sm ${
                 perusMsg.type === 'ok'
-                  ? 'bg-green-900/40 text-green-300'
+                  ? 'bg-white text-[#1e3d1e]'
                   : 'bg-red-900/40 text-red-300'
               }`}
             >
@@ -291,30 +291,30 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
         </section>
 
         {/* ── Section 2: Seuratiedot ── */}
-        <section className="mb-4 rounded-2xl border border-green-800 bg-white/5 p-5">
-          <h2 className="mb-4 font-semibold text-white">Seuratiedot</h2>
+        <section className="mb-4 rounded-2xl border border-[#e0d8cc] bg-white p-5">
+          <h2 className="mb-4 font-semibold text-[#1a1a1a]">Seuratiedot</h2>
 
           <dl className="space-y-2.5">
             <div className="flex justify-between gap-4">
-              <dt className="text-sm text-green-400">Seura</dt>
-              <dd className="text-right text-sm text-white">{clubName ?? '–'}</dd>
+              <dt className="text-sm text-[#2d6a2d]">Seura</dt>
+              <dd className="text-right text-sm text-[#1a1a1a]">{clubName ?? '–'}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-sm text-green-400">Rooli</dt>
-              <dd className="text-right text-sm text-white">
+              <dt className="text-sm text-[#2d6a2d]">Rooli</dt>
+              <dd className="text-right text-sm text-[#1a1a1a]">
                 {profile?.role ? (roleLabel[profile.role] ?? profile.role) : '–'}
               </dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-sm text-green-400">Jäsenstatus</dt>
+              <dt className="text-sm text-[#2d6a2d]">Jäsenstatus</dt>
               <dd className="text-right text-sm">
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                     profile?.member_status === 'active'
-                      ? 'bg-green-800/60 text-green-200'
+                      ? 'bg-[#eaf3de] text-[#1a1a1a]'
                       : profile?.member_status === 'pending'
-                      ? 'bg-yellow-900/60 text-yellow-200'
-                      : 'bg-stone-700/60 text-stone-300'
+                      ? 'bg-[#fef3c7]/60 text-[#92400e]'
+                      : 'bg-[#1e3d1e]/60 text-[#4a4a4a]'
                   }`}
                 >
                   {profile?.member_status ? (statusLabel[profile.member_status] ?? profile.member_status) : '–'}
@@ -322,19 +322,19 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
               </dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-sm text-green-400">Liittynyt</dt>
-              <dd className="text-right text-sm text-white">{formatFinnishDate(profile?.join_date ?? null)}</dd>
+              <dt className="text-sm text-[#2d6a2d]">Liittynyt</dt>
+              <dd className="text-right text-sm text-[#1a1a1a]">{formatFinnishDate(profile?.join_date ?? null)}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-sm text-green-400">Jäsen ID</dt>
-              <dd className="font-mono text-right text-sm text-green-300">{memberId}</dd>
+              <dt className="text-sm text-[#2d6a2d]">Jäsen ID</dt>
+              <dd className="font-mono text-right text-sm text-[#1e3d1e]">{memberId}</dd>
             </div>
           </dl>
         </section>
 
         {/* ── Section 3: Vaihda salasana ── */}
-        <section className="mb-4 rounded-2xl border border-green-800 bg-white/5 p-5">
-          <h2 className="mb-4 font-semibold text-white">Vaihda salasana</h2>
+        <section className="mb-4 rounded-2xl border border-[#e0d8cc] bg-white p-5">
+          <h2 className="mb-4 font-semibold text-[#1a1a1a]">Vaihda salasana</h2>
 
           <form onSubmit={handleChangePassword} className="space-y-3">
             <div>
@@ -351,7 +351,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
                 <button
                   type="button"
                   onClick={() => setShowCurrent((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 hover:text-green-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4a4a4a] hover:text-[#1e3d1e]"
                 >
                   {showCurrent ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
@@ -373,7 +373,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
                 <button
                   type="button"
                   onClick={() => setShowNew((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 hover:text-green-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4a4a4a] hover:text-[#1e3d1e]"
                 >
                   {showNew ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
@@ -396,7 +396,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
               <p
                 className={`rounded-lg px-3 py-2 text-sm ${
                   pwMsg.type === 'ok'
-                    ? 'bg-green-900/40 text-green-300'
+                    ? 'bg-white text-[#1e3d1e]'
                     : 'bg-red-900/40 text-red-300'
                 }`}
               >
@@ -407,18 +407,18 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
             <button
               type="submit"
               disabled={savingPw}
-              className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+              className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
             >
               {savingPw ? 'Vaihdetaan...' : 'Vaihda salasana'}
             </button>
           </form>
         </section>
         {/* ── Section 4: Omat tietosi (GDPR) ── */}
-        <section className="rounded-2xl border border-green-800 bg-white/5 p-5">
-          <h2 className="mb-1 font-semibold text-white">Omat tietosi</h2>
-          <p className="mb-4 text-xs text-green-500">
+        <section className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
+          <h2 className="mb-1 font-semibold text-[#1a1a1a]">Omat tietosi</h2>
+          <p className="mb-4 text-xs text-[#4a4a4a]">
             GDPR-oikeutesi —{' '}
-            <Link href="/tietosuoja" className="underline hover:text-green-300">
+            <Link href="/tietosuoja" className="underline hover:text-[#1e3d1e]">
               tietosuojaseloste
             </Link>
           </p>
@@ -427,7 +427,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
             <button
               onClick={handleExport}
               disabled={exporting}
-              className="flex items-center gap-2 rounded-lg border border-green-700 px-4 py-2.5 text-sm font-medium text-green-300 hover:bg-green-900/40 disabled:opacity-50 transition-colors"
+              className="flex items-center gap-2 rounded-lg border border-[#e0d8cc] px-4 py-2.5 text-sm font-medium text-[#1e3d1e] hover:bg-white disabled:opacity-50 transition-colors"
             >
               <Download size={15} />
               {exporting ? 'Ladataan...' : 'Lataa omat tietoni'}
@@ -449,19 +449,19 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
             onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteModal(false) }}
           >
-            <div className="w-full max-w-sm rounded-2xl border border-red-800 bg-green-950 p-5 shadow-2xl">
-              <h3 className="mb-2 font-semibold text-white">Haluatko varmasti poistaa tilisi?</h3>
+            <div className="w-full max-w-sm rounded-2xl border border-red-800 bg-[#f5f0e8] p-5 shadow-2xl">
+              <h3 className="mb-2 font-semibold text-[#1a1a1a]">Haluatko varmasti poistaa tilisi?</h3>
               <p className="mb-4 text-sm text-red-300">
                 Kaikki tietosi poistetaan pysyvästi. Tätä ei voi peruuttaa.
               </p>
-              <label className="mb-1 block text-xs text-green-400">
-                Kirjoita <span className="font-bold text-white">POISTA</span> vahvistaaksesi
+              <label className="mb-1 block text-xs text-[#2d6a2d]">
+                Kirjoita <span className="font-bold text-[#1a1a1a]">POISTA</span> vahvistaaksesi
               </label>
               <input
                 type="text"
                 value={deleteConfirm}
                 onChange={(e) => setDeleteConfirm(e.target.value)}
-                className="mb-3 w-full rounded-lg border border-red-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-red-500"
+                className="mb-3 w-full rounded-lg border border-red-800 bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-red-500"
                 placeholder="POISTA"
               />
               {deleteError && (
@@ -480,7 +480,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
                 <button
                   onClick={() => setShowDeleteModal(false)}
                   disabled={deleting}
-                  className="rounded-lg border border-green-800 px-4 py-2.5 text-sm text-green-300 hover:bg-white/5"
+                  className="rounded-lg border border-[#e0d8cc] px-4 py-2.5 text-sm text-[#1e3d1e] hover:bg-white"
                 >
                   Peruuta
                 </button>

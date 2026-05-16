@@ -79,14 +79,14 @@ export default function LoginPage() {
   }
 
   const inputCls =
-    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700'
+    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-[#e0d8cc] focus:ring-1 focus:ring-[#2d6a2d]'
   const labelCls = 'mb-1 block text-sm font-medium text-neutral-700'
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-green-950 to-stone-950 px-4">
+    <main className="flex min-h-screen items-center justify-center bg-[#f5f0e8] px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">JahtiPro</h1>
+          <h1 className="text-3xl font-bold text-[#1a1a1a]">JahtiPro</h1>
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-xl">
@@ -117,7 +117,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-green-800 py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
+                className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
               >
                 {loading ? 'Kirjaudutaan...' : 'Kirjaudu sisään'}
               </button>
@@ -125,7 +125,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => switchMode('reset')}
-                  className="text-green-700 hover:text-green-600 hover:underline"
+                  className="text-[#2d6a2d] hover:text-[#888888] hover:underline"
                 >
                   Unohditko salasanan?
                 </button>
@@ -139,7 +139,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => switchMode('login')}
-                className="mb-4 text-sm text-green-700 hover:text-green-600"
+                className="mb-4 text-sm text-[#2d6a2d] hover:text-[#888888]"
               >
                 ← Takaisin kirjautumiseen
               </button>
@@ -159,7 +159,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-lg bg-green-800 py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
+                  className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
                 >
                   {loading ? 'Lähetetään...' : 'Lähetä palautuslinkki'}
                 </button>
@@ -171,7 +171,7 @@ export default function LoginPage() {
           {message && (
             <p className={`mt-4 rounded-lg p-3 text-sm ${
               messageType === 'success'
-                ? 'bg-green-50 text-green-800'
+                ? 'bg-green-50 text-[#1e3d1e]'
                 : messageType === 'error'
                 ? 'bg-red-50 text-red-700'
                 : 'bg-neutral-100 text-neutral-700'
@@ -183,7 +183,7 @@ export default function LoginPage() {
           {/* Bottom link — hidden: club registration disabled */}
           <p className="mt-3 text-center text-xs text-neutral-400">
             Rekisteröitymällä hyväksyt{' '}
-            <Link href="/tietosuoja" className="text-green-700 underline hover:text-green-600">
+            <Link href="/tietosuoja" className="text-[#2d6a2d] underline hover:text-[#888888]">
               tietosuojaselosteen
             </Link>
           </p>

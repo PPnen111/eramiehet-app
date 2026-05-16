@@ -17,7 +17,7 @@ export default function CloseTabButton() {
   return (
     <button
       onClick={() => window.close()}
-      className="flex items-center gap-1 text-sm text-green-400 hover:text-green-300"
+      className="flex items-center gap-1 text-sm text-[#2d6a2d] hover:text-[#1e3d1e]"
     >
       <X size={14} />
       Sulje välilehti

@@ -11,12 +11,12 @@ import {
 function FAQ({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="scroll-animate border-b border-green-800">
+    <div className="scroll-animate border-b border-[#e0d8cc]">
       <button onClick={() => setOpen(!open)} className="flex w-full items-center justify-between py-4 text-left">
-        <span className="font-medium text-white">{q}</span>
-        <ChevronDown size={18} className={`text-green-500 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <span className="font-medium text-[#1a1a1a]">{q}</span>
+        <ChevronDown size={18} className={`text-[#4a4a4a] transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
-      {open && <p className="pb-4 text-sm leading-relaxed text-green-300">{a}</p>}
+      {open && <p className="pb-4 text-sm leading-relaxed text-[#1e3d1e]">{a}</p>}
     </div>
   )
 }
@@ -50,7 +50,7 @@ export default function LandingTestPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-green-950 text-white" style={{ scrollBehavior: 'smooth' }}>
+    <div className="min-h-screen bg-[#f5f0e8] text-[#1a1a1a]" style={{ scrollBehavior: 'smooth' }}>
       <style>{`
         .scroll-animate {
           opacity: 0;
@@ -74,20 +74,20 @@ export default function LandingTestPage() {
         }
       `}</style>
       {/* ═══ NAVBAR ═══ */}
-      <nav className="fixed top-0 z-50 w-full border-b border-green-800/50 bg-green-950/90 backdrop-blur-md">
+      <nav className="fixed top-0 z-50 w-full border-b border-[#e0d8cc]/50 bg-[#f5f0e8] backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <Link href="/landing-test" className="text-xl font-bold text-green-400">JahtiPro</Link>
+          <Link href="/landing-test" className="text-xl font-bold text-[#2d6a2d]">JahtiPro</Link>
           <div className="hidden items-center gap-6 md:flex">
-            {navLinks.map((l) => <a key={l.href} href={l.href} className="text-sm text-green-300 hover:text-white transition-colors">{l.label}</a>)}
-            <Link href="/login" className="text-sm text-green-300 hover:text-white">Kirjaudu</Link>
+            {navLinks.map((l) => <a key={l.href} href={l.href} className="text-sm text-[#1e3d1e] hover:text-[#1a1a1a] transition-colors">{l.label}</a>)}
+            <Link href="/login" className="text-sm text-[#1e3d1e] hover:text-[#1a1a1a]">Kirjaudu</Link>
             <Link href="/uusi" className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 transition-colors">Aloita kokeilu →</Link>
           </div>
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-green-400"><Menu size={24} /></button>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-[#2d6a2d]"><Menu size={24} /></button>
         </div>
         {menuOpen && (
-          <div className="border-t border-green-800 bg-green-950 px-4 py-4 md:hidden space-y-3">
-            {navLinks.map((l) => <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} className="block text-sm text-green-300">{l.label}</a>)}
-            <Link href="/login" className="block text-sm text-green-300">Kirjaudu</Link>
+          <div className="border-t border-[#e0d8cc] bg-[#f5f0e8] px-4 py-4 md:hidden space-y-3">
+            {navLinks.map((l) => <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} className="block text-sm text-[#1e3d1e]">{l.label}</a>)}
+            <Link href="/login" className="block text-sm text-[#1e3d1e]">Kirjaudu</Link>
             <Link href="/uusi" className="block rounded-lg bg-green-600 px-4 py-2 text-center text-sm font-semibold text-white">Aloita kokeilu →</Link>
           </div>
         )}
@@ -97,33 +97,33 @@ export default function LandingTestPage() {
       <section className="pt-24 pb-16 px-4">
         <div className="mx-auto max-w-6xl grid gap-12 lg:grid-cols-2 items-center">
           <div>
-            <h1 className="text-4xl font-extrabold leading-tight text-white lg:text-5xl">
-              Käytä aikasi <span className="text-green-400">rakkaaseen harrastukseen.</span><br />Vähemmän hallintoon ja viestintään.
+            <h1 className="text-4xl font-extrabold leading-tight text-[#1a1a1a] lg:text-5xl">
+              Käytä aikasi <span className="text-[#2d6a2d]">rakkaaseen harrastukseen.</span><br />Vähemmän hallintoon ja viestintään.
             </h1>
-            <p className="mt-4 text-lg text-green-300 leading-relaxed">
+            <p className="mt-4 text-lg text-[#1e3d1e] leading-relaxed">
               Jäsenrekisteri, maksut, saalisilmoitukset ja paikkavaraukset yhdessä sovelluksessa. Suunniteltu suomalaisille metsästysseuroille.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/uusi" className="rounded-xl bg-green-600 px-6 py-3.5 text-base font-bold text-white hover:bg-green-500 transition-colors">
                 Aloita ilmainen 14 pv kokeilu →
               </Link>
-              <Link href="/demo" className="rounded-xl border border-green-700 px-6 py-3.5 text-base font-semibold text-green-300 hover:bg-green-900/40 transition-colors">
+              <Link href="/demo" className="rounded-xl border border-[#e0d8cc] px-6 py-3.5 text-base font-semibold text-[#1e3d1e] hover:bg-white transition-colors">
                 Kokeile demoa ensin →
               </Link>
             </div>
-            <p className="mt-4 text-sm text-green-500">
+            <p className="mt-4 text-sm text-[#4a4a4a]">
               ✓ Ei luottokorttia &nbsp; ✓ Ei sitoumuksia &nbsp; ✓ Valmis 5 minuutissa
             </p>
           </div>
           <div className="hidden lg:block">
-            <div className="rounded-2xl border border-green-700 bg-green-900/30 overflow-hidden">
-              <div className="flex items-center gap-1.5 bg-green-900/60 px-4 py-2">
+            <div className="rounded-2xl border border-[#e0d8cc] bg-white overflow-hidden">
+              <div className="flex items-center gap-1.5 bg-[#f0ebe3] px-4 py-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
                 <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
                 <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
-                <span className="ml-2 text-xs text-green-500">jahtipro.fi/dashboard</span>
+                <span className="ml-2 text-xs text-[#4a4a4a]">jahtipro.fi/dashboard</span>
               </div>
-              <div className="flex items-center justify-center h-64 text-green-600">
+              <div className="flex items-center justify-center h-64 text-[#888888]">
                 [Kuvakaappaus sovelluksesta]
               </div>
             </div>
@@ -132,15 +132,15 @@ export default function LandingTestPage() {
       </section>
 
       {/* ═══ SOCIAL PROOF ═══ */}
-      <div className="border-y border-green-800/50 bg-green-900/20 py-3 text-center text-sm text-green-400">
+      <div className="border-y border-[#e0d8cc]/50 bg-white py-3 text-center text-sm text-[#2d6a2d]">
         Käytössä suomalaisissa metsästysseuroissa &bull; Yli 150 jäsentä hallittu &bull; 14 pv ilmainen kokeilu
       </div>
 
       {/* ═══ PROBLEM ═══ */}
       <section className="py-20 px-4">
         <div className="mx-auto max-w-5xl text-center">
-          <h2 className="scroll-animate text-3xl font-bold text-white">Tunnistatko nämä haasteet?</h2>
-          <p className="scroll-animate mt-2 text-green-400">Useimmat metsästysseurat kärsivät samoista ongelmista</p>
+          <h2 className="scroll-animate text-3xl font-bold text-[#1a1a1a]">Tunnistatko nämä haasteet?</h2>
+          <p className="scroll-animate mt-2 text-[#2d6a2d]">Useimmat metsästysseurat kärsivät samoista ongelmista</p>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { icon: ClipboardList, title: 'Jäsenlista Excelissä', text: 'Tiedosto vanhenee, pyörii sähköpostissa eikä ole koskaan ajan tasalla.' },
@@ -154,11 +154,11 @@ export default function LandingTestPage() {
               <div
                 key={i}
                 style={{ transitionDelay: `${i * 100}ms` }}
-                className="scroll-animate hover-lift rounded-2xl border border-green-800 bg-green-900/30 p-6 text-left"
+                className="scroll-animate hover-lift rounded-2xl border border-[#e0d8cc] bg-white p-6 text-left"
               >
-                <c.icon size={28} className="text-green-500 mb-3" />
-                <h3 className="font-semibold text-white mb-1">{c.title}</h3>
-                <p className="text-sm text-green-300 leading-relaxed">{c.text}</p>
+                <c.icon size={28} className="text-[#4a4a4a] mb-3" />
+                <h3 className="font-semibold text-[#1a1a1a] mb-1">{c.title}</h3>
+                <p className="text-sm text-[#1e3d1e] leading-relaxed">{c.text}</p>
               </div>
             ))}
           </div>
@@ -166,10 +166,10 @@ export default function LandingTestPage() {
       </section>
 
       {/* ═══ FEATURES ═══ */}
-      <section id="features" className="py-20 px-4 bg-green-900/10">
+      <section id="features" className="py-20 px-4 bg-white">
         <div className="mx-auto max-w-5xl text-center">
-          <h2 className="scroll-animate text-3xl font-bold text-white">Kaikki yhdessä paikassa</h2>
-          <p className="scroll-animate mt-2 text-green-400">JahtiPro korvaa Excelin, WhatsAppin, pöytäkirjamappien ja muistitikkujen viidakon yhdellä helpolla sovelluksella.</p>
+          <h2 className="scroll-animate text-3xl font-bold text-[#1a1a1a]">Kaikki yhdessä paikassa</h2>
+          <p className="scroll-animate mt-2 text-[#2d6a2d]">JahtiPro korvaa Excelin, WhatsAppin, pöytäkirjamappien ja muistitikkujen viidakon yhdellä helpolla sovelluksella.</p>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               { icon: Users, title: 'Jäsenhallinta', text: 'Täydellinen jäsenrekisteri. Tuo jäsenet Excelistä tai lisää käsin. Kutsu jäsenet sovellukseen sähköpostilla.', badge: 'Kaikki paketit', accent: false },
@@ -184,12 +184,12 @@ export default function LandingTestPage() {
               <div
                 key={i}
                 style={{ transitionDelay: `${i * 100}ms` }}
-                className={`scroll-animate hover-lift rounded-2xl border p-6 text-left ${f.accent ? 'border-green-500 bg-green-900/40 ring-2 ring-green-500/30' : 'border-green-800 bg-green-900/30'}`}
+                className={`scroll-animate hover-lift rounded-2xl border p-6 text-left ${f.accent ? 'border-green-500 bg-white ring-2 ring-green-500/30' : 'border-[#e0d8cc] bg-white'}`}
               >
-                <f.icon size={28} className="text-green-400 mb-3" />
-                <h3 className="font-semibold text-white mb-1">{f.title}</h3>
-                <p className="text-sm text-green-300 leading-relaxed mb-3">{f.text}</p>
-                <span className="rounded-full bg-green-800/60 px-2.5 py-0.5 text-xs text-green-300">{f.badge}</span>
+                <f.icon size={28} className="text-[#2d6a2d] mb-3" />
+                <h3 className="font-semibold text-[#1a1a1a] mb-1">{f.title}</h3>
+                <p className="text-sm text-[#1e3d1e] leading-relaxed mb-3">{f.text}</p>
+                <span className="rounded-full bg-[#eaf3de] px-2.5 py-0.5 text-xs text-[#1e3d1e]">{f.badge}</span>
               </div>
             ))}
           </div>
@@ -197,19 +197,19 @@ export default function LandingTestPage() {
       </section>
 
       {/* ═══ TESTIMONIAL ═══ */}
-      <section id="testimonial" className="py-20 px-4 bg-green-900/10">
+      <section id="testimonial" className="py-20 px-4 bg-white">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="scroll-animate text-3xl font-bold text-white mb-8">Mitä käyttäjät sanovat</h2>
-          <div className="scroll-animate rounded-2xl border border-green-800 bg-green-900/30 p-8 text-left">
-            <p className="text-4xl text-green-600 mb-4">&ldquo;</p>
-            <div className="space-y-4 text-lg italic text-green-200 leading-relaxed">
+          <h2 className="scroll-animate text-3xl font-bold text-[#1a1a1a] mb-8">Mitä käyttäjät sanovat</h2>
+          <div className="scroll-animate rounded-2xl border border-[#e0d8cc] bg-white p-8 text-left">
+            <p className="text-4xl text-[#888888] mb-4">&ldquo;</p>
+            <div className="space-y-4 text-lg italic text-[#1a1a1a] leading-relaxed">
               <p>Aiemmin meidän seurassa tieto oli hajallaan: WhatsApp-ryhmässä tiedotteet ja pöytäkirjat hukkuivat muun keskustelun sekaan, kotisivut olivat erikseen, jäsenlaskutus omassa paikassaan ja vierasluvat hoidettiin erillisten ohjeiden mukaan. Vieraslupametsästyksen seuraaminen oli käytännössä mahdotonta.</p>
               <p>JahtiPro kokosi kaiken yhteen. Nyt näemme reaaliajassa ketä on vieraana, onko maksut hoidettu ja kuka toimii isäntänä. Lisäksi jäsenten saalistilastot ovat helposti saatavilla, mikä antaa hyvän kokonaiskuvan alueen riistakannasta. Myös tiedot riistapelloista, ruokintapaikoista ja nuolukivistä löytyvät yhdestä paikasta – ja nähdään suoraan, kuka niitä hoitaa ja missä kunnossa ne ovat.</p>
               <p>Arki on selkeytynyt huomattavasti ja turha säätö on jäänyt pois. Tämä on juuri sellainen ratkaisu, jota meidän seurassa tarvittiin.</p>
             </div>
             <div className="mt-6">
-              <p className="font-semibold text-white">Jari Simola</p>
-              <p className="text-sm text-green-500">Hallituksen puheenjohtaja, Kyyjärven Erämiehet</p>
+              <p className="font-semibold text-[#1a1a1a]">Jari Simola</p>
+              <p className="text-sm text-[#4a4a4a]">Hallituksen puheenjohtaja, Kyyjärven Erämiehet</p>
             </div>
           </div>
         </div>
@@ -218,16 +218,16 @@ export default function LandingTestPage() {
       {/* ═══ MIKSI JAHTIPRO ═══ */}
       <section className="py-20 px-4">
         <div className="mx-auto max-w-2xl">
-          <h2 className="scroll-animate text-3xl font-bold text-white text-center mb-8">Miksi JahtiPro on tehty?</h2>
-          <div className="scroll-animate rounded-2xl border-l-4 border-green-500 bg-green-900/20 p-8">
-            <div className="space-y-4 text-green-200 leading-relaxed">
+          <h2 className="scroll-animate text-3xl font-bold text-[#1a1a1a] text-center mb-8">Miksi JahtiPro on tehty?</h2>
+          <div className="scroll-animate rounded-2xl border-l-4 border-green-500 bg-white p-8">
+            <div className="space-y-4 text-[#1a1a1a] leading-relaxed">
               <p>JahtiPro tehtiin, koska metsästysseuran arjessa liian moni asia on hajallaan. Jäsentiedot, viestintä, tapahtumat, dokumentit ja käytännön järjestelyt vievät aikaa etenkin silloin, kun seuraa pyöritetään vapaaehtoisvoimin.</p>
               <p>Monessa seurassa sama haaste toistuu: tärkeää työtä tehdään paljon, mutta hallinto kuormittaa turhaan.</p>
               <p>JahtiPro kokoaa seuran tärkeät toiminnot yhteen paikkaan, jotta arki olisi sujuvampaa ja aikaa jäisi enemmän itse metsästykseen ja seuran toimintaan. Palvelu on rakennettu yhdessä Kyyjärven Erämiesten kanssa — käytännön tarpeesta, oikeille metsästäjille.</p>
             </div>
-            <div className="my-6 border-t border-green-700/50" />
-            <p className="text-xl italic text-green-300 leading-relaxed">&ldquo;Toivottavasti tämä tuo teille helpotusta ja vapauttaa aikaa itse rakkaaseen harrastukseen.&rdquo;</p>
-            <p className="mt-4 text-sm italic text-green-400">– Pekka Paunonen, JahtiPron kehittäjä</p>
+            <div className="my-6 border-t border-[#e0d8cc]/50" />
+            <p className="text-xl italic text-[#1e3d1e] leading-relaxed">&ldquo;Toivottavasti tämä tuo teille helpotusta ja vapauttaa aikaa itse rakkaaseen harrastukseen.&rdquo;</p>
+            <p className="mt-4 text-sm italic text-[#2d6a2d]">– Pekka Paunonen, JahtiPron kehittäjä</p>
           </div>
         </div>
       </section>
@@ -235,26 +235,26 @@ export default function LandingTestPage() {
       {/* ═══ PRICING ═══ */}
       <section id="pricing" className="py-20 px-4">
         <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-3xl font-bold text-white">Selkeä hinnoittelu</h2>
-          <p className="mt-2 text-green-400">Valitse seurallesi sopiva paketti. Kaikki paketit sisältävät 14 pv ilmaisen kokeilun.</p>
+          <h2 className="text-3xl font-bold text-[#1a1a1a]">Selkeä hinnoittelu</h2>
+          <p className="mt-2 text-[#2d6a2d]">Valitse seurallesi sopiva paketti. Kaikki paketit sisältävät 14 pv ilmaisen kokeilun.</p>
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
             {[
               { name: 'Jahti Start', price: '225', monthly: '18,75', popular: false, features: ['50 jäsentä', '100 MB tallennustila', '1 vuokrattava kohde', '10 dokumenttia', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat'], missing: ['Vierasluvat', 'Useita vuokrattavia kohteita', 'Laaja raportointi'] },
               { name: 'Jahti Plus', price: '395', monthly: '32,92', popular: true, features: ['150 jäsentä', '500 MB tallennustila', '3 vuokrattavaa kohdetta', '50 dokumenttia', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat', 'Useita vuokrattavia kohteita', 'Vierasluvat'], missing: ['Laaja raportointi'] },
               { name: 'Jahti Pro', price: '625', monthly: '52,08', popular: false, features: ['Rajaton jäsenmäärä', '5 GB tallennustila', 'Rajaton kohteet', 'Rajaton dokumentit', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat', 'Useita vuokrattavia kohteita', 'Vierasluvat', 'Laaja raportointi (tulossa)'], missing: [] },
             ].map((p, i) => (
-              <div key={i} className={`rounded-2xl border p-6 text-left relative ${p.popular ? 'border-green-500 bg-green-900/40 ring-2 ring-green-500/30' : 'border-green-800 bg-green-900/20'}`}>
+              <div key={i} className={`rounded-2xl border p-6 text-left relative ${p.popular ? 'border-green-500 bg-white ring-2 ring-green-500/30' : 'border-[#e0d8cc] bg-white'}`}>
                 {p.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-green-600 px-3 py-0.5 text-xs font-bold text-white">Suosituin</span>}
-                <h3 className="text-lg font-bold text-white">{p.name}</h3>
+                <h3 className="text-lg font-bold text-[#1a1a1a]">{p.name}</h3>
                 <ul className="mt-6 space-y-2">
                   {p.features.map((f, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-green-200"><CheckCircle size={14} className="text-green-400 shrink-0" />{f}</li>
+                    <li key={j} className="flex items-center gap-2 text-sm text-[#1a1a1a]"><CheckCircle size={14} className="text-[#2d6a2d] shrink-0" />{f}</li>
                   ))}
                   {p.missing.map((m, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-green-600"><XCircle size={14} className="text-green-800 shrink-0" />{m}</li>
+                    <li key={j} className="flex items-center gap-2 text-sm text-[#888888]"><XCircle size={14} className="text-[#1e3d1e] shrink-0" />{m}</li>
                   ))}
                 </ul>
-                <Link href="/uusi" className={`mt-6 block rounded-xl py-3 text-center text-sm font-bold transition-colors ${p.popular ? 'bg-green-600 text-white hover:bg-green-500' : 'border border-green-700 text-green-300 hover:bg-green-900/40'}`}>
+                <Link href="/uusi" className={`mt-6 block rounded-xl py-3 text-center text-sm font-bold transition-colors ${p.popular ? 'bg-green-600 text-white hover:bg-green-500' : 'border border-[#e0d8cc] text-[#1e3d1e] hover:bg-white'}`}>
                   Aloita kokeilu
                 </Link>
               </div>
@@ -264,9 +264,9 @@ export default function LandingTestPage() {
       </section>
 
       {/* ═══ FAQ ═══ */}
-      <section id="faq" className="py-20 px-4 bg-green-900/10">
+      <section id="faq" className="py-20 px-4 bg-white">
         <div className="mx-auto max-w-2xl">
-          <h2 className="scroll-animate text-3xl font-bold text-white text-center mb-8">Usein kysytyt kysymykset</h2>
+          <h2 className="scroll-animate text-3xl font-bold text-[#1a1a1a] text-center mb-8">Usein kysytyt kysymykset</h2>
           <FAQ q="Mikä JahtiPro on?" a="JahtiPro on metsästysseuroille suunniteltu palvelu, joka kokoaa seuran tärkeät tiedot ja toiminnot yhteen paikkaan. Sen avulla jäsenasiat, viestintä, tapahtumat, dokumentit ja käytännön hallinta pysyvät paremmin järjestyksessä." />
           <FAQ q="Kenelle JahtiPro sopii?" a="JahtiPro sopii metsästysseuroille, jotka haluavat helpottaa arkea, vähentää manuaalista työtä ja pitää seuran asiat selkeästi hallinnassa. Palvelu sopii sekä pienille että suuremmille seuroille." />
           <FAQ q="Mitä JahtiPro sisältää?" a="JahtiPro sisältää jäsenrekisterin, jäsenmaksujen hallinnan, tapahtumat ja ilmoittautumiset, dokumentit ja pöytäkirjat, saalisilmoitukset sekä vuokrattavien kohteiden hallinnan. Kokonaisuus riippuu valitusta paketista." />
@@ -284,26 +284,26 @@ export default function LandingTestPage() {
       {/* ═══ FINAL CTA ═══ */}
       <section className="py-20 px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold text-white">Valmis aloittamaan?</h2>
-          <p className="mt-3 text-green-300">Liity suomalaisten metsästysseurojen joukkoon. 14 päivää ilmaiseksi, ei sitoumuksia.</p>
+          <h2 className="text-3xl font-bold text-[#1a1a1a]">Valmis aloittamaan?</h2>
+          <p className="mt-3 text-[#1e3d1e]">Liity suomalaisten metsästysseurojen joukkoon. 14 päivää ilmaiseksi, ei sitoumuksia.</p>
           <Link href="/uusi" className="mt-8 inline-block rounded-xl bg-green-600 px-8 py-4 text-lg font-bold text-white hover:bg-green-500 transition-colors">
             Aloita ilmainen kokeilu →
           </Link>
-          <p className="mt-4 text-sm text-green-600">
+          <p className="mt-4 text-sm text-[#888888]">
             Kysymyksiä? Ota yhteyttä:{' '}
-            <a href="mailto:info@jahtipro.fi" className="text-green-400 hover:text-green-300">info@jahtipro.fi</a>
+            <a href="mailto:info@jahtipro.fi" className="text-[#2d6a2d] hover:text-[#1e3d1e]">info@jahtipro.fi</a>
           </p>
         </div>
       </section>
 
       {/* ═══ FOOTER ═══ */}
-      <footer className="border-t border-green-800 py-6 px-4">
-        <div className="mx-auto max-w-6xl flex flex-wrap items-center justify-between gap-4 text-xs text-green-600">
+      <footer className="border-t border-[#e0d8cc] py-6 px-4">
+        <div className="mx-auto max-w-6xl flex flex-wrap items-center justify-between gap-4 text-xs text-[#888888]">
           <p>© 2026 JahtiPro. Kaikki oikeudet pidätetään.</p>
-          <a href="mailto:info@jahtipro.fi" className="hover:text-green-400">info@jahtipro.fi</a>
+          <a href="mailto:info@jahtipro.fi" className="hover:text-[#2d6a2d]">info@jahtipro.fi</a>
           <div className="flex gap-4">
-            <Link href="/tietosuoja" className="hover:text-green-400">Tietosuojaseloste</Link>
-            <Link href="/login" className="hover:text-green-400">Kirjaudu</Link>
+            <Link href="/tietosuoja" className="hover:text-[#2d6a2d]">Tietosuojaseloste</Link>
+            <Link href="/login" className="hover:text-[#2d6a2d]">Kirjaudu</Link>
           </div>
         </div>
       </footer>

@@ -126,17 +126,17 @@ export default function FeedbackButton() {
           />
           <div className="relative w-full max-w-md rounded-t-3xl bg-white shadow-2xl sm:rounded-2xl">
             {/* Header */}
-            <div className="rounded-t-3xl bg-green-900 px-6 py-4 sm:rounded-t-2xl">
+            <div className="rounded-t-3xl bg-[#f0ebe3] px-6 py-4 sm:rounded-t-2xl">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="font-bold text-white">Anna palautetta</h2>
-                  <p className="mt-0.5 text-xs text-green-300">
+                  <h2 className="font-bold text-[#1a1a1a]">Anna palautetta</h2>
+                  <p className="mt-0.5 text-xs text-[#1e3d1e]">
                     Auta meitä parantamaan sovellusta
                   </p>
                 </div>
                 <button
                   onClick={handleClose}
-                  className="rounded-full p-1 text-green-300 hover:text-white"
+                  className="rounded-full p-1 text-[#1e3d1e] hover:text-[#1a1a1a]"
                 >
                   <X size={20} />
                 </button>
@@ -148,16 +148,16 @@ export default function FeedbackButton() {
               {success ? (
                 <div className="py-8 text-center">
                   <p className="text-4xl">🎉</p>
-                  <p className="mt-3 font-semibold text-green-800">
+                  <p className="mt-3 font-semibold text-[#1e3d1e]">
                     Kiitos palautteesta!
                   </p>
-                  <p className="mt-1 text-sm text-stone-500">Suljetaan pian...</p>
+                  <p className="mt-1 text-sm text-[#888888]">Suljetaan pian...</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Star rating */}
                   <div>
-                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-stone-500">
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#888888]">
                       Arvosana
                     </label>
                     <div className="flex items-center gap-1">
@@ -174,14 +174,14 @@ export default function FeedbackButton() {
                             size={30}
                             className={
                               n <= (hovered || rating)
-                                ? 'fill-yellow-400 text-yellow-400'
-                                : 'text-stone-300'
+                                ? 'fill-yellow-400 text-[#b45309]'
+                                : 'text-[#4a4a4a]'
                             }
                           />
                         </button>
                       ))}
                       {(hovered || rating) > 0 && (
-                        <span className="ml-2 text-xs text-stone-500">
+                        <span className="ml-2 text-xs text-[#888888]">
                           {STAR_LABELS[hovered || rating]}
                         </span>
                       )}
@@ -190,7 +190,7 @@ export default function FeedbackButton() {
 
                   {/* Category */}
                   <div>
-                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-stone-500">
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#888888]">
                       Kategoria
                     </label>
                     <div className="flex flex-wrap gap-2">
@@ -201,8 +201,8 @@ export default function FeedbackButton() {
                           onClick={() => setCategory(id === category ? '' : id)}
                           className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                             category === id
-                              ? 'bg-green-700 text-white'
-                              : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                              ? 'bg-[#1e3d1e] text-white'
+                              : 'bg-stone-100 text-[#888888] hover:bg-stone-200'
                           }`}
                         >
                           {label}
@@ -213,7 +213,7 @@ export default function FeedbackButton() {
 
                   {/* Message */}
                   <div>
-                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-stone-500">
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#888888]">
                       Viesti <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -223,15 +223,15 @@ export default function FeedbackButton() {
                       rows={3}
                       className="w-full rounded-xl border border-stone-200 p-3 text-sm text-stone-800 placeholder-stone-400 focus:border-green-400 focus:outline-none focus:ring-1 focus:ring-green-400"
                     />
-                    <p className="mt-0.5 text-right text-xs text-stone-400">
+                    <p className="mt-0.5 text-right text-xs text-[#888888]">
                       {message.length} merkki{message.length !== 1 ? 'ä' : ''} / min 10
                     </p>
                   </div>
 
                   {/* Current page */}
-                  <p className="text-xs text-stone-400">
+                  <p className="text-xs text-[#888888]">
                     Sivu:{' '}
-                    <span className="font-medium text-stone-600">{pageName}</span>
+                    <span className="font-medium text-[#888888]">{pageName}</span>
                   </p>
 
                   {/* Error */}
@@ -245,7 +245,7 @@ export default function FeedbackButton() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full rounded-xl bg-green-700 py-3 font-semibold text-white transition hover:bg-green-600 disabled:opacity-60"
+                    className="w-full rounded-xl bg-[#1e3d1e] py-3 font-semibold text-white transition hover:bg-[#162d16] disabled:opacity-60"
                   >
                     {submitting ? 'Lähetetään...' : 'Lähetä palaute'}
                   </button>

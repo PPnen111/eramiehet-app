@@ -59,7 +59,7 @@ export default function BottomNavClient({ role }: { role: string | null }) {
     <>
       <div className="h-20 md:hidden" />
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-        <div className="border-t border-green-900 bg-green-950/90 backdrop-blur-md">
+        <div className="border-t border-[#e0d8cc] bg-[#f5f0e8] backdrop-blur-md">
           <div className="flex items-stretch">
             {items.map(({ href, label, icon: Icon }) => {
               const active =
@@ -70,7 +70,7 @@ export default function BottomNavClient({ role }: { role: string | null }) {
                   key={href}
                   href={href}
                   className={`relative flex flex-1 flex-col items-center gap-0.5 px-1 py-3 text-[10px] font-medium transition-colors ${
-                    active ? 'text-green-300' : 'text-green-600 hover:text-green-400'
+                    active ? 'text-[#1e3d1e]' : 'text-[#888888] hover:text-[#2d6a2d]'
                   }`}
                 >
                   {active && (

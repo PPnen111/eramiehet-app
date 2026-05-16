@@ -34,7 +34,7 @@ export default function GrowthStrategy() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <Loader2 size={24} className="animate-spin text-green-500" />
+        <Loader2 size={24} className="animate-spin text-[#4a4a4a]" />
       </div>
     )
   }
@@ -51,12 +51,12 @@ export default function GrowthStrategy() {
   return (
     <div className="space-y-4">
       {/* Download + info bar */}
-      <div className="flex items-center justify-between rounded-2xl border border-green-800 bg-white/5 px-5 py-4">
+      <div className="flex items-center justify-between rounded-2xl border border-[#e0d8cc] bg-white px-5 py-4">
         <div className="flex items-center gap-3">
-          <FileText size={20} className="text-green-400" />
+          <FileText size={20} className="text-[#2d6a2d]" />
           <div>
-            <p className="font-medium text-white">JahtiPro Kasvustrategia</p>
-            <p className="text-xs text-green-600">PDF-dokumentti</p>
+            <p className="font-medium text-[#1a1a1a]">JahtiPro Kasvustrategia</p>
+            <p className="text-xs text-[#888888]">PDF-dokumentti</p>
           </div>
         </div>
         {pdfUrl && (
@@ -64,7 +64,7 @@ export default function GrowthStrategy() {
             href={pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+            className="flex items-center gap-1.5 rounded-lg bg-[#1e3d1e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#162d16] transition-colors"
           >
             <Download size={14} />
             Lataa PDF
@@ -74,7 +74,7 @@ export default function GrowthStrategy() {
 
       {/* Embedded PDF viewer */}
       {pdfUrl && (
-        <div className="overflow-hidden rounded-2xl border border-green-800 bg-black">
+        <div className="overflow-hidden rounded-2xl border border-[#e0d8cc] bg-black">
           <iframe
             src={pdfUrl}
             className="h-[75vh] w-full"

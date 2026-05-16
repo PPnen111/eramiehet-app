@@ -81,27 +81,27 @@ export default function EditEventForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-5 rounded-2xl border border-green-800 bg-white/5 p-5"
+      className="space-y-5 rounded-2xl border border-[#e0d8cc] bg-white p-5"
     >
       {/* Otsikko */}
       <div>
-        <label className="mb-1 block text-sm text-green-300">Otsikko *</label>
+        <label className="mb-1 block text-sm text-[#1e3d1e]">Otsikko *</label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
         />
       </div>
 
       {/* Tyyppi */}
       <div>
-        <label className="mb-1 block text-sm text-green-300">Tyyppi</label>
+        <label className="mb-1 block text-sm text-[#1e3d1e]">Tyyppi</label>
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
-          className="w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
         >
           {EVENT_TYPES.map((t) => (
             <option key={t.value} value={t.value}>
@@ -113,47 +113,47 @@ export default function EditEventForm({
 
       {/* Alkaa */}
       <div>
-        <label className="mb-1 block text-sm text-green-300">Alkaa *</label>
+        <label className="mb-1 block text-sm text-[#1e3d1e]">Alkaa *</label>
         <input
           type="datetime-local"
           value={startsAt}
           onChange={(e) => setStartsAt(e.target.value)}
           required
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500 [color-scheme:dark]"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d] [color-scheme:dark]"
         />
       </div>
 
       {/* Päättyy */}
       <div>
-        <label className="mb-1 block text-sm text-green-300">Päättyy</label>
+        <label className="mb-1 block text-sm text-[#1e3d1e]">Päättyy</label>
         <input
           type="datetime-local"
           value={endsAt}
           onChange={(e) => setEndsAt(e.target.value)}
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500 [color-scheme:dark]"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d] [color-scheme:dark]"
         />
       </div>
 
       {/* Sijainti */}
       <div>
-        <label className="mb-1 block text-sm text-green-300">Sijainti</label>
+        <label className="mb-1 block text-sm text-[#1e3d1e]">Sijainti</label>
         <input
           type="text"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="esim. Seurantalo, Koiramäki"
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
         />
       </div>
 
       {/* Kuvaus */}
       <div>
-        <label className="mb-1 block text-sm text-green-300">Kuvaus</label>
+        <label className="mb-1 block text-sm text-[#1e3d1e]">Kuvaus</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
         />
       </div>
 
@@ -165,14 +165,14 @@ export default function EditEventForm({
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+          className="flex-1 rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50"
         >
           {loading ? 'Tallennetaan...' : 'Tallenna muutokset'}
         </button>
         <button
           type="button"
           onClick={() => router.push(`/tapahtumat/${eventId}`)}
-          className="rounded-lg border border-green-800 px-4 py-2.5 text-sm text-green-300 hover:border-green-600"
+          className="rounded-lg border border-[#e0d8cc] px-4 py-2.5 text-sm text-[#1e3d1e] hover:border-green-600"
         >
           Peruuta
         </button>

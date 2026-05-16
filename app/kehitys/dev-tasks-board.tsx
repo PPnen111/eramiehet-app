@@ -68,17 +68,17 @@ const PRIORITY_DOT: Record<string, string> = {
 const COL_HEADER: Record<string, string> = {
   idea: 'text-purple-300 border-purple-800',
   suunnitteilla: 'text-blue-300 border-blue-800',
-  tyon_alla: 'text-yellow-300 border-yellow-800',
-  valmis: 'text-green-300 border-green-800',
-  hylätty: 'text-stone-400 border-stone-700',
+  tyon_alla: 'text-[#92400e] border-[#fcd34d]',
+  valmis: 'text-[#1e3d1e] border-[#e0d8cc]',
+  hylätty: 'text-[#888888] border-[#e0d8cc]',
 }
 
 const COL_BG: Record<string, string> = {
   idea: 'bg-purple-900/10',
   suunnitteilla: 'bg-blue-900/10',
-  tyon_alla: 'bg-yellow-900/10',
-  valmis: 'bg-green-900/10',
-  hylätty: 'bg-stone-800/10',
+  tyon_alla: 'bg-[#fef3c7]/10',
+  valmis: 'bg-white',
+  hylätty: 'bg-[#1e3d1e]/10',
 }
 
 function relativeTime(iso: string): string {
@@ -206,8 +206,8 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
       onClick={() => setPageTab(tab)}
       className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
         pageTab === tab
-          ? 'bg-green-700 text-white'
-          : 'text-green-400 hover:bg-white/10'
+          ? 'bg-[#1e3d1e] text-white'
+          : 'text-[#2d6a2d] hover:bg-[#f0ebe3]'
       }`}
     >
       {icon}
@@ -218,22 +218,22 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
   )
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950">
+    <main className="min-h-screen bg-[#f5f0e8]">
       {/* Top bar */}
       <div className="px-4 pt-6 pb-4">
-        <Link href="/dashboard" className="mb-3 flex items-center gap-1 text-sm text-green-400 hover:text-green-300">
+        <Link href="/dashboard" className="mb-3 flex items-center gap-1 text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           <ChevronLeft className="h-4 w-4" />
           Takaisin
         </Link>
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl font-bold text-white">🗺️ Kehityssuunnitelma</h1>
-            <p className="text-xs text-green-500 mt-0.5">{tasks.length} tehtävää</p>
+            <h1 className="text-xl font-bold text-[#1a1a1a]">🗺️ Kehityssuunnitelma</h1>
+            <p className="text-xs text-[#4a4a4a] mt-0.5">{tasks.length} tehtävää</p>
           </div>
           {pageTab === 'kanban' && (
             <button
               onClick={() => setNewTaskCol('idea')}
-              className="flex items-center gap-1.5 rounded-xl bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+              className="flex items-center gap-1.5 rounded-xl bg-[#1e3d1e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#162d16] transition-colors"
             >
               <Plus size={15} />
               Uusi tehtävä
@@ -242,14 +242,14 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
         </div>
 
         {/* Page tabs */}
-        <div className="mt-4 flex flex-wrap gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
+        <div className="mt-4 flex flex-wrap gap-1 rounded-xl border border-[#e0d8cc] bg-white p-1">
           {pageTabBtn('kanban', 'Tehtävät', undefined, 'shared')}
           {pageTabBtn('ominaisuudet', 'Ominaisuudet', <LayoutGrid size={14} />, 'shared')}
           {pageTabBtn('kasvustrategia', 'Kasvustrategia', <TrendingUp size={14} />, 'superadmin')}
           {role === 'superadmin' && pageTabBtn('tulevaisuus', 'Tulevaisuus', <Sparkles size={14} />, 'superadmin')}
         </div>
         {role === 'superadmin' && (
-          <p className="mt-1.5 text-[10px] text-green-700">
+          <p className="mt-1.5 text-[10px] text-[#2d6a2d]">
             🔒 = vain Pekka näkee &nbsp;|&nbsp; 👥 = Jari näkee myös
           </p>
         )}
@@ -286,7 +286,7 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
               <div
                 key={col.value}
                 className={`flex w-60 shrink-0 flex-col rounded-2xl border transition-colors ${
-                  isOver ? 'border-green-500 bg-green-900/20' : `border-green-900/60 ${COL_BG[col.value]}`
+                  isOver ? 'border-green-500 bg-white' : `border-[#e0d8cc]/60 ${COL_BG[col.value]}`
                 }`}
                 onDragOver={(e) => handleDragOver(e, col.value)}
                 onDrop={() => handleDrop(col.value)}
@@ -296,11 +296,11 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
                 <div className={`flex items-center justify-between border-b px-3 py-2.5 ${COL_HEADER[col.value]}`}>
                   <span className="text-xs font-semibold">{col.label}</span>
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-xs">{colTasks.length}</span>
+                    <span className="rounded-full bg-[#f0ebe3] px-1.5 py-0.5 text-xs">{colTasks.length}</span>
                     <button
                       onClick={() => setNewTaskCol(col.value)}
                       title="Lisää tähän sarakkeeseen"
-                      className="rounded p-0.5 hover:bg-white/10 transition-colors"
+                      className="rounded p-0.5 hover:bg-[#f0ebe3] transition-colors"
                     >
                       <Plus size={13} />
                     </button>
@@ -323,7 +323,7 @@ export default function DevTasksBoard({ initialTasks, role }: Props) {
                   ))}
                   {colTasks.length === 0 && (
                     <div className="flex-1 rounded-xl border border-dashed border-white/10 flex items-center justify-center min-h-16">
-                      <span className="text-xs text-white/20">Tyhjä</span>
+                      <span className="text-xs text-[#1a1a1a]/20">Tyhjä</span>
                     </div>
                   )}
                 </div>
@@ -401,28 +401,28 @@ function KanbanCard({ task, selected, dragging, saved, onClick, onDragStart, onD
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       onClick={onClick}
-      className={`cursor-pointer rounded-xl border bg-white/5 overflow-hidden transition-all select-none ${
-        selected ? 'border-green-500 bg-green-900/20' : 'border-green-900 hover:border-green-700'
+      className={`cursor-pointer rounded-xl border bg-white overflow-hidden transition-all select-none ${
+        selected ? 'border-green-500 bg-white' : 'border-[#e0d8cc] hover:border-[#e0d8cc]'
       } ${dragging ? 'opacity-40' : ''}`}
     >
       <div className={`h-1 w-full ${PRIORITY_BAR[task.priority] ?? 'bg-stone-600'}`} />
       <div className="px-3 py-2.5">
-        <p className="text-sm font-medium text-white leading-snug line-clamp-2">{task.title}</p>
+        <p className="text-sm font-medium text-[#1a1a1a] leading-snug line-clamp-2">{task.title}</p>
         <div className="mt-2 flex items-center justify-between gap-1">
-          <span className="rounded bg-white/10 px-1.5 py-0.5 text-xs text-stone-300">{catLabel}</span>
+          <span className="rounded bg-[#f0ebe3] px-1.5 py-0.5 text-xs text-[#4a4a4a]">{catLabel}</span>
           <div className="flex items-center gap-2">
             {task.comment_count > 0 && (
-              <span className="flex items-center gap-0.5 text-xs text-green-600">
+              <span className="flex items-center gap-0.5 text-xs text-[#888888]">
                 <MessageSquare size={10} />
                 {task.comment_count}
               </span>
             )}
-            {saved && <span className="text-xs text-green-400">✓</span>}
+            {saved && <span className="text-xs text-[#2d6a2d]">✓</span>}
             <span className={`h-2 w-2 rounded-full ${PRIORITY_DOT[task.priority] ?? 'bg-stone-500'}`} />
           </div>
         </div>
         {task.created_by_name && (
-          <p className="mt-1.5 text-xs text-green-700 truncate">{task.created_by_name}</p>
+          <p className="mt-1.5 text-xs text-[#2d6a2d] truncate">{task.created_by_name}</p>
         )}
       </div>
     </div>
@@ -494,9 +494,9 @@ function DetailPanel({
         onClick={onClose}
       />
       {/* Panel */}
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-gradient-to-b from-green-950 to-stone-950 shadow-2xl border-l border-green-800 overflow-y-auto">
+      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-[#f5f0e8] shadow-2xl border-l border-[#e0d8cc] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-green-800 bg-green-950 px-5 py-4">
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-[#e0d8cc] bg-[#f5f0e8] px-5 py-4">
           <div className="flex-1 min-w-0">
             {editingTitle ? (
               <div className="flex items-center gap-2">
@@ -505,37 +505,37 @@ function DetailPanel({
                   value={titleValue}
                   onChange={(e) => setTitleValue(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') saveTitle(); if (e.key === 'Escape') { setEditingTitle(false); setTitleValue(task.title) } }}
-                  className="flex-1 rounded border border-green-600 bg-green-900/40 px-2 py-1 text-base font-bold text-white outline-none"
+                  className="flex-1 rounded border border-green-600 bg-white px-2 py-1 text-base font-bold text-[#1a1a1a] outline-none"
                 />
                 <button
                   onClick={saveTitle}
-                  className="shrink-0 rounded-lg bg-green-700 px-2.5 py-1 text-xs font-semibold text-white hover:bg-green-600 transition-colors"
+                  className="shrink-0 rounded-lg bg-[#1e3d1e] px-2.5 py-1 text-xs font-semibold text-white hover:bg-[#162d16] transition-colors"
                 >
                   Tallenna
                 </button>
                 <button
                   onClick={() => { setEditingTitle(false); setTitleValue(task.title) }}
-                  className="shrink-0 rounded-lg border border-green-800 px-2.5 py-1 text-xs text-green-400 hover:bg-white/5 transition-colors"
+                  className="shrink-0 rounded-lg border border-[#e0d8cc] px-2.5 py-1 text-xs text-[#2d6a2d] hover:bg-white transition-colors"
                 >
                   Peruuta
                 </button>
               </div>
             ) : (
               <h2
-                className="cursor-text text-base font-bold text-white hover:text-green-200 transition-colors"
+                className="cursor-text text-base font-bold text-[#1a1a1a] hover:text-[#1a1a1a] transition-colors"
                 onClick={() => setEditingTitle(true)}
                 title="Klikkaa muokataksesi"
               >
                 {task.title}
               </h2>
             )}
-            <div className="mt-1 flex items-center gap-2 text-xs text-green-600">
+            <div className="mt-1 flex items-center gap-2 text-xs text-[#888888]">
               {task.created_by_name && <span>{task.created_by_name}</span>}
               <span>{relativeTime(task.created_at)}</span>
-              {saved && <span className="text-green-400">Tallennettu ✓</span>}
+              {saved && <span className="text-[#2d6a2d]">Tallennettu ✓</span>}
             </div>
           </div>
-          <button onClick={onClose} className="shrink-0 rounded-lg p-1.5 text-green-500 hover:bg-white/10 hover:text-white transition-colors">
+          <button onClick={onClose} className="shrink-0 rounded-lg p-1.5 text-[#4a4a4a] hover:bg-[#f0ebe3] hover:text-[#1a1a1a] transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -544,11 +544,11 @@ function DetailPanel({
           {/* Status + Priority */}
           <div className="flex gap-3">
             <div className="flex-1">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-green-600">Status</p>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-[#888888]">Status</p>
               <select
                 value={task.status}
                 onChange={(e) => void onPatch(task.id, { status: e.target.value })}
-                className="w-full rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-sm text-white outline-none focus:border-green-500"
+                className="w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1.5 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
               >
                 {COLUMNS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -556,11 +556,11 @@ function DetailPanel({
               </select>
             </div>
             <div className="flex-1">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-green-600">Prioriteetti</p>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-[#888888]">Prioriteetti</p>
               <select
                 value={task.priority}
                 onChange={(e) => void onPatch(task.id, { priority: e.target.value })}
-                className="w-full rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-sm text-white outline-none focus:border-green-500"
+                className="w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1.5 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
               >
                 {PRIORITY_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -571,11 +571,11 @@ function DetailPanel({
 
           {/* Category */}
           <div>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-green-600">Kategoria</p>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-[#888888]">Kategoria</p>
             <select
               value={task.category}
               onChange={(e) => void onPatch(task.id, { category: e.target.value })}
-              className="w-full rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-sm text-white outline-none focus:border-green-500"
+              className="w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1.5 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
             >
               {CATEGORY_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -585,7 +585,7 @@ function DetailPanel({
 
           {/* Description */}
           <div>
-            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-green-600">Kuvaus</p>
+            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-[#888888]">Kuvaus</p>
             {editingDesc ? (
               <div className="space-y-2">
                 <textarea
@@ -594,19 +594,19 @@ function DetailPanel({
                   onChange={(e) => setDescValue(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Escape') { setEditingDesc(false); setDescValue(task.description ?? '') } }}
                   rows={5}
-                  className="w-full rounded-lg border border-green-600 bg-green-900/30 px-3 py-2 text-sm text-white outline-none resize-none"
+                  className="w-full rounded-lg border border-green-600 bg-white px-3 py-2 text-sm text-[#1a1a1a] outline-none resize-none"
                   placeholder="Lisää kuvaus..."
                 />
                 <div className="flex gap-2">
                   <button
                     onClick={saveDesc}
-                    className="rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors"
+                    className="rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162d16] transition-colors"
                   >
                     Tallenna
                   </button>
                   <button
                     onClick={() => { setEditingDesc(false); setDescValue(task.description ?? '') }}
-                    className="rounded-lg border border-green-800 px-3 py-1.5 text-xs text-green-400 hover:bg-white/5 transition-colors"
+                    className="rounded-lg border border-[#e0d8cc] px-3 py-1.5 text-xs text-[#2d6a2d] hover:bg-white transition-colors"
                   >
                     Peruuta
                   </button>
@@ -614,13 +614,13 @@ function DetailPanel({
               </div>
             ) : (
               <div
-                className="group cursor-text rounded-lg border border-transparent px-3 py-2 hover:border-green-800 hover:bg-white/5 transition-colors"
+                className="group cursor-text rounded-lg border border-transparent px-3 py-2 hover:border-[#e0d8cc] hover:bg-white transition-colors"
                 onClick={() => setEditingDesc(true)}
               >
                 {task.description ? (
-                  <p className="whitespace-pre-wrap text-sm text-green-200">{task.description}</p>
+                  <p className="whitespace-pre-wrap text-sm text-[#1a1a1a]">{task.description}</p>
                 ) : (
-                  <p className="text-sm text-green-700 italic">Klikkaa lisätäksesi kuvaus...</p>
+                  <p className="text-sm text-[#2d6a2d] italic">Klikkaa lisätäksesi kuvaus...</p>
                 )}
               </div>
             )}
@@ -628,25 +628,25 @@ function DetailPanel({
 
           {/* Comments */}
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-600">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#888888]">
               Kommentit {task.comment_count > 0 && `(${task.comment_count})`}
             </p>
             {loadingComments ? (
-              <p className="text-xs text-green-700">Ladataan...</p>
+              <p className="text-xs text-[#2d6a2d]">Ladataan...</p>
             ) : comments && comments.length > 0 ? (
               <div className="mb-3 space-y-2">
                 {comments.map((c) => (
-                  <div key={c.id} className="rounded-lg border border-green-900 bg-white/[0.03] px-3 py-2">
+                  <div key={c.id} className="rounded-lg border border-[#e0d8cc] bg-white/[0.03] px-3 py-2">
                     <div className="flex items-baseline justify-between gap-2">
-                      <span className="text-xs font-semibold text-green-300">{c.author_name}</span>
-                      <span className="text-xs text-green-700">{relativeTime(c.created_at)}</span>
+                      <span className="text-xs font-semibold text-[#1e3d1e]">{c.author_name}</span>
+                      <span className="text-xs text-[#2d6a2d]">{relativeTime(c.created_at)}</span>
                     </div>
-                    <p className="mt-1 text-sm text-white">{c.message}</p>
+                    <p className="mt-1 text-sm text-[#1a1a1a]">{c.message}</p>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="mb-3 text-xs text-green-700 italic">Ei kommentteja vielä.</p>
+              <p className="mb-3 text-xs text-[#2d6a2d] italic">Ei kommentteja vielä.</p>
             )}
             <div className="flex gap-2">
               <textarea
@@ -654,12 +654,12 @@ function DetailPanel({
                 onChange={(e) => onCommentInput(e.target.value)}
                 placeholder="Kirjoita kommentti..."
                 rows={2}
-                className="flex-1 rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500 resize-none"
+                className="flex-1 rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d] resize-none"
               />
               <button
                 onClick={onSendComment}
                 disabled={sendingComment || !commentInput.trim()}
-                className="shrink-0 rounded-lg bg-green-700 px-3 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+                className="shrink-0 rounded-lg bg-[#1e3d1e] px-3 py-2 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50"
               >
                 {sendingComment ? '...' : 'Lähetä'}
               </button>
@@ -668,7 +668,7 @@ function DetailPanel({
 
           {/* Delete */}
           {role === 'superadmin' && (
-            <div className="border-t border-green-900/60 pt-3">
+            <div className="border-t border-[#e0d8cc]/60 pt-3">
               <button
                 onClick={() => void onDelete(task.id, task.title)}
                 disabled={deleting}
@@ -717,10 +717,10 @@ function NewTaskModal({ defaultStatus, onClose, onCreate }: NewTaskModalProps) {
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-5 shadow-2xl max-w-md mx-auto space-y-4">
+      <div className="fixed inset-x-4 top-1/2 z-50 -translate-y-1/2 rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] p-5 shadow-2xl max-w-md mx-auto space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Uusi tehtävä</h2>
-          <button onClick={onClose} className="text-green-600 hover:text-green-300">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Uusi tehtävä</h2>
+          <button onClick={onClose} className="text-[#888888] hover:text-[#1e3d1e]">
             <X size={16} />
           </button>
         </div>
@@ -730,20 +730,20 @@ function NewTaskModal({ defaultStatus, onClose, onCreate }: NewTaskModalProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           autoFocus
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
         />
         <textarea
           placeholder="Kuvaus"
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
           rows={3}
-          className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500 resize-none"
+          className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d] resize-none"
         />
         <div className="grid grid-cols-3 gap-2">
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-xs text-white outline-none"
+            className="rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1.5 text-xs text-[#1a1a1a] outline-none"
           >
             {COLUMNS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -752,7 +752,7 @@ function NewTaskModal({ defaultStatus, onClose, onCreate }: NewTaskModalProps) {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-xs text-white outline-none"
+            className="rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1.5 text-xs text-[#1a1a1a] outline-none"
           >
             {CATEGORY_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -761,7 +761,7 @@ function NewTaskModal({ defaultStatus, onClose, onCreate }: NewTaskModalProps) {
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            className="rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-xs text-white outline-none"
+            className="rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1.5 text-xs text-[#1a1a1a] outline-none"
           >
             {PRIORITY_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -772,13 +772,13 @@ function NewTaskModal({ defaultStatus, onClose, onCreate }: NewTaskModalProps) {
           <button
             onClick={submit}
             disabled={saving || !title.trim()}
-            className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+            className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50"
           >
             {saving ? 'Tallennetaan...' : 'Tallenna'}
           </button>
           <button
             onClick={onClose}
-            className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-400 hover:bg-white/5"
+            className="rounded-lg border border-[#e0d8cc] px-4 py-2 text-sm text-[#2d6a2d] hover:bg-white"
           >
             Peruuta
           </button>

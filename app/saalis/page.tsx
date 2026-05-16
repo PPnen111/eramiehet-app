@@ -23,12 +23,12 @@ const elainLabels: Record<string, string> = {
 }
 
 const B = {
-  kana: 'bg-amber-900 text-amber-200',
+  kana: 'bg-[#fef3c7] text-[#92400e]',
   vesi: 'bg-blue-900 text-blue-200',
   kyyhky: 'bg-orange-900 text-orange-200',
-  lintu: 'bg-stone-700 text-stone-200',
+  lintu: 'bg-[#1e3d1e] text-[#1a1a1a]',
   jänis: 'bg-sky-900 text-sky-200',
-  peto: 'bg-yellow-900 text-yellow-200',
+  peto: 'bg-[#fef3c7] text-[#92400e]',
   suur: 'bg-red-900 text-red-200',
 }
 
@@ -63,9 +63,9 @@ export default async function SaalisPage() {
 
   if (!profile) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+      <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
         <div className="mx-auto max-w-2xl">
-          <p className="text-green-300">
+          <p className="text-[#1e3d1e]">
             Sinua ei ole vielä liitetty mihinkään seuraan. Ota yhteyttä johtokuntaan.
           </p>
         </div>
@@ -83,14 +83,14 @@ export default async function SaalisPage() {
     .limit(500)
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
+        <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           ← Takaisin
         </Link>
 
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-white">Saalisilmoitukset</h1>
+          <h1 className="text-2xl font-bold text-[#1a1a1a]">Saalisilmoitukset</h1>
           <NewSaalisForm clubId={profile.club_id} profileId={user.id} />
         </div>
 

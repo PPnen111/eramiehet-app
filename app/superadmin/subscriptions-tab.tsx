@@ -40,7 +40,7 @@ function daysUntil(iso: string | null): number | null {
 function StatusBadge({ status, trialEndsAt }: { status: string; trialEndsAt: string | null }) {
   if (status === 'active') {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-green-700 px-2.5 py-0.5 text-xs font-semibold text-green-100">
+      <span className="inline-flex items-center gap-1 rounded-full bg-[#1e3d1e] px-2.5 py-0.5 text-xs font-semibold text-[#1a1a1a]">
         <CheckCircle size={11} />
         Aktiivinen
       </span>
@@ -69,7 +69,7 @@ function StatusBadge({ status, trialEndsAt }: { status: string; trialEndsAt: str
     return (
       <span
         className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-          isWarning ? 'bg-amber-600 text-white' : 'bg-blue-800 text-blue-100'
+          isWarning ? 'bg-[#b45309] text-white' : 'bg-blue-800 text-blue-100'
         }`}
       >
         <Clock size={11} />
@@ -78,7 +78,7 @@ function StatusBadge({ status, trialEndsAt }: { status: string; trialEndsAt: str
     )
   }
   return (
-    <span className="rounded-full bg-stone-700 px-2.5 py-0.5 text-xs font-semibold text-stone-300">
+    <span className="rounded-full bg-[#1e3d1e] px-2.5 py-0.5 text-xs font-semibold text-[#4a4a4a]">
       {status}
     </span>
   )
@@ -118,12 +118,12 @@ function ActivateModal({ sub, onClose, onSuccess }: ActivateModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-      <div className="w-full max-w-md rounded-2xl border border-green-700 bg-stone-950 p-6 shadow-2xl">
-        <h2 className="mb-2 text-lg font-bold text-white">Aktivoi tilaus</h2>
-        <p className="mb-1 text-sm text-green-300">
-          Seura: <strong className="text-white">{sub.club_name ?? sub.club_id}</strong>
+      <div className="w-full max-w-md rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] p-6 shadow-2xl">
+        <h2 className="mb-2 text-lg font-bold text-[#1a1a1a]">Aktivoi tilaus</h2>
+        <p className="mb-1 text-sm text-[#1e3d1e]">
+          Seura: <strong className="text-[#1a1a1a]">{sub.club_name ?? sub.club_id}</strong>
         </p>
-        <p className="mb-5 text-sm text-green-400">
+        <p className="mb-5 text-sm text-[#2d6a2d]">
           Asettaa tilauksen tilaksi &quot;Aktiivinen&quot; — ei enää kokeilu- tai kokeilupäättynyt-tila.
         </p>
         {error && <p className="mb-3 text-sm text-red-400">{error}</p>}
@@ -131,7 +131,7 @@ function ActivateModal({ sub, onClose, onSuccess }: ActivateModalProps) {
           <button
             onClick={onClose}
             disabled={loading}
-            className="flex-1 rounded-xl border border-stone-700 py-2.5 text-sm font-semibold text-stone-300 hover:bg-stone-800 disabled:opacity-50"
+            className="flex-1 rounded-xl border border-[#e0d8cc] py-2.5 text-sm font-semibold text-[#4a4a4a] hover:bg-[#1e3d1e] disabled:opacity-50"
           >
             Peruuta
           </button>
@@ -185,13 +185,13 @@ export default function SubscriptionsTab({ subscriptions }: Props) {
     <>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
             Tilaukset ({subscriptions.length})
           </h2>
         </div>
 
         {subscriptions.length === 0 ? (
-          <p className="text-sm text-green-600">Ei tilauksia.</p>
+          <p className="text-sm text-[#888888]">Ei tilauksia.</p>
         ) : (
           <div className="space-y-2">
             {subscriptions.map((sub) => {
@@ -201,14 +201,14 @@ export default function SubscriptionsTab({ subscriptions }: Props) {
               return (
                 <div
                   key={sub.id}
-                  className="rounded-xl border border-green-800 bg-white/5 px-4 py-3"
+                  className="rounded-xl border border-[#e0d8cc] bg-white px-4 py-3"
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
-                      <p className="font-semibold text-white">
+                      <p className="font-semibold text-[#1a1a1a]">
                         {sub.club_name ?? sub.club_id}
                       </p>
-                      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-green-600">
+                      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-[#888888]">
                         {sub.trial_starts_at && (
                           <span>Kokeilu alkanut {formatDate(sub.trial_starts_at)}</span>
                         )}
@@ -225,7 +225,7 @@ export default function SubscriptionsTab({ subscriptions }: Props) {
                       {sub.status !== 'active' && (
                         <button
                           onClick={() => setActivatingFor(sub)}
-                          className="rounded-lg border border-green-700 px-2.5 py-1 text-xs font-semibold text-green-300 hover:bg-green-900/50 transition-colors"
+                          className="rounded-lg border border-[#e0d8cc] px-2.5 py-1 text-xs font-semibold text-[#1e3d1e] hover:bg-[#f0ebe3] transition-colors"
                         >
                           Aktivoi tilaus
                         </button>
@@ -264,7 +264,7 @@ export default function SubscriptionsTab({ subscriptions }: Props) {
       {toast && (
         <div
           className={`fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-sm font-medium shadow-2xl ${
-            toast.type === 'success' ? 'bg-green-700 text-white' : 'bg-red-800 text-white'
+            toast.type === 'success' ? 'bg-[#1e3d1e] text-white' : 'bg-red-800 text-white'
           }`}
         >
           {toast.message}

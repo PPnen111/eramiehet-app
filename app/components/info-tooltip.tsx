@@ -15,7 +15,7 @@ export function InfoTooltip({ title, content }: InfoTooltipProps) {
     <div className="relative inline-block">
       <button
         onClick={() => setOpen(!open)}
-        className="text-green-600 hover:text-green-400 transition-colors ml-1"
+        className="text-[#888888] hover:text-[#2d6a2d] transition-colors ml-1"
       >
         <HelpCircle className="w-4 h-4" />
       </button>
@@ -26,24 +26,24 @@ export function InfoTooltip({ title, content }: InfoTooltipProps) {
             className="fixed inset-0 z-40"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute z-50 left-0 mt-1 w-72 bg-green-900 border border-green-700 rounded-xl shadow-xl p-4">
+          <div className="absolute z-50 left-0 mt-1 w-72 bg-[#f0ebe3] border border-[#e0d8cc] rounded-xl shadow-xl p-4">
             <div className="flex items-start justify-between mb-2">
-              <h4 className="text-white font-semibold text-sm">{title}</h4>
+              <h4 className="text-[#1a1a1a] font-semibold text-sm">{title}</h4>
               <button onClick={() => setOpen(false)}>
-                <X className="w-4 h-4 text-green-400" />
+                <X className="w-4 h-4 text-[#2d6a2d]" />
               </button>
             </div>
             {Array.isArray(content) ? (
               <ul className="space-y-1">
                 {content.map((item, i) => (
-                  <li key={i} className="text-green-200 text-xs flex gap-2">
-                    <span className="text-green-500 mt-0.5">•</span>
+                  <li key={i} className="text-[#1a1a1a] text-xs flex gap-2">
+                    <span className="text-[#4a4a4a] mt-0.5">•</span>
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-green-200 text-xs leading-relaxed">{content}</p>
+              <p className="text-[#1a1a1a] text-xs leading-relaxed">{content}</p>
             )}
           </div>
         </>

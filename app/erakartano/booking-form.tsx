@@ -90,28 +90,28 @@ export default function BookingForm({ selectedLocation, existingBookings }: Prop
   }
 
   const inputClass =
-    'w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500 [color-scheme:dark]'
-  const labelClass = 'mb-1 block text-sm text-green-300'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d] [color-scheme:dark]'
+  const labelClass = 'mb-1 block text-sm text-[#1e3d1e]'
 
   if (!open) {
     return (
       <div className="space-y-2">
         <button
           onClick={() => setOpen(true)}
-          className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+          className="rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] transition-colors"
         >
           + Lähetä varauspyyntö
         </button>
         {success && (
-          <p className="rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">{success}</p>
+          <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1e3d1e]">{success}</p>
         )}
       </div>
     )
   }
 
   return (
-    <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
-      <h2 className="mb-4 font-semibold text-white">Uusi varauspyyntö</h2>
+    <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
+      <h2 className="mb-4 font-semibold text-[#1a1a1a]">Uusi varauspyyntö</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -167,14 +167,14 @@ export default function BookingForm({ selectedLocation, existingBookings }: Prop
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+            className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
           >
             {loading ? 'Lähetetään...' : 'Lähetä varauspyyntö'}
           </button>
           <button
             type="button"
             onClick={() => { setOpen(false); setError('') }}
-            className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300 hover:bg-white/5"
+            className="rounded-lg border border-[#e0d8cc] px-4 py-2 text-sm text-[#1e3d1e] hover:bg-white"
           >
             Peruuta
           </button>

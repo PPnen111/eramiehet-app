@@ -102,18 +102,18 @@ export default function TilausPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8 pb-24">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8 pb-24">
       <div className="mx-auto max-w-4xl space-y-8">
-        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
+        <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           ← Takaisin
         </Link>
 
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-green-500">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#4a4a4a]">
             Tilaus
           </p>
-          <h1 className="mt-1 text-2xl font-bold text-white">Valitse tilausvaihtoehto</h1>
-          <p className="mt-2 text-sm text-green-400">
+          <h1 className="mt-1 text-2xl font-bold text-[#1a1a1a]">Valitse tilausvaihtoehto</h1>
+          <p className="mt-2 text-sm text-[#2d6a2d]">
             Laskutus vuosittain. Hinnat sis. alv 0%.
           </p>
         </div>
@@ -127,11 +127,11 @@ export default function TilausPage() {
               className={`relative rounded-2xl border p-5 text-left transition-all ${
                 selectedPlan === plan.id
                   ? plan.highlight
-                    ? 'border-green-400 bg-green-700'
-                    : 'border-green-500 bg-green-900/60'
+                    ? 'border-green-400 bg-[#1e3d1e]'
+                    : 'border-green-500 bg-[#f0ebe3]'
                   : plan.highlight
-                  ? 'border-green-600 bg-green-800/60 hover:border-green-500'
-                  : 'border-green-800 bg-white/5 hover:border-green-700'
+                  ? 'border-green-600 bg-[#eaf3de] hover:border-green-500'
+                  : 'border-[#e0d8cc] bg-white hover:border-[#e0d8cc]'
               }`}
             >
               {plan.highlight && (
@@ -140,19 +140,19 @@ export default function TilausPage() {
                 </span>
               )}
               <div className="mb-3">
-                <p className="text-lg font-bold text-white">{plan.name}</p>
-                <p className="text-xs text-green-400">{plan.description}</p>
+                <p className="text-lg font-bold text-[#1a1a1a]">{plan.name}</p>
+                <p className="text-xs text-[#2d6a2d]">{plan.description}</p>
               </div>
               <div className="mb-1">
-                <span className="text-3xl font-extrabold text-white">{plan.price} €</span>
-                <span className="text-sm text-green-400"> / vuosi</span>
+                <span className="text-3xl font-extrabold text-[#1a1a1a]">{plan.price} €</span>
+                <span className="text-sm text-[#2d6a2d]"> / vuosi</span>
               </div>
-              <p className="mb-0.5 text-sm text-green-400">(noin {plan.monthly} €/kk)</p>
-              <p className="mb-4 text-xs text-green-600">sis. alv 0%</p>
+              <p className="mb-0.5 text-sm text-[#2d6a2d]">(noin {plan.monthly} €/kk)</p>
+              <p className="mb-4 text-xs text-[#888888]">sis. alv 0%</p>
               <ul className="space-y-1.5">
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-green-200">
-                    <Check size={14} className="mt-0.5 shrink-0 text-green-400" />
+                  <li key={f} className="flex items-start gap-2 text-sm text-[#1a1a1a]">
+                    <Check size={14} className="mt-0.5 shrink-0 text-[#2d6a2d]" />
                     {f}
                   </li>
                 ))}
@@ -167,16 +167,16 @@ export default function TilausPage() {
         </div>
 
         {/* Contact form */}
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-6">
-          <h2 className="mb-1 text-lg font-bold text-white">Ota yhteyttä</h2>
-          <p className="mb-5 text-sm text-green-400">
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-6">
+          <h2 className="mb-1 text-lg font-bold text-[#1a1a1a]">Ota yhteyttä</h2>
+          <p className="mb-5 text-sm text-[#2d6a2d]">
             Lähetä meille viesti niin otamme yhteyttä tilauksen aktivoimiseksi.
           </p>
 
           {submitted ? (
-            <div className="rounded-xl bg-green-800/50 p-5 text-center">
-              <p className="text-lg font-bold text-white">Viesti lähetetty!</p>
-              <p className="mt-1 text-sm text-green-300">
+            <div className="rounded-xl bg-[#1e3d1e]/50 p-5 text-center">
+              <p className="text-lg font-bold text-[#1a1a1a]">Viesti lähetetty!</p>
+              <p className="mt-1 text-sm text-[#1e3d1e]">
                 Otamme sinuun yhteyttä pian.
               </p>
             </div>
@@ -184,7 +184,7 @@ export default function TilausPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-green-400">
+                  <label className="mb-1 block text-xs font-semibold text-[#2d6a2d]">
                     Nimi *
                   </label>
                   <input
@@ -192,12 +192,12 @@ export default function TilausPage() {
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
                     placeholder="Matti Metsänen"
-                    className="w-full rounded-xl border border-green-800 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-green-700 focus:border-green-500 focus:outline-none"
+                    className="w-full rounded-xl border border-[#e0d8cc] bg-white px-3 py-2.5 text-sm text-[#1a1a1a] placeholder-[#888888] focus:border-[#2d6a2d] focus:outline-none"
                     required
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-green-400">
+                  <label className="mb-1 block text-xs font-semibold text-[#2d6a2d]">
                     Sähköposti *
                   </label>
                   <input
@@ -205,14 +205,14 @@ export default function TilausPage() {
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
                     placeholder="matti@seura.fi"
-                    className="w-full rounded-xl border border-green-800 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-green-700 focus:border-green-500 focus:outline-none"
+                    className="w-full rounded-xl border border-[#e0d8cc] bg-white px-3 py-2.5 text-sm text-[#1a1a1a] placeholder-[#888888] focus:border-[#2d6a2d] focus:outline-none"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-green-400">
+                <label className="mb-1 block text-xs font-semibold text-[#2d6a2d]">
                   Valittu paketti
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -223,8 +223,8 @@ export default function TilausPage() {
                       onClick={() => setSelectedPlan(plan.id)}
                       className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
                         selectedPlan === plan.id
-                          ? 'border-green-400 bg-green-700 text-white'
-                          : 'border-green-800 text-green-400 hover:border-green-600'
+                          ? 'border-green-400 bg-[#1e3d1e] text-white'
+                          : 'border-[#e0d8cc] text-[#2d6a2d] hover:border-green-600'
                       }`}
                     >
                       {plan.name} — {plan.price} €/v
@@ -234,7 +234,7 @@ export default function TilausPage() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-green-400">
+                <label className="mb-1 block text-xs font-semibold text-[#2d6a2d]">
                   Lisätietoja (valinnainen)
                 </label>
                 <textarea
@@ -242,7 +242,7 @@ export default function TilausPage() {
                   onChange={(e) => setContactMessage(e.target.value)}
                   rows={3}
                   placeholder="Seuran nimi, jäsenmäärä, kysymyksiä..."
-                  className="w-full rounded-xl border border-green-800 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-green-700 focus:border-green-500 focus:outline-none"
+                  className="w-full rounded-xl border border-[#e0d8cc] bg-white px-3 py-2.5 text-sm text-[#1a1a1a] placeholder-[#888888] focus:border-[#2d6a2d] focus:outline-none"
                 />
               </div>
 
@@ -261,7 +261,7 @@ export default function TilausPage() {
       {toast && (
         <div
           className={`fixed bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-sm font-medium shadow-2xl ${
-            toast.type === 'success' ? 'bg-green-700 text-white' : 'bg-red-800 text-white'
+            toast.type === 'success' ? 'bg-[#1e3d1e] text-white' : 'bg-red-800 text-white'
           }`}
         >
           {toast.message}

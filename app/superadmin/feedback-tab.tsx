@@ -35,8 +35,8 @@ const CATEGORY_STYLE: Record<string, { label: string; className: string }> = {
   bugi: { label: '🐛 Bugi', className: 'bg-red-100 text-red-700' },
   parannus: { label: '💡 Parannus', className: 'bg-blue-100 text-blue-700' },
   puuttuva_ominaisuus: { label: '✨ Puuttuva ominaisuus', className: 'bg-orange-100 text-orange-700' },
-  kiitos: { label: '👍 Kiitos', className: 'bg-green-100 text-green-700' },
-  yleinen: { label: '💬 Yleinen', className: 'bg-stone-100 text-stone-600' },
+  kiitos: { label: '👍 Kiitos', className: 'bg-green-100 text-[#2d6a2d]' },
+  yleinen: { label: '💬 Yleinen', className: 'bg-stone-100 text-[#888888]' },
 }
 
 const STATUS_OPTIONS = [
@@ -48,7 +48,7 @@ const STATUS_OPTIONS = [
 const STATUS_STYLE: Record<string, string> = {
   uusi: 'bg-yellow-100 text-yellow-800',
   luettu: 'bg-blue-100 text-blue-700',
-  hoidettu: 'bg-green-100 text-green-700',
+  hoidettu: 'bg-green-100 text-[#2d6a2d]',
 }
 
 const PAGE_NAMES_FI: Record<string, string> = {
@@ -91,14 +91,14 @@ function isToday(iso: string): boolean {
 }
 
 function Stars({ rating }: { rating: number | null }) {
-  if (!rating) return <span className="text-xs text-stone-400">—</span>
+  if (!rating) return <span className="text-xs text-[#888888]">—</span>
   return (
     <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((n) => (
         <Star
           key={n}
           size={13}
-          className={n <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-stone-300'}
+          className={n <= rating ? 'fill-yellow-400 text-[#b45309]' : 'text-[#4a4a4a]'}
         />
       ))}
     </div>
@@ -148,33 +148,33 @@ export default function FeedbackTab({ rows: initialRows }: Props) {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-2xl border border-yellow-700/40 bg-yellow-900/20 p-4">
-          <div className="mb-1 flex items-center gap-1.5 text-xs text-yellow-400">
+        <div className="rounded-2xl border border-[#fcd34d]/40 bg-[#fef3c7] p-4">
+          <div className="mb-1 flex items-center gap-1.5 text-xs text-[#b45309]">
             <AlertCircle size={12} />
             Uudet palautteet
           </div>
-          <p className="text-3xl font-bold text-white">{uudetCount}</p>
+          <p className="text-3xl font-bold text-[#1a1a1a]">{uudetCount}</p>
         </div>
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-          <div className="mb-1 flex items-center gap-1.5 text-xs text-green-500">
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+          <div className="mb-1 flex items-center gap-1.5 text-xs text-[#4a4a4a]">
             <MessageSquare size={12} />
             Yhteensä
           </div>
-          <p className="text-3xl font-bold text-white">{rows.length}</p>
+          <p className="text-3xl font-bold text-[#1a1a1a]">{rows.length}</p>
         </div>
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-          <div className="mb-1 flex items-center gap-1.5 text-xs text-green-500">
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+          <div className="mb-1 flex items-center gap-1.5 text-xs text-[#4a4a4a]">
             <Star size={12} />
             Keskiarvo
           </div>
-          <p className="text-3xl font-bold text-white">{avgRating}</p>
+          <p className="text-3xl font-bold text-[#1a1a1a]">{avgRating}</p>
         </div>
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-          <div className="mb-1 flex items-center gap-1.5 text-xs text-green-500">
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+          <div className="mb-1 flex items-center gap-1.5 text-xs text-[#4a4a4a]">
             <Clock size={12} />
             Tänään
           </div>
-          <p className="text-3xl font-bold text-white">{todayCount}</p>
+          <p className="text-3xl font-bold text-[#1a1a1a]">{todayCount}</p>
         </div>
       </div>
 
@@ -194,14 +194,14 @@ export default function FeedbackTab({ rows: initialRows }: Props) {
               onClick={() => setFilter(id)}
               className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                 filter === id
-                  ? 'bg-green-700 text-white'
-                  : 'border border-green-800 text-green-400 hover:border-green-600 hover:text-green-300'
+                  ? 'bg-[#1e3d1e] text-white'
+                  : 'border border-[#e0d8cc] text-[#2d6a2d] hover:border-green-600 hover:text-[#1e3d1e]'
               }`}
             >
               {label}
               {count > 0 && (
                 <span className={`ml-1.5 rounded-full px-1.5 py-0.5 text-xs ${
-                  filter === id ? 'bg-green-600 text-white' : 'bg-green-900 text-green-400'
+                  filter === id ? 'bg-green-600 text-white' : 'bg-[#f0ebe3] text-[#2d6a2d]'
                 }`}>
                   {count}
                 </span>
@@ -213,7 +213,7 @@ export default function FeedbackTab({ rows: initialRows }: Props) {
 
       {/* Feedback list */}
       {filtered.length === 0 ? (
-        <p className="py-8 text-center text-sm text-green-600">Ei palautteita.</p>
+        <p className="py-8 text-center text-sm text-[#888888]">Ei palautteita.</p>
       ) : (
         <div className="space-y-3">
           {filtered.map((row) => {
@@ -221,8 +221,8 @@ export default function FeedbackTab({ rows: initialRows }: Props) {
             return (
               <div
                 key={row.id}
-                className={`rounded-xl border bg-white/5 p-4 ${
-                  row.status === 'uusi' ? 'border-yellow-700/50' : 'border-green-800'
+                className={`rounded-xl border bg-white p-4 ${
+                  row.status === 'uusi' ? 'border-[#fcd34d]/50' : 'border-[#e0d8cc]'
                 }`}
               >
                 <div className="flex flex-wrap items-start gap-3">
@@ -234,20 +234,20 @@ export default function FeedbackTab({ rows: initialRows }: Props) {
                         {cat.label}
                       </span>
                       {row.status === 'uusi' && (
-                        <span className="rounded-full bg-yellow-400/20 px-2 py-0.5 text-xs font-bold text-yellow-300">
+                        <span className="rounded-full bg-yellow-400/20 px-2 py-0.5 text-xs font-bold text-[#92400e]">
                           UUSI
                         </span>
                       )}
                     </div>
-                    <p className="text-sm leading-relaxed text-white">
+                    <p className="text-sm leading-relaxed text-[#1a1a1a]">
                       {row.message}
                     </p>
-                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-green-600">
-                      <span>Sivu: <span className="text-green-400">{pageNameFi(row.page)}</span></span>
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-[#888888]">
+                      <span>Sivu: <span className="text-[#2d6a2d]">{pageNameFi(row.page)}</span></span>
                       {row.full_name && (
                         <span>
-                          Lähettäjä: <span className="text-green-400">{row.full_name}</span>
-                          {row.club_name && <span className="text-green-700"> · {row.club_name}</span>}
+                          Lähettäjä: <span className="text-[#2d6a2d]">{row.full_name}</span>
+                          {row.club_name && <span className="text-[#2d6a2d]"> · {row.club_name}</span>}
                         </span>
                       )}
                       <span className="flex items-center gap-1">
@@ -264,7 +264,7 @@ export default function FeedbackTab({ rows: initialRows }: Props) {
                       disabled={updatingId === row.id}
                       onChange={(e) => updateStatus(row.id, e.target.value)}
                       className={`cursor-pointer rounded-lg border-0 px-2 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        STATUS_STYLE[row.status] ?? 'bg-stone-100 text-stone-600'
+                        STATUS_STYLE[row.status] ?? 'bg-stone-100 text-[#888888]'
                       } disabled:opacity-60`}
                     >
                       {STATUS_OPTIONS.map(({ value, label }) => (

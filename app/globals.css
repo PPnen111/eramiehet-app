@@ -1,8 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: #f5f0e8;
+  --background-secondary: #ffffff;
+  --background-card: #ffffff;
+  --background-hover: #f0ebe3;
+
+  --foreground: #1a1a1a;
+  --foreground-secondary: #4a4a4a;
+  --foreground-muted: #888888;
+
+  --primary: #1e3d1e;
+  --primary-hover: #162d16;
+  --primary-foreground: #ffffff;
+
+  --accent: #2d6a2d;
+  --accent-hover: #235223;
+  --accent-foreground: #ffffff;
+
+  --border: #e0d8cc;
+  --border-secondary: #d0c8bc;
+
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+
+  --success: #2d6a2d;
+  --success-bg: #eaf3de;
+  --success-text: #3b6d11;
+  --warning: #b45309;
+  --warning-bg: #fef3c7;
+  --warning-text: #92400e;
+  --danger: #991b1b;
+  --danger-bg: #fef2f2;
+  --danger-text: #991b1b;
+  --info: #1e40af;
+  --info-bg: #e6f1fb;
+  --info-text: #185fa5;
+
+  --badge-green-bg: #eaf3de;
+  --badge-green-text: #3b6d11;
+  --badge-amber-bg: #fef3c7;
+  --badge-amber-text: #92400e;
+  --badge-blue-bg: #e6f1fb;
+  --badge-blue-text: #185fa5;
 }
 
 @theme inline {

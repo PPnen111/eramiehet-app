@@ -35,7 +35,7 @@ export default function RentalLocationBooking({ locations, clubId, userId, userN
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
 
-  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-4 py-3 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
+  const inputCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-3 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
 
   const submit = async () => {
     setError('')
@@ -67,11 +67,11 @@ export default function RentalLocationBooking({ locations, clubId, userId, userN
 
   if (done) {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-2xl border border-green-700 bg-green-900/10 py-10 text-center">
-        <CheckCircle size={48} className="text-green-400" />
-        <h2 className="text-lg font-bold text-white">Varauspyyntösi on lähetetty!</h2>
-        <p className="text-sm text-green-300">Hyväksyjä vahvistaa varauksen pian.</p>
-        <button onClick={() => { setDone(false); setSelected(null); setStartsOn(''); setEndsOn(''); setNote('') }} className="rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600">
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-[#e0d8cc] bg-white py-10 text-center">
+        <CheckCircle size={48} className="text-[#2d6a2d]" />
+        <h2 className="text-lg font-bold text-[#1a1a1a]">Varauspyyntösi on lähetetty!</h2>
+        <p className="text-sm text-[#1e3d1e]">Hyväksyjä vahvistaa varauksen pian.</p>
+        <button onClick={() => { setDone(false); setSelected(null); setStartsOn(''); setEndsOn(''); setNote('') }} className="rounded-lg bg-[#1e3d1e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#162d16]">
           Tee uusi varaus
         </button>
       </div>
@@ -82,7 +82,7 @@ export default function RentalLocationBooking({ locations, clubId, userId, userN
   if (!selected) {
     return (
       <div className="space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Valitse varattava kohde</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Valitse varattava kohde</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {locations.map((loc) => {
             const Icon = TYPE_ICONS[loc.location_type] ?? MapPin
@@ -90,17 +90,17 @@ export default function RentalLocationBooking({ locations, clubId, userId, userN
               <button
                 key={loc.id}
                 onClick={() => setSelected(loc)}
-                className="rounded-2xl border border-green-800 bg-white/5 p-5 text-left hover:bg-white/[0.07] transition-colors"
+                className="rounded-2xl border border-[#e0d8cc] bg-white p-5 text-left hover:bg-white/[0.07] transition-colors"
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <Icon size={18} className="text-green-400" />
-                  <h3 className="font-semibold text-white">{loc.name}</h3>
+                  <Icon size={18} className="text-[#2d6a2d]" />
+                  <h3 className="font-semibold text-[#1a1a1a]">{loc.name}</h3>
                 </div>
-                <span className="text-xs text-green-600">{TYPE_LABELS[loc.location_type] ?? loc.location_type}</span>
-                {loc.description && <p className="mt-1 text-sm text-green-300 line-clamp-2">{loc.description}</p>}
-                {loc.pricing_text && <p className="mt-1 text-xs italic text-green-500">{loc.pricing_text}</p>}
-                {loc.max_capacity && <p className="mt-1 text-xs text-green-600">Max {loc.max_capacity} henkilöä</p>}
-                <p className="mt-2 text-xs font-semibold text-green-400">Valitse →</p>
+                <span className="text-xs text-[#888888]">{TYPE_LABELS[loc.location_type] ?? loc.location_type}</span>
+                {loc.description && <p className="mt-1 text-sm text-[#1e3d1e] line-clamp-2">{loc.description}</p>}
+                {loc.pricing_text && <p className="mt-1 text-xs italic text-[#4a4a4a]">{loc.pricing_text}</p>}
+                {loc.max_capacity && <p className="mt-1 text-xs text-[#888888]">Max {loc.max_capacity} henkilöä</p>}
+                <p className="mt-2 text-xs font-semibold text-[#2d6a2d]">Valitse →</p>
               </button>
             )
           })}
@@ -112,39 +112,39 @@ export default function RentalLocationBooking({ locations, clubId, userId, userN
   // Booking form for selected location
   return (
     <div className="space-y-4">
-      <button onClick={() => setSelected(null)} className="text-sm text-green-400 hover:text-green-300">← Vaihda kohde</button>
+      <button onClick={() => setSelected(null)} className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Vaihda kohde</button>
 
-      <div className="rounded-2xl border border-green-800 bg-white/5 p-6 space-y-4">
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-6 space-y-4">
         <div className="flex items-center gap-2 mb-2">
-          {(() => { const Icon = TYPE_ICONS[selected.location_type] ?? MapPin; return <Icon size={20} className="text-green-400" /> })()}
-          <h2 className="text-lg font-bold text-white">{selected.name}</h2>
+          {(() => { const Icon = TYPE_ICONS[selected.location_type] ?? MapPin; return <Icon size={20} className="text-[#2d6a2d]" /> })()}
+          <h2 className="text-lg font-bold text-[#1a1a1a]">{selected.name}</h2>
         </div>
 
         {selected.pricing_text && (
-          <div className="rounded-lg border border-green-900 bg-white/[0.03] px-3 py-2">
-            <p className="text-xs text-green-500 mb-1">Hinnasto</p>
-            <p className="text-sm text-green-300 whitespace-pre-wrap">{selected.pricing_text}</p>
+          <div className="rounded-lg border border-[#e0d8cc] bg-white/[0.03] px-3 py-2">
+            <p className="text-xs text-[#4a4a4a] mb-1">Hinnasto</p>
+            <p className="text-sm text-[#1e3d1e] whitespace-pre-wrap">{selected.pricing_text}</p>
           </div>
         )}
 
         {selected.instructions_text && (
-          <div className="rounded-lg border border-green-900 bg-white/[0.03] px-3 py-2">
-            <p className="text-xs text-green-500 mb-1">Ohjeet</p>
-            <p className="text-sm text-green-300 whitespace-pre-wrap">{selected.instructions_text}</p>
+          <div className="rounded-lg border border-[#e0d8cc] bg-white/[0.03] px-3 py-2">
+            <p className="text-xs text-[#4a4a4a] mb-1">Ohjeet</p>
+            <p className="text-sm text-[#1e3d1e] whitespace-pre-wrap">{selected.instructions_text}</p>
           </div>
         )}
 
-        <div><label className="mb-1 block text-sm text-green-300">Varaajan nimi *</label><input type="text" value={bookerName} onChange={(e) => setBookerName(e.target.value)} className={inputCls} /></div>
+        <div><label className="mb-1 block text-sm text-[#1e3d1e]">Varaajan nimi *</label><input type="text" value={bookerName} onChange={(e) => setBookerName(e.target.value)} className={inputCls} /></div>
         <div className="grid grid-cols-2 gap-3">
-          <div><label className="mb-1 block text-sm text-green-300">Alkupäivä *</label><input type="date" value={startsOn} onChange={(e) => setStartsOn(e.target.value)} className={inputCls} /></div>
-          <div><label className="mb-1 block text-sm text-green-300">Loppupäivä *</label><input type="date" value={endsOn} onChange={(e) => setEndsOn(e.target.value)} className={inputCls} /></div>
+          <div><label className="mb-1 block text-sm text-[#1e3d1e]">Alkupäivä *</label><input type="date" value={startsOn} onChange={(e) => setStartsOn(e.target.value)} className={inputCls} /></div>
+          <div><label className="mb-1 block text-sm text-[#1e3d1e]">Loppupäivä *</label><input type="date" value={endsOn} onChange={(e) => setEndsOn(e.target.value)} className={inputCls} /></div>
         </div>
 
         {selected.booking_unit === 'hour' && selected.min_booking_hours && (
-          <p className="text-xs text-green-500">Minimikesto: {selected.min_booking_hours} tuntia</p>
+          <p className="text-xs text-[#4a4a4a]">Minimikesto: {selected.min_booking_hours} tuntia</p>
         )}
 
-        <div><label className="mb-1 block text-sm text-green-300">Lisätiedot / erityistoiveet</label><textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className={inputCls} placeholder="Valinnainen..." /></div>
+        <div><label className="mb-1 block text-sm text-[#1e3d1e]">Lisätiedot / erityistoiveet</label><textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className={inputCls} placeholder="Valinnainen..." /></div>
 
         {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>}
 

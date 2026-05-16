@@ -46,20 +46,20 @@ export default function ClubSelector({ clubs }: { clubs: Club[] }) {
             key={club.club_id}
             onClick={() => handleSelect(club.club_id)}
             disabled={loading !== null}
-            className="group flex items-center gap-4 rounded-2xl border border-green-800 bg-white/5 p-5 text-left backdrop-blur-sm transition-all duration-150 hover:bg-white/10 hover:border-green-700 hover:shadow-lg hover:shadow-green-950/50 disabled:opacity-60"
+            className="group flex items-center gap-4 rounded-2xl border border-[#e0d8cc] bg-white p-5 text-left backdrop-blur-sm transition-all duration-150 hover:bg-[#f0ebe3] hover:border-[#e0d8cc] hover:shadow-lg hover:shadow-green-950/50 disabled:opacity-60"
           >
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-800/40 text-green-300">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#1e3d1e]/40 text-[#1e3d1e]">
               <Users size={22} strokeWidth={1.5} />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-white truncate">{club.club_name}</p>
-              <p className="mt-0.5 text-sm text-green-400">
+              <p className="font-semibold text-[#1a1a1a] truncate">{club.club_name}</p>
+              <p className="mt-0.5 text-sm text-[#2d6a2d]">
                 {roleLabel[club.role] ?? club.role}
               </p>
             </div>
             <ChevronRight
               size={18}
-              className={`shrink-0 text-green-600 transition-colors group-hover:text-green-400 ${isLoading ? 'animate-spin' : ''}`}
+              className={`shrink-0 text-[#888888] transition-colors group-hover:text-[#2d6a2d] ${isLoading ? 'animate-spin' : ''}`}
             />
           </button>
         )

@@ -21,7 +21,7 @@ export default function JoinForm({ email, clubId, token }: Props) {
   const [error, setError] = useState('')
 
   const inputClass =
-    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-green-700 focus:ring-1 focus:ring-green-700'
+    'w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-[#e0d8cc] focus:ring-1 focus:ring-[#2d6a2d]'
   const labelClass = 'mb-1 block text-sm font-medium text-neutral-700'
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -115,7 +115,7 @@ export default function JoinForm({ email, clubId, token }: Props) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-green-800 py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
+          className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-50"
         >
           {loading ? 'Luodaan tiliä...' : 'Luo tili ja liity seuraan'}
         </button>

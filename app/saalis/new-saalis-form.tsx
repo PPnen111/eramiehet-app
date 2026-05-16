@@ -197,17 +197,17 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
   }
 
   const inputClass =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
   const selectClass =
-    'w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500'
-  const labelClass = 'mb-1 block text-sm text-green-300'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]'
+  const labelClass = 'mb-1 block text-sm text-[#1e3d1e]'
 
   return (
     <>
       <div className="flex items-center gap-2">
         <button
           onClick={() => setOpen(true)}
-          className="relative shrink-0 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white"
+          className="relative shrink-0 rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white"
         >
           + Ilmoita saalis
           {pendingCount > 0 && (
@@ -217,19 +217,19 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
           )}
         </button>
         {pendingCount > 0 && (
-          <span className="flex items-center gap-1 text-xs text-amber-400">
+          <span className="flex items-center gap-1 text-xs text-[#b45309]">
             <WifiOff size={12} />
             {pendingCount} jonossa
           </span>
         )}
         {syncStatus === 'syncing' && (
-          <span className="flex items-center gap-1 text-xs text-green-400">
+          <span className="flex items-center gap-1 text-xs text-[#2d6a2d]">
             <Clock size={12} />
             Synkronoidaan...
           </span>
         )}
         {syncStatus === 'done' && (
-          <span className="text-xs text-green-400">Synkronoitu ✓</span>
+          <span className="text-xs text-[#2d6a2d]">Synkronoitu ✓</span>
         )}
       </div>
 
@@ -238,12 +238,12 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
           className="fixed inset-0 z-50 flex items-start justify-center bg-black/70 px-4 py-6 overflow-y-auto"
           onClick={(e) => { if (e.target === e.currentTarget) handleClose() }}
         >
-          <div className="w-full max-w-lg rounded-2xl border border-green-800 bg-green-950 p-5 shadow-2xl">
-            <h2 className="mb-4 font-semibold text-white">Uusi saalisilmoitus</h2>
+          <div className="w-full max-w-lg rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] p-5 shadow-2xl">
+            <h2 className="mb-4 font-semibold text-[#1a1a1a]">Uusi saalisilmoitus</h2>
             {!navigator?.onLine && (
-              <div className="mb-4 flex items-start gap-2 rounded-lg bg-amber-900/30 border border-amber-700/50 px-3 py-2">
-                <WifiOff size={14} className="mt-0.5 shrink-0 text-amber-400" />
-                <p className="text-xs text-amber-300">
+              <div className="mb-4 flex items-start gap-2 rounded-lg bg-[#fef3c7] border border-[#fcd34d]/50 px-3 py-2">
+                <WifiOff size={14} className="mt-0.5 shrink-0 text-[#b45309]" />
+                <p className="text-xs text-[#92400e]">
                   Ei verkkoyhteyttä. Ilmoitus tallennetaan paikallisesti ja lähetetään automaattisesti kun yhteys palaa.
                 </p>
               </div>
@@ -346,14 +346,14 @@ export default function NewSaalisForm({ clubId, profileId }: Props) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                  className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white disabled:opacity-50"
                 >
                   {loading ? 'Tallennetaan...' : 'Tallenna'}
                 </button>
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300"
+                  className="rounded-lg border border-[#e0d8cc] px-4 py-2 text-sm text-[#1e3d1e]"
                 >
                   Peruuta
                 </button>

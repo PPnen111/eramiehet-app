@@ -48,19 +48,19 @@ export default function UusiPage() {
     }
   }
 
-  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-4 py-3 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
-  const selectCls = 'w-full rounded-lg border border-green-800 bg-green-950 px-4 py-3 text-sm text-white outline-none focus:border-green-500'
-  const labelCls = 'mb-1 block text-sm font-medium text-green-300'
+  const inputCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-3 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
+  const selectCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-4 py-3 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]'
+  const labelCls = 'mb-1 block text-sm font-medium text-[#1e3d1e]'
 
   if (done) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center px-4">
+      <main className="min-h-screen bg-[#f5f0e8] flex items-center justify-center px-4">
         <div className="mx-auto max-w-md text-center space-y-6">
-          <CheckCircle size={64} className="mx-auto text-green-400" />
-          <h1 className="text-2xl font-bold text-white">Tilisi on luotu!</h1>
-          <p className="text-green-300">
+          <CheckCircle size={64} className="mx-auto text-[#2d6a2d]" />
+          <h1 className="text-2xl font-bold text-[#1a1a1a]">Tilisi on luotu!</h1>
+          <p className="text-[#1e3d1e]">
             Olemme lähettäneet aktivointiviestin osoitteeseen{' '}
-            <span className="font-semibold text-white">{form.contact_email}</span>.
+            <span className="font-semibold text-[#1a1a1a]">{form.contact_email}</span>.
             Tarkista sähköpostisi ja aseta salasanasi.
           </p>
           <a
@@ -69,7 +69,7 @@ export default function UusiPage() {
           >
             Kirjaudu JahtiProhon →
           </a>
-          <p className="text-xs text-green-600">
+          <p className="text-xs text-[#888888]">
             Ensimmäinen kirjautuminen ohjaa sinut käyttöönotto-oppaaseen.
           </p>
         </div>
@@ -78,17 +78,17 @@ export default function UusiPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-12">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-12">
       <div className="mx-auto max-w-lg">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">JahtiPro</h1>
-          <p className="mt-2 text-lg text-green-300">Aloita ilmainen 14 päivän kokeilu</p>
-          <p className="mt-1 text-sm text-green-500">Ei luottokorttia &bull; Ei sitoumuksia &bull; Valmis 5 minuutissa</p>
+          <h1 className="text-3xl font-bold text-[#1a1a1a]">JahtiPro</h1>
+          <p className="mt-2 text-lg text-[#1e3d1e]">Aloita ilmainen 14 päivän kokeilu</p>
+          <p className="mt-1 text-sm text-[#4a4a4a]">Ei luottokorttia &bull; Ei sitoumuksia &bull; Valmis 5 minuutissa</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={submit} className="space-y-4 rounded-2xl border border-green-800 bg-white/5 p-6">
+        <form onSubmit={submit} className="space-y-4 rounded-2xl border border-[#e0d8cc] bg-white p-6">
           <div>
             <label className={labelCls}>Seuran nimi *</label>
             <input type="text" value={form.club_name} onChange={(e) => set('club_name', e.target.value)} placeholder="esim. Erämiesten Metsästysseura ry" className={inputCls} />
@@ -112,12 +112,12 @@ export default function UusiPage() {
             </select>
           </div>
           <div className="flex items-center gap-3">
-            <input type="checkbox" id="cabin" checked={form.has_cabin} onChange={(e) => set('has_cabin', e.target.checked)} className="h-4 w-4 rounded border-green-700 bg-green-950 text-green-500" />
-            <label htmlFor="cabin" className="text-sm text-green-300">Onko teillä tällä hetkellä varattavia tiloja tai eräkoteja/mökkejä?</label>
+            <input type="checkbox" id="cabin" checked={form.has_cabin} onChange={(e) => set('has_cabin', e.target.checked)} className="h-4 w-4 rounded border-[#e0d8cc] bg-[#f5f0e8] text-[#4a4a4a]" />
+            <label htmlFor="cabin" className="text-sm text-[#1e3d1e]">Onko teillä tällä hetkellä varattavia tiloja tai eräkoteja/mökkejä?</label>
           </div>
           <div>
-            <label className="mb-1 block text-xs text-green-600">Kampanjakoodi (valinnainen)</label>
-            <input type="text" value={form.promo_code} onChange={(e) => set('promo_code', e.target.value)} placeholder="" className="w-full rounded-lg border border-green-900 bg-white/5 px-3 py-2 text-xs text-white placeholder-green-700 outline-none focus:border-green-500" />
+            <label className="mb-1 block text-xs text-[#888888]">Kampanjakoodi (valinnainen)</label>
+            <input type="text" value={form.promo_code} onChange={(e) => set('promo_code', e.target.value)} placeholder="" className="w-full rounded-lg border border-[#e0d8cc] bg-white px-3 py-2 text-xs text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]" />
           </div>
 
           {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>}
@@ -126,15 +126,15 @@ export default function UusiPage() {
             {busy ? 'Lähetetään...' : 'Aloita kokeilu →'}
           </button>
 
-          <p className="text-center text-xs text-green-700">
+          <p className="text-center text-xs text-[#2d6a2d]">
             Jättämällä tiedot hyväksyt{' '}
-            <a href="/tietosuoja" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-500">tietosuojaselosteen</a>
+            <a href="/tietosuoja" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#4a4a4a]">tietosuojaselosteen</a>
           </p>
         </form>
 
-        <p className="mt-6 text-center text-sm text-green-600">
+        <p className="mt-6 text-center text-sm text-[#888888]">
           Onko sinulla jo tili?{' '}
-          <Link href="/login" className="text-green-400 hover:text-green-300">Kirjaudu sisään</Link>
+          <Link href="/login" className="text-[#2d6a2d] hover:text-[#1e3d1e]">Kirjaudu sisään</Link>
         </p>
       </div>
     </main>

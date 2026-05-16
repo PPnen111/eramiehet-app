@@ -72,7 +72,7 @@ export default function OfflineSync() {
   if (!toast) return null
 
   return (
-    <div className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white shadow-lg">
+    <div className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white shadow-lg">
       ✓ {toast}
     </div>
   )

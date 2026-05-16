@@ -31,12 +31,12 @@ export default function DemoPage() {
 
   if (done) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center px-4">
+      <main className="min-h-screen bg-[#f5f0e8] flex items-center justify-center px-4">
         <div className="mx-auto max-w-md text-center space-y-6">
-          <CheckCircle size={64} className="mx-auto text-green-400" />
-          <h1 className="text-2xl font-bold text-white">Tunnukset lähetetty!</h1>
-          <p className="text-green-300">
-            Tarkista sähköpostisi <span className="font-semibold text-white">{email}</span> — kirjautumistiedot ovat matkalla.
+          <CheckCircle size={64} className="mx-auto text-[#2d6a2d]" />
+          <h1 className="text-2xl font-bold text-[#1a1a1a]">Tunnukset lähetetty!</h1>
+          <p className="text-[#1e3d1e]">
+            Tarkista sähköpostisi <span className="font-semibold text-[#1a1a1a]">{email}</span> — kirjautumistiedot ovat matkalla.
           </p>
           <a
             href="https://jahtipro.fi/login"
@@ -50,25 +50,25 @@ export default function DemoPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-12">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-12">
       <div className="mx-auto max-w-md">
         <div className="mb-8 text-center">
-          <Link href="/landing-test" className="text-2xl font-bold text-green-400">JahtiPro</Link>
-          <h1 className="mt-4 text-3xl font-bold text-white">Kokeile JahtiProta ilmaiseksi</h1>
-          <p className="mt-3 text-sm text-green-300 leading-relaxed">
+          <Link href="/landing-test" className="text-2xl font-bold text-[#2d6a2d]">JahtiPro</Link>
+          <h1 className="mt-4 text-3xl font-bold text-[#1a1a1a]">Kokeile JahtiProta ilmaiseksi</h1>
+          <p className="mt-3 text-sm text-[#1e3d1e] leading-relaxed">
             Syötä sähköpostiosoitteesi ja saat henkilökohtaiset tunnukset Demo Erämiehet -seuraan. Tunnus on voimassa 14 päivää.
           </p>
         </div>
 
-        <form onSubmit={submit} className="space-y-4 rounded-2xl border border-green-800 bg-white/5 p-6">
+        <form onSubmit={submit} className="space-y-4 rounded-2xl border border-[#e0d8cc] bg-white p-6">
           <div>
-            <label className="mb-1 block text-sm font-medium text-green-300">Sähköposti</label>
+            <label className="mb-1 block text-sm font-medium text-[#1e3d1e]">Sähköposti</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="oma@email.fi"
-              className="w-full rounded-lg border border-green-800 bg-white/10 px-4 py-3 text-sm text-white placeholder-green-600 outline-none focus:border-green-500"
+              className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-3 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
             />
           </div>
 
@@ -82,14 +82,14 @@ export default function DemoPage() {
             {busy ? 'Luodaan tunnuksia...' : 'Aloita demo →'}
           </button>
 
-          <p className="text-center text-xs text-green-600">
+          <p className="text-center text-xs text-[#888888]">
             Ei luottokorttia. Ei sitoumuksia.
           </p>
         </form>
 
-        <p className="mt-6 text-center text-sm text-green-600">
+        <p className="mt-6 text-center text-sm text-[#888888]">
           Onko sinulla jo tili?{' '}
-          <Link href="/login" className="text-green-400 hover:text-green-300">Kirjaudu sisään</Link>
+          <Link href="/login" className="text-[#2d6a2d] hover:text-[#1e3d1e]">Kirjaudu sisään</Link>
         </p>
       </div>
     </main>

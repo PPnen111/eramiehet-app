@@ -38,12 +38,12 @@ export default async function ErakartanoPage() {
 
   if (!profile) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+      <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
         <div className="mx-auto max-w-2xl space-y-4">
-          <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
+          <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
             ← Takaisin
           </Link>
-          <p className="text-green-300">Profiilia ei löydy.</p>
+          <p className="text-[#1e3d1e]">Profiilia ei löydy.</p>
         </div>
       </main>
     )
@@ -65,12 +65,12 @@ export default async function ErakartanoPage() {
   // MODE A: New rental locations system
   if (locations.length > 0) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+      <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
         <div className="mx-auto max-w-2xl space-y-6">
-          <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
+          <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
             ← Takaisin
           </Link>
-          <h1 className="text-2xl font-bold text-white">Varaukset</h1>
+          <h1 className="text-2xl font-bold text-[#1a1a1a]">Varaukset</h1>
           <RentalLocationBooking
             locations={locations}
             clubId={profile.club_id}
@@ -100,12 +100,12 @@ export default async function ErakartanoPage() {
   const bookings = (raw ?? []) as unknown as BookingRow[]
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
+        <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           ← Takaisin
         </Link>
-        <h1 className="text-2xl font-bold text-white">Eräkartano – varaukset</h1>
+        <h1 className="text-2xl font-bold text-[#1a1a1a]">Eräkartano – varaukset</h1>
 
         <ErakartanoTabs
           bookings={bookings}
@@ -113,31 +113,31 @@ export default async function ErakartanoPage() {
           isAdmin={isAdmin}
         />
 
-        <section className="rounded-2xl border border-green-800 bg-white/5 p-5">
+        <section className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
           <div className="mb-3 flex items-center justify-between gap-2">
-            <h2 className="font-semibold text-white">Hinnasto</h2>
+            <h2 className="font-semibold text-[#1a1a1a]">Hinnasto</h2>
             {isAdmin && (
-              <Link href="/erakartano/muokkaa-info" className="text-xs text-green-400 hover:text-green-300">Muokkaa</Link>
+              <Link href="/erakartano/muokkaa-info" className="text-xs text-[#2d6a2d] hover:text-[#1e3d1e]">Muokkaa</Link>
             )}
           </div>
           {cabinInfo?.pricing_text ? (
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-green-300">{cabinInfo.pricing_text}</p>
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#1e3d1e]">{cabinInfo.pricing_text}</p>
           ) : (
-            <p className="text-sm text-green-600">Hinnastoa ei ole asetettu.</p>
+            <p className="text-sm text-[#888888]">Hinnastoa ei ole asetettu.</p>
           )}
         </section>
 
-        <section className="rounded-2xl border border-green-800 bg-white/5 p-5">
+        <section className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
           <div className="mb-3 flex items-center justify-between gap-2">
-            <h2 className="font-semibold text-white">Ohjeet</h2>
+            <h2 className="font-semibold text-[#1a1a1a]">Ohjeet</h2>
             {isAdmin && (
-              <Link href="/erakartano/muokkaa-info" className="text-xs text-green-400 hover:text-green-300">Muokkaa</Link>
+              <Link href="/erakartano/muokkaa-info" className="text-xs text-[#2d6a2d] hover:text-[#1e3d1e]">Muokkaa</Link>
             )}
           </div>
           {cabinInfo?.instructions_text ? (
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-green-300">{cabinInfo.instructions_text}</p>
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#1e3d1e]">{cabinInfo.instructions_text}</p>
           ) : (
-            <p className="text-sm text-green-600">Ohjeita ei ole asetettu.</p>
+            <p className="text-sm text-[#888888]">Ohjeita ei ole asetettu.</p>
           )}
         </section>
       </div>

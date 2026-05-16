@@ -71,22 +71,22 @@ export default function MfaVerifyPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center">
-        <p className="text-green-500">Ladataan...</p>
+      <main className="min-h-screen bg-[#f5f0e8] flex items-center justify-center">
+        <p className="text-[#4a4a4a]">Ladataan...</p>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-[#f5f0e8] flex items-center justify-center px-4">
       <div className="mx-auto max-w-sm w-full space-y-6">
         <div className="text-center">
-          <Shield size={48} className="mx-auto text-green-400 mb-4" />
-          <h1 className="text-xl font-bold text-white">Kaksivaiheinen tunnistautuminen</h1>
-          <p className="mt-2 text-sm text-green-400">Syötä 6-numeroinen koodi sovelluksestasi</p>
+          <Shield size={48} className="mx-auto text-[#2d6a2d] mb-4" />
+          <h1 className="text-xl font-bold text-[#1a1a1a]">Kaksivaiheinen tunnistautuminen</h1>
+          <p className="mt-2 text-sm text-[#2d6a2d]">Syötä 6-numeroinen koodi sovelluksestasi</p>
         </div>
 
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-6 space-y-4">
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-6 space-y-4">
           <input
             type="text"
             value={code}
@@ -96,7 +96,7 @@ export default function MfaVerifyPage() {
             maxLength={6}
             inputMode="numeric"
             autoFocus
-            className="w-full rounded-lg border border-green-800 bg-white/10 px-4 py-4 text-center text-3xl tracking-[0.6em] text-white placeholder-green-700 outline-none focus:border-green-500 font-mono"
+            className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-4 text-center text-3xl tracking-[0.6em] text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d] font-mono"
           />
 
           {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-center text-red-300">{error}</p>}
@@ -110,7 +110,7 @@ export default function MfaVerifyPage() {
           </button>
         </div>
 
-        <p className="text-center text-xs text-green-600">
+        <p className="text-center text-xs text-[#888888]">
           Avaa Google Authenticator tai Authy ja syötä koodi
         </p>
       </div>
