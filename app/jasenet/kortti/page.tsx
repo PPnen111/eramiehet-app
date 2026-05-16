@@ -63,18 +63,18 @@ export default async function JasenkorttPage() {
   const isActive = profile.member_status === 'active'
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8 print:bg-white">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8 print:bg-white">
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between print:hidden">
-          <Link href="/jasenet" className="text-sm text-green-400 hover:text-green-300">
+          <Link href="/jasenet" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
             ← Takaisin
           </Link>
           <PrintButton />
         </div>
 
-        <h1 className="text-xl font-bold text-white print:hidden">Jäsenkortti</h1>
+        <h1 className="text-xl font-bold text-[#1a1a1a] print:hidden">Jäsenkortti</h1>
 
-        {/* Physical-style membership card — landscape */}
+        {/* Physical-style membership card — intentionally dark green like a real ID card */}
         <div
           className="
             mx-auto w-full max-w-sm
@@ -87,7 +87,7 @@ export default async function JasenkorttPage() {
           {/* Top row: club name + status */}
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-green-500">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-green-300">
                 Jäsenkortti
               </p>
               <p className="mt-0.5 text-sm font-bold text-white">{clubName}</p>
@@ -105,7 +105,7 @@ export default async function JasenkorttPage() {
 
           {/* Member name */}
           <div className="mt-5">
-            <p className="text-[10px] uppercase tracking-widest text-green-500">Jäsen</p>
+            <p className="text-[10px] uppercase tracking-widest text-green-300">Jäsen</p>
             <p className="mt-0.5 text-xl font-bold tracking-wide text-white">
               {profile.full_name ?? '—'}
             </p>
@@ -115,20 +115,20 @@ export default async function JasenkorttPage() {
           <div className="mt-5 flex items-end justify-between gap-4">
             <div className="space-y-1">
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-green-500">Rooli</p>
-                <p className="text-sm font-medium text-green-200">
+                <p className="text-[10px] uppercase tracking-widest text-green-300">Rooli</p>
+                <p className="text-sm font-medium text-white">
                   {roleLabel[profile.role] ?? profile.role}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-green-500">Liittynyt</p>
-                <p className="text-sm font-medium text-green-200">
+                <p className="text-[10px] uppercase tracking-widest text-green-300">Liittynyt</p>
+                <p className="text-sm font-medium text-white">
                   {formatJoinDate(profile.join_date)}
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-[10px] uppercase tracking-widest text-green-500">Jäsen-ID</p>
+              <p className="text-[10px] uppercase tracking-widest text-green-300">Jäsen-ID</p>
               <p className="font-mono text-sm font-semibold text-green-300">{memberId}</p>
             </div>
           </div>

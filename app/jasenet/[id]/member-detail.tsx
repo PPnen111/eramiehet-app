@@ -18,15 +18,15 @@ const STATUS_OPTIONS = [
 ]
 
 const ROLE_BADGE: Record<string, string> = {
-  admin: 'bg-yellow-900/60 text-yellow-300',
+  admin: 'bg-[#fef3c7]/60 text-[#92400e]',
   board_member: 'bg-blue-900/60 text-blue-300',
-  member: 'bg-green-900/60 text-green-300',
+  member: 'bg-[#f0ebe3] text-[#1e3d1e]',
   superadmin: 'bg-purple-900/60 text-purple-300',
 }
 
 const PAYMENT_STATUS_STYLE: Record<string, string> = {
-  paid: 'text-green-400',
-  pending: 'text-yellow-400',
+  paid: 'text-[#2d6a2d]',
+  pending: 'text-[#b45309]',
   overdue: 'text-red-400',
 }
 
@@ -125,13 +125,13 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
   const roleLabel = ROLE_OPTIONS.find((r) => r.value === member.role)?.label ?? member.role
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-3xl space-y-6">
 
         {/* Back + header */}
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-1.5 text-sm text-green-400 hover:text-green-300 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-[#2d6a2d] hover:text-[#1e3d1e] transition-colors"
         >
           <ArrowLeft size={15} />
           Jäsenet
@@ -140,17 +140,17 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
         {/* Profile header */}
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">{member.full_name ?? '—'}</h1>
+            <h1 className="text-2xl font-bold text-[#1a1a1a]">{member.full_name ?? '—'}</h1>
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${ROLE_BADGE[member.role] ?? 'bg-stone-700 text-stone-300'}`}>
+              <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${ROLE_BADGE[member.role] ?? 'bg-[#1e3d1e] text-[#4a4a4a]'}`}>
                 {roleLabel}
               </span>
               {member.has_logged_in ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-green-900/60 px-2 py-0.5 text-xs font-medium text-green-300">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#f0ebe3] px-2 py-0.5 text-xs font-medium text-[#1e3d1e]">
                   ✅ Kirjautunut
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-stone-700 px-2 py-0.5 text-xs font-medium text-stone-300">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#1e3d1e] px-2 py-0.5 text-xs font-medium text-[#4a4a4a]">
                   ⏳ Ei kirjautunut
                 </span>
               )}
@@ -161,7 +161,7 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
             <button
               onClick={handleInvite}
               disabled={inviting || invited}
-              className="flex items-center gap-2 rounded-xl border border-green-700 px-4 py-2 text-sm font-medium text-green-300 hover:bg-green-900/30 disabled:opacity-50 transition-colors"
+              className="flex items-center gap-2 rounded-xl border border-[#e0d8cc] px-4 py-2 text-sm font-medium text-[#1e3d1e] hover:bg-white disabled:opacity-50 transition-colors"
             >
               {invited ? <CheckCircle size={15} /> : <Mail size={15} />}
               {invited ? 'Kutsu lähetetty ✓' : inviting ? 'Lähetetään...' : 'Lähetä kutsu'}
@@ -174,11 +174,11 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
 
           {/* LEFT: Personal info */}
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
               Henkilötiedot
             </h2>
 
-            <div className="rounded-2xl border border-green-800 bg-white/5 p-4 space-y-3">
+            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
               <Field label="Nimi">
                 <input
                   value={form.full_name ?? ''}
@@ -225,10 +225,10 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
               </Field>
             </div>
 
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
               Osoitetiedot
             </h2>
-            <div className="rounded-2xl border border-green-800 bg-white/5 p-4 space-y-3">
+            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
               <Field label="Postitusosoite">
                 <input
                   value={form.street_address ?? ''}
@@ -261,7 +261,7 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
               </Field>
             </div>
 
-            <div className="rounded-2xl border border-green-800 bg-white/5 p-4 space-y-3">
+            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
               <Field label="Laskutustapa">
                 <input
                   value={form.billing_method ?? ''}
@@ -282,10 +282,10 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
 
           {/* RIGHT: Membership + payments */}
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
               Jäsenyys
             </h2>
-            <div className="rounded-2xl border border-green-800 bg-white/5 p-4 space-y-3">
+            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
               <Field label="Rooli seurassa">
                 <select
                   value={form.role}
@@ -298,7 +298,7 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
                   ))}
                 </select>
                 {isSelf && (
-                  <p className="mt-1 text-xs text-green-700">Et voi muuttaa omaa rooliasi</p>
+                  <p className="mt-1 text-xs text-[#2d6a2d]">Et voi muuttaa omaa rooliasi</p>
                 )}
               </Field>
               <Field label="Jäsenyyden tila">
@@ -323,32 +323,32 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
             </div>
 
             {/* Payments */}
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
               Maksut ({member.payments.length})
             </h2>
-            <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
+            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
               {member.payments.length === 0 ? (
-                <p className="text-sm text-green-700">Ei maksuja.</p>
+                <p className="text-sm text-[#2d6a2d]">Ei maksuja.</p>
               ) : (
                 <div className="space-y-2">
                   {member.payments.map((p) => (
                     <div
                       key={p.id}
-                      className="flex items-center justify-between gap-3 rounded-lg border border-green-900 bg-white/[0.03] px-3 py-2"
+                      className="flex items-center justify-between gap-3 rounded-lg border border-[#e0d8cc] bg-white/[0.03] px-3 py-2"
                     >
                       <div className="min-w-0">
-                        <p className="truncate text-sm text-white">{p.description ?? '—'}</p>
+                        <p className="truncate text-sm text-[#1a1a1a]">{p.description ?? '—'}</p>
                         {p.due_date && (
-                          <p className="text-xs text-green-600">
+                          <p className="text-xs text-[#888888]">
                             Eräpäivä {new Date(p.due_date).toLocaleDateString('fi-FI')}
                           </p>
                         )}
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="text-sm font-semibold text-white">
+                        <p className="text-sm font-semibold text-[#1a1a1a]">
                           {(p.amount_cents / 100).toFixed(2)} €
                         </p>
-                        <p className={`text-xs ${PAYMENT_STATUS_STYLE[p.status] ?? 'text-stone-400'}`}>
+                        <p className={`text-xs ${PAYMENT_STATUS_STYLE[p.status] ?? 'text-[#888888]'}`}>
                           {PAYMENT_STATUS_LABEL[p.status] ?? p.status}
                         </p>
                       </div>
@@ -365,12 +365,12 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded-xl bg-green-700 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-green-600 disabled:opacity-50 transition-colors"
+            className="rounded-xl bg-[#1e3d1e] px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-[#162d16] disabled:opacity-50 transition-colors"
           >
             {saving ? 'Tallennetaan...' : 'Tallenna muutokset'}
           </button>
           {saved && (
-            <span className="text-sm text-green-400">Tallennettu ✓</span>
+            <span className="text-sm text-[#2d6a2d]">Tallennettu ✓</span>
           )}
           {saveError && (
             <span className="text-sm text-red-400">{saveError}</span>
@@ -382,12 +382,12 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
 }
 
 const inputCls =
-  'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500 focus:bg-white/15 transition-colors'
+  'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d] focus:bg-[#f0ebe3] transition-colors'
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="mb-1 block text-xs font-medium text-green-500">{label}</label>
+      <label className="mb-1 block text-xs font-medium text-[#4a4a4a]">{label}</label>
       {children}
     </div>
   )

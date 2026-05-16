@@ -43,18 +43,18 @@ export default async function JasenetPage() {
   const members = (raw ?? []) as MemberRow[]
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between gap-4">
-          <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
+          <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Takaisin</Link>
           <Link
             href="/jasenet/kortti"
-            className="rounded-xl border border-green-700 px-3 py-1.5 text-sm font-medium text-green-300 hover:bg-green-900/30"
+            className="rounded-xl border border-[#e0d8cc] px-3 py-1.5 text-sm font-medium text-[#1e3d1e] hover:bg-white"
           >
             Jäsenkortti
           </Link>
         </div>
-        <h1 className="text-2xl font-bold text-white">Jäsenet</h1>
+        <h1 className="text-2xl font-bold text-[#1a1a1a]">Jäsenet</h1>
         <MemberSearch members={members} />
       </div>
     </main>

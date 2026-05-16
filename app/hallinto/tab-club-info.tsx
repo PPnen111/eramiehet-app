@@ -87,15 +87,15 @@ export default function TabClubInfo({ clubId }: Props) {
     setForm((f) => ({ ...f, [field]: e.target.value }))
 
   const inputClass =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500'
-  const labelClass = 'mb-1 block text-sm text-green-300'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
+  const labelClass = 'mb-1 block text-sm text-[#1e3d1e]'
 
-  if (loading) return <p className="text-sm text-green-500">Ladataan...</p>
+  if (loading) return <p className="text-sm text-[#4a4a4a]">Ladataan...</p>
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
           Seuran perustiedot
         </h2>
 
@@ -110,8 +110,8 @@ export default function TabClubInfo({ clubId }: Props) {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
           Osoitetiedot
         </h2>
 
@@ -126,8 +126,8 @@ export default function TabClubInfo({ clubId }: Props) {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
           Yhteystiedot
         </h2>
 
@@ -149,7 +149,7 @@ export default function TabClubInfo({ clubId }: Props) {
       </div>
 
       {success && (
-        <p className="rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">{success}</p>
+        <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1e3d1e]">{success}</p>
       )}
       {error && (
         <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>
@@ -158,7 +158,7 @@ export default function TabClubInfo({ clubId }: Props) {
       <button
         type="submit"
         disabled={saving}
-        className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+        className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
       >
         {saving ? 'Tallennetaan...' : 'Tallenna tiedot'}
       </button>
@@ -216,35 +216,35 @@ function BankAccountsSection({ clubId }: { clubId: string }) {
     void load()
   }
 
-  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500'
-  const labelCls = 'mb-1 block text-sm text-green-300'
+  const inputCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
+  const labelCls = 'mb-1 block text-sm text-[#1e3d1e]'
 
   return (
-    <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
+    <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Tilinumerot</h2>
-        <button onClick={openNew} className="flex items-center gap-1 rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Tilinumerot</h2>
+        <button onClick={openNew} className="flex items-center gap-1 rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162d16]">
           <Plus size={12} /> Lisää tilinumero
         </button>
       </div>
 
-      {toast && <p className="rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">{toast}</p>}
+      {toast && <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1e3d1e]">{toast}</p>}
 
-      {loading ? <p className="text-sm text-green-500">Ladataan...</p> : accounts.length === 0 ? (
-        <p className="text-sm text-green-600">Ei tilinumeroita. Lisää seuran tilinumero laskuja varten.</p>
+      {loading ? <p className="text-sm text-[#4a4a4a]">Ladataan...</p> : accounts.length === 0 ? (
+        <p className="text-sm text-[#888888]">Ei tilinumeroita. Lisää seuran tilinumero laskuja varten.</p>
       ) : (
         <div className="space-y-2">
           {accounts.map((a) => (
-            <div key={a.id} className="flex items-center justify-between rounded-lg border border-green-900/40 bg-white/[0.02] px-3 py-2 text-sm">
+            <div key={a.id} className="flex items-center justify-between rounded-lg border border-[#e0d8cc]/40 bg-white/[0.02] px-3 py-2 text-sm">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-white">{a.account_name}</span>
-                  {a.is_default && <Star size={12} className="text-yellow-400" />}
+                  <span className="font-medium text-[#1a1a1a]">{a.account_name}</span>
+                  {a.is_default && <Star size={12} className="text-[#b45309]" />}
                 </div>
-                <p className="text-xs text-green-400">{a.iban}{a.bic ? ` · ${a.bic}` : ''}</p>
+                <p className="text-xs text-[#2d6a2d]">{a.iban}{a.bic ? ` · ${a.bic}` : ''}</p>
               </div>
               <div className="flex items-center gap-1">
-                <button onClick={() => openEdit(a)} className="rounded-md p-1 text-green-600 hover:text-green-300"><Pencil size={12} /></button>
+                <button onClick={() => openEdit(a)} className="rounded-md p-1 text-[#888888] hover:text-[#1e3d1e]"><Pencil size={12} /></button>
                 <button onClick={() => void del(a.id)} className="rounded-md p-1 text-red-500 hover:text-red-300"><Trash2 size={12} /></button>
               </div>
             </div>
@@ -253,18 +253,18 @@ function BankAccountsSection({ clubId }: { clubId: string }) {
       )}
 
       {formOpen && (
-        <div className="rounded-xl border border-green-700 bg-green-900/20 p-4 space-y-3">
-          <h3 className="text-sm font-semibold text-white">{editId ? 'Muokkaa tiliä' : 'Lisää tilinumero'}</h3>
+        <div className="rounded-xl border border-[#e0d8cc] bg-white p-4 space-y-3">
+          <h3 className="text-sm font-semibold text-[#1a1a1a]">{editId ? 'Muokkaa tiliä' : 'Lisää tilinumero'}</h3>
           <div><label className={labelCls}>Tilin nimi *</label><input type="text" value={af.account_name} onChange={(e) => setAf((f) => ({ ...f, account_name: e.target.value }))} className={inputCls} placeholder="esim. Päätiili" /></div>
           <div><label className={labelCls}>IBAN *</label><input type="text" value={af.iban} onChange={(e) => setAf((f) => ({ ...f, iban: e.target.value }))} className={inputCls} placeholder="FI12 3456 7890 1234 56" /></div>
           <div><label className={labelCls}>BIC</label><input type="text" value={af.bic} onChange={(e) => setAf((f) => ({ ...f, bic: e.target.value }))} className={inputCls} placeholder="NDEAFIHH" /></div>
-          <label className="flex items-center gap-2 text-sm text-green-300">
-            <input type="checkbox" checked={af.is_default} onChange={(e) => setAf((f) => ({ ...f, is_default: e.target.checked }))} className="h-4 w-4 rounded border-green-700 bg-green-950" />
+          <label className="flex items-center gap-2 text-sm text-[#1e3d1e]">
+            <input type="checkbox" checked={af.is_default} onChange={(e) => setAf((f) => ({ ...f, is_default: e.target.checked }))} className="h-4 w-4 rounded border-[#e0d8cc] bg-[#f5f0e8]" />
             Aseta oletustiliksi
           </label>
           <div className="flex gap-2">
-            <button onClick={() => void save()} disabled={busy || !af.account_name.trim() || !af.iban.trim()} className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Tallennetaan...' : 'Tallenna'}</button>
-            <button onClick={() => setFormOpen(false)} className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300">Peruuta</button>
+            <button onClick={() => void save()} disabled={busy || !af.account_name.trim() || !af.iban.trim()} className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white disabled:opacity-50">{busy ? 'Tallennetaan...' : 'Tallenna'}</button>
+            <button onClick={() => setFormOpen(false)} className="rounded-lg border border-[#e0d8cc] px-4 py-2 text-sm text-[#1e3d1e]">Peruuta</button>
           </div>
         </div>
       )}

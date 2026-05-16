@@ -40,15 +40,15 @@ export default function AdminPanel({ clubId, initialMembers, isAdmin }: Props) {
   return (
     <div className="space-y-5">
       {/* Tab bar */}
-      <div className="flex gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
+      <div className="flex gap-1 rounded-xl border border-[#e0d8cc] bg-white p-1">
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setActive(t.id)}
             className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${
               active === t.id
-                ? 'bg-green-700 text-white'
-                : 'text-green-400 hover:text-green-200'
+                ? 'bg-[#1e3d1e] text-white'
+                : 'text-[#2d6a2d] hover:text-[#1a1a1a]'
             }`}
           >
             {t.label}

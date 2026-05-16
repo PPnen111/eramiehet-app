@@ -47,23 +47,23 @@ export default function RegistryMemberDetail({ member }: Props) {
     if (res.ok) router.push('/hallinto')
   }
 
-  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
-  const labelCls = 'mb-1 block text-xs text-green-400'
+  const inputCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
+  const labelCls = 'mb-1 block text-xs text-[#2d6a2d]'
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/hallinto" className="flex items-center gap-1 text-sm text-green-400 hover:text-green-300">
+        <Link href="/hallinto" className="flex items-center gap-1 text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           <ArrowLeft size={14} /> Takaisin
         </Link>
 
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-white">{form.full_name ?? '—'}</h1>
+            <h1 className="text-2xl font-bold text-[#1a1a1a]">{form.full_name ?? '—'}</h1>
             <p className="mt-1 text-xs text-blue-400">📋 Ei sovellustunnusta</p>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => setInvoiceOpen(true)} className="flex items-center gap-1.5 rounded-lg bg-green-700 px-3 py-2 text-xs font-semibold text-white hover:bg-green-600">
+            <button onClick={() => setInvoiceOpen(true)} className="flex items-center gap-1.5 rounded-lg bg-[#1e3d1e] px-3 py-2 text-xs font-semibold text-white hover:bg-[#162d16]">
               <Receipt size={13} /> Lähetä lasku
             </button>
           </div>
@@ -77,8 +77,8 @@ export default function RegistryMemberDetail({ member }: Props) {
         )}
 
         {/* Henkilötiedot */}
-        <section className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Henkilötiedot</h2>
+        <section className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Henkilötiedot</h2>
           <div><label className={labelCls}>Nimi *</label><input type="text" value={form.full_name ?? ''} onChange={(e) => set('full_name', e.target.value)} className={inputCls} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><label className={labelCls}>Sähköposti</label><input type="email" value={form.email ?? ''} onChange={(e) => set('email', e.target.value)} className={inputCls} /></div>
@@ -92,8 +92,8 @@ export default function RegistryMemberDetail({ member }: Props) {
         </section>
 
         {/* Osoitetiedot */}
-        <section className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Osoitetiedot</h2>
+        <section className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Osoitetiedot</h2>
           <div><label className={labelCls}>Katuosoite</label><input type="text" value={form.street_address ?? ''} onChange={(e) => set('street_address', e.target.value)} className={inputCls} /></div>
           <div className="grid grid-cols-3 gap-3">
             <div><label className={labelCls}>Postinumero</label><input type="text" value={form.postal_code ?? ''} onChange={(e) => set('postal_code', e.target.value)} className={inputCls} /></div>
@@ -103,18 +103,18 @@ export default function RegistryMemberDetail({ member }: Props) {
         </section>
 
         {/* Laskutus */}
-        <section className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Laskutus</h2>
+        <section className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Laskutus</h2>
           <div>
             <label className={labelCls}>Laskutustapa</label>
             <input type="text" value={form.billing_method ?? ''} onChange={(e) => set('billing_method', e.target.value)} className={inputCls} placeholder="esim. kirje, sähköposti, verkkolasku" />
-            <p className="mt-1 text-[10px] text-green-600">Huom: &ldquo;kirje&rdquo; = paperilasku postitse</p>
+            <p className="mt-1 text-[10px] text-[#888888]">Huom: &ldquo;kirje&rdquo; = paperilasku postitse</p>
           </div>
           <div><label className={labelCls}>Lisätiedot</label><textarea value={form.additional_info ?? ''} onChange={(e) => set('additional_info', e.target.value)} rows={3} className={inputCls} /></div>
         </section>
 
         {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>}
-        {saved && <p className="rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">Tallennettu ✓</p>}
+        {saved && <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1e3d1e]">Tallennettu ✓</p>}
 
         <div className="flex flex-wrap gap-2">
           <button onClick={() => void save()} disabled={saving || !form.full_name?.trim()} className="flex-1 rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors">
@@ -209,20 +209,20 @@ function InvoiceModal({ member, onClose }: { member: RegistryMember; onClose: ()
     setDone({ mode, paymentId })
   }
 
-  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500'
-  const labelCls = 'mb-1 block text-xs text-green-400'
+  const inputCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]'
+  const labelCls = 'mb-1 block text-xs text-[#2d6a2d]'
 
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/50" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-6 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] p-6 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">
-          <h2 className="font-bold text-white">Lähetä lasku</h2>
-          <button onClick={onClose} className="text-green-500"><X size={16} /></button>
+          <h2 className="font-bold text-[#1a1a1a]">Lähetä lasku</h2>
+          <button onClick={onClose} className="text-[#4a4a4a]"><X size={16} /></button>
         </div>
         {done ? (
           <div className="space-y-3">
-            <p className="text-sm text-green-300">
+            <p className="text-sm text-[#1e3d1e]">
               {done.mode === 'email' ? '✅ Lasku lähetetty sähköpostiin' : '✅ Lasku avattu tulostettavaksi'}
             </p>
             {done.mode === 'print' && (
@@ -230,22 +230,22 @@ function InvoiceModal({ member, onClose }: { member: RegistryMember; onClose: ()
                 href={`/api/invoice-pdf/preview?payment_id=${done.paymentId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full rounded-lg border border-green-700 py-2 text-center text-sm text-green-300 hover:bg-white/5"
+                className="block w-full rounded-lg border border-[#e0d8cc] py-2 text-center text-sm text-[#1e3d1e] hover:bg-white"
               >
                 Avaa PDF uudelleen
               </a>
             )}
-            <button onClick={onClose} className="w-full rounded-lg bg-green-700 py-2 text-sm font-semibold text-white">Sulje</button>
+            <button onClick={onClose} className="w-full rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white">Sulje</button>
           </div>
         ) : (
           <>
             <div>
               <label className={labelCls}>Vastaanottaja</label>
-              <p className="rounded-lg bg-white/5 px-3 py-2 text-sm text-green-200">{member.full_name ?? '—'}</p>
+              <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1a1a1a]">{member.full_name ?? '—'}</p>
             </div>
             <div>
               <label className={labelCls}>Laskutustapa</label>
-              <p className="rounded-lg bg-white/5 px-3 py-2 text-sm text-green-200">{deliveryLabel}</p>
+              <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1a1a1a]">{deliveryLabel}</p>
             </div>
             <div><label className={labelCls}>Summa (€)</label><input type="text" inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} className={inputCls} placeholder="80,00" /></div>
             <div><label className={labelCls}>Eräpäivä</label><input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={inputCls} /></div>
@@ -256,7 +256,7 @@ function InvoiceModal({ member, onClose }: { member: RegistryMember; onClose: ()
               <div><label className={labelCls}>Sähköposti</label><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} /></div>
             )}
             {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-xs text-red-300">{error}</p>}
-            <button onClick={() => void send()} disabled={busy} className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white disabled:opacity-50">
+            <button onClick={() => void send()} disabled={busy} className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white disabled:opacity-50">
               {busy ? 'Käsitellään...' : willUsePrint ? 'Luo ja avaa tulostettavaksi' : 'Lähetä sähköpostilla'}
             </button>
           </>

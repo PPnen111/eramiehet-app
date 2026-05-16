@@ -119,11 +119,11 @@ export default function TabDocuments({ clubId }: Props) {
     }
   }
 
-  if (loading) return <p className="text-sm text-green-500">Ladataan...</p>
+  if (loading) return <p className="text-sm text-[#4a4a4a]">Ladataan...</p>
 
   const inputClass =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
-  const labelClass = 'mb-1 block text-sm text-green-300'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
+  const labelClass = 'mb-1 block text-sm text-[#1e3d1e]'
 
   return (
     <>
@@ -131,13 +131,13 @@ export default function TabDocuments({ clubId }: Props) {
         {!formOpen ? (
           <button
             onClick={() => setFormOpen(true)}
-            className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white"
+            className="rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white"
           >
             + Lisää dokumentti
           </button>
         ) : (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
-            <h2 className="mb-4 font-semibold text-white">Lataa dokumentti</h2>
+          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
+            <h2 className="mb-4 font-semibold text-[#1a1a1a]">Lataa dokumentti</h2>
             <form onSubmit={handleUpload} className="space-y-3">
               <div>
                 <label className={labelClass}>Nimi *</label>
@@ -155,7 +155,7 @@ export default function TabDocuments({ clubId }: Props) {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
+                  className="w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
                 >
                   {CATEGORIES.map((c) => (
                     <option key={c.value} value={c.value}>{c.label}</option>
@@ -168,7 +168,7 @@ export default function TabDocuments({ clubId }: Props) {
                   type="file"
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                   required
-                  className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-green-300 outline-none file:mr-3 file:rounded file:border-0 file:bg-green-800 file:px-2 file:py-1 file:text-xs file:text-white"
+                  className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1e3d1e] outline-none file:mr-3 file:rounded file:border-0 file:bg-[#1e3d1e] file:px-2 file:py-1 file:text-xs file:text-white"
                 />
               </div>
               {formError && (
@@ -178,14 +178,14 @@ export default function TabDocuments({ clubId }: Props) {
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                  className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white disabled:opacity-50"
                 >
                   {uploading ? 'Ladataan...' : 'Tallenna'}
                 </button>
                 <button
                   type="button"
                   onClick={() => { setFormOpen(false); setFormError('') }}
-                  className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300"
+                  className="rounded-lg border border-[#e0d8cc] px-4 py-2 text-sm text-[#1e3d1e]"
                 >
                   Peruuta
                 </button>
@@ -195,17 +195,17 @@ export default function TabDocuments({ clubId }: Props) {
         )}
 
         {docs.length === 0 ? (
-          <p className="text-sm text-green-600">Ei dokumentteja.</p>
+          <p className="text-sm text-[#888888]">Ei dokumentteja.</p>
         ) : (
           <div className="space-y-2">
             {docs.map((doc) => (
               <div
                 key={doc.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-green-800 bg-white/5 px-4 py-3"
+                className="flex items-center justify-between gap-3 rounded-xl border border-[#e0d8cc] bg-white px-4 py-3"
               >
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-white">{doc.name}</p>
-                  <p className="text-xs text-green-500">
+                  <p className="truncate font-medium text-[#1a1a1a]">{doc.name}</p>
+                  <p className="text-xs text-[#4a4a4a]">
                     {CATEGORIES.find((c) => c.value === doc.category)?.label ?? doc.category}
                   </p>
                 </div>
@@ -213,7 +213,7 @@ export default function TabDocuments({ clubId }: Props) {
                   <button
                     onClick={() => handlePreview(doc)}
                     disabled={loadingPreview === doc.id}
-                    className="rounded-lg border border-green-700 px-2.5 py-1 text-xs text-green-300 hover:bg-green-900/40 disabled:opacity-50 transition-colors"
+                    className="rounded-lg border border-[#e0d8cc] px-2.5 py-1 text-xs text-[#1e3d1e] hover:bg-white disabled:opacity-50 transition-colors"
                   >
                     {loadingPreview === doc.id ? '...' : 'Esikatselu'}
                   </button>
@@ -243,13 +243,13 @@ export default function TabDocuments({ clubId }: Props) {
           onClick={() => setPreview(null)}
         >
           <div
-            className="flex items-center justify-between px-4 py-3 border-b border-green-900"
+            className="flex items-center justify-between px-4 py-3 border-b border-[#e0d8cc]"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="truncate text-sm font-medium text-white">{preview.name}</p>
+            <p className="truncate text-sm font-medium text-[#1a1a1a]">{preview.name}</p>
             <button
               onClick={() => setPreview(null)}
-              className="ml-4 shrink-0 rounded-lg p-1.5 text-green-400 hover:bg-white/10"
+              className="ml-4 shrink-0 rounded-lg p-1.5 text-[#2d6a2d] hover:bg-[#f0ebe3]"
             >
               <X size={18} />
             </button>
