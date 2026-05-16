@@ -340,7 +340,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                                   <button
                                     onClick={() => handleRemoveMember(group.id, m.id)}
                                     disabled={busy}
-                                    className="rounded px-2 py-1 text-[11px] text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                                    className="rounded px-2 py-1 text-[11px] text-[#991b1b] hover:bg-[#fee2e2] disabled:opacity-50"
                                   >
                                     Poista
                                   </button>
@@ -470,7 +470,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                           <button
                             onClick={() => handleDeleteGroup(group.id)}
                             disabled={busy}
-                            className="rounded-lg border border-red-800 px-3 py-1.5 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50 transition-colors"
+                            className="rounded-lg border border-[#fca5a5] px-3 py-1.5 text-xs text-[#991b1b] hover:bg-[#fee2e2] disabled:opacity-50 transition-colors"
                           >
                             Poista ryhmä
                           </button>
@@ -489,7 +489,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
       {toast && (
         <div
           className={`fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-sm font-medium shadow-2xl ${
-            toast.type === 'ok' ? 'bg-[#1e3d1e] text-white' : 'bg-red-800 text-white'
+            toast.type === 'ok' ? 'bg-[#1e3d1e] text-white' : 'bg-[#dc2626] text-white'
           }`}
         >
           {toast.msg}

@@ -67,7 +67,7 @@ const PRIORITY_DOT: Record<string, string> = {
 
 const COL_HEADER: Record<string, string> = {
   idea: 'text-purple-300 border-purple-800',
-  suunnitteilla: 'text-blue-300 border-blue-800',
+  suunnitteilla: 'text-[#185fa5] border-[#bfdbfe]',
   tyon_alla: 'text-[#92400e] border-[#fcd34d]',
   valmis: 'text-[#1e3d1e] border-[#e0d8cc]',
   hylätty: 'text-[#888888] border-[#e0d8cc]',
@@ -75,7 +75,7 @@ const COL_HEADER: Record<string, string> = {
 
 const COL_BG: Record<string, string> = {
   idea: 'bg-purple-900/10',
-  suunnitteilla: 'bg-blue-900/10',
+  suunnitteilla: 'bg-[#e6f1fb]/10',
   tyon_alla: 'bg-[#fef3c7]/10',
   valmis: 'bg-white',
   hylätty: 'bg-[#1e3d1e]/10',
@@ -672,7 +672,7 @@ function DetailPanel({
               <button
                 onClick={() => void onDelete(task.id, task.title)}
                 disabled={deleting}
-                className="flex items-center gap-1.5 rounded-lg border border-red-900 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900/30 disabled:opacity-50 transition-colors"
+                className="flex items-center gap-1.5 rounded-lg border border-[#fca5a5] px-3 py-2 text-sm font-medium text-[#991b1b] hover:bg-[#fee2e2] disabled:opacity-50 transition-colors"
               >
                 <Trash2 size={14} />
                 {deleting ? 'Poistetaan...' : 'Poista tehtävä'}

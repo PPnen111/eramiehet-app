@@ -282,7 +282,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
               className={`mt-3 rounded-lg px-3 py-2 text-sm ${
                 perusMsg.type === 'ok'
                   ? 'bg-white text-[#1e3d1e]'
-                  : 'bg-red-900/40 text-red-300'
+                  : 'bg-[#fee2e2] text-[#991b1b]'
               }`}
             >
               {perusMsg.text}
@@ -397,7 +397,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
                 className={`rounded-lg px-3 py-2 text-sm ${
                   pwMsg.type === 'ok'
                     ? 'bg-white text-[#1e3d1e]'
-                    : 'bg-red-900/40 text-red-300'
+                    : 'bg-[#fee2e2] text-[#991b1b]'
                 }`}
               >
                 {pwMsg.text}
@@ -435,7 +435,7 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
 
             <button
               onClick={() => { setShowDeleteModal(true); setDeleteConfirm(''); setDeleteError('') }}
-              className="flex items-center gap-2 rounded-lg border border-red-800 px-4 py-2.5 text-sm font-medium text-red-400 hover:bg-red-900/20 transition-colors"
+              className="flex items-center gap-2 rounded-lg border border-[#fca5a5] px-4 py-2.5 text-sm font-medium text-[#991b1b] hover:bg-[#fef2f2] transition-colors"
             >
               <Trash2 size={15} />
               Poista tilini
@@ -449,9 +449,9 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
             onClick={(e) => { if (e.target === e.currentTarget) setShowDeleteModal(false) }}
           >
-            <div className="w-full max-w-sm rounded-2xl border border-red-800 bg-[#f5f0e8] p-5 shadow-2xl">
+            <div className="w-full max-w-sm rounded-2xl border border-[#fca5a5] bg-[#f5f0e8] p-5 shadow-2xl">
               <h3 className="mb-2 font-semibold text-[#1a1a1a]">Haluatko varmasti poistaa tilisi?</h3>
-              <p className="mb-4 text-sm text-red-300">
+              <p className="mb-4 text-sm text-[#991b1b]">
                 Kaikki tietosi poistetaan pysyvästi. Tätä ei voi peruuttaa.
               </p>
               <label className="mb-1 block text-xs text-[#2d6a2d]">
@@ -461,11 +461,11 @@ export default function ProfiiliForm({ email, profile, clubName }: Props) {
                 type="text"
                 value={deleteConfirm}
                 onChange={(e) => setDeleteConfirm(e.target.value)}
-                className="mb-3 w-full rounded-lg border border-red-800 bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-red-500"
+                className="mb-3 w-full rounded-lg border border-[#fca5a5] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-red-500"
                 placeholder="POISTA"
               />
               {deleteError && (
-                <p className="mb-3 rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">
+                <p className="mb-3 rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">
                   {deleteError}
                 </p>
               )}

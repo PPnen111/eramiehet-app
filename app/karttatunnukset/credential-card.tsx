@@ -144,7 +144,7 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
         </div>
 
         {editError && (
-          <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{editError}</p>
+          <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{editError}</p>
         )}
 
         <div className="flex gap-2">
@@ -184,7 +184,7 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
               onClick={() => void handleDelete()}
               disabled={deleting}
               title="Poista"
-              className="rounded-md p-1.5 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
+              className="rounded-md p-1.5 text-[#888888] hover:bg-[#fee2e2] hover:text-[#991b1b] disabled:opacity-40 transition-colors"
             >
               {deleting ? <span className="text-xs">...</span> : <Trash2 size={14} />}
             </button>

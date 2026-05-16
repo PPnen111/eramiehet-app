@@ -79,7 +79,7 @@ export default function CabinCalendar({ bookings }: Props) {
 
   const base = 'flex h-9 items-center justify-center rounded-lg text-sm select-none'
   const styles: Record<string, string> = {
-    confirmed: 'bg-red-900/70 font-semibold text-red-200',
+    confirmed: 'bg-[#fef2f2]/70 font-semibold text-[#991b1b]',
     pending: 'bg-orange-500/70 font-semibold text-orange-100',
     today: 'ring-2 ring-green-400 font-semibold text-[#1a1a1a]',
     past: 'text-[#1e3d1e]',
@@ -139,7 +139,7 @@ export default function CabinCalendar({ bookings }: Props) {
             Odottaa vahvistusta
           </span>
           <span className="flex items-center gap-1.5 text-[#2d6a2d]">
-            <span className="inline-block h-3 w-3 rounded bg-red-900/70" />
+            <span className="inline-block h-3 w-3 rounded bg-[#fef2f2]/70" />
             Vahvistettu varaus
           </span>
           <span className="flex items-center gap-1.5 text-[#2d6a2d]">

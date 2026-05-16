@@ -55,7 +55,7 @@ type FilterType = 'all' | 'unpaid' | 'overdue' | 'paid'
 const statusConfig: Record<string, { label: string; cls: string }> = {
   paid: { label: 'Maksettu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
   pending: { label: 'Odottaa', cls: 'bg-[#fef3c7] text-[#92400e]' },
-  overdue: { label: 'Myöhässä', cls: 'bg-red-900 text-red-200' },
+  overdue: { label: 'Myöhässä', cls: 'bg-[#fef2f2] text-[#991b1b]' },
 }
 
 function isOverdue(p: Payment): boolean {
@@ -503,7 +503,7 @@ export default function TabPayments({ clubId }: Props) {
             <div
               key={t.id}
               className={`rounded-xl px-4 py-3 text-sm font-medium ${
-                t.type === 'success' ? 'bg-[#eaf3de] text-[#1a1a1a]' : 'bg-red-900/60 text-red-200'
+                t.type === 'success' ? 'bg-[#eaf3de] text-[#1a1a1a]' : 'bg-[#fee2e2] text-[#991b1b]'
               }`}
             >
               {t.message}
@@ -638,7 +638,7 @@ export default function TabPayments({ clubId }: Props) {
               </div>
 
               {singleError && (
-                <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{singleError}</p>
+                <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{singleError}</p>
               )}
 
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -752,7 +752,7 @@ export default function TabPayments({ clubId }: Props) {
               )}
 
               {bulkError && (
-                <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{bulkError}</p>
+                <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{bulkError}</p>
               )}
 
               <div className="flex flex-col gap-2 sm:flex-row">
@@ -790,7 +790,7 @@ export default function TabPayments({ clubId }: Props) {
           <button
             onClick={() => void sendBulkReminder()}
             disabled={bulkRemindBusy}
-            className="ml-auto flex items-center gap-1.5 rounded-lg bg-red-900/60 px-3 py-1.5 text-xs font-semibold text-red-200 hover:bg-red-800/60 disabled:opacity-50 transition-colors"
+            className="ml-auto flex items-center gap-1.5 rounded-lg bg-[#fee2e2] px-3 py-1.5 text-xs font-semibold text-[#991b1b] hover:bg-[#fecaca] disabled:opacity-50 transition-colors"
           >
             <Bell size={12} />
             {bulkRemindBusy
@@ -824,7 +824,7 @@ export default function TabPayments({ clubId }: Props) {
                   isPaid
                     ? 'border-[#e0d8cc]/50 bg-white'
                     : isOD
-                      ? 'border-red-800/60 bg-red-900/10'
+                      ? 'border-[#fca5a5] bg-[#fef2f2]'
                       : 'border-[#e0d8cc] bg-white'
                 }`}
               >
@@ -895,7 +895,7 @@ export default function TabPayments({ clubId }: Props) {
                         <button
                           onClick={() => void sendReminder(p.id)}
                           disabled={remindBusy === p.id}
-                          className="flex items-center gap-1 rounded-lg bg-red-900/40 px-3 py-1 text-xs font-semibold text-red-300 hover:bg-red-800/40 disabled:opacity-50"
+                          className="flex items-center gap-1 rounded-lg bg-[#fee2e2] px-3 py-1 text-xs font-semibold text-[#991b1b] hover:bg-[#fecaca] disabled:opacity-50"
                         >
                           <Bell size={11} />
                           {remindBusy === p.id ? 'Lähetetään...' : 'Lähetä muistutus'}
@@ -906,7 +906,7 @@ export default function TabPayments({ clubId }: Props) {
                         onClick={() => void deletePayment(p.id)}
                         disabled={isBusy}
                         title="Poista lasku"
-                        className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                        className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-[#991b1b] hover:bg-[#fee2e2] disabled:opacity-50"
                       >
                         <Trash2 size={12} />
                         Poista

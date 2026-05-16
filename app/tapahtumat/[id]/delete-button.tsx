@@ -24,7 +24,7 @@ export default function DeleteEventDetailButton({ eventId }: Props) {
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="rounded-xl border border-red-800 px-4 py-2.5 text-sm font-semibold text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+      className="rounded-xl border border-[#fca5a5] px-4 py-2.5 text-sm font-semibold text-[#991b1b] hover:bg-[#fee2e2] disabled:opacity-50"
     >
       {loading ? 'Poistetaan...' : 'Poista tapahtuma'}
     </button>

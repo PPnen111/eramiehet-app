@@ -110,7 +110,7 @@ function Toast({ toast, onDismiss }: { toast: ToastState; onDismiss: () => void 
       className={`fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-sm font-medium shadow-2xl ${
         toast.type === 'success'
           ? 'bg-[#1e3d1e] text-white'
-          : 'bg-red-800 text-white'
+          : 'bg-[#dc2626] text-white'
       }`}
     >
       {toast.message}
@@ -130,13 +130,13 @@ interface ConfirmModalProps {
 function ConfirmModal({ title, body, confirmLabel, onConfirm, onCancel, loading }: ConfirmModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-      <div className="w-full max-w-md rounded-2xl border border-red-800 bg-[#f5f0e8] p-6 shadow-2xl">
+      <div className="w-full max-w-md rounded-2xl border border-[#fca5a5] bg-[#f5f0e8] p-6 shadow-2xl">
         <div className="mb-4 flex items-start gap-3">
-          <AlertTriangle size={22} className="mt-0.5 shrink-0 text-red-400" />
+          <AlertTriangle size={22} className="mt-0.5 shrink-0 text-[#991b1b]" />
           <div>
             <h2 className="font-bold text-[#1a1a1a]">{title}</h2>
             <p className="mt-1.5 text-sm leading-relaxed text-[#4a4a4a]">{body}</p>
-            <p className="mt-2 text-xs font-semibold text-red-400">Tätä ei voi peruuttaa.</p>
+            <p className="mt-2 text-xs font-semibold text-[#991b1b]">Tätä ei voi peruuttaa.</p>
           </div>
         </div>
         <div className="flex gap-3">
@@ -327,14 +327,14 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
                       {club.memberCount > 0 ? (
                         <span
                           title="Poista ensin kaikki jäsenet"
-                          className="rounded-lg border border-red-900 px-2.5 py-1.5 text-xs text-red-800 cursor-not-allowed"
+                          className="rounded-lg border border-[#fca5a5] px-2.5 py-1.5 text-xs text-red-800 cursor-not-allowed"
                         >
                           Poista seura
                         </span>
                       ) : (
                         <button
                           onClick={() => setPendingDeleteClub(club)}
-                          className="rounded-lg border border-red-700 px-2.5 py-1.5 text-xs text-red-400 hover:bg-red-900/30 transition-colors"
+                          className="rounded-lg border border-[#fca5a5] px-2.5 py-1.5 text-xs text-[#991b1b] hover:bg-[#fee2e2] transition-colors"
                         >
                           Poista seura
                         </button>
@@ -426,7 +426,7 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
                           {canDelete ? (
                             <button
                               onClick={() => setPendingDeleteUser(u)}
-                              className="rounded-lg border border-red-700 px-2.5 py-1 text-xs text-red-400 hover:bg-red-900/30 transition-colors"
+                              className="rounded-lg border border-[#fca5a5] px-2.5 py-1 text-xs text-[#991b1b] hover:bg-[#fee2e2] transition-colors"
                             >
                               Poista käyttäjä
                             </button>

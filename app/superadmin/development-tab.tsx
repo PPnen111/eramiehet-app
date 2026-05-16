@@ -173,7 +173,7 @@ export default function DevelopmentTab() {
             <div className="flex items-center gap-3 text-sm">
               <span className="flex items-center gap-1 text-[#2d6a2d]"><span className="inline-block h-2.5 w-2.5 rounded-full bg-green-500" />{claudeGreens}</span>
               <span className="flex items-center gap-1 text-[#b45309]"><span className="inline-block h-2.5 w-2.5 rounded-full bg-yellow-400" />{claudeYellows}</span>
-              <span className="flex items-center gap-1 text-red-400"><span className="inline-block h-2.5 w-2.5 rounded-full bg-red-500" />{claudeReds}</span>
+              <span className="flex items-center gap-1 text-[#991b1b]"><span className="inline-block h-2.5 w-2.5 rounded-full bg-red-500" />{claudeReds}</span>
             </div>
           </div>
           <div className="rounded-xl border border-[#e0d8cc] bg-white/[0.03] p-3">

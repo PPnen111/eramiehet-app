@@ -172,7 +172,7 @@ export default function TabDocuments({ clubId }: Props) {
                 />
               </div>
               {formError && (
-                <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{formError}</p>
+                <p className="rounded-lg bg-[#fef2f2] px-3 py-2 text-sm text-[#991b1b]">{formError}</p>
               )}
               <div className="flex gap-2">
                 <button
@@ -213,14 +213,14 @@ export default function TabDocuments({ clubId }: Props) {
                   <button
                     onClick={() => handlePreview(doc)}
                     disabled={loadingPreview === doc.id}
-                    className="rounded-lg border border-[#e0d8cc] px-2.5 py-1 text-xs text-[#1e3d1e] hover:bg-white disabled:opacity-50 transition-colors"
+                    className="rounded-lg border border-[#e0d8cc] px-2.5 py-1 text-xs text-[#1e3d1e] hover:bg-[#f0ebe3] disabled:opacity-50 transition-colors"
                   >
                     {loadingPreview === doc.id ? '...' : 'Esikatselu'}
                   </button>
                   <button
                     onClick={() => handleDelete(doc)}
                     disabled={busy === doc.id}
-                    className="rounded-lg px-2 py-1 text-xs text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                    className="rounded-lg px-2 py-1 text-xs text-[#991b1b] hover:bg-[#fef2f2] disabled:opacity-50 transition-colors"
                   >
                     {busy === doc.id ? '...' : 'Poista'}
                   </button>

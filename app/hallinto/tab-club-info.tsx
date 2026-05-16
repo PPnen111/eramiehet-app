@@ -152,7 +152,7 @@ export default function TabClubInfo({ clubId }: Props) {
         <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1e3d1e]">{success}</p>
       )}
       {error && (
-        <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>
+        <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{error}</p>
       )}
 
       <button
@@ -245,7 +245,7 @@ function BankAccountsSection({ clubId }: { clubId: string }) {
               </div>
               <div className="flex items-center gap-1">
                 <button onClick={() => openEdit(a)} className="rounded-md p-1 text-[#888888] hover:text-[#1e3d1e]"><Pencil size={12} /></button>
-                <button onClick={() => void del(a.id)} className="rounded-md p-1 text-red-500 hover:text-red-300"><Trash2 size={12} /></button>
+                <button onClick={() => void del(a.id)} className="rounded-md p-1 text-[#dc2626] hover:text-[#991b1b]"><Trash2 size={12} /></button>
               </div>
             </div>
           ))}

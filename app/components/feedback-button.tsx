@@ -214,7 +214,7 @@ export default function FeedbackButton() {
                   {/* Message */}
                   <div>
                     <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[#888888]">
-                      Viesti <span className="text-red-500">*</span>
+                      Viesti <span className="text-[#dc2626]">*</span>
                     </label>
                     <textarea
                       value={message}

@@ -175,7 +175,7 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
                         isFuture
                           ? isPending
                             ? 'border-orange-800/60 bg-orange-900/10'
-                            : 'border-red-900/50 bg-white'
+                            : 'border-[#fca5a5]/50 bg-white'
                           : 'border-[#e0d8cc] bg-white/[0.02] opacity-60'
                       }`}
                     >
@@ -191,7 +191,7 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
                                 className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
                                   isPending
                                     ? 'bg-orange-500/30 text-orange-300'
-                                    : 'bg-red-900/60 text-red-300'
+                                    : 'bg-[#fee2e2] text-[#991b1b]'
                                 }`}
                               >
                                 {isPending ? 'Odottaa vahvistusta' : 'Vahvistettu'}

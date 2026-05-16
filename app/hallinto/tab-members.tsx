@@ -46,7 +46,7 @@ const STATUS_COLOR: Record<string, string> = {
   active: 'text-[#2d6a2d]',
   pending: 'text-[#b45309]',
   inactive: 'text-[#888888]',
-  no_account: 'text-blue-400',
+  no_account: 'text-[#1e40af]',
 }
 
 export default function TabMembers({ clubId, initialMembers }: Props) {
@@ -218,7 +218,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                       <span className="text-[#1e3d1e]">
                         {log.total_rows} riviä · <span className="text-[#1a1a1a]">{log.success_count} tuotu</span>
                         {log.skip_count > 0 && <span className="text-[#b45309]"> · {log.skip_count} ohitettu</span>}
-                        {log.error_count > 0 && <span className="text-red-400"> · {log.error_count} virheitä</span>}
+                        {log.error_count > 0 && <span className="text-[#991b1b]"> · {log.error_count} virheitä</span>}
                       </span>
                       {hasDetails && <ChevronDown size={12} className={`text-[#888888] transition-transform ${isOpen ? 'rotate-180' : ''}`} />}
                     </span>
@@ -227,7 +227,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                     <div className="border-t border-[#e0d8cc]/50 bg-white px-3 py-2 space-y-1 max-h-64 overflow-y-auto">
                       {log.import_rows!.map((row, i) => {
                         const icon = row.status === 'success' ? '✅' : row.status === 'error' ? '❌' : '⏭'
-                        const textCls = row.status === 'success' ? 'text-[#1e3d1e]' : row.status === 'error' ? 'text-red-300' : 'text-[#888888]'
+                        const textCls = row.status === 'success' ? 'text-[#1e3d1e]' : row.status === 'error' ? 'text-[#991b1b]' : 'text-[#888888]'
                         const label = row.status === 'success' ? 'tuotu' : row.status === 'error' ? `virhe${row.reason ? ': ' + row.reason : ''}` : 'jo rekisterissä'
                         return (
                           <div key={i} className={`flex items-center gap-2 text-xs ${textCls}`}>
@@ -324,7 +324,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
 
               <div className="shrink-0 flex items-center gap-1.5">
                 {m.member_status === 'no_account' ? (
-                  <span className="text-xs text-blue-400" title="Ei sovellustunnusta">📋</span>
+                  <span className="text-xs text-[#1e40af]" title="Ei sovellustunnusta">📋</span>
                 ) : m.has_logged_in ? (
                   <span className="text-xs text-[#4a4a4a]" title="Kirjautunut">✅</span>
                 ) : (
@@ -347,7 +347,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                   onClick={() => void removeMember(m.id, m.full_name ?? '—', m.profile_id)}
                   disabled={deletingMember === m.id}
                   title="Poista seurasta"
-                  className="rounded-md p-1.5 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
+                  className="rounded-md p-1.5 text-[#888888] hover:bg-[#fee2e2] hover:text-[#991b1b] disabled:opacity-40 transition-colors"
                 >
                   {deletingMember === m.id ? <span className="text-xs">...</span> : <Trash2 size={13} />}
                 </button>

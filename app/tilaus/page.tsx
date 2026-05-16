@@ -261,7 +261,7 @@ export default function TilausPage() {
       {toast && (
         <div
           className={`fixed bottom-20 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-sm font-medium shadow-2xl ${
-            toast.type === 'success' ? 'bg-[#1e3d1e] text-white' : 'bg-red-800 text-white'
+            toast.type === 'success' ? 'bg-[#1e3d1e] text-white' : 'bg-[#dc2626] text-white'
           }`}
         >
           {toast.message}

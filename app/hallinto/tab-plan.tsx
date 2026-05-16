@@ -26,7 +26,7 @@ const RESOURCE_LABELS: Record<string, string> = {
 const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   active: { label: 'Aktiivinen', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
   trial: { label: 'Kokeilu', cls: 'bg-[#fef3c7] text-[#92400e]' },
-  expired: { label: 'Vanhentunut', cls: 'bg-red-900 text-red-200' },
+  expired: { label: 'Vanhentunut', cls: 'bg-[#fef2f2] text-[#991b1b]' },
 }
 
 const PLANS = [
@@ -52,7 +52,7 @@ function UsageBar({ item, label }: { item: UsageItem; label: string }) {
         <p className="text-[10px] text-[#b45309]">Lähestyt pakettisi rajaa</p>
       )}
       {item.percent >= 100 && (
-        <p className="text-[10px] text-red-400">Raja täynnä — päivitä paketti</p>
+        <p className="text-[10px] text-[#991b1b]">Raja täynnä — päivitä paketti</p>
       )}
     </div>
   )
@@ -74,7 +74,7 @@ export default function TabPlan({ clubId, clubName }: Props) {
   useEffect(() => { void load() }, [load])
 
   if (loading) return <p className="text-sm text-[#4a4a4a]">Ladataan...</p>
-  if (!data) return <p className="text-sm text-red-400">Virhe ladattaessa pakettitietoja.</p>
+  if (!data) return <p className="text-sm text-[#991b1b]">Virhe ladattaessa pakettitietoja.</p>
 
   const status = STATUS_LABEL[data.status] ?? STATUS_LABEL.trial
   const trialDays = data.trial_ends_at

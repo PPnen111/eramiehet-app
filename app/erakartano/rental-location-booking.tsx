@@ -146,7 +146,7 @@ export default function RentalLocationBooking({ locations, clubId, userId, userN
 
         <div><label className="mb-1 block text-sm text-[#1e3d1e]">Lisätiedot / erityistoiveet</label><textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className={inputCls} placeholder="Valinnainen..." /></div>
 
-        {error && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>}
+        {error && <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{error}</p>}
 
         <button onClick={() => void submit()} disabled={busy} className="w-full rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors">
           {busy ? 'Lähetetään...' : 'Lähetä varauspyyntö'}

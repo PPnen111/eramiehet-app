@@ -80,7 +80,7 @@ function parseBooking(b: BookingRow): ParsedBooking {
 const statusBadge: Record<string, { label: string; cls: string }> = {
   pending: { label: 'Odottaa', cls: 'bg-orange-500/30 text-orange-300' },
   confirmed: { label: 'Vahvistettu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
-  cancelled: { label: 'Peruutettu', cls: 'bg-red-900/60 text-red-300' },
+  cancelled: { label: 'Peruutettu', cls: 'bg-[#fee2e2] text-[#991b1b]' },
 }
 
 const locationLabel: Record<string, string> = Object.fromEntries(
@@ -260,7 +260,7 @@ export default function TabBookings({ clubId }: Props) {
             <div
               key={t.id}
               className={`rounded-xl px-4 py-3 text-sm font-medium ${
-                t.type === 'success' ? 'bg-[#eaf3de] text-[#1a1a1a]' : 'bg-red-900/60 text-red-200'
+                t.type === 'success' ? 'bg-[#eaf3de] text-[#1a1a1a]' : 'bg-[#fee2e2] text-[#991b1b]'
               }`}
             >
               {t.message}
@@ -320,7 +320,7 @@ export default function TabBookings({ clubId }: Props) {
                 key={b.id}
                 className={`rounded-xl border p-3 transition-colors ${
                   isCancelled
-                    ? 'border-red-900/40 bg-red-900/5 opacity-60'
+                    ? 'border-[#fecaca] bg-[#fef2f2] opacity-60'
                     : b.status === 'pending'
                       ? 'border-orange-800/40 bg-orange-900/5'
                       : 'border-[#e0d8cc] bg-white'
@@ -329,7 +329,7 @@ export default function TabBookings({ clubId }: Props) {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className={`font-medium ${isCancelled ? 'text-red-400 line-through' : 'text-[#1a1a1a]'}`}>
+                      <p className={`font-medium ${isCancelled ? 'text-[#991b1b] line-through' : 'text-[#1a1a1a]'}`}>
                         {formatDate(b.starts_on)} – {formatDate(b.ends_on)}
                       </p>
                       <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${badge.cls}`}>
@@ -368,7 +368,7 @@ export default function TabBookings({ clubId }: Props) {
                         onClick={() => void deleteBooking(b.id)}
                         disabled={busy === b.id}
                         title="Peruuta varaus"
-                        className="rounded-md p-1.5 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
+                        className="rounded-md p-1.5 text-[#888888] hover:bg-[#fee2e2] hover:text-[#991b1b] disabled:opacity-40 transition-colors"
                       >
                         {busy === b.id ? <span className="text-xs">...</span> : <Trash2 size={13} />}
                       </button>
@@ -469,7 +469,7 @@ export default function TabBookings({ clubId }: Props) {
               </div>
 
               {editError && (
-                <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{editError}</p>
+                <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{editError}</p>
               )}
 
               <div className="flex gap-2">
@@ -505,7 +505,7 @@ export default function TabBookings({ clubId }: Props) {
             <div><label className={labelCls}>Laskun kuvaus</label><input type="text" value={invoiceDesc} onChange={(e) => setInvoiceDesc(e.target.value)} className={inputCls} /></div>
             <div><label className={labelCls}>Summa (€) *</label><input type="text" inputMode="decimal" value={invoiceAmount} onChange={(e) => setInvoiceAmount(e.target.value)} className={inputCls} placeholder="esim. 80" /></div>
             <div><label className={labelCls}>Eräpäivä</label><input type="date" value={invoiceDue} onChange={(e) => setInvoiceDue(e.target.value)} className={inputCls} /></div>
-            {invoiceError && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{invoiceError}</p>}
+            {invoiceError && <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{invoiceError}</p>}
             <div className="flex gap-2">
               <button onClick={() => void sendInvoice()} disabled={invoiceBusy} className="flex-1 rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50">
                 {invoiceBusy ? 'Lähetetään...' : 'Lähetä lasku'}

@@ -48,7 +48,7 @@ function StatusBadge({ status, trialEndsAt }: { status: string; trialEndsAt: str
   }
   if (status === 'expired') {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-red-900 px-2.5 py-0.5 text-xs font-semibold text-red-200">
+      <span className="inline-flex items-center gap-1 rounded-full bg-[#fef2f2] px-2.5 py-0.5 text-xs font-semibold text-[#991b1b]">
         <XCircle size={11} />
         Päättynyt
       </span>
@@ -60,7 +60,7 @@ function StatusBadge({ status, trialEndsAt }: { status: string; trialEndsAt: str
     const isWarning = days !== null && days > 0 && days <= 7
     if (isExpired) {
       return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-red-900 px-2.5 py-0.5 text-xs font-semibold text-red-200">
+        <span className="inline-flex items-center gap-1 rounded-full bg-[#fef2f2] px-2.5 py-0.5 text-xs font-semibold text-[#991b1b]">
           <XCircle size={11} />
           Kokeilu päättynyt
         </span>
@@ -126,7 +126,7 @@ function ActivateModal({ sub, onClose, onSuccess }: ActivateModalProps) {
         <p className="mb-5 text-sm text-[#2d6a2d]">
           Asettaa tilauksen tilaksi &quot;Aktiivinen&quot; — ei enää kokeilu- tai kokeilupäättynyt-tila.
         </p>
-        {error && <p className="mb-3 text-sm text-red-400">{error}</p>}
+        {error && <p className="mb-3 text-sm text-[#991b1b]">{error}</p>}
         <div className="flex gap-3">
           <button
             onClick={onClose}
@@ -234,7 +234,7 @@ export default function SubscriptionsTab({ subscriptions }: Props) {
                         <button
                           onClick={() => handleExtendTrial(sub)}
                           disabled={extendingId === sub.id}
-                          className="inline-flex items-center gap-1 rounded-lg border border-blue-700 px-2.5 py-1 text-xs font-semibold text-blue-300 hover:bg-blue-900/40 disabled:opacity-50 transition-colors"
+                          className="inline-flex items-center gap-1 rounded-lg border border-[#bfdbfe] px-2.5 py-1 text-xs font-semibold text-[#185fa5] hover:bg-[#cfe2f3] disabled:opacity-50 transition-colors"
                         >
                           <RefreshCw size={11} className={extendingId === sub.id ? 'animate-spin' : ''} />
                           {extendingId === sub.id ? '...' : 'Jatka kokeilua'}
@@ -264,7 +264,7 @@ export default function SubscriptionsTab({ subscriptions }: Props) {
       {toast && (
         <div
           className={`fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-sm font-medium shadow-2xl ${
-            toast.type === 'success' ? 'bg-[#1e3d1e] text-white' : 'bg-red-800 text-white'
+            toast.type === 'success' ? 'bg-[#1e3d1e] text-white' : 'bg-[#dc2626] text-white'
           }`}
         >
           {toast.message}

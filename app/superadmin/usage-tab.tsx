@@ -90,7 +90,7 @@ function ActivityBadge({ lastLogin }: { lastLogin: string | null }) {
   }
   if (isThisWeek(lastLogin)) {
     return (
-      <span className="inline-flex rounded-full bg-blue-800 px-2 py-0.5 text-xs font-medium text-blue-200">
+      <span className="inline-flex rounded-full bg-blue-800 px-2 py-0.5 text-xs font-medium text-[#185fa5]">
         Aktiivinen
       </span>
     )

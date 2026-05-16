@@ -33,7 +33,7 @@ function Section({
 function Badge({ color, children }: { color: 'red' | 'yellow'; children: React.ReactNode }) {
   const cls =
     color === 'red'
-      ? 'border-red-800/60 bg-red-900/20 text-red-300'
+      ? 'border-[#fca5a5] bg-[#fef2f2] text-[#991b1b]'
       : 'border-[#fcd34d]/60 bg-[#fef3c7] text-[#92400e]'
   return (
     <div className={`rounded-lg border px-4 py-2.5 text-sm ${cls}`}>{children}</div>

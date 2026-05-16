@@ -50,7 +50,7 @@ export default function RegistrationsManager({ eventId, registrations }: Props) 
   return (
     <div className="space-y-2">
       {error && (
-        <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{error}</p>
+        <p className="rounded-lg bg-[#fee2e2] px-3 py-2 text-sm text-[#991b1b]">{error}</p>
       )}
       {registrations.map((reg) => {
         const name =
@@ -68,7 +68,7 @@ export default function RegistrationsManager({ eventId, registrations }: Props) 
               onClick={() => void removeRegistration(reg.id)}
               disabled={deleting === reg.id}
               title="Poista ilmoittautuminen"
-              className="rounded-md p-1.5 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
+              className="rounded-md p-1.5 text-[#888888] hover:bg-[#fee2e2] hover:text-[#991b1b] disabled:opacity-40 transition-colors"
             >
               {deleting === reg.id ? <span className="text-xs">...</span> : <Trash2 size={14} />}
             </button>

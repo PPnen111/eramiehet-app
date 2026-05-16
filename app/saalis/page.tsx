@@ -24,12 +24,12 @@ const elainLabels: Record<string, string> = {
 
 const B = {
   kana: 'bg-[#fef3c7] text-[#92400e]',
-  vesi: 'bg-blue-900 text-blue-200',
+  vesi: 'bg-[#e6f1fb] text-[#185fa5]',
   kyyhky: 'bg-orange-900 text-orange-200',
   lintu: 'bg-[#1e3d1e] text-[#1a1a1a]',
   jänis: 'bg-sky-900 text-sky-200',
   peto: 'bg-[#fef3c7] text-[#92400e]',
-  suur: 'bg-red-900 text-red-200',
+  suur: 'bg-[#fef2f2] text-[#991b1b]',
 }
 
 const elainBadge: Record<string, string> = {

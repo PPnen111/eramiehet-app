@@ -252,7 +252,7 @@ export default function Home() {
                 placeholder="Seurasi nimi"
                 className="w-full rounded-xl border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-3 text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
               />
-              {formError && <p className="text-sm text-red-400">{formError}</p>}
+              {formError && <p className="text-sm text-[#991b1b]">{formError}</p>}
               <button
                 type="submit"
                 disabled={submitting}
