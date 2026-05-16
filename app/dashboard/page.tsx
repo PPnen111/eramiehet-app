@@ -291,27 +291,27 @@ export default async function DashboardPage() {
     : COMMON_MODULES
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <LoginTracker />
       <div className="mx-auto max-w-2xl">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm text-green-400">Tervetuloa</p>
+            <p className="text-sm text-[#888888]">Tervetuloa</p>
             <Link
               href="/profiili"
               className="group inline-flex items-center gap-1.5 hover:opacity-80 transition-opacity"
             >
-              <h1 className="bg-gradient-to-r from-green-300 to-emerald-200 bg-clip-text text-2xl font-bold text-transparent">
+              <h1 className="text-2xl font-bold text-[#1a1a1a]">
                 {displayName}
               </h1>
-              <Pencil size={13} className="text-green-500 group-hover:text-green-300 transition-colors" />
+              <Pencil size={13} className="text-[#2d6a2d] group-hover:text-[#1e3d1e] transition-colors" />
             </Link>
             {clubName && (
-              <p className="mt-0.5 text-sm text-green-500">{clubName}</p>
+              <p className="mt-0.5 text-sm text-[#4a4a4a]">{clubName}</p>
             )}
             {role && (
-              <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-green-800/60 px-2.5 py-0.5 text-xs font-medium text-green-200">
+              <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#eaf3de] px-2.5 py-0.5 text-xs font-medium text-[#3b6d11]">
                 {RoleIcon && <RoleIcon size={11} />}
                 {roleLabel[role] ?? role}
               </span>
@@ -321,7 +321,7 @@ export default async function DashboardPage() {
             {activeClubId && (
               <Link
                 href="/vaihda-seura"
-                className="flex items-center gap-1.5 rounded-lg border border-green-700 bg-green-900/40 px-3 py-1.5 text-xs font-medium text-green-300 hover:bg-green-900/70 transition-colors"
+                className="flex items-center gap-1.5 rounded-lg border border-[#e0d8cc] bg-white px-3 py-1.5 text-xs font-medium text-[#1e3d1e] hover:bg-[#f0ebe3] transition-colors"
               >
                 <ArrowLeftRight size={13} />
                 Vaihda seuraa
@@ -333,12 +333,12 @@ export default async function DashboardPage() {
 
         {/* Pending banner */}
         {memberStatus === 'pending' && (
-          <div className="mb-6 rounded-2xl border border-yellow-700 bg-yellow-900/20 px-4 py-4">
-            <p className="text-sm font-semibold text-yellow-200">Tervetuloa JahtiProhon! 🎉</p>
-            <p className="mt-1 text-sm text-yellow-300">
+          <div className="mb-6 rounded-2xl border border-[#fcd34d] bg-[#fef3c7] px-4 py-4">
+            <p className="text-sm font-semibold text-[#92400e]">Tervetuloa JahtiProhon! 🎉</p>
+            <p className="mt-1 text-sm text-[#92400e]">
               Tilisi odottaa seuran johtokunnan hyväksyntää. Sinut hyväksytään pian — ei tarvitse tehdä muuta kuin odottaa.
             </p>
-            <p className="mt-1 text-xs text-yellow-500">
+            <p className="mt-1 text-xs text-[#b45309]">
               Jos sinulla on kiire, ota yhteyttä seuran johtokuntaan.
             </p>
           </div>
@@ -353,14 +353,14 @@ export default async function DashboardPage() {
         <div className="mb-6 flex gap-3">
           <Link
             href="/saalis"
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-700 px-4 py-3 text-sm font-semibold text-white shadow hover:bg-green-600 transition-colors"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1e3d1e] px-4 py-3 text-sm font-semibold text-white shadow hover:bg-[#162d16] transition-colors"
           >
             <PlusCircle size={16} />
             Ilmoita saalis
           </Link>
           <Link
             href="/erakartano"
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-stone-700 px-4 py-3 text-sm font-semibold text-white shadow hover:bg-stone-600 transition-colors"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 text-sm font-semibold text-[#1a1a1a] shadow-sm hover:bg-[#f0ebe3] transition-colors"
           >
             <CalendarPlus size={16} />
             Varaa kartano
@@ -372,25 +372,25 @@ export default async function DashboardPage() {
           <div className="mb-4 space-y-2">
             <Link
               href="/operaattori"
-              className="flex items-center gap-3 rounded-xl border border-green-600 bg-green-900/30 px-4 py-3 text-sm font-semibold text-green-200 hover:bg-green-900/50 transition-colors"
+              className="flex items-center gap-3 rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 text-sm font-semibold text-[#1e3d1e] hover:bg-[#f0ebe3] transition-colors"
             >
               <Building2 size={16} />
               <div className="flex-1">
                 <span>Operaattori</span>
-                <p className="text-xs font-normal text-green-500">Seurat, myyntiputki, KPI</p>
+                <p className="text-xs font-normal text-[#888888]">Seurat, myyntiputki, KPI</p>
               </div>
-              <span className="text-xs text-green-400">Avaa →</span>
+              <span className="text-xs text-[#2d6a2d]">Avaa →</span>
             </Link>
             <Link
               href="/superadmin"
-              className="flex items-center gap-3 rounded-xl border border-yellow-700 bg-yellow-900/20 px-4 py-3 text-sm font-semibold text-yellow-300 hover:bg-yellow-900/40 transition-colors"
+              className="flex items-center gap-3 rounded-xl border border-[#fcd34d] bg-[#fef3c7] px-4 py-3 text-sm font-semibold text-[#92400e] hover:bg-[#fde9a8] transition-colors"
             >
               <Settings size={16} />
               <span>Superadmin-paneeli</span>
             </Link>
             <Link
               href="/profiili/mfa"
-              className="flex items-center gap-3 rounded-xl border border-green-800 bg-green-900/10 px-4 py-3 text-sm text-green-300 hover:bg-green-900/30 transition-colors"
+              className="flex items-center gap-3 rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 text-sm text-[#1a1a1a] hover:bg-[#f0ebe3] transition-colors"
             >
               <Shield size={16} />
               <span>Kaksivaiheinen tunnistautuminen (2FA)</span>
@@ -403,13 +403,13 @@ export default async function DashboardPage() {
           <div className="mb-4">
             <Link
               href="/kehitys"
-              className="flex items-center gap-3 rounded-xl border border-green-700 bg-green-900/20 px-4 py-3 hover:bg-green-900/40 transition-colors"
+              className="flex items-center gap-3 rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 hover:bg-[#f0ebe3] transition-colors"
             >
               <div className="flex-1">
-                <p className="text-sm font-semibold text-green-200">🗺️ Kehityssuunnitelma</p>
-                <p className="text-xs text-green-500">Yhteinen kehitystyötila</p>
+                <p className="text-sm font-semibold text-[#1a1a1a]">🗺️ Kehityssuunnitelma</p>
+                <p className="text-xs text-[#888888]">Yhteinen kehitystyötila</p>
               </div>
-              <span className="text-xs text-green-400">Avaa →</span>
+              <span className="text-xs text-[#2d6a2d]">Avaa →</span>
             </Link>
           </div>
         )}
@@ -419,13 +419,13 @@ export default async function DashboardPage() {
           <div className="mb-4">
             <Link
               href="/onboarding"
-              className="flex items-center justify-between rounded-xl border border-green-600 bg-green-900/30 px-4 py-3 hover:bg-green-900/50 transition-colors"
+              className="flex items-center justify-between rounded-xl border border-[#2d6a2d] bg-[#eaf3de] px-4 py-3 hover:bg-[#dceccb] transition-colors"
             >
               <div>
-                <p className="text-sm font-semibold text-green-200">Viimeistele käyttöönotto</p>
-                <p className="text-xs text-green-400">Kutsu jäseniä, lisää tapahtumia ja dokumentteja →</p>
+                <p className="text-sm font-semibold text-[#1e3d1e]">Viimeistele käyttöönotto</p>
+                <p className="text-xs text-[#3b6d11]">Kutsu jäseniä, lisää tapahtumia ja dokumentteja →</p>
               </div>
-              <ArrowLeftRight size={16} className="shrink-0 text-green-400 rotate-90" />
+              <ArrowLeftRight size={16} className="shrink-0 text-[#2d6a2d] rotate-90" />
             </Link>
           </div>
         )}
@@ -433,27 +433,27 @@ export default async function DashboardPage() {
         {/* Omat ryhmät */}
         {myGroups.length > 0 && (
           <div className="mb-4 space-y-2">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[#4a4a4a]">
               Omat ryhmät
             </h2>
             {myGroups.map((g) => (
               <div
                 key={g.id}
-                className="rounded-xl border border-green-800 bg-white/5 px-4 py-3"
+                className="rounded-xl border border-[#e0d8cc] bg-white px-4 py-3"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="font-semibold text-white">{g.name}</p>
+                    <p className="font-semibold text-[#1a1a1a]">{g.name}</p>
                     {g.description && (
-                      <p className="mt-0.5 text-xs text-green-500">{g.description}</p>
+                      <p className="mt-0.5 text-xs text-[#888888]">{g.description}</p>
                     )}
-                    <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-green-600">
+                    <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-[#4a4a4a]">
                       <span>{g.memberCount} jäsentä</span>
                       {g.leaderName && <span>Johtaja: {g.leaderName}</span>}
                     </div>
                   </div>
                   {g.myRole === 'leader' && (
-                    <span className="shrink-0 rounded-full bg-green-700 px-2 py-0.5 text-[10px] font-bold text-green-100">
+                    <span className="shrink-0 rounded-full bg-[#1e3d1e] px-2 py-0.5 text-[10px] font-bold text-white">
                       Ryhmänjohtaja
                     </span>
                   )}
@@ -464,16 +464,16 @@ export default async function DashboardPage() {
         )}
 
         {/* Vierasluvat */}
-        <div className="mb-4 rounded-2xl border border-green-800 bg-white/5 p-5">
+        <div className="mb-4 rounded-2xl border border-[#e0d8cc] bg-white p-5 shadow-sm">
           <div className="mb-3 flex items-center gap-2">
-            <Ticket size={18} className="text-green-400" />
-            <h2 className="font-semibold text-white">Vierasluvat</h2>
-            <span className="rounded-full bg-green-800/60 px-2 py-0.5 text-xs font-medium text-green-200">
+            <Ticket size={18} className="text-[#2d6a2d]" />
+            <h2 className="font-semibold text-[#1a1a1a]">Vierasluvat</h2>
+            <span className="rounded-full bg-[#eaf3de] px-2 py-0.5 text-xs font-medium text-[#3b6d11]">
               {guestPermitCount}
             </span>
           </div>
           {guestPermitCount === 0 ? (
-            <p className="text-sm text-green-400">Ei aktiivisia vieraslupia</p>
+            <p className="text-sm text-[#888888]">Ei aktiivisia vieraslupia</p>
           ) : (
             <ul className="space-y-1.5">
               {guestPermitPreview.map((p) => {
@@ -485,13 +485,13 @@ export default async function DashboardPage() {
                     : 'Ei laskutettu'
                 const parts = [p.guest_name, p.host_name ?? '—', p.area ?? '—', statusLabel]
                 return (
-                  <li key={p.id} className="truncate text-xs text-green-300">
+                  <li key={p.id} className="truncate text-xs text-[#4a4a4a]">
                     {parts.join(' | ')}
                   </li>
                 )
               })}
               {guestPermitCount > guestPermitPreview.length && (
-                <li className="text-xs text-green-600">
+                <li className="text-xs text-[#888888]">
                   + {guestPermitCount - guestPermitPreview.length} muuta
                 </li>
               )}
@@ -501,14 +501,14 @@ export default async function DashboardPage() {
             {isBoardOrAbove(role) && (
               <Link
                 href="/vierasluvat"
-                className="flex-1 rounded-lg border border-green-700 bg-green-900/40 px-3 py-2 text-center text-xs font-semibold text-green-300 hover:bg-green-900/70 transition-colors"
+                className="flex-1 rounded-lg bg-[#1e3d1e] px-3 py-2 text-center text-xs font-semibold text-white hover:bg-[#162d16] transition-colors"
               >
                 Myönnä uusi lupa
               </Link>
             )}
             <Link
               href="/vierasluvat"
-              className="flex-1 rounded-lg border border-green-800 px-3 py-2 text-center text-xs font-semibold text-green-400 hover:bg-white/5 transition-colors"
+              className="flex-1 rounded-lg border border-[#e0d8cc] px-3 py-2 text-center text-xs font-semibold text-[#1a1a1a] hover:bg-[#f0ebe3] transition-colors"
             >
               Näytä kaikki
             </Link>
@@ -523,13 +523,13 @@ export default async function DashboardPage() {
               <Link
                 key={mod.href}
                 href={mod.href}
-                className="group rounded-2xl border border-green-800 bg-white/5 p-4 backdrop-blur-sm transition-all duration-150 hover:bg-white/10 hover:-translate-y-0.5 hover:border-green-700 hover:shadow-lg hover:shadow-green-950/50"
+                className="group rounded-2xl border border-[#e0d8cc] bg-white p-4 shadow-sm transition-all duration-150 hover:bg-[#f0ebe3] hover:-translate-y-0.5 hover:shadow-md"
               >
-                <div className="mb-2 text-green-400 transition-colors group-hover:text-green-300">
+                <div className="mb-2 text-[#2d6a2d] transition-colors group-hover:text-[#1e3d1e]">
                   <Icon size={24} strokeWidth={1.5} />
                 </div>
-                <h2 className="font-semibold text-white">{mod.title}</h2>
-                <p className="mt-1 text-xs leading-5 text-green-400">
+                <h2 className="font-semibold text-[#1a1a1a]">{mod.title}</h2>
+                <p className="mt-1 text-xs leading-5 text-[#4a4a4a]">
                   {mod.description}
                 </p>
               </Link>
