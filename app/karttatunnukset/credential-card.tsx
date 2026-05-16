@@ -80,20 +80,20 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
   }
 
   const inputCls =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
 
   if (editing) {
     return (
-      <div className="rounded-2xl border border-green-700 bg-white/5 p-4 space-y-3">
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-green-300">Muokkaa tunnuksia</p>
-          <button onClick={() => setEditing(false)} className="text-green-600 hover:text-green-400">
+          <p className="text-sm font-semibold text-[#1e3d1e]">Muokkaa tunnuksia</p>
+          <button onClick={() => setEditing(false)} className="text-[#888888] hover:text-[#2d6a2d]">
             <X size={16} />
           </button>
         </div>
 
         <div>
-          <label className="mb-1 block text-xs text-green-400">Nimi *</label>
+          <label className="mb-1 block text-xs text-[#2d6a2d]">Nimi *</label>
           <input
             type="text"
             value={editName}
@@ -103,7 +103,7 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-green-400">URL</label>
+          <label className="mb-1 block text-xs text-[#2d6a2d]">URL</label>
           <input
             type="url"
             value={editUrl}
@@ -114,7 +114,7 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="mb-1 block text-xs text-green-400">Käyttäjätunnus</label>
+            <label className="mb-1 block text-xs text-[#2d6a2d]">Käyttäjätunnus</label>
             <input
               type="text"
               value={editUsername}
@@ -123,7 +123,7 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-green-400">Salasana</label>
+            <label className="mb-1 block text-xs text-[#2d6a2d]">Salasana</label>
             <input
               type="text"
               value={editPassword}
@@ -133,7 +133,7 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-xs text-green-400">Kuvaus</label>
+          <label className="mb-1 block text-xs text-[#2d6a2d]">Kuvaus</label>
           <input
             type="text"
             value={editDescription}
@@ -151,14 +151,14 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
           <button
             onClick={() => void handleSave()}
             disabled={saving}
-            className="flex items-center gap-1.5 rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-lg bg-[#1e3d1e] px-4 py-2 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50"
           >
             <Check size={14} />
             {saving ? 'Tallennetaan...' : 'Tallenna'}
           </button>
           <button
             onClick={() => setEditing(false)}
-            className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-400 hover:border-green-600"
+            className="rounded-lg border border-[#e0d8cc] px-4 py-2 text-sm text-[#2d6a2d] hover:border-green-600"
           >
             Peruuta
           </button>
@@ -168,15 +168,15 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
   }
 
   return (
-    <div className="rounded-2xl border border-green-800 bg-white/5 p-4 space-y-3">
+    <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-white">{credential.name}</h3>
+        <h3 className="font-semibold text-[#1a1a1a]">{credential.name}</h3>
         {isAdmin && (
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={openEdit}
               title="Muokkaa"
-              className="rounded-md p-1.5 text-green-600 hover:bg-green-900/40 hover:text-green-300 transition-colors"
+              className="rounded-md p-1.5 text-[#888888] hover:bg-white hover:text-[#1e3d1e] transition-colors"
             >
               <Pencil size={14} />
             </button>
@@ -184,7 +184,7 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
               onClick={() => void handleDelete()}
               disabled={deleting}
               title="Poista"
-              className="rounded-md p-1.5 text-stone-500 hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
+              className="rounded-md p-1.5 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
             >
               {deleting ? <span className="text-xs">...</span> : <Trash2 size={14} />}
             </button>
@@ -193,7 +193,7 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
       </div>
 
       {credential.description && (
-        <p className="text-sm text-green-400">{credential.description}</p>
+        <p className="text-sm text-[#2d6a2d]">{credential.description}</p>
       )}
 
       {credential.url && (
@@ -201,23 +201,23 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
           href={credential.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="block truncate text-sm text-green-300 underline hover:text-green-200"
+          className="block truncate text-sm text-[#1e3d1e] underline hover:text-[#1a1a1a]"
         >
           {credential.url}
         </a>
       )}
 
       {(credential.username || credential.password) && (
-        <div className="space-y-2 rounded-xl border border-green-900 bg-black/20 px-3 py-2">
+        <div className="space-y-2 rounded-xl border border-[#e0d8cc] bg-black/20 px-3 py-2">
           {credential.username && (
             <div className="flex items-center gap-2">
-              <span className="w-20 shrink-0 text-xs text-green-600">Käyttäjä</span>
-              <span className="flex-1 font-mono text-sm text-white">
+              <span className="w-20 shrink-0 text-xs text-[#888888]">Käyttäjä</span>
+              <span className="flex-1 font-mono text-sm text-[#1a1a1a]">
                 {showUser ? credential.username : '••••••••'}
               </span>
               <button
                 onClick={() => setShowUser((v) => !v)}
-                className="text-xs text-green-400 hover:text-green-300"
+                className="text-xs text-[#2d6a2d] hover:text-[#1e3d1e]"
               >
                 {showUser ? 'Piilota' : 'Näytä'}
               </button>
@@ -225,13 +225,13 @@ export default function CredentialCard({ credential, isAdmin }: Props) {
           )}
           {credential.password && (
             <div className="flex items-center gap-2">
-              <span className="w-20 shrink-0 text-xs text-green-600">Salasana</span>
-              <span className="flex-1 font-mono text-sm text-white">
+              <span className="w-20 shrink-0 text-xs text-[#888888]">Salasana</span>
+              <span className="flex-1 font-mono text-sm text-[#1a1a1a]">
                 {showPass ? credential.password : '••••••••'}
               </span>
               <button
                 onClick={() => setShowPass((v) => !v)}
-                className="text-xs text-green-400 hover:text-green-300"
+                className="text-xs text-[#2d6a2d] hover:text-[#1e3d1e]"
               >
                 {showPass ? 'Piilota' : 'Näytä'}
               </button>

@@ -75,20 +75,20 @@ function isWithinDays(iso: string | null, days: number): boolean {
 function ActivityBadge({ lastSignIn }: { lastSignIn: string | null }) {
   if (isToday(lastSignIn)) {
     return (
-      <span className="inline-block rounded-full bg-green-700 px-2 py-0.5 text-xs font-medium text-green-100">
+      <span className="inline-block rounded-full bg-[#1e3d1e] px-2 py-0.5 text-xs font-medium text-[#1a1a1a]">
         Aktiivinen tänään
       </span>
     )
   }
   if (isWithinDays(lastSignIn, 7)) {
     return (
-      <span className="inline-block rounded-full bg-green-900 px-2 py-0.5 text-xs font-medium text-green-300">
+      <span className="inline-block rounded-full bg-[#f0ebe3] px-2 py-0.5 text-xs font-medium text-[#1e3d1e]">
         Aktiivinen
       </span>
     )
   }
   return (
-    <span className="inline-block rounded-full bg-stone-800 px-2 py-0.5 text-xs font-medium text-stone-400">
+    <span className="inline-block rounded-full bg-[#1e3d1e] px-2 py-0.5 text-xs font-medium text-[#888888]">
       Ei aktiivinen
     </span>
   )
@@ -109,7 +109,7 @@ function Toast({ toast, onDismiss }: { toast: ToastState; onDismiss: () => void 
     <div
       className={`fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-sm font-medium shadow-2xl ${
         toast.type === 'success'
-          ? 'bg-green-700 text-white'
+          ? 'bg-[#1e3d1e] text-white'
           : 'bg-red-800 text-white'
       }`}
     >
@@ -130,12 +130,12 @@ interface ConfirmModalProps {
 function ConfirmModal({ title, body, confirmLabel, onConfirm, onCancel, loading }: ConfirmModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-      <div className="w-full max-w-md rounded-2xl border border-red-800 bg-stone-950 p-6 shadow-2xl">
+      <div className="w-full max-w-md rounded-2xl border border-red-800 bg-[#f5f0e8] p-6 shadow-2xl">
         <div className="mb-4 flex items-start gap-3">
           <AlertTriangle size={22} className="mt-0.5 shrink-0 text-red-400" />
           <div>
-            <h2 className="font-bold text-white">{title}</h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-stone-300">{body}</p>
+            <h2 className="font-bold text-[#1a1a1a]">{title}</h2>
+            <p className="mt-1.5 text-sm leading-relaxed text-[#4a4a4a]">{body}</p>
             <p className="mt-2 text-xs font-semibold text-red-400">Tätä ei voi peruuttaa.</p>
           </div>
         </div>
@@ -143,7 +143,7 @@ function ConfirmModal({ title, body, confirmLabel, onConfirm, onCancel, loading 
           <button
             onClick={onCancel}
             disabled={loading}
-            className="flex-1 rounded-xl border border-stone-700 py-2.5 text-sm font-semibold text-stone-300 hover:bg-stone-800 disabled:opacity-50"
+            className="flex-1 rounded-xl border border-[#e0d8cc] py-2.5 text-sm font-semibold text-[#4a4a4a] hover:bg-[#1e3d1e] disabled:opacity-50"
           >
             Peruuta
           </button>
@@ -259,70 +259,70 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
       <div className="space-y-6">
         {/* Stats — 4 cards */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-            <div className="mb-1 flex items-center gap-1.5 text-xs text-green-500">
+          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+            <div className="mb-1 flex items-center gap-1.5 text-xs text-[#4a4a4a]">
               <Building2 size={12} />
               Seuroja yhteensä
             </div>
-            <p className="text-3xl font-bold text-white">{totalClubs}</p>
+            <p className="text-3xl font-bold text-[#1a1a1a]">{totalClubs}</p>
           </div>
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-            <div className="mb-1 flex items-center gap-1.5 text-xs text-green-500">
+          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+            <div className="mb-1 flex items-center gap-1.5 text-xs text-[#4a4a4a]">
               <Users size={12} />
               Käyttäjiä yhteensä
             </div>
-            <p className="text-3xl font-bold text-white">{totalUsers}</p>
+            <p className="text-3xl font-bold text-[#1a1a1a]">{totalUsers}</p>
           </div>
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-            <div className="mb-1 flex items-center gap-1.5 text-xs text-green-500">
+          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+            <div className="mb-1 flex items-center gap-1.5 text-xs text-[#4a4a4a]">
               <TrendingUp size={12} />
               Uusia tällä viikolla
             </div>
-            <p className="text-3xl font-bold text-white">{newThisWeek}</p>
+            <p className="text-3xl font-bold text-[#1a1a1a]">{newThisWeek}</p>
           </div>
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-            <div className="mb-1 flex items-center gap-1.5 text-xs text-green-500">
+          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+            <div className="mb-1 flex items-center gap-1.5 text-xs text-[#4a4a4a]">
               <UserCheck size={12} />
               Aktiivisia tänään
             </div>
-            <p className="text-3xl font-bold text-white">{activeToday}</p>
+            <p className="text-3xl font-bold text-[#1a1a1a]">{activeToday}</p>
           </div>
         </div>
 
         {/* Clubs list */}
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
             Seurat
           </h2>
           {enhancedClubs.length === 0 ? (
-            <p className="text-sm text-green-600">Ei seuroja.</p>
+            <p className="text-sm text-[#888888]">Ei seuroja.</p>
           ) : (
             <div className="space-y-2">
               {enhancedClubs.map((club) => (
                 <div
                   key={club.id}
-                  className="rounded-xl border border-green-800 bg-white/5 px-4 py-3"
+                  className="rounded-xl border border-[#e0d8cc] bg-white px-4 py-3"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-semibold text-white">{club.name ?? '—'}</p>
+                      <p className="font-semibold text-[#1a1a1a]">{club.name ?? '—'}</p>
                       {club.adminName && (
-                        <p className="mt-0.5 truncate text-xs text-green-400">
+                        <p className="mt-0.5 truncate text-xs text-[#2d6a2d]">
                           Admin: {club.adminName}
                           {club.adminEmail && (
-                            <span className="text-green-600"> · {club.adminEmail}</span>
+                            <span className="text-[#888888]"> · {club.adminEmail}</span>
                           )}
                         </p>
                       )}
-                      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-green-600">
+                      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-[#888888]">
                         <span>Perustettu {formatDate(club.created_at)}</span>
                         <span>Viimeisin aktiviteetti {formatDate(club.latestActivity)}</span>
                       </div>
                     </div>
                     <div className="flex shrink-0 items-center gap-3">
                       <div className="text-right">
-                        <p className="text-lg font-bold text-white">{club.memberCount}</p>
-                        <p className="text-xs text-green-600">jäsentä</p>
+                        <p className="text-lg font-bold text-[#1a1a1a]">{club.memberCount}</p>
+                        <p className="text-xs text-[#888888]">jäsentä</p>
                       </div>
                       {club.memberCount > 0 ? (
                         <span
@@ -349,18 +349,18 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
 
         {/* User analytics table */}
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
             Käyttäjäanalytiikka
           </h2>
           {userRows.length === 0 ? (
-            <p className="text-sm text-green-600">Ei käyttäjiä.</p>
+            <p className="text-sm text-[#888888]">Ei käyttäjiä.</p>
           ) : (
-            <div className="overflow-x-auto rounded-2xl border border-green-800">
+            <div className="overflow-x-auto rounded-2xl border border-[#e0d8cc]">
               <table className="w-full min-w-[800px] text-sm">
                 <thead>
-                  <tr className="border-b border-green-800 bg-white/5">
+                  <tr className="border-b border-[#e0d8cc] bg-white">
                     {['Nimi', 'Sähköposti', 'Seura', 'Rooli', 'Rekisteröityi', 'Viimeksi kirjautunut', 'Status', ''].map((h) => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-green-500">
+                      <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a]">
                         {h}
                       </th>
                     ))}
@@ -377,12 +377,12 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
                     const isSaving = savingRole === u.id
                     return (
                       <tr key={u.id} className="hover:bg-white/[0.03]">
-                        <td className="px-4 py-3 font-medium text-white">
-                          {u.full_name ?? <span className="text-green-700">—</span>}
+                        <td className="px-4 py-3 font-medium text-[#1a1a1a]">
+                          {u.full_name ?? <span className="text-[#2d6a2d]">—</span>}
                         </td>
-                        <td className="px-4 py-3 text-green-300">{u.email ?? '—'}</td>
-                        <td className="px-4 py-3 text-green-300">
-                          {u.club_name ?? <span className="text-green-700">—</span>}
+                        <td className="px-4 py-3 text-[#1e3d1e]">{u.email ?? '—'}</td>
+                        <td className="px-4 py-3 text-[#1e3d1e]">
+                          {u.club_name ?? <span className="text-[#2d6a2d]">—</span>}
                         </td>
                         <td className="px-4 py-3">
                           {canEdit ? (
@@ -391,7 +391,7 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
                                 value={draftRole ?? u.role ?? 'member'}
                                 onChange={(e) => setRoleDraft(u.id, e.target.value)}
                                 disabled={isSaving}
-                                className="rounded border border-green-800 bg-green-950 px-2 py-1 text-xs text-white outline-none focus:border-green-500 disabled:opacity-50"
+                                className="rounded border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1 text-xs text-[#1a1a1a] outline-none focus:border-[#2d6a2d] disabled:opacity-50"
                               >
                                 <option value="member">Jäsen</option>
                                 <option value="board_member">Johtokunta</option>
@@ -401,22 +401,22 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
                                 <button
                                   onClick={() => handleSaveRole(u.id)}
                                   disabled={isSaving}
-                                  className="rounded bg-green-700 px-2 py-1 text-xs font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+                                  className="rounded bg-[#1e3d1e] px-2 py-1 text-xs font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
                                 >
                                   {isSaving ? '...' : 'Tallenna'}
                                 </button>
                               )}
                             </div>
                           ) : (
-                            <span className="text-xs text-green-600">
+                            <span className="text-xs text-[#888888]">
                               {u.role ? (roleLabelFi[u.role] ?? u.role) : '—'}
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-green-400">
+                        <td className="px-4 py-3 text-[#2d6a2d]">
                           {formatDate(u.created_at)}
                         </td>
-                        <td className="px-4 py-3 text-green-400">
+                        <td className="px-4 py-3 text-[#2d6a2d]">
                           {formatDate(u.last_sign_in_at)}
                         </td>
                         <td className="px-4 py-3">
@@ -431,7 +431,7 @@ export default function AnalyticsTab({ stats, userRows, enhancedClubs, currentUs
                               Poista käyttäjä
                             </button>
                           ) : (
-                            <span className="text-xs text-green-800">
+                            <span className="text-xs text-[#1e3d1e]">
                               {isSelf ? 'Oma tili' : 'Superadmin'}
                             </span>
                           )}

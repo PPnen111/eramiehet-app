@@ -20,8 +20,8 @@ import {
   CheckCircle,
 } from 'lucide-react'
 
-const iconBox = 'inline-flex items-center justify-center rounded-lg bg-green-900/50 p-2 text-green-400'
-const card = 'rounded-2xl border border-green-800 bg-green-900 px-6 py-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-green-950/60'
+const iconBox = 'inline-flex items-center justify-center rounded-lg bg-[#f0ebe3] p-2 text-[#2d6a2d]'
+const card = 'rounded-2xl border border-[#e0d8cc] bg-[#f0ebe3] px-6 py-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-green-950/60'
 
 export default function Home() {
   const [email, setEmail] = useState('')
@@ -49,10 +49,10 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-green-950 text-white" style={{ scrollBehavior: 'smooth' }}>
+    <main className="min-h-screen bg-[#f5f0e8] text-[#1a1a1a]" style={{ scrollBehavior: 'smooth' }}>
 
       {/* ── HEADER ──────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 w-full border-b border-green-900 bg-green-950/90 backdrop-blur-sm px-6 py-4 flex items-center justify-between">
+      <header className="sticky top-0 z-50 w-full border-b border-[#e0d8cc] bg-[#f5f0e8] backdrop-blur-sm px-6 py-4 flex items-center justify-between">
         <img
           src="/jahtipro-logo.png"
           alt="JahtiPro"
@@ -60,7 +60,7 @@ export default function Home() {
         />
         <a
           href="/login"
-          className="rounded-xl border border-green-700 px-4 py-2 text-sm text-green-200 transition hover:bg-green-900"
+          className="rounded-xl border border-[#e0d8cc] px-4 py-2 text-sm text-[#1a1a1a] transition hover:bg-[#f0ebe3]"
         >
           Kirjaudu sisään (beta)
         </a>
@@ -68,19 +68,19 @@ export default function Home() {
 
       {/* ── SECTION 1: HERO ─────────────────────────────────────────────── */}
       <section className="relative flex min-h-screen flex-col items-center justify-center px-6 pt-16 text-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-green-950 via-green-950 to-green-900 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f5f0e8] via-green-950 to-green-900 pointer-events-none" />
         <div className="relative z-10 mx-auto max-w-2xl">
-          <span className="mb-8 inline-flex items-center gap-2 rounded-full bg-green-800/60 px-4 py-1.5 text-sm font-semibold text-green-300 ring-1 ring-green-700/50">
+          <span className="mb-8 inline-flex items-center gap-2 rounded-full bg-[#eaf3de] px-4 py-1.5 text-sm font-semibold text-[#1e3d1e] ring-1 ring-green-700/50">
             <Rocket className="h-4 w-4" />
             Suljettu beta käynnissä
           </span>
 
-          <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl">
+          <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-[#1a1a1a] md:text-6xl">
             Käytä aikasi rakkaaseen harrastukseen.<br />
-            <span className="text-green-300">Vähemmän hallintoon.</span>
+            <span className="text-[#1e3d1e]">Vähemmän hallintoon.</span>
           </h1>
 
-          <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-green-200">
+          <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-[#1a1a1a]">
             JahtiPro hoitaa metsästysseuran hallinnon puolestasi — jäsenrekisteristä
             maksuihin ja saalisilmoituksista eräkartanon varauksiin.
           </p>
@@ -94,19 +94,19 @@ export default function Home() {
             </a>
             <a
               href="#features"
-              className="w-full rounded-xl border border-green-700 px-8 py-4 text-base font-medium text-green-300 transition-colors hover:border-green-500 hover:text-green-200 sm:w-auto"
+              className="w-full rounded-xl border border-[#e0d8cc] px-8 py-4 text-base font-medium text-[#1e3d1e] transition-colors hover:border-green-500 hover:text-[#1a1a1a] sm:w-auto"
             >
               Katso miten toimii ↓
             </a>
           </div>
 
-          <p className="mt-10 text-sm text-green-500">
+          <p className="mt-10 text-sm text-[#4a4a4a]">
             Kehitetty yhdessä Kyyjärven Erämiehet ry:n kanssa
           </p>
         </div>
 
         {/* Scroll arrow */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-green-600">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-[#888888]">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 5v14M5 12l7 7 7-7" />
           </svg>
@@ -114,9 +114,9 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 2: PAIN POINTS ──────────────────────────────────────── */}
-      <section className="bg-green-900/40 py-24 px-6 md:py-32">
+      <section className="bg-white py-24 px-6 md:py-32">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-12 text-center text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+          <h2 className="mb-12 text-center text-3xl font-extrabold tracking-tight text-[#1a1a1a] md:text-4xl">
             Tuntuuko tämä tutulta?
           </h2>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -127,8 +127,8 @@ export default function Home() {
             ].map(({ icon, title, body }) => (
               <div key={title} className={card}>
                 <div className={`${iconBox} mb-4`}>{icon}</div>
-                <p className="mb-2 font-bold text-white">{title}</p>
-                <p className="text-sm leading-relaxed text-green-300">{body}</p>
+                <p className="mb-2 font-bold text-[#1a1a1a]">{title}</p>
+                <p className="text-sm leading-relaxed text-[#1e3d1e]">{body}</p>
               </div>
             ))}
           </div>
@@ -138,12 +138,12 @@ export default function Home() {
       {/* ── SECTION 3: SOLUTION ─────────────────────────────────────────── */}
       <section className="py-24 px-6 text-center md:py-32">
         <div className="mx-auto max-w-2xl">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-green-500">Ratkaisu</p>
-          <h2 className="mb-6 text-3xl font-extrabold tracking-tight text-white md:text-5xl">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-[#4a4a4a]">Ratkaisu</p>
+          <h2 className="mb-6 text-3xl font-extrabold tracking-tight text-[#1a1a1a] md:text-5xl">
             JahtiPro tekee kaiken tämän
-            <span className="text-green-300"> puolestasi.</span>
+            <span className="text-[#1e3d1e]"> puolestasi.</span>
           </h2>
-          <p className="text-lg leading-relaxed text-green-300">
+          <p className="text-lg leading-relaxed text-[#1e3d1e]">
             Yksi sovellus. Kaikki yhdessä paikassa.<br />
             Toimii puhelimella metsässä.
           </p>
@@ -151,9 +151,9 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 4: BENEFITS ─────────────────────────────────────────── */}
-      <section className="bg-green-900/30 py-24 px-6 md:py-32">
+      <section className="bg-white py-24 px-6 md:py-32">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-12 text-center text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+          <h2 className="mb-12 text-center text-3xl font-extrabold tracking-tight text-[#1a1a1a] md:text-4xl">
             Mitä saat
           </h2>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -167,8 +167,8 @@ export default function Home() {
             ].map(({ icon, title, body }) => (
               <div key={title} className={card}>
                 <div className={`${iconBox} mb-4`}>{icon}</div>
-                <p className="mb-2 font-bold text-white">{title}</p>
-                <p className="text-sm leading-relaxed text-green-300">{body}</p>
+                <p className="mb-2 font-bold text-[#1a1a1a]">{title}</p>
+                <p className="text-sm leading-relaxed text-[#1e3d1e]">{body}</p>
               </div>
             ))}
           </div>
@@ -188,7 +188,7 @@ export default function Home() {
       {/* ── SECTION 5: FEATURES ─────────────────────────────────────────── */}
       <section id="features" className="py-24 px-6 md:py-32">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-12 text-center text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+          <h2 className="mb-12 text-center text-3xl font-extrabold tracking-tight text-[#1a1a1a] md:text-4xl">
             Kaikki mitä seura tarvitsee
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -200,11 +200,11 @@ export default function Home() {
               { icon: <Users className="h-6 w-6" />, title: 'Ryhmähallinta', body: 'Hirviseurue, peurajaosto — omat ryhmät omilla jäsenillä.' },
               { icon: <Map className="h-6 w-6" />, title: 'Karttatunnukset', body: 'Karttapalvelujen tunnukset turvallisesti kaikille jäsenille.' },
             ].map(({ icon, title, body }) => (
-              <div key={title} className="flex gap-4 rounded-2xl border border-green-800 bg-green-900 px-5 py-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-green-950/60">
+              <div key={title} className="flex gap-4 rounded-2xl border border-[#e0d8cc] bg-[#f0ebe3] px-5 py-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-green-950/60">
                 <div className={`${iconBox} mt-0.5 shrink-0`}>{icon}</div>
                 <div>
-                  <p className="mb-1 font-bold text-white">{title}</p>
-                  <p className="text-sm leading-relaxed text-green-400">{body}</p>
+                  <p className="mb-1 font-bold text-[#1a1a1a]">{title}</p>
+                  <p className="text-sm leading-relaxed text-[#2d6a2d]">{body}</p>
                 </div>
               </div>
             ))}
@@ -213,27 +213,27 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 6: INTEREST CAPTURE ─────────────────────────────────── */}
-      <section id="signup" className="bg-green-900/30 py-24 px-6 md:py-32">
+      <section id="signup" className="bg-white py-24 px-6 md:py-32">
         <div className="mx-auto max-w-md text-center">
-          <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
+          <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-[#1a1a1a] md:text-4xl">
             Haluatko seurasi mukaan?
           </h2>
-          <p className="mb-10 text-lg leading-relaxed text-green-200">
+          <p className="mb-10 text-lg leading-relaxed text-[#1a1a1a]">
             Ilmoittaudu kiinnostuneeksi.<br />
             Olemme yhteydessä ennen julkaisua.
           </p>
 
           {submitMessage === 'registered' ? (
-            <div className="rounded-2xl bg-green-900 px-6 py-8 ring-1 ring-green-700/50">
-              <CheckCircle className="mx-auto mb-3 h-10 w-10 text-green-400" />
-              <p className="text-lg font-bold text-green-200">Kiitos!</p>
-              <p className="mt-2 text-sm text-green-400">Olemme yhteydessä kun sovellus avautuu.</p>
+            <div className="rounded-2xl bg-[#f0ebe3] px-6 py-8 ring-1 ring-green-700/50">
+              <CheckCircle className="mx-auto mb-3 h-10 w-10 text-[#2d6a2d]" />
+              <p className="text-lg font-bold text-[#1a1a1a]">Kiitos!</p>
+              <p className="mt-2 text-sm text-[#2d6a2d]">Olemme yhteydessä kun sovellus avautuu.</p>
             </div>
           ) : submitMessage === 'already_registered' ? (
-            <div className="rounded-2xl bg-amber-900/40 px-6 py-8 ring-1 ring-amber-700/40">
+            <div className="rounded-2xl bg-[#fde9a8] px-6 py-8 ring-1 ring-amber-700/40">
               <p className="text-3xl mb-3">🎉</p>
-              <p className="text-lg font-bold text-amber-200">Olet jo listalla!</p>
-              <p className="mt-2 text-sm text-amber-400">Olemme yhteydessä kun sovellus avautuu.</p>
+              <p className="text-lg font-bold text-[#92400e]">Olet jo listalla!</p>
+              <p className="mt-2 text-sm text-[#b45309]">Olemme yhteydessä kun sovellus avautuu.</p>
             </div>
           ) : (
             <form onSubmit={handleSignup} className="space-y-3 text-left">
@@ -243,14 +243,14 @@ export default function Home() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="Sähköpostiosoitteesi"
-                className="w-full rounded-xl border border-green-800 bg-green-900 px-4 py-3 text-white placeholder-green-500 outline-none focus:border-green-500"
+                className="w-full rounded-xl border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-3 text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
               />
               <input
                 type="text"
                 value={clubName}
                 onChange={(e) => setClubName(e.target.value)}
                 placeholder="Seurasi nimi"
-                className="w-full rounded-xl border border-green-800 bg-green-900 px-4 py-3 text-white placeholder-green-500 outline-none focus:border-green-500"
+                className="w-full rounded-xl border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-3 text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
               />
               {formError && <p className="text-sm text-red-400">{formError}</p>}
               <button
@@ -268,11 +268,11 @@ export default function Home() {
       {/* ── SECTION 7: BETA ACCESS ──────────────────────────────────────── */}
       <section className="pb-16 pt-16 px-6 text-center">
         <div className="mx-auto max-w-xl">
-          <div className="h-px bg-green-800 mb-10" />
-          <p className="mb-3 text-sm text-green-500">Oletko kutsuttu beta-testaajaksi?</p>
+          <div className="h-px bg-[#1e3d1e] mb-10" />
+          <p className="mb-3 text-sm text-[#4a4a4a]">Oletko kutsuttu beta-testaajaksi?</p>
           <Link
             href="/login"
-            className="inline-block rounded-xl border border-green-700 px-6 py-2.5 text-sm font-medium text-green-300 transition-colors hover:border-green-500 hover:text-green-200"
+            className="inline-block rounded-xl border border-[#e0d8cc] px-6 py-2.5 text-sm font-medium text-[#1e3d1e] transition-colors hover:border-green-500 hover:text-[#1a1a1a]"
           >
             Kirjaudu sisään →
           </Link>
@@ -280,11 +280,11 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ──────────────────────────────────────────────────────── */}
-      <footer className="border-t border-green-900 py-10 px-6 text-center">
-        <p className="text-sm text-green-700">© 2026 JahtiPro · jahtipro.fi</p>
-        <p className="mt-1 text-sm text-green-700">info@jahtipro.fi</p>
+      <footer className="border-t border-[#e0d8cc] py-10 px-6 text-center">
+        <p className="text-sm text-[#2d6a2d]">© 2026 JahtiPro · jahtipro.fi</p>
+        <p className="mt-1 text-sm text-[#2d6a2d]">info@jahtipro.fi</p>
         <p className="mt-3">
-          <Link href="/tietosuoja" className="text-xs text-green-700 underline hover:text-green-500">
+          <Link href="/tietosuoja" className="text-xs text-[#2d6a2d] underline hover:text-[#4a4a4a]">
             Tietosuojaseloste
           </Link>
         </p>

@@ -16,12 +16,12 @@ const typeLabels: Record<string, string> = {
 }
 
 const typeBadge: Record<string, string> = {
-  talkoot: 'bg-yellow-800 text-yellow-200',
+  talkoot: 'bg-[#fde9a8] text-[#92400e]',
   ampumaharjoitus: 'bg-blue-900 text-blue-200',
   kokous: 'bg-purple-900 text-purple-200',
-  metsastyspaiva: 'bg-green-900 text-green-200',
-  kilpailu: 'bg-amber-900 text-amber-200',
-  muu: 'bg-stone-700 text-stone-300',
+  metsastyspaiva: 'bg-[#f0ebe3] text-[#1a1a1a]',
+  kilpailu: 'bg-[#fef3c7] text-[#92400e]',
+  muu: 'bg-[#1e3d1e] text-[#4a4a4a]',
 }
 
 function formatDate(iso: string) {
@@ -104,13 +104,13 @@ export default async function TapahtumaDetailPage({
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/tapahtumat" className="text-sm text-green-400 hover:text-green-300">
+        <Link href="/tapahtumat" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           ← Tapahtumat
         </Link>
 
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-6 space-y-5">
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-6 space-y-5">
           {/* Badge + otsikko */}
           <div>
             <span
@@ -120,18 +120,18 @@ export default async function TapahtumaDetailPage({
             >
               {typeLabels[event.type] ?? event.type}
             </span>
-            <h1 className="text-2xl font-bold text-white">{event.title}</h1>
+            <h1 className="text-2xl font-bold text-[#1a1a1a]">{event.title}</h1>
           </div>
 
           {/* Päivämäärät */}
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-sm text-green-300">
-              <span className="text-green-500">Alkaa</span>
+            <div className="flex items-center gap-2 text-sm text-[#1e3d1e]">
+              <span className="text-[#4a4a4a]">Alkaa</span>
               <span>{formatDate(event.starts_at)}</span>
             </div>
             {event.ends_at && (
-              <div className="flex items-center gap-2 text-sm text-green-300">
-                <span className="text-green-500">Päättyy</span>
+              <div className="flex items-center gap-2 text-sm text-[#1e3d1e]">
+                <span className="text-[#4a4a4a]">Päättyy</span>
                 <span>{formatDate(event.ends_at)}</span>
               </div>
             )}
@@ -140,10 +140,10 @@ export default async function TapahtumaDetailPage({
           {/* Kuvaus */}
           {event.description && (
             <div>
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-green-500">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-[#4a4a4a]">
                 Kuvaus
               </p>
-              <p className="text-sm leading-relaxed text-green-200">{event.description}</p>
+              <p className="text-sm leading-relaxed text-[#1a1a1a]">{event.description}</p>
             </div>
           )}
 
@@ -152,8 +152,8 @@ export default async function TapahtumaDetailPage({
 
         {/* Ilmoittautuneet (admin) */}
         {isAdmin && (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
               Ilmoittautuneet ({registrations.length})
             </h2>
             <RegistrationsManager eventId={event.id} registrations={registrations} />
@@ -165,7 +165,7 @@ export default async function TapahtumaDetailPage({
           <div className="flex gap-3">
             <Link
               href={`/tapahtumat/${event.id}/muokkaa`}
-              className="flex-1 rounded-xl bg-green-800 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-green-700"
+              className="flex-1 rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-[#1e3d1e]"
             >
               Muokkaa
             </Link>

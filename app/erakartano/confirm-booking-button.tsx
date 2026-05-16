@@ -29,7 +29,7 @@ export default function ConfirmBookingButton({ bookingId }: Props) {
     <button
       onClick={handleConfirm}
       disabled={loading}
-      className="flex items-center gap-1 rounded-lg border border-green-700 px-2.5 py-1 text-xs font-semibold text-green-300 hover:bg-green-900/40 disabled:opacity-50 transition-colors"
+      className="flex items-center gap-1 rounded-lg border border-[#e0d8cc] px-2.5 py-1 text-xs font-semibold text-[#1e3d1e] hover:bg-white disabled:opacity-50 transition-colors"
     >
       <CheckCircle size={12} />
       {loading ? 'Vahvistetaan...' : 'Vahvista'}

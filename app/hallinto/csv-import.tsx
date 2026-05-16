@@ -197,12 +197,12 @@ export default function CsvImport({ onImportDone }: Props) {
     <div className="space-y-4">
       {/* Template download */}
       <div className="flex items-center justify-between">
-        <p className="text-xs text-green-500">
+        <p className="text-xs text-[#4a4a4a]">
           Tuo jäseniä CSV tai Excel -tiedostosta (nimi, sähköposti, puhelin)
         </p>
         <button
           onClick={handleDownloadTemplate}
-          className="flex items-center gap-1.5 rounded-lg border border-green-800 px-3 py-1.5 text-xs font-medium text-green-300 hover:bg-white/5 transition-colors"
+          className="flex items-center gap-1.5 rounded-lg border border-[#e0d8cc] px-3 py-1.5 text-xs font-medium text-[#1e3d1e] hover:bg-white transition-colors"
         >
           <Download size={12} />
           Lataa CSV-pohja
@@ -218,15 +218,15 @@ export default function CsvImport({ onImportDone }: Props) {
           onClick={() => fileInputRef.current?.click()}
           className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-8 text-center transition-colors ${
             dragOver
-              ? 'border-green-500 bg-green-900/20'
-              : 'border-green-800 hover:border-green-600 hover:bg-white/[0.03]'
+              ? 'border-green-500 bg-white'
+              : 'border-[#e0d8cc] hover:border-green-600 hover:bg-white/[0.03]'
           }`}
         >
-          <Upload size={24} className="text-green-500" />
-          <p className="text-sm text-green-300">
+          <Upload size={24} className="text-[#4a4a4a]" />
+          <p className="text-sm text-[#1e3d1e]">
             Vedä tiedosto tähän tai <span className="underline">valitse tiedosto</span>
           </p>
-          <p className="text-xs text-green-600">CSV tai Excel (.xlsx)</p>
+          <p className="text-xs text-[#888888]">CSV tai Excel (.xlsx)</p>
           <input
             ref={fileInputRef}
             type="file"
@@ -239,9 +239,9 @@ export default function CsvImport({ onImportDone }: Props) {
 
       {/* Selected file */}
       {fileName && (
-        <div className="flex items-center justify-between rounded-lg border border-green-800 bg-white/5 px-3 py-2">
-          <span className="text-sm text-green-300">{fileName}</span>
-          <button onClick={reset} className="text-green-600 hover:text-green-400">
+        <div className="flex items-center justify-between rounded-lg border border-[#e0d8cc] bg-white px-3 py-2">
+          <span className="text-sm text-[#1e3d1e]">{fileName}</span>
+          <button onClick={reset} className="text-[#888888] hover:text-[#2d6a2d]">
             <X size={15} />
           </button>
         </div>
@@ -254,30 +254,30 @@ export default function CsvImport({ onImportDone }: Props) {
       {/* Preview table */}
       {rows.length > 0 && (
         <div>
-          <p className="mb-2 text-xs text-green-500">
+          <p className="mb-2 text-xs text-[#4a4a4a]">
             Esikatselu — näytetään {preview.length}/{rows.length} riviä
           </p>
-          <div className="overflow-x-auto rounded-xl border border-green-800">
+          <div className="overflow-x-auto rounded-xl border border-[#e0d8cc]">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-green-800 bg-white/5">
-                  <th className="px-3 py-2 text-left font-medium text-green-400">Nimi</th>
-                  <th className="px-3 py-2 text-left font-medium text-green-400">Sähköposti</th>
-                  <th className="px-3 py-2 text-left font-medium text-green-400">Puhelin</th>
-                  <th className="px-3 py-2 text-left font-medium text-green-400">Rooli</th>
-                  <th className="px-3 py-2 text-left font-medium text-green-400">Liittynyt</th>
+                <tr className="border-b border-[#e0d8cc] bg-white">
+                  <th className="px-3 py-2 text-left font-medium text-[#2d6a2d]">Nimi</th>
+                  <th className="px-3 py-2 text-left font-medium text-[#2d6a2d]">Sähköposti</th>
+                  <th className="px-3 py-2 text-left font-medium text-[#2d6a2d]">Puhelin</th>
+                  <th className="px-3 py-2 text-left font-medium text-[#2d6a2d]">Rooli</th>
+                  <th className="px-3 py-2 text-left font-medium text-[#2d6a2d]">Liittynyt</th>
                 </tr>
               </thead>
               <tbody>
                 {preview.map((row, i) => (
-                  <tr key={i} className="border-b border-green-900/50 last:border-0">
-                    <td className="px-3 py-2 text-white">{row.nimi || '—'}</td>
-                    <td className="px-3 py-2 text-green-300">{row.sahkoposti || '—'}</td>
-                    <td className="px-3 py-2 text-green-400">{row.puhelin || '—'}</td>
-                    <td className="px-3 py-2 text-green-400">
+                  <tr key={i} className="border-b border-[#e0d8cc]/50 last:border-0">
+                    <td className="px-3 py-2 text-[#1a1a1a]">{row.nimi || '—'}</td>
+                    <td className="px-3 py-2 text-[#1e3d1e]">{row.sahkoposti || '—'}</td>
+                    <td className="px-3 py-2 text-[#2d6a2d]">{row.puhelin || '—'}</td>
+                    <td className="px-3 py-2 text-[#2d6a2d]">
                       {(roleFi[row.rooli] ?? row.rooli) || 'Jäsen'}
                     </td>
-                    <td className="px-3 py-2 text-green-400">{row.liittynyt || 'tänään'}</td>
+                    <td className="px-3 py-2 text-[#2d6a2d]">{row.liittynyt || 'tänään'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -305,7 +305,7 @@ export default function CsvImport({ onImportDone }: Props) {
         <button
           onClick={() => void handleImport()}
           disabled={!canImport}
-          className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+          className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
         >
           {importing
             ? 'Tuodaan jäseniä...'
@@ -315,28 +315,28 @@ export default function CsvImport({ onImportDone }: Props) {
 
       {/* Results */}
       {result && (
-        <div className="rounded-xl border border-green-800 bg-white/5 p-4 space-y-2">
-          <p className="text-sm font-semibold text-white">Tuonti valmis</p>
+        <div className="rounded-xl border border-[#e0d8cc] bg-white p-4 space-y-2">
+          <p className="text-sm font-semibold text-[#1a1a1a]">Tuonti valmis</p>
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-sm">
-              <CheckCircle size={14} className="text-green-400" />
-              <span className="text-green-300">
-                Tuotu onnistuneesti: <span className="font-semibold text-white">{result.success}</span> jäsentä
+              <CheckCircle size={14} className="text-[#2d6a2d]" />
+              <span className="text-[#1e3d1e]">
+                Tuotu onnistuneesti: <span className="font-semibold text-[#1a1a1a]">{result.success}</span> jäsentä
               </span>
             </div>
             {result.skipped > 0 && (
               <div className="flex items-center gap-2 text-sm">
-                <SkipForward size={14} className="text-yellow-400" />
-                <span className="text-green-300">
-                  Ohitettu (jo olemassa): <span className="font-semibold text-white">{result.skipped}</span> jäsentä
+                <SkipForward size={14} className="text-[#b45309]" />
+                <span className="text-[#1e3d1e]">
+                  Ohitettu (jo olemassa): <span className="font-semibold text-[#1a1a1a]">{result.skipped}</span> jäsentä
                 </span>
               </div>
             )}
             {(result.name_skipped ?? 0) > 0 && (
               <div className="flex items-center gap-2 text-sm">
-                <SkipForward size={14} className="text-yellow-400" />
-                <span className="text-green-300">
-                  Ohitettu (nimi puuttui): <span className="font-semibold text-white">{result.name_skipped}</span> riviä
+                <SkipForward size={14} className="text-[#b45309]" />
+                <span className="text-[#1e3d1e]">
+                  Ohitettu (nimi puuttui): <span className="font-semibold text-[#1a1a1a]">{result.name_skipped}</span> riviä
                 </span>
               </div>
             )}
@@ -345,7 +345,7 @@ export default function CsvImport({ onImportDone }: Props) {
                 <AlertCircle size={14} className="mt-0.5 shrink-0 text-red-400" />
                 <div>
                   <span className="text-red-300">
-                    Virheitä: <span className="font-semibold text-white">{result.errors}</span> jäsentä
+                    Virheitä: <span className="font-semibold text-[#1a1a1a]">{result.errors}</span> jäsentä
                   </span>
                   {result.error_details.length > 0 && (
                     <ul className="mt-1 space-y-0.5">
@@ -359,9 +359,9 @@ export default function CsvImport({ onImportDone }: Props) {
             )}
           </div>
           {result.debug && (
-            <details className="mt-3 rounded-lg border border-green-900 bg-black/20 px-3 py-2 text-xs text-green-600">
+            <details className="mt-3 rounded-lg border border-[#e0d8cc] bg-black/20 px-3 py-2 text-xs text-[#888888]">
               <summary className="cursor-pointer">Debug: havaitut sarakkeet (rivi {result.debug.header_row + 1})</summary>
-              <p className="mt-1 break-all text-green-500">{result.debug.headers.join(' | ')}</p>
+              <p className="mt-1 break-all text-[#4a4a4a]">{result.debug.headers.join(' | ')}</p>
             </details>
           )}
         </div>

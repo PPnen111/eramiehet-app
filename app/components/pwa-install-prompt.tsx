@@ -41,15 +41,15 @@ export default function PWAInstallPrompt() {
   }
 
   return (
-    <div className="fixed bottom-20 inset-x-4 z-50 mx-auto max-w-sm rounded-xl border border-green-700 bg-green-950 px-4 py-3 shadow-2xl flex items-center gap-3">
-      <p className="flex-1 text-sm text-white">Asenna JahtiPro kotinäytölle</p>
+    <div className="fixed bottom-20 inset-x-4 z-50 mx-auto max-w-sm rounded-xl border border-[#e0d8cc] bg-[#f5f0e8] px-4 py-3 shadow-2xl flex items-center gap-3">
+      <p className="flex-1 text-sm text-[#1a1a1a]">Asenna JahtiPro kotinäytölle</p>
       <button
         onClick={() => void install()}
         className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-500 transition-colors"
       >
         Asenna
       </button>
-      <button onClick={dismiss} className="text-green-500 hover:text-green-300">
+      <button onClick={dismiss} className="text-[#4a4a4a] hover:text-[#1e3d1e]">
         <X size={16} />
       </button>
     </div>

@@ -56,13 +56,13 @@ export default function AddCredentialForm({ clubId }: Props) {
   }
 
   const inputClass =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-700 outline-none focus:border-green-500'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
 
   return (
     <>
       <button
         onClick={() => setOpen(true)}
-        className="shrink-0 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600"
+        className="shrink-0 rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#162d16]"
       >
         + Lisää karttatunnus
       </button>
@@ -72,11 +72,11 @@ export default function AddCredentialForm({ clubId }: Props) {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
           onClick={(e) => { if (e.target === e.currentTarget) handleClose() }}
         >
-          <div className="w-full max-w-lg rounded-2xl border border-green-700 bg-green-950 p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="mb-4 font-semibold text-white">Lisää karttatunnus</h2>
+          <div className="w-full max-w-lg rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] p-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h2 className="mb-4 font-semibold text-[#1a1a1a]">Lisää karttatunnus</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm text-green-300">Nimi *</label>
+                <label className="mb-1 block text-sm text-[#1e3d1e]">Nimi *</label>
                 <input
                   type="text"
                   value={name}
@@ -87,7 +87,7 @@ export default function AddCredentialForm({ clubId }: Props) {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm text-green-300">URL</label>
+                <label className="mb-1 block text-sm text-[#1e3d1e]">URL</label>
                 <input
                   type="text"
                   value={url}
@@ -98,7 +98,7 @@ export default function AddCredentialForm({ clubId }: Props) {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="mb-1 block text-sm text-green-300">Käyttäjätunnus</label>
+                  <label className="mb-1 block text-sm text-[#1e3d1e]">Käyttäjätunnus</label>
                   <input
                     type="text"
                     value={username}
@@ -107,7 +107,7 @@ export default function AddCredentialForm({ clubId }: Props) {
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm text-green-300">Salasana</label>
+                  <label className="mb-1 block text-sm text-[#1e3d1e]">Salasana</label>
                   <input
                     type="text"
                     value={password}
@@ -117,7 +117,7 @@ export default function AddCredentialForm({ clubId }: Props) {
                 </div>
               </div>
               <div>
-                <label className="mb-1 block text-sm text-green-300">Kuvaus</label>
+                <label className="mb-1 block text-sm text-[#1e3d1e]">Kuvaus</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -134,14 +134,14 @@ export default function AddCredentialForm({ clubId }: Props) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+                  className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50"
                 >
                   {loading ? 'Tallennetaan...' : 'Tallenna'}
                 </button>
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300 hover:border-green-600"
+                  className="rounded-lg border border-[#e0d8cc] px-4 py-2 text-sm text-[#1e3d1e] hover:border-green-600"
                 >
                   Peruuta
                 </button>

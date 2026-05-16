@@ -59,24 +59,24 @@ export default function VierasluvatClient({
   const [invoicePermit, setInvoicePermit] = useState<PermitView | null>(null)
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-3xl space-y-6">
-        <Link href="/dashboard" className="flex items-center gap-1 text-sm text-green-400 hover:text-green-300">
+        <Link href="/dashboard" className="flex items-center gap-1 text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           <ArrowLeft size={14} /> Takaisin
         </Link>
 
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Ticket size={22} className="text-green-400" />
-            <h1 className="text-2xl font-bold text-white">Vierasluvat</h1>
-            <span className="rounded-full bg-green-800/60 px-2.5 py-0.5 text-xs font-medium text-green-200">
+            <Ticket size={22} className="text-[#2d6a2d]" />
+            <h1 className="text-2xl font-bold text-[#1a1a1a]">Vierasluvat</h1>
+            <span className="rounded-full bg-[#eaf3de] px-2.5 py-0.5 text-xs font-medium text-[#1a1a1a]">
               {active.length}
             </span>
           </div>
           {canManage && (
             <button
               onClick={() => setShowModal(true)}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] transition-colors"
             >
               <Plus size={15} />
               Myönnä uusi lupa
@@ -86,11 +86,11 @@ export default function VierasluvatClient({
 
         {/* Aktiiviset luvat */}
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
             Aktiiviset luvat
           </h2>
           {active.length === 0 ? (
-            <div className="rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center text-sm text-green-600">
+            <div className="rounded-2xl border border-[#e0d8cc] bg-white/[0.02] py-10 text-center text-sm text-[#888888]">
               Ei aktiivisia vieraslupia.
             </div>
           ) : (
@@ -107,7 +107,7 @@ export default function VierasluvatClient({
           <section>
             <button
               onClick={() => setShowPast((v) => !v)}
-              className="flex w-full items-center justify-between text-sm font-semibold uppercase tracking-wider text-green-600 hover:text-green-500"
+              className="flex w-full items-center justify-between text-sm font-semibold uppercase tracking-wider text-[#888888] hover:text-[#4a4a4a]"
             >
               <span>Menneet luvat ({past.length})</span>
               <ChevronDown size={16} className={`transition-transform ${showPast ? 'rotate-180' : ''}`} />
@@ -156,14 +156,14 @@ function PermitCard({
 
   const statusBadge =
     permit.status === 'cancelled'
-      ? { label: 'Peruutettu', cls: 'bg-stone-800 text-stone-300' }
+      ? { label: 'Peruutettu', cls: 'bg-[#1e3d1e] text-[#4a4a4a]' }
       : !permit.is_active
-      ? { label: 'Päättynyt', cls: 'bg-stone-700 text-stone-200' }
+      ? { label: 'Päättynyt', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' }
       : permit.payment_status === 'paid'
-      ? { label: '✅ Maksettu', cls: 'bg-green-800 text-green-200' }
+      ? { label: '✅ Maksettu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' }
       : permit.payment_status === 'pending'
-      ? { label: '⏳ Odottaa maksua', cls: 'bg-yellow-900 text-yellow-200' }
-      : { label: 'Ei laskutettu', cls: 'bg-stone-700 text-stone-300' }
+      ? { label: '⏳ Odottaa maksua', cls: 'bg-[#fef3c7] text-[#92400e]' }
+      : { label: 'Ei laskutettu', cls: 'bg-[#1e3d1e] text-[#4a4a4a]' }
 
   const cancel = async () => {
     if (!confirm('Haluatko varmasti peruuttaa tämän vierasluvan?')) return
@@ -175,29 +175,29 @@ function PermitCard({
   }
 
   return (
-    <div className={`rounded-2xl border border-green-800 bg-white/5 p-4 ${dimmed ? 'opacity-70' : ''}`}>
+    <div className={`rounded-2xl border border-[#e0d8cc] bg-white p-4 ${dimmed ? 'opacity-70' : ''}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-white">{permit.guest_name}</h3>
+            <h3 className="font-semibold text-[#1a1a1a]">{permit.guest_name}</h3>
             <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${statusBadge.cls}`}>
               {statusBadge.label}
             </span>
           </div>
-          <div className="mt-1 grid gap-x-4 gap-y-0.5 text-xs text-green-400 sm:grid-cols-2">
-            <p><span className="text-green-600">Isäntä:</span> {permit.host_name ?? '—'}</p>
-            <p><span className="text-green-600">Alue:</span> {permit.area ?? '—'}</p>
-            <p><span className="text-green-600">Voimassa:</span> {fmtRange(permit.valid_from, permit.valid_until)}</p>
-            <p><span className="text-green-600">Hinta:</span> {fmtEuros(permit.price_cents)}</p>
+          <div className="mt-1 grid gap-x-4 gap-y-0.5 text-xs text-[#2d6a2d] sm:grid-cols-2">
+            <p><span className="text-[#888888]">Isäntä:</span> {permit.host_name ?? '—'}</p>
+            <p><span className="text-[#888888]">Alue:</span> {permit.area ?? '—'}</p>
+            <p><span className="text-[#888888]">Voimassa:</span> {fmtRange(permit.valid_from, permit.valid_until)}</p>
+            <p><span className="text-[#888888]">Hinta:</span> {fmtEuros(permit.price_cents)}</p>
           </div>
-          {permit.notes && <p className="mt-2 text-xs text-green-500">{permit.notes}</p>}
+          {permit.notes && <p className="mt-2 text-xs text-[#4a4a4a]">{permit.notes}</p>}
         </div>
       </div>
       {canManage && permit.is_active && (
         <div className="mt-3 flex flex-wrap gap-2">
           <button
             onClick={onInvoice}
-            className="rounded-lg border border-green-700 bg-green-900/40 px-3 py-1.5 text-xs font-semibold text-green-200 hover:bg-green-900/70 transition-colors"
+            className="rounded-lg border border-[#e0d8cc] bg-white px-3 py-1.5 text-xs font-semibold text-[#1a1a1a] hover:bg-[#f0ebe3]/70 transition-colors"
           >
             Lähetä lasku
           </button>
@@ -278,16 +278,16 @@ function NewPermitModal({
     }
   }
 
-  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
-  const labelCls = 'mb-1 block text-xs text-green-400'
+  const inputCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
+  const labelCls = 'mb-1 block text-xs text-[#2d6a2d]'
 
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/60" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-md -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-6 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-md -translate-y-1/2 rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] p-6 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">
-          <h2 className="font-bold text-white">Myönnä uusi vierasluvan</h2>
-          <button onClick={onClose} className="text-green-500"><X size={16} /></button>
+          <h2 className="font-bold text-[#1a1a1a]">Myönnä uusi vierasluvan</h2>
+          <button onClick={onClose} className="text-[#4a4a4a]"><X size={16} /></button>
         </div>
 
         <div>
@@ -303,20 +303,20 @@ function NewPermitModal({
         <div>
           <label className={labelCls}>Isäntä *</label>
           {selectedHost ? (
-            <div className="flex items-center justify-between rounded-lg border border-green-700 bg-green-900/40 px-3 py-2">
-              <span className="text-sm text-green-200">{selectedHost.full_name}</span>
-              <button onClick={() => setSelectedHost(null)} className="text-green-400 hover:text-green-300"><X size={14} /></button>
+            <div className="flex items-center justify-between rounded-lg border border-[#e0d8cc] bg-white px-3 py-2">
+              <span className="text-sm text-[#1a1a1a]">{selectedHost.full_name}</span>
+              <button onClick={() => setSelectedHost(null)} className="text-[#2d6a2d] hover:text-[#1e3d1e]"><X size={14} /></button>
             </div>
           ) : (
             <>
               <input type="text" value={hostSearch} onChange={(e) => setHostSearch(e.target.value)} className={inputCls} placeholder="Hae jäseniä nimellä…" />
               {hostSearch && filteredHosts.length > 0 && (
-                <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-green-800 bg-green-950">
+                <div className="mt-1 max-h-40 overflow-y-auto rounded-lg border border-[#e0d8cc] bg-[#f5f0e8]">
                   {filteredHosts.map((h) => (
                     <button
                       key={`${h.type}-${h.id}`}
                       onClick={() => { setSelectedHost(h); setHostSearch('') }}
-                      className="block w-full px-3 py-2 text-left text-sm text-green-200 hover:bg-green-900/60"
+                      className="block w-full px-3 py-2 text-left text-sm text-[#1a1a1a] hover:bg-[#f0ebe3]"
                     >
                       {h.full_name}
                     </button>
@@ -363,7 +363,7 @@ function NewPermitModal({
         <button
           onClick={() => void save()}
           disabled={busy || !guestName.trim() || !selectedHost}
-          className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+          className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white disabled:opacity-50"
         >
           {busy ? 'Tallennetaan…' : 'Tallenna'}
         </button>
@@ -444,21 +444,21 @@ function InvoiceModal({ permit, onClose }: { permit: PermitView; onClose: () => 
     router.refresh()
   }
 
-  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500'
-  const labelCls = 'mb-1 block text-xs text-green-400'
+  const inputCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]'
+  const labelCls = 'mb-1 block text-xs text-[#2d6a2d]'
 
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/60" onClick={onClose} />
-      <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-6 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] p-6 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between">
-          <h2 className="font-bold text-white">Lähetä lasku</h2>
-          <button onClick={onClose} className="text-green-500"><X size={16} /></button>
+          <h2 className="font-bold text-[#1a1a1a]">Lähetä lasku</h2>
+          <button onClick={onClose} className="text-[#4a4a4a]"><X size={16} /></button>
         </div>
 
         {done ? (
           <div className="space-y-3">
-            <p className="flex items-center gap-1.5 text-sm text-green-300">
+            <p className="flex items-center gap-1.5 text-sm text-[#1e3d1e]">
               <Check size={14} />
               {done.mode === 'email' ? 'Lasku lähetetty sähköpostiin' : 'Lasku avattu tulostettavaksi'}
             </p>
@@ -467,22 +467,22 @@ function InvoiceModal({ permit, onClose }: { permit: PermitView; onClose: () => 
                 href={`/api/invoice-pdf/preview?payment_id=${done.paymentId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full rounded-lg border border-green-700 py-2 text-center text-sm text-green-300 hover:bg-white/5"
+                className="block w-full rounded-lg border border-[#e0d8cc] py-2 text-center text-sm text-[#1e3d1e] hover:bg-white"
               >
                 Avaa PDF uudelleen
               </a>
             )}
-            <button onClick={onClose} className="w-full rounded-lg bg-green-700 py-2 text-sm font-semibold text-white">Sulje</button>
+            <button onClick={onClose} className="w-full rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white">Sulje</button>
           </div>
         ) : (
           <>
             <div>
               <label className={labelCls}>Vastaanottaja</label>
-              <p className="rounded-lg bg-white/5 px-3 py-2 text-sm text-green-200">{permit.guest_name}</p>
+              <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1a1a1a]">{permit.guest_name}</p>
             </div>
             <div>
               <label className={labelCls}>Laskutustapa</label>
-              <p className="rounded-lg bg-white/5 px-3 py-2 text-sm text-green-200">
+              <p className="rounded-lg bg-white px-3 py-2 text-sm text-[#1a1a1a]">
                 {willPrint ? 'Tulostettava PDF' : 'Sähköposti'}
               </p>
             </div>
@@ -512,7 +512,7 @@ function InvoiceModal({ permit, onClose }: { permit: PermitView; onClose: () => 
             <button
               onClick={() => void send()}
               disabled={busy}
-              className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+              className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white disabled:opacity-50"
             >
               {busy ? 'Käsitellään…' : willPrint ? 'Luo ja avaa tulostettavaksi' : 'Lähetä sähköpostilla'}
             </button>

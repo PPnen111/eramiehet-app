@@ -93,8 +93,8 @@ export default function AddMemberForm({ onDone, onCancel, onLimitExceeded }: Pro
   }
 
   const inputClass =
-    'w-full rounded-lg border border-green-900 bg-transparent px-3 py-2 text-sm text-white placeholder:text-green-800 focus:outline-none focus:ring-1 focus:ring-green-600 transition-colors'
-  const labelClass = 'mb-1 block text-xs font-medium text-green-400'
+    'w-full rounded-lg border border-[#e0d8cc] bg-transparent px-3 py-2 text-sm text-[#1a1a1a] placeholder:text-[#888888] focus:outline-none focus:ring-1 focus:ring-[#2d6a2d] transition-colors'
+  const labelClass = 'mb-1 block text-xs font-medium text-[#2d6a2d]'
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-end">
@@ -102,10 +102,10 @@ export default function AddMemberForm({ onDone, onCancel, onLimitExceeded }: Pro
       <div className="absolute inset-0 bg-black/60" onClick={onCancel} />
 
       {/* Slide-in panel */}
-      <div className="relative z-10 h-full w-full max-w-md overflow-y-auto bg-gradient-to-b from-green-950 to-stone-950 border-l border-green-800 shadow-2xl">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-green-800 bg-green-950/90 backdrop-blur px-5 py-4">
-          <h2 className="text-lg font-bold text-white">Uusi jäsen</h2>
-          <button onClick={onCancel} className="rounded-lg p-1.5 text-green-500 hover:bg-white/10 transition-colors">
+      <div className="relative z-10 h-full w-full max-w-md overflow-y-auto bg-[#f5f0e8] border-l border-[#e0d8cc] shadow-2xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e0d8cc] bg-[#f5f0e8] backdrop-blur px-5 py-4">
+          <h2 className="text-lg font-bold text-[#1a1a1a]">Uusi jäsen</h2>
+          <button onClick={onCancel} className="rounded-lg p-1.5 text-[#4a4a4a] hover:bg-[#f0ebe3] transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -187,7 +187,7 @@ export default function AddMemberForm({ onDone, onCancel, onLimitExceeded }: Pro
             <select
               value={memberType}
               onChange={(e) => setMemberType(e.target.value)}
-              className={`${inputClass} [&>option]:bg-green-950 [&>option]:text-white`}
+              className={`${inputClass} [&>option]:bg-[#f5f0e8] [&>option]:text-[#1a1a1a]`}
             >
               <option value="">Valitse...</option>
               {MEMBER_TYPES.map((t) => (
@@ -198,7 +198,7 @@ export default function AddMemberForm({ onDone, onCancel, onLimitExceeded }: Pro
 
           {/* Osoite */}
           <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-green-600">Osoitetiedot</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#888888]">Osoitetiedot</p>
             <div>
               <label className={labelClass}>Postitusosoite</label>
               <input
@@ -249,7 +249,7 @@ export default function AddMemberForm({ onDone, onCancel, onLimitExceeded }: Pro
             <select
               value={billingMethod}
               onChange={(e) => setBillingMethod(e.target.value)}
-              className={`${inputClass} [&>option]:bg-green-950 [&>option]:text-white`}
+              className={`${inputClass} [&>option]:bg-[#f5f0e8] [&>option]:text-[#1a1a1a]`}
             >
               <option value="">Valitse...</option>
               {BILLING_METHODS.map((b) => (
@@ -272,14 +272,14 @@ export default function AddMemberForm({ onDone, onCancel, onLimitExceeded }: Pro
 
           {/* Kutsu-checkbox */}
           {email.trim() && (
-            <label className="flex items-center gap-3 rounded-lg border border-green-800 bg-white/[0.03] px-4 py-3 cursor-pointer">
+            <label className="flex items-center gap-3 rounded-lg border border-[#e0d8cc] bg-white/[0.03] px-4 py-3 cursor-pointer">
               <input
                 type="checkbox"
                 checked={sendInvite}
                 onChange={(e) => setSendInvite(e.target.checked)}
-                className="h-4 w-4 rounded border-green-700 bg-transparent text-green-500 focus:ring-green-600"
+                className="h-4 w-4 rounded border-[#e0d8cc] bg-transparent text-[#4a4a4a] focus:ring-[#2d6a2d]"
               />
-              <span className="text-sm text-green-300">Lähetä kutsu sovellukseen sähköpostilla</span>
+              <span className="text-sm text-[#1e3d1e]">Lähetä kutsu sovellukseen sähköpostilla</span>
             </label>
           )}
 
@@ -294,14 +294,14 @@ export default function AddMemberForm({ onDone, onCancel, onLimitExceeded }: Pro
               type="button"
               onClick={onCancel}
               disabled={saving}
-              className="flex-1 rounded-lg border border-green-800 py-2.5 text-sm font-medium text-green-400 hover:bg-white/5 disabled:opacity-50 transition-colors"
+              className="flex-1 rounded-lg border border-[#e0d8cc] py-2.5 text-sm font-medium text-[#2d6a2d] hover:bg-white disabled:opacity-50 transition-colors"
             >
               Peruuta
             </button>
             <button
               type="submit"
               disabled={saving || !fullName}
-              className="flex-1 rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+              className="flex-1 rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
             >
               {saving ? 'Tallennetaan...' : 'Tallenna'}
             </button>

@@ -89,13 +89,13 @@ export default async function VaihdaSeuraPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-12">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-12">
       <div className="mx-auto max-w-lg">
         <div className="mb-8">
           <h1 className="bg-gradient-to-r from-green-300 to-emerald-200 bg-clip-text text-2xl font-bold text-transparent">
             Seurat
           </h1>
-          <p className="mt-2 text-sm text-green-400">
+          <p className="mt-2 text-sm text-[#2d6a2d]">
             Valitse seura.
           </p>
         </div>
@@ -103,7 +103,7 @@ export default async function VaihdaSeuraPage() {
         <div className="flex flex-col gap-3">
           {clubs.length > 0 && <ClubSelector clubs={clubs} />}
           {clubs.length === 0 && (
-            <p className="text-sm text-green-600">Et kuulu vielä mihinkään seuraan.</p>
+            <p className="text-sm text-[#888888]">Et kuulu vielä mihinkään seuraan.</p>
           )}
         </div>
       </div>

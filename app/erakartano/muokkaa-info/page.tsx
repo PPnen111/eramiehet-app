@@ -37,12 +37,12 @@ export default async function MuokkaaInfoPage() {
   const info = raw ? (raw as unknown as CabinInfoRow) : null
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/erakartano" className="text-sm text-green-400 hover:text-green-300">
+        <Link href="/erakartano" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           ← Eräkartano
         </Link>
-        <h1 className="text-2xl font-bold text-white">Muokkaa hinnastoa ja ohjeita</h1>
+        <h1 className="text-2xl font-bold text-[#1a1a1a]">Muokkaa hinnastoa ja ohjeita</h1>
         <EditCabinInfoForm
           clubId={profile.club_id}
           initialPricing={info?.pricing_text ?? ''}

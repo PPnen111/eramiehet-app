@@ -29,10 +29,10 @@ export default async function HallintoPage() {
   const effectiveRole = profile?.role ?? null
   if (!isBoardOrAbove(effectiveRole)) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+      <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
         <div className="mx-auto max-w-2xl space-y-4">
-          <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
-          <p className="text-green-300">Ei käyttöoikeutta.</p>
+          <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Takaisin</Link>
+          <p className="text-[#1e3d1e]">Ei käyttöoikeutta.</p>
         </div>
       </main>
     )
@@ -51,10 +51,10 @@ export default async function HallintoPage() {
   const initialMembers = (raw ?? []) as AdminMember[]
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
-        <h1 className="text-2xl font-bold text-white">Hallinto</h1>
+        <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Takaisin</Link>
+        <h1 className="text-2xl font-bold text-[#1a1a1a]">Hallinto</h1>
         <AdminPanel clubId={clubId} initialMembers={initialMembers} isAdmin={effectiveRole === 'admin' || effectiveRole === 'superadmin'} />
       </div>
     </main>

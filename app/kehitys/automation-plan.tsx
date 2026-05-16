@@ -14,31 +14,31 @@ function Section({
 }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="rounded-xl border border-green-800 bg-white/5 overflow-hidden">
+    <div className="rounded-xl border border-[#e0d8cc] bg-white overflow-hidden">
       <button
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between px-5 py-3.5 text-left hover:bg-white/[0.03] transition-colors"
       >
-        <h3 className="font-semibold text-white">{title}</h3>
+        <h3 className="font-semibold text-[#1a1a1a]">{title}</h3>
         <ChevronDown
           size={16}
-          className={`text-green-500 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`text-[#4a4a4a] transition-transform ${open ? 'rotate-180' : ''}`}
         />
       </button>
-      {open && <div className="border-t border-green-900/40 px-5 py-4">{children}</div>}
+      {open && <div className="border-t border-[#e0d8cc]/40 px-5 py-4">{children}</div>}
     </div>
   )
 }
 
 function FlowCard({ title, steps }: { title: string; steps: string[] }) {
   return (
-    <div className="rounded-lg border border-green-900/40 bg-white/[0.02] p-4">
-      <h4 className="mb-3 font-semibold text-white">{title}</h4>
+    <div className="rounded-lg border border-[#e0d8cc]/40 bg-white/[0.02] p-4">
+      <h4 className="mb-3 font-semibold text-[#1a1a1a]">{title}</h4>
       <div className="space-y-1">
         {steps.map((s, i) => (
           <div key={i} className="flex items-start gap-2 text-sm">
-            <span className="shrink-0 text-green-600">{i < steps.length - 1 ? '→' : '✓'}</span>
-            <span className="text-green-300">{s}</span>
+            <span className="shrink-0 text-[#888888]">{i < steps.length - 1 ? '→' : '✓'}</span>
+            <span className="text-[#1e3d1e]">{s}</span>
           </div>
         ))}
       </div>
@@ -48,23 +48,23 @@ function FlowCard({ title, steps }: { title: string; steps: string[] }) {
 
 const PRIO: Record<string, string> = {
   MUST: 'bg-red-900/30 text-red-300 border-red-800/40',
-  SHOULD: 'bg-yellow-900/30 text-yellow-300 border-yellow-800/40',
+  SHOULD: 'bg-[#fef3c7] text-[#92400e] border-[#fcd34d]/40',
 }
 
 export default function AutomationPlan() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="rounded-2xl border border-green-800 bg-white/5 p-5 text-center">
-        <h2 className="text-xl font-bold text-white">JahtiPro:n automatisoitavat prosessit</h2>
-        <p className="mt-1 text-sm text-green-500">Multi-tenant SaaS — Tekninen suunnitelma</p>
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 text-center">
+        <h2 className="text-xl font-bold text-[#1a1a1a]">JahtiPro:n automatisoitavat prosessit</h2>
+        <p className="mt-1 text-sm text-[#4a4a4a]">Multi-tenant SaaS — Tekninen suunnitelma</p>
       </div>
 
       {/* 1. Executive Summary */}
       <Section title="1. Executive Summary" defaultOpen>
-        <div className="space-y-3 text-sm text-green-200 leading-relaxed">
+        <div className="space-y-3 text-sm text-[#1a1a1a] leading-relaxed">
           <p>Korkeimman ROI:n automaatiot seuraavaksi 18kk:</p>
-          <ul className="list-disc pl-5 space-y-1 text-green-300">
+          <ul className="list-disc pl-5 space-y-1 text-[#1e3d1e]">
             <li>Onboarding-automaatio (tenant-provisionointi + jäsen-/roolituonti)</li>
             <li>Maksujen automaatio (PSP-webhookit, reskontra, muistutukset)</li>
             <li>DSAR/GDPR-prosessit (export, oikaisu, poisto/anonymisointi, SLA-seuranta)</li>
@@ -82,10 +82,10 @@ export default function AutomationPlan() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px] text-sm">
             <thead>
-              <tr className="border-b border-green-800 text-left">
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Ominaisuus</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Prosessit</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Prioriteetti</th>
+              <tr className="border-b border-[#e0d8cc] text-left">
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Ominaisuus</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Prosessit</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Prioriteetti</th>
               </tr>
             </thead>
             <tbody>
@@ -100,9 +100,9 @@ export default function AutomationPlan() {
                 ['Karttakalusto', 'Token-elinkaari+rotaatio, käyttöauditointi, minimointi', 'MUST'],
                 ['Hallinto', 'DSAR-jonot+SLA, retention-säännöt, support JIT, access review', 'MUST'],
               ].map(([feature, processes, prio], i) => (
-                <tr key={i} className="border-b border-green-900/30 hover:bg-white/[0.03]">
-                  <td className="px-3 py-2 font-medium text-white">{feature}</td>
-                  <td className="px-3 py-2 text-green-300">{processes}</td>
+                <tr key={i} className="border-b border-[#e0d8cc]/30 hover:bg-white/[0.03]">
+                  <td className="px-3 py-2 font-medium text-[#1a1a1a]">{feature}</td>
+                  <td className="px-3 py-2 text-[#1e3d1e]">{processes}</td>
                   <td className="px-3 py-2">
                     <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-semibold ${PRIO[prio] ?? ''}`}>
                       {prio}
@@ -215,10 +215,10 @@ export default function AutomationPlan() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[600px] text-sm">
             <thead>
-              <tr className="border-b border-green-800 text-left">
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Teema</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Minimikysymys</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Kriittisyys</th>
+              <tr className="border-b border-[#e0d8cc] text-left">
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Teema</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Minimikysymys</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Kriittisyys</th>
               </tr>
             </thead>
             <tbody>
@@ -234,9 +234,9 @@ export default function AutomationPlan() {
                 ['Tiedostot', 'Onko allowlist, AV, storage webrootin ulkopuolella?', '🟡 TÄRKEÄ'],
                 ['DPIA triggerit', 'Muodostaako automaatio profilointia?', '🟢 HUOMIO'],
               ].map(([theme, question, crit], i) => (
-                <tr key={i} className="border-b border-green-900/30 hover:bg-white/[0.03]">
-                  <td className="px-3 py-2 font-medium text-white">{theme}</td>
-                  <td className="px-3 py-2 text-green-300">{question}</td>
+                <tr key={i} className="border-b border-[#e0d8cc]/30 hover:bg-white/[0.03]">
+                  <td className="px-3 py-2 font-medium text-[#1a1a1a]">{theme}</td>
+                  <td className="px-3 py-2 text-[#1e3d1e]">{question}</td>
                   <td className="px-3 py-2 text-xs">{crit}</td>
                 </tr>
               ))}
@@ -278,12 +278,12 @@ export default function AutomationPlan() {
               ],
             },
           ].map((p, i) => (
-            <div key={i} className="rounded-lg border border-green-900/40 bg-white/[0.02] p-4">
+            <div key={i} className="rounded-lg border border-[#e0d8cc]/40 bg-white/[0.02] p-4">
               <div className="flex items-center gap-2 mb-2">
                 <span>{p.badge}</span>
-                <h4 className="font-semibold text-white">{p.phase}</h4>
+                <h4 className="font-semibold text-[#1a1a1a]">{p.phase}</h4>
               </div>
-              <ul className="list-disc pl-5 space-y-0.5 text-sm text-green-300">
+              <ul className="list-disc pl-5 space-y-0.5 text-sm text-[#1e3d1e]">
                 {p.items.map((item, j) => (
                   <li key={j}>{item}</li>
                 ))}
@@ -298,11 +298,11 @@ export default function AutomationPlan() {
         <div className="overflow-x-auto">
           <table className="w-full min-w-[700px] text-sm">
             <thead>
-              <tr className="border-b border-green-800 text-left">
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Riski</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Todennäköisyys</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Vaikutus</th>
-                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-green-400">Mitigointi</th>
+              <tr className="border-b border-[#e0d8cc] text-left">
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Riski</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Todennäköisyys</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Vaikutus</th>
+                <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">Mitigointi</th>
               </tr>
             </thead>
             <tbody>
@@ -318,11 +318,11 @@ export default function AutomationPlan() {
                 ['Maksuautomaatio väärä dunning', 'Kohtalainen', 'Keskitaso', 'Grace period + read-only ennen blokkia'],
                 ['Kartta-token rotaatio katkaisee käytön', 'Kohtalainen', 'Keskitaso', 'Overlap window + ilmoitukset'],
               ].map(([risk, prob, impact, mitigation], i) => (
-                <tr key={i} className="border-b border-green-900/30 hover:bg-white/[0.03]">
-                  <td className="px-3 py-2 font-medium text-white">{risk}</td>
-                  <td className="px-3 py-2 text-green-300">{prob}</td>
-                  <td className="px-3 py-2 text-green-300">{impact}</td>
-                  <td className="px-3 py-2 text-xs text-green-400">{mitigation}</td>
+                <tr key={i} className="border-b border-[#e0d8cc]/30 hover:bg-white/[0.03]">
+                  <td className="px-3 py-2 font-medium text-[#1a1a1a]">{risk}</td>
+                  <td className="px-3 py-2 text-[#1e3d1e]">{prob}</td>
+                  <td className="px-3 py-2 text-[#1e3d1e]">{impact}</td>
+                  <td className="px-3 py-2 text-xs text-[#2d6a2d]">{mitigation}</td>
                 </tr>
               ))}
             </tbody>
@@ -331,8 +331,8 @@ export default function AutomationPlan() {
       </Section>
 
       {/* Footer */}
-      <div className="rounded-xl border border-green-900 bg-white/[0.03] px-4 py-3 text-center">
-        <p className="text-xs text-green-700">
+      <div className="rounded-xl border border-[#e0d8cc] bg-white/[0.03] px-4 py-3 text-center">
+        <p className="text-xs text-[#2d6a2d]">
           Dokumentti päivitetty: huhtikuu 2026 | Versio 1.0 | Luottamuksellinen
         </p>
       </div>

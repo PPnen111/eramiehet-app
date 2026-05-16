@@ -43,9 +43,9 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  active: 'text-green-400',
-  pending: 'text-yellow-400',
-  inactive: 'text-stone-400',
+  active: 'text-[#2d6a2d]',
+  pending: 'text-[#b45309]',
+  inactive: 'text-[#888888]',
   no_account: 'text-blue-400',
 }
 
@@ -147,22 +147,22 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   return (
     <div className="space-y-6">
       {/* Import section */}
-      <section className="rounded-2xl border border-green-800 bg-white/5 p-4">
+      <section className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">Tuo jäseniä</h2>
-            <p className="text-xs text-green-600">CSV tai Excel (.xlsx)</p>
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Tuo jäseniä</h2>
+            <p className="text-xs text-[#888888]">CSV tai Excel (.xlsx)</p>
             <a
               href="/jahtipro-jasenpohja.xlsx"
               download="jahtipro-jasenpohja.xlsx"
-              className="mt-1 inline-block text-xs text-green-400 underline hover:text-green-300"
+              className="mt-1 inline-block text-xs text-[#2d6a2d] underline hover:text-[#1e3d1e]"
             >
               ⬇ Lataa Excel-pohja
             </a>
           </div>
           <button
             onClick={() => setImportOpen((v) => !v)}
-            className="rounded-lg border border-green-700 px-3 py-1 text-xs font-medium text-green-300 hover:bg-white/5 transition-colors"
+            className="rounded-lg border border-[#e0d8cc] px-3 py-1 text-xs font-medium text-[#1e3d1e] hover:bg-white transition-colors"
           >
             {importOpen ? 'Sulje' : 'Tuo jäseniä'}
           </button>
@@ -170,13 +170,13 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
         {importOpen && (
           <div className="mt-4 space-y-3">
             {/* Toggle between file and form import */}
-            <div className="flex gap-1 rounded-lg border border-green-800 bg-white/[0.03] p-1">
+            <div className="flex gap-1 rounded-lg border border-[#e0d8cc] bg-white/[0.03] p-1">
               <button
                 onClick={() => setImportMode('file')}
                 className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                   importMode === 'file'
-                    ? 'bg-green-700 text-white'
-                    : 'text-green-400 hover:bg-white/5'
+                    ? 'bg-[#1e3d1e] text-white'
+                    : 'text-[#2d6a2d] hover:bg-white'
                 }`}
               >
                 Tuo tiedostosta
@@ -185,8 +185,8 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                 onClick={() => setImportMode('form')}
                 className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                   importMode === 'form'
-                    ? 'bg-green-700 text-white'
-                    : 'text-green-400 hover:bg-white/5'
+                    ? 'bg-[#1e3d1e] text-white'
+                    : 'text-[#2d6a2d] hover:bg-white'
                 }`}
               >
                 Täytä lomake
@@ -202,38 +202,38 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
         )}
         {importLogs.length > 0 && !importOpen && (
           <div className="mt-3 space-y-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-green-600">Viimeisimmät tuonnit</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#888888]">Viimeisimmät tuonnit</p>
             {importLogs.map((log) => {
               const isOpen = expandedLogId === log.id
               const hasDetails = log.import_rows && log.import_rows.length > 0
               return (
-                <div key={log.id} className="rounded-lg border border-green-900 bg-white/[0.03] overflow-hidden">
+                <div key={log.id} className="rounded-lg border border-[#e0d8cc] bg-white/[0.03] overflow-hidden">
                   <button
                     onClick={() => setExpandedLogId(isOpen ? null : log.id)}
                     className="flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-white/[0.02] transition-colors"
                     disabled={!hasDetails}
                   >
-                    <span className="text-green-400">{formatDate(log.created_at)}</span>
+                    <span className="text-[#2d6a2d]">{formatDate(log.created_at)}</span>
                     <span className="flex items-center gap-2">
-                      <span className="text-green-300">
-                        {log.total_rows} riviä · <span className="text-green-200">{log.success_count} tuotu</span>
-                        {log.skip_count > 0 && <span className="text-yellow-400"> · {log.skip_count} ohitettu</span>}
+                      <span className="text-[#1e3d1e]">
+                        {log.total_rows} riviä · <span className="text-[#1a1a1a]">{log.success_count} tuotu</span>
+                        {log.skip_count > 0 && <span className="text-[#b45309]"> · {log.skip_count} ohitettu</span>}
                         {log.error_count > 0 && <span className="text-red-400"> · {log.error_count} virheitä</span>}
                       </span>
-                      {hasDetails && <ChevronDown size={12} className={`text-green-600 transition-transform ${isOpen ? 'rotate-180' : ''}`} />}
+                      {hasDetails && <ChevronDown size={12} className={`text-[#888888] transition-transform ${isOpen ? 'rotate-180' : ''}`} />}
                     </span>
                   </button>
                   {isOpen && hasDetails && (
-                    <div className="border-t border-green-900/50 bg-green-950/30 px-3 py-2 space-y-1 max-h-64 overflow-y-auto">
+                    <div className="border-t border-[#e0d8cc]/50 bg-white px-3 py-2 space-y-1 max-h-64 overflow-y-auto">
                       {log.import_rows!.map((row, i) => {
                         const icon = row.status === 'success' ? '✅' : row.status === 'error' ? '❌' : '⏭'
-                        const textCls = row.status === 'success' ? 'text-green-300' : row.status === 'error' ? 'text-red-300' : 'text-stone-400'
+                        const textCls = row.status === 'success' ? 'text-[#1e3d1e]' : row.status === 'error' ? 'text-red-300' : 'text-[#888888]'
                         const label = row.status === 'success' ? 'tuotu' : row.status === 'error' ? `virhe${row.reason ? ': ' + row.reason : ''}` : 'jo rekisterissä'
                         return (
                           <div key={i} className={`flex items-center gap-2 text-xs ${textCls}`}>
                             <span className="w-4 shrink-0">{icon}</span>
-                            <span className="font-medium text-white">{row.name}</span>
-                            <span className="text-green-600">— {label}</span>
+                            <span className="font-medium text-[#1a1a1a]">{row.name}</span>
+                            <span className="text-[#888888]">— {label}</span>
                           </div>
                         )
                       })}
@@ -249,20 +249,20 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
       {/* Pending approvals */}
       {pending.length > 0 && (
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-yellow-400">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#b45309]">
             Odottaa hyväksyntää ({pending.length})
           </h2>
           <div className="space-y-2">
             {pending.map((m) => (
-              <div key={m.id} className="flex items-center justify-between gap-3 rounded-xl border border-yellow-900 bg-yellow-900/10 px-4 py-3">
+              <div key={m.id} className="flex items-center justify-between gap-3 rounded-xl border border-[#fcd34d] bg-[#fef3c7]/10 px-4 py-3">
                 <Link href={`/jasenet/${m.id}`} className="min-w-0 flex-1">
-                  <p className="font-medium text-white hover:text-green-300 transition-colors">{m.full_name ?? '—'}</p>
-                  {m.email && <p className="text-xs text-green-500">{m.email}</p>}
+                  <p className="font-medium text-[#1a1a1a] hover:text-[#1e3d1e] transition-colors">{m.full_name ?? '—'}</p>
+                  {m.email && <p className="text-xs text-[#4a4a4a]">{m.email}</p>}
                 </Link>
                 <button
                   onClick={() => void approveMember(m.id)}
                   disabled={approvingMember === m.id}
-                  className="shrink-0 rounded-lg bg-green-700 px-3 py-1 text-xs font-semibold text-white disabled:opacity-50"
+                  className="shrink-0 rounded-lg bg-[#1e3d1e] px-3 py-1 text-xs font-semibold text-white disabled:opacity-50"
                 >
                   {approvingMember === m.id ? '...' : 'Hyväksy'}
                 </button>
@@ -275,7 +275,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
       {/* Members list */}
       <section>
         <div className="mb-3 flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-green-400">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
             Jäsenet ({loadingMembers ? '…' : rest.length})
           </h2>
           <div className="flex items-center gap-2">
@@ -283,7 +283,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
               <button
                 onClick={() => void inviteAll()}
                 disabled={invitingAll}
-                className="flex items-center gap-1.5 rounded-lg bg-green-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
+                className="flex items-center gap-1.5 rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#1e3d1e] disabled:opacity-50 transition-colors"
               >
                 <Mail size={12} />
                 {invitingAll ? `Lähetetään ${notLoggedIn.length} kutsua...` : `Kutsu kaikki (${notLoggedIn.length})`}
@@ -291,7 +291,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
             )}
             <button
               onClick={() => setAddMemberOpen(true)}
-              className="flex items-center gap-1.5 rounded-lg bg-green-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-600 transition-colors"
+              className="flex items-center gap-1.5 rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162d16] transition-colors"
             >
               <UserPlus size={12} />
               Uusi jäsen
@@ -300,23 +300,23 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
         </div>
 
         {inviteAllResult && (
-          <p className="mb-3 rounded-lg bg-green-900/40 px-3 py-2 text-sm text-green-300">{inviteAllResult}</p>
+          <p className="mb-3 rounded-lg bg-white px-3 py-2 text-sm text-[#1e3d1e]">{inviteAllResult}</p>
         )}
 
-        <div className="divide-y divide-green-900/40 rounded-2xl border border-green-800 bg-white/5 overflow-hidden">
+        <div className="divide-y divide-green-900/40 rounded-2xl border border-[#e0d8cc] bg-white overflow-hidden">
           {rest.map((m) => {
             const targetHref = m.profile_id ? `/jasenet/${m.profile_id}` : `/jasenet/registry/${m.id}`
             return (
             <div key={m.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors">
               <Link href={targetHref} className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium text-white">{m.full_name ?? '—'}</span>
-                  <span className={`text-xs ${STATUS_COLOR[m.member_status] ?? 'text-stone-400'}`}>
+                  <span className="font-medium text-[#1a1a1a]">{m.full_name ?? '—'}</span>
+                  <span className={`text-xs ${STATUS_COLOR[m.member_status] ?? 'text-[#888888]'}`}>
                     {STATUS_LABEL[m.member_status] ?? m.member_status}
                   </span>
-                  <span className="text-xs text-green-700">{ROLE_LABEL[m.role] ?? m.role}</span>
+                  <span className="text-xs text-[#2d6a2d]">{ROLE_LABEL[m.role] ?? m.role}</span>
                 </div>
-                <div className="flex flex-wrap gap-x-3 mt-0.5 text-xs text-green-600">
+                <div className="flex flex-wrap gap-x-3 mt-0.5 text-xs text-[#888888]">
                   {m.email && <span className="truncate">{m.email}</span>}
                   {m.member_type && <span>{m.member_type}</span>}
                 </div>
@@ -326,19 +326,19 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                 {m.member_status === 'no_account' ? (
                   <span className="text-xs text-blue-400" title="Ei sovellustunnusta">📋</span>
                 ) : m.has_logged_in ? (
-                  <span className="text-xs text-green-500" title="Kirjautunut">✅</span>
+                  <span className="text-xs text-[#4a4a4a]" title="Kirjautunut">✅</span>
                 ) : (
-                  <span className="text-xs text-stone-500" title="Ei kirjautunut">⏳</span>
+                  <span className="text-xs text-[#888888]" title="Ei kirjautunut">⏳</span>
                 )}
                 {invitedMember === m.id && (
-                  <span className="text-xs text-green-400">✓</span>
+                  <span className="text-xs text-[#2d6a2d]">✓</span>
                 )}
                 {!m.has_logged_in && m.email && m.member_status !== 'no_account' && (
                   <button
                     onClick={() => void inviteMember(m.id)}
                     disabled={invitingMember === m.id || invitedMember === m.id}
                     title="Lähetä kutsu"
-                    className="rounded-md p-1.5 text-green-600 hover:bg-green-900/40 hover:text-green-300 disabled:opacity-40 transition-colors"
+                    className="rounded-md p-1.5 text-[#888888] hover:bg-white hover:text-[#1e3d1e] disabled:opacity-40 transition-colors"
                   >
                     {invitingMember === m.id ? <span className="text-xs">...</span> : <Mail size={13} />}
                   </button>
@@ -347,20 +347,20 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
                   onClick={() => void removeMember(m.id, m.full_name ?? '—', m.profile_id)}
                   disabled={deletingMember === m.id}
                   title="Poista seurasta"
-                  className="rounded-md p-1.5 text-stone-600 hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
+                  className="rounded-md p-1.5 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
                 >
                   {deletingMember === m.id ? <span className="text-xs">...</span> : <Trash2 size={13} />}
                 </button>
-                <ChevronRight size={14} className="text-green-800" />
+                <ChevronRight size={14} className="text-[#1e3d1e]" />
               </div>
             </div>
             )
           })}
           {loadingMembers && rest.length === 0 && (
-            <p className="px-4 py-6 text-sm text-green-600">Ladataan jäseniä...</p>
+            <p className="px-4 py-6 text-sm text-[#888888]">Ladataan jäseniä...</p>
           )}
           {!loadingMembers && rest.length === 0 && (
-            <p className="px-4 py-6 text-sm text-green-600">Ei jäseniä.</p>
+            <p className="px-4 py-6 text-sm text-[#888888]">Ei jäseniä.</p>
           )}
         </div>
       </section>
@@ -393,7 +393,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
 
       {/* Success toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-green-700 px-5 py-3 text-sm font-semibold text-white shadow-lg">
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl bg-[#1e3d1e] px-5 py-3 text-sm font-semibold text-white shadow-lg">
           {toast}
         </div>
       )}

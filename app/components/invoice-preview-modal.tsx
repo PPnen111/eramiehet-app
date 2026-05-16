@@ -90,15 +90,15 @@ export default function InvoicePreviewModal({ payment, memberName, clubName, onC
         {/* Invoice content */}
         <div>
           {/* Invoice header */}
-          <div className="bg-green-950 px-8 py-6">
+          <div className="bg-[#f5f0e8] px-8 py-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-medium uppercase tracking-widest text-green-400">Lasku</p>
-                <h2 className="mt-1 text-2xl font-bold text-white">{clubName}</h2>
+                <p className="text-xs font-medium uppercase tracking-widest text-[#2d6a2d]">Lasku</p>
+                <h2 className="mt-1 text-2xl font-bold text-[#1a1a1a]">{clubName}</h2>
               </div>
               <div className="text-right">
-                <p className="text-xs text-green-400">Päivämäärä</p>
-                <p className="text-sm font-medium text-white">{today}</p>
+                <p className="text-xs text-[#2d6a2d]">Päivämäärä</p>
+                <p className="text-sm font-medium text-[#1a1a1a]">{today}</p>
               </div>
             </div>
           </div>
@@ -194,7 +194,7 @@ export default function InvoicePreviewModal({ payment, memberName, clubName, onC
           <Link
             href={`/laskut/${payment.id}`}
             target="_blank"
-            className="flex-1 rounded-lg bg-green-800 py-2.5 text-center text-sm font-semibold text-white hover:bg-green-700 transition-colors"
+            className="flex-1 rounded-lg bg-[#1e3d1e] py-2.5 text-center text-sm font-semibold text-white hover:bg-[#1e3d1e] transition-colors"
           >
             Tulosta
           </Link>

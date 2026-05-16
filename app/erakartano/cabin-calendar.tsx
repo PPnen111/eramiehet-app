@@ -48,8 +48,8 @@ export default function CabinCalendar({ bookings }: Props) {
 
   if (!mounted) {
     return (
-      <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
-        <div className="h-56 animate-pulse rounded-xl bg-white/5" />
+      <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+        <div className="h-56 animate-pulse rounded-xl bg-white" />
       </div>
     )
   }
@@ -81,26 +81,26 @@ export default function CabinCalendar({ bookings }: Props) {
   const styles: Record<string, string> = {
     confirmed: 'bg-red-900/70 font-semibold text-red-200',
     pending: 'bg-orange-500/70 font-semibold text-orange-100',
-    today: 'ring-2 ring-green-400 font-semibold text-white',
-    past: 'text-green-800',
-    free: 'text-green-300',
+    today: 'ring-2 ring-green-400 font-semibold text-[#1a1a1a]',
+    past: 'text-[#1e3d1e]',
+    free: 'text-[#1e3d1e]',
   }
 
   return (
-    <div className="rounded-2xl border border-green-800 bg-white/5 p-4">
+    <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
       {/* Navigointi */}
       <div className="mb-4 flex items-center justify-between">
         <button
           onClick={prevMonth}
-          className="rounded-lg p-1.5 text-green-400 hover:bg-white/10 transition-colors"
+          className="rounded-lg p-1.5 text-[#2d6a2d] hover:bg-[#f0ebe3] transition-colors"
           aria-label="Edellinen kuukausi"
         >
           <ChevronLeft size={18} />
         </button>
-        <span className="font-semibold capitalize text-white">{monthName}</span>
+        <span className="font-semibold capitalize text-[#1a1a1a]">{monthName}</span>
         <button
           onClick={nextMonth}
-          className="rounded-lg p-1.5 text-green-400 hover:bg-white/10 transition-colors"
+          className="rounded-lg p-1.5 text-[#2d6a2d] hover:bg-[#f0ebe3] transition-colors"
           aria-label="Seuraava kuukausi"
         >
           <ChevronRight size={18} />
@@ -110,7 +110,7 @@ export default function CabinCalendar({ bookings }: Props) {
       {/* Viikonpäivät */}
       <div className="mb-1 grid grid-cols-7 text-center">
         {WEEKDAYS.map((d) => (
-          <div key={d} className="py-1 text-xs font-medium text-green-600">
+          <div key={d} className="py-1 text-xs font-medium text-[#888888]">
             {d}
           </div>
         ))}
@@ -131,23 +131,23 @@ export default function CabinCalendar({ bookings }: Props) {
       </div>
 
       {/* Selite */}
-      <div className="mt-4 space-y-1.5 border-t border-green-900 pt-3">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-600">Selite</p>
+      <div className="mt-4 space-y-1.5 border-t border-[#e0d8cc] pt-3">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#888888]">Selite</p>
         <div className="flex flex-wrap gap-x-5 gap-y-1.5 text-xs">
-          <span className="flex items-center gap-1.5 text-green-400">
+          <span className="flex items-center gap-1.5 text-[#2d6a2d]">
             <span className="inline-block h-3 w-3 rounded bg-orange-500/70" />
             Odottaa vahvistusta
           </span>
-          <span className="flex items-center gap-1.5 text-green-400">
+          <span className="flex items-center gap-1.5 text-[#2d6a2d]">
             <span className="inline-block h-3 w-3 rounded bg-red-900/70" />
             Vahvistettu varaus
           </span>
-          <span className="flex items-center gap-1.5 text-green-400">
+          <span className="flex items-center gap-1.5 text-[#2d6a2d]">
             <span className="inline-block h-3 w-3 rounded ring-2 ring-green-400" />
             Tänään
           </span>
-          <span className="flex items-center gap-1.5 text-green-400">
-            <span className="inline-block h-3 w-3 rounded border border-green-700" />
+          <span className="flex items-center gap-1.5 text-[#2d6a2d]">
+            <span className="inline-block h-3 w-3 rounded border border-[#e0d8cc]" />
             Vapaa
           </span>
         </div>

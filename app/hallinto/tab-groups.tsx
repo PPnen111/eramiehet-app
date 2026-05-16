@@ -195,10 +195,10 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
     }
   }
 
-  if (loading) return <p className="text-sm text-green-500">Ladataan ryhmiä...</p>
+  if (loading) return <p className="text-sm text-[#4a4a4a]">Ladataan ryhmiä...</p>
 
   const inputClass =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
 
   return (
     <>
@@ -209,16 +209,16 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
             {!createOpen ? (
               <button
                 onClick={() => setCreateOpen(true)}
-                className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+                className="rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] transition-colors"
               >
                 + Luo uusi ryhmä
               </button>
             ) : (
-              <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
-                <h3 className="mb-3 font-semibold text-white">Luo uusi ryhmä</h3>
+              <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
+                <h3 className="mb-3 font-semibold text-[#1a1a1a]">Luo uusi ryhmä</h3>
                 <form onSubmit={handleCreateGroup} className="space-y-3">
                   <div>
-                    <label className="mb-1 block text-sm text-green-300">Nimi *</label>
+                    <label className="mb-1 block text-sm text-[#1e3d1e]">Nimi *</label>
                     <input
                       type="text"
                       value={newName}
@@ -229,7 +229,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                     />
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm text-green-300">Kuvaus</label>
+                    <label className="mb-1 block text-sm text-[#1e3d1e]">Kuvaus</label>
                     <input
                       type="text"
                       value={newDesc}
@@ -242,14 +242,14 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                     <button
                       type="submit"
                       disabled={busy}
-                      className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                      className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white disabled:opacity-50"
                     >
                       Luo ryhmä
                     </button>
                     <button
                       type="button"
                       onClick={() => setCreateOpen(false)}
-                      className="rounded-lg border border-green-800 px-4 py-2 text-sm text-green-300"
+                      className="rounded-lg border border-[#e0d8cc] px-4 py-2 text-sm text-[#1e3d1e]"
                     >
                       Peruuta
                     </button>
@@ -262,7 +262,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
 
         {/* Groups list */}
         {groups.length === 0 ? (
-          <p className="text-sm text-green-600">Ei ryhmiä.</p>
+          <p className="text-sm text-[#888888]">Ei ryhmiä.</p>
         ) : (
           <div className="space-y-3">
             {groups.map((group) => {
@@ -274,7 +274,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
               return (
                 <div
                   key={group.id}
-                  className="rounded-2xl border border-green-800 bg-white/5 overflow-hidden"
+                  className="rounded-2xl border border-[#e0d8cc] bg-white overflow-hidden"
                 >
                   {/* Group card header */}
                   <button
@@ -282,47 +282,47 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                     className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-white/[0.03] transition-colors"
                   >
                     <div className="min-w-0">
-                      <p className="font-semibold text-white">{group.name}</p>
+                      <p className="font-semibold text-[#1a1a1a]">{group.name}</p>
                       {group.description && (
-                        <p className="mt-0.5 truncate text-xs text-green-500">{group.description}</p>
+                        <p className="mt-0.5 truncate text-xs text-[#4a4a4a]">{group.description}</p>
                       )}
-                      <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-green-600">
+                      <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-[#888888]">
                         <span>{group.members.length} jäsentä</span>
                         {leader && <span>Johtaja: {leader.full_name ?? leader.email ?? '—'}</span>}
                       </div>
                     </div>
-                    <div className="shrink-0 text-green-500">
+                    <div className="shrink-0 text-[#4a4a4a]">
                       {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                     </div>
                   </button>
 
                   {/* Expanded detail */}
                   {isExpanded && (
-                    <div className="border-t border-green-900 px-4 py-4 space-y-4">
+                    <div className="border-t border-[#e0d8cc] px-4 py-4 space-y-4">
                       {/* Members list */}
                       <div>
-                        <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-400">
+                        <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">
                           Jäsenet ({group.members.length})
                         </h4>
                         {group.members.length === 0 ? (
-                          <p className="text-xs text-green-600">Ei jäseniä.</p>
+                          <p className="text-xs text-[#888888]">Ei jäseniä.</p>
                         ) : (
                           <div className="space-y-1.5">
                             {group.members.map((m) => (
                               <div
                                 key={m.id}
-                                className="flex items-center justify-between gap-2 rounded-lg border border-green-900 bg-white/[0.02] px-3 py-2"
+                                className="flex items-center justify-between gap-2 rounded-lg border border-[#e0d8cc] bg-white/[0.02] px-3 py-2"
                               >
                                 <div className="min-w-0">
-                                  <span className="text-sm text-white">
+                                  <span className="text-sm text-[#1a1a1a]">
                                     {m.full_name ?? m.email ?? '—'}
                                   </span>
                                   {m.role === 'leader' ? (
-                                    <span className="ml-2 inline-block rounded-full bg-green-700 px-2 py-0.5 text-[10px] font-bold text-green-100">
+                                    <span className="ml-2 inline-block rounded-full bg-[#1e3d1e] px-2 py-0.5 text-[10px] font-bold text-green-100">
                                       Ryhmänjohtaja
                                     </span>
                                   ) : (
-                                    <span className="ml-2 inline-block rounded-full bg-stone-700 px-2 py-0.5 text-[10px] font-medium text-stone-300">
+                                    <span className="ml-2 inline-block rounded-full bg-[#1e3d1e] px-2 py-0.5 text-[10px] font-medium text-[#4a4a4a]">
                                       Jäsen
                                     </span>
                                   )}
@@ -332,7 +332,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                                     <button
                                       onClick={() => handleToggleRole(group.id, m.id, m.role)}
                                       disabled={busy}
-                                      className="rounded px-2 py-1 text-[11px] text-green-400 hover:bg-green-900/40 disabled:opacity-50"
+                                      className="rounded px-2 py-1 text-[11px] text-[#2d6a2d] hover:bg-white disabled:opacity-50"
                                     >
                                       {m.role === 'leader' ? 'Poista johtajuus' : 'Aseta johtajaksi'}
                                     </button>
@@ -354,7 +354,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                       {/* Add member */}
                       {availableMembers.length > 0 && (
                         <div>
-                          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-green-400">
+                          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">
                             Lisää jäsen
                           </h4>
                           <AddMemberSelect
@@ -371,21 +371,21 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                           {invoiceGroupId !== group.id ? (
                             <button
                               onClick={() => { setInvoiceGroupId(group.id); setInvoiceResult('') }}
-                              className="rounded-lg bg-amber-700 px-3 py-2 text-xs font-semibold text-white hover:bg-amber-600 transition-colors"
+                              className="rounded-lg bg-[#b45309] px-3 py-2 text-xs font-semibold text-white hover:bg-[#92400e] transition-colors"
                             >
                               Lähetä lasku ryhmälle
                             </button>
                           ) : (
-                            <div className="rounded-xl border border-amber-800 bg-amber-950/20 p-4 space-y-3">
-                              <h4 className="text-sm font-semibold text-amber-300">
+                            <div className="rounded-xl border border-[#fcd34d] bg-[#fef3c7]/20 p-4 space-y-3">
+                              <h4 className="text-sm font-semibold text-[#92400e]">
                                 Lähetä lasku ryhmälle &quot;{group.name}&quot;
                               </h4>
                               <div>
-                                <label className="mb-1 block text-xs text-amber-400">Laskun tyyppi</label>
+                                <label className="mb-1 block text-xs text-[#b45309]">Laskun tyyppi</label>
                                 <select
                                   value={invoiceType}
                                   onChange={(e) => setInvoiceType(e.target.value)}
-                                  className="w-full rounded-lg border border-amber-800 bg-green-950 px-3 py-2 text-sm text-white outline-none"
+                                  className="w-full rounded-lg border border-[#fcd34d] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none"
                                 >
                                   <option value="membership_fee">Jäsenmaksu</option>
                                   <option value="hunting_fee">Metsästysmaksu</option>
@@ -394,38 +394,38 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                                 </select>
                               </div>
                               <div>
-                                <label className="mb-1 block text-xs text-amber-400">Kuvaus *</label>
+                                <label className="mb-1 block text-xs text-[#b45309]">Kuvaus *</label>
                                 <input
                                   type="text"
                                   value={invoiceDesc}
                                   onChange={(e) => setInvoiceDesc(e.target.value)}
                                   placeholder="esim. Hirviseurueen maksu 2026"
-                                  className="w-full rounded-lg border border-amber-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-amber-700 outline-none"
+                                  className="w-full rounded-lg border border-[#fcd34d] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none"
                                 />
                               </div>
                               <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                  <label className="mb-1 block text-xs text-amber-400">Summa (€) *</label>
+                                  <label className="mb-1 block text-xs text-[#b45309]">Summa (€) *</label>
                                   <input
                                     type="text"
                                     value={invoiceAmount}
                                     onChange={(e) => setInvoiceAmount(e.target.value)}
                                     placeholder="0,00"
-                                    className="w-full rounded-lg border border-amber-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-amber-700 outline-none"
+                                    className="w-full rounded-lg border border-[#fcd34d] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none"
                                   />
                                 </div>
                                 <div>
-                                  <label className="mb-1 block text-xs text-amber-400">Eräpäivä</label>
+                                  <label className="mb-1 block text-xs text-[#b45309]">Eräpäivä</label>
                                   <input
                                     type="date"
                                     value={invoiceDue}
                                     onChange={(e) => setInvoiceDue(e.target.value)}
-                                    className="w-full rounded-lg border border-amber-800 bg-green-950 px-3 py-2 text-sm text-white outline-none"
+                                    className="w-full rounded-lg border border-[#fcd34d] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none"
                                   />
                                 </div>
                               </div>
 
-                              <p className="text-xs text-amber-400">
+                              <p className="text-xs text-[#b45309]">
                                 Lähetään {group.members.length} jäsenelle, yhteensä{' '}
                                 {(() => {
                                   const cents = Math.round(parseFloat(invoiceAmount.replace(',', '.') || '0') * 100)
@@ -434,27 +434,27 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
                               </p>
 
                               {invoiceResult && (
-                                <p className="rounded-lg bg-green-900/40 px-3 py-2 text-xs text-green-300">{invoiceResult}</p>
+                                <p className="rounded-lg bg-white px-3 py-2 text-xs text-[#1e3d1e]">{invoiceResult}</p>
                               )}
 
                               <div className="flex flex-wrap gap-2">
                                 <button
                                   onClick={() => handleSendInvoice(group.id, false)}
                                   disabled={busy}
-                                  className="rounded-lg bg-amber-700 px-3 py-2 text-xs font-semibold text-white hover:bg-amber-600 disabled:opacity-50"
+                                  className="rounded-lg bg-[#b45309] px-3 py-2 text-xs font-semibold text-white hover:bg-[#92400e] disabled:opacity-50"
                                 >
                                   Luo laskut
                                 </button>
                                 <button
                                   onClick={() => handleSendInvoice(group.id, true)}
                                   disabled={busy}
-                                  className="rounded-lg bg-amber-600 px-3 py-2 text-xs font-semibold text-white hover:bg-amber-500 disabled:opacity-50"
+                                  className="rounded-lg bg-[#b45309] px-3 py-2 text-xs font-semibold text-white hover:bg-[#b45309] disabled:opacity-50"
                                 >
                                   Luo ja lähetä sähköpostilla
                                 </button>
                                 <button
                                   onClick={() => setInvoiceGroupId(null)}
-                                  className="rounded-lg border border-amber-800 px-3 py-2 text-xs text-amber-300 hover:bg-white/5"
+                                  className="rounded-lg border border-[#fcd34d] px-3 py-2 text-xs text-[#92400e] hover:bg-white"
                                 >
                                   Peruuta
                                 </button>
@@ -466,7 +466,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
 
                       {/* Delete group — admin only */}
                       {isAdmin && (
-                        <div className="border-t border-green-900 pt-3">
+                        <div className="border-t border-[#e0d8cc] pt-3">
                           <button
                             onClick={() => handleDeleteGroup(group.id)}
                             disabled={busy}
@@ -489,7 +489,7 @@ export default function TabGroups({ clubId, clubMembers, isAdmin }: Props) {
       {toast && (
         <div
           className={`fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl px-5 py-3 text-sm font-medium shadow-2xl ${
-            toast.type === 'ok' ? 'bg-green-700 text-white' : 'bg-red-800 text-white'
+            toast.type === 'ok' ? 'bg-[#1e3d1e] text-white' : 'bg-red-800 text-white'
           }`}
         >
           {toast.msg}
@@ -520,11 +520,11 @@ function AddMemberSelect({
       <select
         value={selected}
         onChange={(e) => setSelected(e.target.value)}
-        className="min-w-0 flex-1 rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500"
+        className="min-w-0 flex-1 rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
       >
-        <option value="" className="bg-green-950 text-white">Valitse jäsen...</option>
+        <option value="" className="bg-[#f5f0e8] text-[#1a1a1a]">Valitse jäsen...</option>
         {members.map((m) => (
-          <option key={m.id} value={m.id} className="bg-green-950 text-white">
+          <option key={m.id} value={m.id} className="bg-[#f5f0e8] text-[#1a1a1a]">
             {m.full_name ?? m.email ?? m.id}
           </option>
         ))}
@@ -537,7 +537,7 @@ function AddMemberSelect({
           }
         }}
         disabled={disabled || !selected}
-        className="shrink-0 rounded-lg bg-green-700 px-3 py-2 text-xs font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+        className="shrink-0 rounded-lg bg-[#1e3d1e] px-3 py-2 text-xs font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
       >
         Lisää
       </button>

@@ -44,11 +44,11 @@ const PLANS = [
 
 export default function LandingV1() {
   return (
-    <div className="rounded-2xl border border-green-800 bg-green-950 font-sans text-white">
+    <div className="rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] font-sans text-[#1a1a1a]">
       {/* Nav */}
-      <nav className="flex items-center justify-between border-b border-green-900 px-8 py-4">
-        <span className="text-lg font-bold tracking-tight text-green-300">JahtiPro</span>
-        <div className="hidden items-center gap-6 text-sm text-green-400 sm:flex">
+      <nav className="flex items-center justify-between border-b border-[#e0d8cc] px-8 py-4">
+        <span className="text-lg font-bold tracking-tight text-[#1e3d1e]">JahtiPro</span>
+        <div className="hidden items-center gap-6 text-sm text-[#2d6a2d] sm:flex">
           <span>Ominaisuudet</span>
           <span>Hinnat</span>
           <span>Kirjaudu</span>
@@ -60,14 +60,14 @@ export default function LandingV1() {
 
       {/* Hero */}
       <div className="px-8 py-20 text-center">
-        <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-green-500">
+        <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#4a4a4a]">
           Metsästysseuroille tehty
         </p>
         <h1 className="mx-auto max-w-2xl text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
           Metsästysseura<br />
-          <span className="text-green-400">hallinnassa.</span>
+          <span className="text-[#2d6a2d]">hallinnassa.</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-green-300/70">
+        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-[#1e3d1e]/70">
           Jäsenrekisteri, saalisilmoitukset, mökinvaraukset ja tapahtumat — kaikki yhdessä
           sovelluksessa. Lopeta Excel-taulukot ja WhatsApp-kaos tänään.
         </p>
@@ -75,15 +75,15 @@ export default function LandingV1() {
           <button className="flex items-center gap-2 rounded-xl bg-green-600 px-6 py-3 font-semibold text-white hover:bg-green-500">
             Aloita 14 päivän kokeilu <ArrowRight size={16} />
           </button>
-          <button className="rounded-xl border border-green-700 px-6 py-3 font-semibold text-green-300 hover:border-green-500 hover:text-white">
+          <button className="rounded-xl border border-[#e0d8cc] px-6 py-3 font-semibold text-[#1e3d1e] hover:border-green-500 hover:text-[#1a1a1a]">
             Katso esittely
           </button>
         </div>
-        <p className="mt-4 text-xs text-green-600">Ei luottokorttia · Ei sitoumusta · Suomalainen palvelu</p>
+        <p className="mt-4 text-xs text-[#888888]">Ei luottokorttia · Ei sitoumusta · Suomalainen palvelu</p>
       </div>
 
       {/* Divider stat row */}
-      <div className="border-y border-green-900 bg-green-900/20 px-8 py-6">
+      <div className="border-y border-[#e0d8cc] bg-white px-8 py-6">
         <div className="mx-auto grid max-w-3xl grid-cols-3 gap-4 text-center">
           {[
             { value: '120+', label: 'metsästysseuraa' },
@@ -91,8 +91,8 @@ export default function LandingV1() {
             { value: '30 s', label: 'saalisilmoitus' },
           ].map(({ value, label }) => (
             <div key={label}>
-              <p className="text-2xl font-bold text-green-300">{value}</p>
-              <p className="mt-0.5 text-xs text-green-500">{label}</p>
+              <p className="text-2xl font-bold text-[#1e3d1e]">{value}</p>
+              <p className="mt-0.5 text-xs text-[#4a4a4a]">{label}</p>
             </div>
           ))}
         </div>
@@ -101,35 +101,35 @@ export default function LandingV1() {
       {/* Features */}
       <div className="px-8 py-16">
         <h2 className="mb-2 text-center text-2xl font-bold">Kaikki mitä seura tarvitsee</h2>
-        <p className="mb-10 text-center text-sm text-green-400">Yhdessä sovelluksessa, kaikilla laitteilla.</p>
+        <p className="mb-10 text-center text-sm text-[#2d6a2d]">Yhdessä sovelluksessa, kaikilla laitteilla.</p>
         <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
           {FEATURES.map(({ icon: Icon, title, desc }) => (
             <div
               key={title}
-              className="group rounded-2xl border border-green-900 bg-green-900/20 p-4 transition-all hover:border-green-700 hover:bg-green-900/40"
+              className="group rounded-2xl border border-[#e0d8cc] bg-white p-4 transition-all hover:border-[#e0d8cc] hover:bg-white"
             >
-              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-green-800/60 transition-colors group-hover:bg-green-700/60">
-                <Icon size={18} className="text-green-400" strokeWidth={1.5} />
+              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-[#eaf3de] transition-colors group-hover:bg-[#1e3d1e]/60">
+                <Icon size={18} className="text-[#2d6a2d]" strokeWidth={1.5} />
               </div>
-              <p className="mb-1 text-sm font-semibold text-white">{title}</p>
-              <p className="text-xs leading-relaxed text-green-500">{desc}</p>
+              <p className="mb-1 text-sm font-semibold text-[#1a1a1a]">{title}</p>
+              <p className="text-xs leading-relaxed text-[#4a4a4a]">{desc}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Pricing */}
-      <div className="border-t border-green-900 px-8 py-16">
+      <div className="border-t border-[#e0d8cc] px-8 py-16">
         <h2 className="mb-2 text-center text-2xl font-bold">Yksinkertainen hinnoittelu</h2>
-        <p className="mb-10 text-center text-sm text-green-400">Yksi kuukausimaksu, kaikki ominaisuudet käytössä.</p>
+        <p className="mb-10 text-center text-sm text-[#2d6a2d]">Yksi kuukausimaksu, kaikki ominaisuudet käytössä.</p>
         <div className="mx-auto grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
           {PLANS.map(({ name, price, badge, highlight, features }) => (
             <div
               key={name}
               className={`relative rounded-2xl border p-6 ${
                 highlight
-                  ? 'border-green-500 bg-green-900/30 ring-1 ring-green-500/30'
-                  : 'border-green-900 bg-green-900/10'
+                  ? 'border-green-500 bg-white ring-1 ring-green-500/30'
+                  : 'border-[#e0d8cc] bg-white'
               }`}
             >
               {badge && (
@@ -137,15 +137,15 @@ export default function LandingV1() {
                   {badge}
                 </span>
               )}
-              <p className="font-semibold text-green-300">{name}</p>
+              <p className="font-semibold text-[#1e3d1e]">{name}</p>
               <p className="mt-3 flex items-baseline gap-1">
-                <span className="text-3xl font-extrabold text-white">{price}€</span>
-                <span className="text-sm text-green-500">/kk</span>
+                <span className="text-3xl font-extrabold text-[#1a1a1a]">{price}€</span>
+                <span className="text-sm text-[#4a4a4a]">/kk</span>
               </p>
               <ul className="mt-4 space-y-2">
                 {features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-green-300">
-                    <Check size={13} className="mt-0.5 shrink-0 text-green-500" strokeWidth={2.5} />
+                  <li key={f} className="flex items-start gap-2 text-sm text-[#1e3d1e]">
+                    <Check size={13} className="mt-0.5 shrink-0 text-[#4a4a4a]" strokeWidth={2.5} />
                     {f}
                   </li>
                 ))}
@@ -154,7 +154,7 @@ export default function LandingV1() {
                 className={`mt-6 w-full rounded-xl py-2.5 text-sm font-semibold transition-colors ${
                   highlight
                     ? 'bg-green-600 text-white hover:bg-green-500'
-                    : 'border border-green-700 text-green-300 hover:border-green-500 hover:text-white'
+                    : 'border border-[#e0d8cc] text-[#1e3d1e] hover:border-green-500 hover:text-[#1a1a1a]'
                 }`}
               >
                 Valitse {name}
@@ -165,18 +165,18 @@ export default function LandingV1() {
       </div>
 
       {/* CTA footer */}
-      <div className="border-t border-green-900 px-8 py-14 text-center">
+      <div className="border-t border-[#e0d8cc] px-8 py-14 text-center">
         <h2 className="text-2xl font-bold sm:text-3xl">
           Valmis kokeilemaan?
         </h2>
-        <p className="mt-3 text-sm text-green-400">
+        <p className="mt-3 text-sm text-[#2d6a2d]">
           Aloita 14 päivän maksuton kokeilu — ei luottokorttia tarvita.
         </p>
         {/* Rekisteröi seurasi -painike hidden */}
       </div>
 
       {/* Footer */}
-      <div className="border-t border-green-900 px-8 py-5 text-center text-xs text-green-700">
+      <div className="border-t border-[#e0d8cc] px-8 py-5 text-center text-xs text-[#2d6a2d]">
         © 2026 JahtiPro · Suomalainen palvelu · Tietosuoja
       </div>
     </div>

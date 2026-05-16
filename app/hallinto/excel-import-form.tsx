@@ -153,40 +153,40 @@ export default function ExcelImportForm({ onImportDone }: Props) {
 
   return (
     <div className="space-y-4">
-      <p className="text-xs text-green-500">
+      <p className="text-xs text-[#4a4a4a]">
         Täytä jäsenten tiedot alla olevaan lomakkeeseen. Nimi on pakollinen, sähköposti tarvitaan kutsun lähettämiseen.
       </p>
 
       {/* Spreadsheet-style table */}
-      <div className="overflow-x-auto rounded-xl border border-green-800">
+      <div className="overflow-x-auto rounded-xl border border-[#e0d8cc]">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-green-800 bg-white/5">
-              <th className="w-8 px-2 py-2 text-center text-xs font-medium text-green-600">#</th>
-              <th className="min-w-[160px] px-2 py-2 text-left text-xs font-medium text-green-400">
+            <tr className="border-b border-[#e0d8cc] bg-white">
+              <th className="w-8 px-2 py-2 text-center text-xs font-medium text-[#888888]">#</th>
+              <th className="min-w-[160px] px-2 py-2 text-left text-xs font-medium text-[#2d6a2d]">
                 Nimi <span className="text-red-400">*</span>
               </th>
-              <th className="min-w-[180px] px-2 py-2 text-left text-xs font-medium text-green-400">Sähköposti</th>
-              <th className="min-w-[130px] px-2 py-2 text-left text-xs font-medium text-green-400">Puhelin</th>
-              <th className="min-w-[120px] px-2 py-2 text-left text-xs font-medium text-green-400">Rooli</th>
-              <th className="min-w-[130px] px-2 py-2 text-left text-xs font-medium text-green-400">Liittynyt</th>
+              <th className="min-w-[180px] px-2 py-2 text-left text-xs font-medium text-[#2d6a2d]">Sähköposti</th>
+              <th className="min-w-[130px] px-2 py-2 text-left text-xs font-medium text-[#2d6a2d]">Puhelin</th>
+              <th className="min-w-[120px] px-2 py-2 text-left text-xs font-medium text-[#2d6a2d]">Rooli</th>
+              <th className="min-w-[130px] px-2 py-2 text-left text-xs font-medium text-[#2d6a2d]">Liittynyt</th>
               <th className="w-10 px-2 py-2" />
             </tr>
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={row.id} className="border-b border-green-900/30 last:border-0">
-                <td className="px-2 py-1.5 text-center text-xs text-green-700">{i + 1}</td>
+              <tr key={row.id} className="border-b border-[#e0d8cc]/30 last:border-0">
+                <td className="px-2 py-1.5 text-center text-xs text-[#2d6a2d]">{i + 1}</td>
                 <td className="px-1 py-1">
                   <input
                     type="text"
                     value={row.nimi}
                     onChange={(e) => updateRow(i, 'nimi', e.target.value)}
                     placeholder="Matti Meikäläinen"
-                    className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-sm text-white placeholder:text-green-800 focus:outline-none focus:ring-1 transition-colors ${
+                    className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-sm text-[#1a1a1a] placeholder:text-[#888888] focus:outline-none focus:ring-1 transition-colors ${
                       getFieldError(i, 'nimi')
                         ? 'border-red-600 focus:ring-red-500'
-                        : 'border-green-900 focus:ring-green-600'
+                        : 'border-[#e0d8cc] focus:ring-[#2d6a2d]'
                     }`}
                   />
                   {getFieldError(i, 'nimi') && (
@@ -199,10 +199,10 @@ export default function ExcelImportForm({ onImportDone }: Props) {
                     value={row.sahkoposti}
                     onChange={(e) => updateRow(i, 'sahkoposti', e.target.value)}
                     placeholder="matti@example.com"
-                    className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-sm text-white placeholder:text-green-800 focus:outline-none focus:ring-1 transition-colors ${
+                    className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-sm text-[#1a1a1a] placeholder:text-[#888888] focus:outline-none focus:ring-1 transition-colors ${
                       getFieldError(i, 'sahkoposti')
                         ? 'border-red-600 focus:ring-red-500'
-                        : 'border-green-900 focus:ring-green-600'
+                        : 'border-[#e0d8cc] focus:ring-[#2d6a2d]'
                     }`}
                   />
                   {getFieldError(i, 'sahkoposti') && (
@@ -215,14 +215,14 @@ export default function ExcelImportForm({ onImportDone }: Props) {
                     value={row.puhelin}
                     onChange={(e) => updateRow(i, 'puhelin', e.target.value)}
                     placeholder="0401234567"
-                    className="w-full rounded-md border border-green-900 bg-transparent px-2 py-1.5 text-sm text-white placeholder:text-green-800 focus:outline-none focus:ring-1 focus:ring-green-600 transition-colors"
+                    className="w-full rounded-md border border-[#e0d8cc] bg-transparent px-2 py-1.5 text-sm text-[#1a1a1a] placeholder:text-[#888888] focus:outline-none focus:ring-1 focus:ring-[#2d6a2d] transition-colors"
                   />
                 </td>
                 <td className="px-1 py-1">
                   <select
                     value={row.rooli}
                     onChange={(e) => updateRow(i, 'rooli', e.target.value)}
-                    className="w-full rounded-md border border-green-900 bg-transparent px-2 py-1.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-green-600 transition-colors [&>option]:bg-green-950 [&>option]:text-white"
+                    className="w-full rounded-md border border-[#e0d8cc] bg-transparent px-2 py-1.5 text-sm text-[#1a1a1a] focus:outline-none focus:ring-1 focus:ring-[#2d6a2d] transition-colors [&>option]:bg-[#f5f0e8] [&>option]:text-[#1a1a1a]"
                   >
                     {Object.entries(roleFi).map(([value, label]) => (
                       <option key={value} value={value}>
@@ -236,10 +236,10 @@ export default function ExcelImportForm({ onImportDone }: Props) {
                     type="date"
                     value={row.liittynyt}
                     onChange={(e) => updateRow(i, 'liittynyt', e.target.value)}
-                    className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-sm text-white focus:outline-none focus:ring-1 transition-colors ${
+                    className={`w-full rounded-md border bg-transparent px-2 py-1.5 text-sm text-[#1a1a1a] focus:outline-none focus:ring-1 transition-colors ${
                       getFieldError(i, 'liittynyt')
                         ? 'border-red-600 focus:ring-red-500'
-                        : 'border-green-900 focus:ring-green-600'
+                        : 'border-[#e0d8cc] focus:ring-[#2d6a2d]'
                     }`}
                   />
                 </td>
@@ -247,7 +247,7 @@ export default function ExcelImportForm({ onImportDone }: Props) {
                   <button
                     onClick={() => removeRow(i)}
                     disabled={rows.length <= 1}
-                    className="rounded-md p-1 text-stone-600 hover:bg-red-900/40 hover:text-red-400 disabled:opacity-20 transition-colors"
+                    className="rounded-md p-1 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-20 transition-colors"
                     title="Poista rivi"
                   >
                     <Trash2 size={13} />
@@ -263,21 +263,21 @@ export default function ExcelImportForm({ onImportDone }: Props) {
       <div className="flex items-center gap-2">
         <button
           onClick={addRow}
-          className="flex items-center gap-1.5 rounded-lg border border-green-800 px-3 py-1.5 text-xs font-medium text-green-300 hover:bg-white/5 transition-colors"
+          className="flex items-center gap-1.5 rounded-lg border border-[#e0d8cc] px-3 py-1.5 text-xs font-medium text-[#1e3d1e] hover:bg-white transition-colors"
         >
           <Plus size={12} />
           Lisää rivi
         </button>
         <button
           onClick={() => addMultipleRows(5)}
-          className="flex items-center gap-1.5 rounded-lg border border-green-800 px-3 py-1.5 text-xs font-medium text-green-300 hover:bg-white/5 transition-colors"
+          className="flex items-center gap-1.5 rounded-lg border border-[#e0d8cc] px-3 py-1.5 text-xs font-medium text-[#1e3d1e] hover:bg-white transition-colors"
         >
           <Plus size={12} />
           +5 riviä
         </button>
         <button
           onClick={() => addMultipleRows(10)}
-          className="flex items-center gap-1.5 rounded-lg border border-green-800 px-3 py-1.5 text-xs font-medium text-green-300 hover:bg-white/5 transition-colors"
+          className="flex items-center gap-1.5 rounded-lg border border-[#e0d8cc] px-3 py-1.5 text-xs font-medium text-[#1e3d1e] hover:bg-white transition-colors"
         >
           <Plus size={12} />
           +10 riviä
@@ -305,7 +305,7 @@ export default function ExcelImportForm({ onImportDone }: Props) {
       <button
         onClick={() => void handleImport()}
         disabled={importing || filledRows.length === 0}
-        className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+        className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
       >
         <UserPlus size={16} />
         {importing
@@ -315,19 +315,19 @@ export default function ExcelImportForm({ onImportDone }: Props) {
 
       {/* Results */}
       {result && (
-        <div className="rounded-xl border border-green-800 bg-white/5 p-4 space-y-2">
-          <p className="text-sm font-semibold text-white">Tuonti valmis</p>
+        <div className="rounded-xl border border-[#e0d8cc] bg-white p-4 space-y-2">
+          <p className="text-sm font-semibold text-[#1a1a1a]">Tuonti valmis</p>
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-sm">
-              <CheckCircle size={14} className="text-green-400" />
-              <span className="text-green-300">
-                Tuotu onnistuneesti: <span className="font-semibold text-white">{result.success}</span> jäsentä
+              <CheckCircle size={14} className="text-[#2d6a2d]" />
+              <span className="text-[#1e3d1e]">
+                Tuotu onnistuneesti: <span className="font-semibold text-[#1a1a1a]">{result.success}</span> jäsentä
               </span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <SkipForward size={14} className="text-yellow-400" />
-              <span className="text-green-300">
-                Ohitettu (jo olemassa): <span className="font-semibold text-white">{result.skipped}</span> jäsentä
+              <SkipForward size={14} className="text-[#b45309]" />
+              <span className="text-[#1e3d1e]">
+                Ohitettu (jo olemassa): <span className="font-semibold text-[#1a1a1a]">{result.skipped}</span> jäsentä
               </span>
             </div>
             {result.errors > 0 && (
@@ -335,7 +335,7 @@ export default function ExcelImportForm({ onImportDone }: Props) {
                 <AlertCircle size={14} className="mt-0.5 shrink-0 text-red-400" />
                 <div>
                   <span className="text-red-300">
-                    Virheitä: <span className="font-semibold text-white">{result.errors}</span> jäsentä
+                    Virheitä: <span className="font-semibold text-[#1a1a1a]">{result.errors}</span> jäsentä
                   </span>
                   {result.error_details.length > 0 && (
                     <ul className="mt-1 space-y-0.5">

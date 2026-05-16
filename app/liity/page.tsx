@@ -45,13 +45,13 @@ export default async function LiityPage({
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-green-950 to-stone-950 px-4">
+    <main className="flex min-h-screen items-center justify-center bg-[#f5f0e8] px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">Liity seuraan</h1>
-          <p className="mt-2 text-sm text-green-400">
+          <h1 className="text-3xl font-bold text-[#1a1a1a]">Liity seuraan</h1>
+          <p className="mt-2 text-sm text-[#2d6a2d]">
             Luo tili sähköpostilla{' '}
-            <span className="font-medium text-green-300">{invitation.email}</span>
+            <span className="font-medium text-[#1e3d1e]">{invitation.email}</span>
           </p>
         </div>
         <JoinForm email={invitation.email} clubId={invitation.club_id} token={invitation.token} />
@@ -62,14 +62,14 @@ export default async function LiityPage({
 
 function InvalidPage({ message }: { message: string }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-green-950 to-stone-950 px-4">
+    <main className="flex min-h-screen items-center justify-center bg-[#f5f0e8] px-4">
       <div className="w-full max-w-sm text-center">
         <p className="mb-2 text-4xl">🦌</p>
-        <h1 className="mb-3 text-xl font-bold text-white">Kutsu ei ole voimassa</h1>
-        <p className="mb-6 text-sm text-green-400">{message}</p>
+        <h1 className="mb-3 text-xl font-bold text-[#1a1a1a]">Kutsu ei ole voimassa</h1>
+        <p className="mb-6 text-sm text-[#2d6a2d]">{message}</p>
         <Link
           href="/login"
-          className="text-sm font-medium text-green-400 underline hover:text-green-300"
+          className="text-sm font-medium text-[#2d6a2d] underline hover:text-[#1e3d1e]"
         >
           Kirjaudu sisään
         </Link>

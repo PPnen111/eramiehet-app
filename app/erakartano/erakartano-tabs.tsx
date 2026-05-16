@@ -117,13 +117,13 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
               onClick={() => setActiveLocation(loc.value)}
               className={`relative rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
                 activeLocation === loc.value
-                  ? 'bg-green-700 text-white'
-                  : 'border border-green-800 text-green-400 hover:bg-white/5'
+                  ? 'bg-[#1e3d1e] text-white'
+                  : 'border border-[#e0d8cc] text-[#2d6a2d] hover:bg-white'
               }`}
             >
               {loc.label}
               {count > 0 && (
-                <span className="ml-1.5 rounded-full bg-white/20 px-1.5 py-0.5 text-xs">
+                <span className="ml-1.5 rounded-full bg-[#f0ebe3] px-1.5 py-0.5 text-xs">
                   {count}
                 </span>
               )}
@@ -143,9 +143,9 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
 
       {/* Booking list */}
       {locationBookings.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
-          <CalendarOff size={32} className="text-green-700" strokeWidth={1.5} />
-          <p className="text-sm text-green-600">
+        <div className="flex flex-col items-center gap-2 rounded-2xl border border-[#e0d8cc] bg-white/[0.02] py-10 text-center">
+          <CalendarOff size={32} className="text-[#2d6a2d]" strokeWidth={1.5} />
+          <p className="text-sm text-[#888888]">
             Ei varauksia. Lähetä ensimmäinen varauspyyntö!
           </p>
         </div>
@@ -153,7 +153,7 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
         <div className="space-y-6">
           {monthKeys.map((key) => (
             <section key={key}>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
                 {monthLabel(key)}
               </h2>
               <div className="space-y-3">
@@ -175,14 +175,14 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
                         isFuture
                           ? isPending
                             ? 'border-orange-800/60 bg-orange-900/10'
-                            : 'border-red-900/50 bg-white/5'
-                          : 'border-green-900 bg-white/[0.02] opacity-60'
+                            : 'border-red-900/50 bg-white'
+                          : 'border-[#e0d8cc] bg-white/[0.02] opacity-60'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <p className="font-semibold text-white">
+                            <p className="font-semibold text-[#1a1a1a]">
                               {formatDate(b.starts_on)} – {formatDate(b.ends_on)}
                             </p>
                             {/* Status badge */}
@@ -198,14 +198,14 @@ export default function ErakartanoTabs({ bookings, userId, isAdmin }: Props) {
                               </span>
                             )}
                           </div>
-                          <p className="mt-0.5 text-xs text-green-500">
+                          <p className="mt-0.5 text-xs text-[#4a4a4a]">
                             {nights === 0 ? 'Päiväkäynti' : `${nights} yö${nights !== 1 ? 'tä' : ''}`}
                           </p>
                           {bookerName && (
-                            <p className="mt-1 text-sm text-green-300">{bookerName}</p>
+                            <p className="mt-1 text-sm text-[#1e3d1e]">{bookerName}</p>
                           )}
                           {cleanNote && (
-                            <p className="mt-1 text-sm text-green-500">{cleanNote}</p>
+                            <p className="mt-1 text-sm text-[#4a4a4a]">{cleanNote}</p>
                           )}
                         </div>
                         <div className="flex shrink-0 items-center gap-1.5">

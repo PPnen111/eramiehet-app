@@ -62,15 +62,15 @@ export default function SuperadminTabs({
   return (
     <div>
       {/* Tab navigation */}
-      <div className="mb-6 flex flex-wrap gap-1 rounded-xl border border-green-800 bg-white/5 p-1">
+      <div className="mb-6 flex flex-wrap gap-1 rounded-xl border border-[#e0d8cc] bg-white p-1">
         {TABS.map(({ id, label, badge }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
             className={`relative flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
               activeTab === id
-                ? 'bg-green-700 text-white'
-                : 'text-green-400 hover:bg-white/10 hover:text-green-300'
+                ? 'bg-[#1e3d1e] text-white'
+                : 'text-[#2d6a2d] hover:bg-[#f0ebe3] hover:text-[#1e3d1e]'
             }`}
           >
             {label}
@@ -103,7 +103,7 @@ export default function SuperadminTabs({
       {activeTab === 'development' && <DevelopmentTab />}
       {activeTab === 'info' && <InfoTab />}
       {activeTab === 'landing-v1' && (
-        <div className="overflow-hidden rounded-2xl border border-green-800 shadow-2xl">
+        <div className="overflow-hidden rounded-2xl border border-[#e0d8cc] shadow-2xl">
           <LandingV1 />
         </div>
       )}

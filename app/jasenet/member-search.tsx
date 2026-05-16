@@ -10,9 +10,9 @@ const roleLabel: Record<string, string> = {
 }
 
 const roleBadge: Record<string, string> = {
-  admin: 'bg-green-700 text-green-100',
+  admin: 'bg-[#1e3d1e] text-green-100',
   board_member: 'bg-blue-800 text-blue-200',
-  member: 'bg-stone-600 text-stone-200',
+  member: 'bg-stone-600 text-[#1a1a1a]',
 }
 
 const statusLabel: Record<string, string> = {
@@ -22,8 +22,8 @@ const statusLabel: Record<string, string> = {
 }
 
 const statusBadge: Record<string, string> = {
-  active: 'bg-green-800 text-green-200',
-  pending: 'bg-yellow-900 text-yellow-200',
+  active: 'bg-[#1e3d1e] text-[#1a1a1a]',
+  pending: 'bg-[#fef3c7] text-[#92400e]',
   inactive: 'bg-red-900 text-red-200',
 }
 
@@ -53,12 +53,12 @@ export default function MemberSearch({ members }: Props) {
         placeholder="Hae nimellä..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2.5 text-sm text-white placeholder-green-600 outline-none focus:border-green-500"
+        className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2.5 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
       />
 
       {pending.length > 0 && (
         <section>
-          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-yellow-400">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-[#b45309]">
             Odottaa hyväksyntää ({pending.length})
           </h2>
           <MemberList items={pending} />
@@ -66,18 +66,18 @@ export default function MemberSearch({ members }: Props) {
       )}
 
       <section>
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-green-400">
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
           Aktiiviset ({active.length})
         </h2>
         {active.length === 0
-          ? <p className="text-sm text-green-600">Ei tuloksia.</p>
+          ? <p className="text-sm text-[#888888]">Ei tuloksia.</p>
           : <MemberList items={active} />
         }
       </section>
 
       {inactive.length > 0 && (
         <section>
-          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-green-700">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
             Ei-aktiiviset ({inactive.length})
           </h2>
           <MemberList items={inactive} />
@@ -91,14 +91,14 @@ function MemberList({ items }: { items: MemberRow[] }) {
   return (
     <div className="space-y-2">
       {items.map((m) => (
-        <div key={m.id} className="rounded-xl border border-green-800 bg-white/5 px-4 py-3">
+        <div key={m.id} className="rounded-xl border border-[#e0d8cc] bg-white px-4 py-3">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="font-medium text-white">{m.full_name ?? '—'}</p>
-              {m.email && <p className="mt-0.5 text-xs text-green-400">{m.email}</p>}
-              {m.phone && <p className="text-xs text-green-500">{m.phone}</p>}
+              <p className="font-medium text-[#1a1a1a]">{m.full_name ?? '—'}</p>
+              {m.email && <p className="mt-0.5 text-xs text-[#2d6a2d]">{m.email}</p>}
+              {m.phone && <p className="text-xs text-[#4a4a4a]">{m.phone}</p>}
               {m.join_date && (
-                <p className="text-xs text-green-600">Liittynyt {formatDate(m.join_date)}</p>
+                <p className="text-xs text-[#888888]">Liittynyt {formatDate(m.join_date)}</p>
               )}
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1">

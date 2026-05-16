@@ -89,8 +89,8 @@ export default function OnboardingWizard({ clubName }: Props) {
     })
   }
 
-  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-4 py-3 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
-  const labelCls = 'mb-1 block text-sm text-green-300'
+  const inputCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-3 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
+  const labelCls = 'mb-1 block text-sm text-[#1e3d1e]'
 
   // ── Step handlers ──
 
@@ -145,8 +145,8 @@ export default function OnboardingWizard({ clubName }: Props) {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center">
-        <p className="text-green-500">Ladataan...</p>
+      <main className="min-h-screen bg-[#f5f0e8] flex items-center justify-center">
+        <p className="text-[#4a4a4a]">Ladataan...</p>
       </main>
     )
   }
@@ -157,11 +157,11 @@ export default function OnboardingWizard({ clubName }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-lg">
         {/* Progress */}
         <div className="mb-8">
-          <p className="text-center text-sm text-green-400 mb-3">Vaihe {step} / 3</p>
+          <p className="text-center text-sm text-[#2d6a2d] mb-3">Vaihe {step} / 3</p>
           <div className="flex justify-center gap-3">
             {STEPS.map((s) => {
               const Icon = s.icon
@@ -169,10 +169,10 @@ export default function OnboardingWizard({ clubName }: Props) {
               const isCurrent = step === s.num
               return (
                 <div key={s.num} className="flex flex-col items-center gap-1">
-                  <div className={`h-10 w-10 rounded-full flex items-center justify-center ${isDone ? 'bg-green-600' : isCurrent ? 'bg-green-700 ring-2 ring-green-400' : 'bg-green-900/40'}`}>
-                    <Icon size={18} className={isDone || isCurrent ? 'text-white' : 'text-green-700'} />
+                  <div className={`h-10 w-10 rounded-full flex items-center justify-center ${isDone ? 'bg-green-600' : isCurrent ? 'bg-[#1e3d1e] ring-2 ring-green-400' : 'bg-white'}`}>
+                    <Icon size={18} className={isDone || isCurrent ? 'text-[#1a1a1a]' : 'text-[#2d6a2d]'} />
                   </div>
-                  <span className={`text-[10px] ${isCurrent ? 'text-green-300' : 'text-green-700'}`}>{s.title}</span>
+                  <span className={`text-[10px] ${isCurrent ? 'text-[#1e3d1e]' : 'text-[#2d6a2d]'}`}>{s.title}</span>
                 </div>
               )
             })}
@@ -181,11 +181,11 @@ export default function OnboardingWizard({ clubName }: Props) {
 
         {/* ── STEP 1: Seuran tiedot ── */}
         {step === 1 && (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-6 space-y-4">
+          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-6 space-y-4">
             <div className="text-center mb-4">
-              <Building2 size={32} className="mx-auto text-green-400 mb-2" />
-              <h2 className="text-xl font-bold text-white">Tervetuloa JahtiProhon!</h2>
-              <p className="text-sm text-green-400 mt-1">Täytä seurasi perustiedot. Voit muokata näitä myöhemmin.</p>
+              <Building2 size={32} className="mx-auto text-[#2d6a2d] mb-2" />
+              <h2 className="text-xl font-bold text-[#1a1a1a]">Tervetuloa JahtiProhon!</h2>
+              <p className="text-sm text-[#2d6a2d] mt-1">Täytä seurasi perustiedot. Voit muokata näitä myöhemmin.</p>
             </div>
             <div><label className={labelCls}>Seuran nimi *</label><input type="text" value={s1.name} onChange={(e) => setS1((f) => ({ ...f, name: e.target.value }))} className={inputCls} /></div>
             <div><label className={labelCls}>Y-tunnus</label><input type="text" value={s1.business_id} onChange={(e) => setS1((f) => ({ ...f, business_id: e.target.value }))} className={inputCls} placeholder="1234567-8" /></div>
@@ -206,11 +206,11 @@ export default function OnboardingWizard({ clubName }: Props) {
 
         {/* ── STEP 2: Tuo jäsenet ── */}
         {step === 2 && (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-6 space-y-4">
+          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-6 space-y-4">
             <div className="text-center mb-4">
-              <Users size={32} className="mx-auto text-green-400 mb-2" />
-              <h2 className="text-xl font-bold text-white">Lisää seurasi jäsenet</h2>
-              <p className="text-sm text-green-400 mt-1">Tuo jäsenet tai lisää käsin. Voit myös ohittaa ja palata myöhemmin.</p>
+              <Users size={32} className="mx-auto text-[#2d6a2d] mb-2" />
+              <h2 className="text-xl font-bold text-[#1a1a1a]">Lisää seurasi jäsenet</h2>
+              <p className="text-sm text-[#2d6a2d] mt-1">Tuo jäsenet tai lisää käsin. Voit myös ohittaa ja palata myöhemmin.</p>
             </div>
             <div className="space-y-2">
               {manualMembers.map((m, i) => (
@@ -222,14 +222,14 @@ export default function OnboardingWizard({ clubName }: Props) {
                   )}
                 </div>
               ))}
-              <button onClick={() => setManualMembers((a) => [...a, { name: '', email: '' }])} className="flex items-center gap-1 text-xs text-green-400 hover:text-green-300">
+              <button onClick={() => setManualMembers((a) => [...a, { name: '', email: '' }])} className="flex items-center gap-1 text-xs text-[#2d6a2d] hover:text-[#1e3d1e]">
                 <Plus size={12} /> Lisää rivi
               </button>
             </div>
             <button onClick={() => void submitStep2Manual()} disabled={busy || !manualMembers.some((m) => m.name.trim())} className="w-full rounded-xl bg-green-600 py-3 text-sm font-bold text-white hover:bg-green-500 disabled:opacity-50 transition-colors">
               {busy ? 'Tallennetaan...' : 'Tallenna ja jatka →'}
             </button>
-            <button onClick={() => void skipStep2()} className="w-full text-center text-xs text-green-600 hover:text-green-400">
+            <button onClick={() => void skipStep2()} className="w-full text-center text-xs text-[#888888] hover:text-[#2d6a2d]">
               ⏭️ Ohita toistaiseksi — voit tuoda jäsenet myöhemmin hallintosivulta
             </button>
           </div>
@@ -238,28 +238,28 @@ export default function OnboardingWizard({ clubName }: Props) {
         {/* ── STEP 3: Ohjeet ── */}
         {step === 3 && (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-green-800 bg-white/5 p-6">
+            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-6">
               <div className="text-center mb-6">
-                <BookOpen size={32} className="mx-auto text-green-400 mb-2" />
-                <h2 className="text-xl font-bold text-white">Seuranne on valmis — näin pääset alkuun</h2>
+                <BookOpen size={32} className="mx-auto text-[#2d6a2d] mb-2" />
+                <h2 className="text-xl font-bold text-[#1a1a1a]">Seuranne on valmis — näin pääset alkuun</h2>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">
                 {FEATURES.map((f, i) => (
-                  <div key={i} className="rounded-xl border border-green-900/40 bg-white/[0.03] p-4">
+                  <div key={i} className="rounded-xl border border-[#e0d8cc]/40 bg-white/[0.03] p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-lg">{f.emoji}</span>
-                      <h3 className="font-semibold text-white">{f.title}</h3>
+                      <h3 className="font-semibold text-[#1a1a1a]">{f.title}</h3>
                     </div>
-                    <p className="text-xs text-green-300 leading-relaxed mb-2">{f.desc}</p>
-                    <p className="text-[10px] text-green-600">Löydät tämän: {f.where}</p>
+                    <p className="text-xs text-[#1e3d1e] leading-relaxed mb-2">{f.desc}</p>
+                    <p className="text-[10px] text-[#888888]">Löydät tämän: {f.where}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-4 rounded-xl border border-green-700/40 bg-green-900/20 px-4 py-3">
-                <p className="text-sm text-green-300">
-                  💡 <strong className="text-white">Vinkki:</strong> Aloita tuomalla jäsenlistasi Hallinto → Jäsenet → Tuo jäseniä (CSV/Excel)
+              <div className="mt-4 rounded-xl border border-[#e0d8cc]/40 bg-white px-4 py-3">
+                <p className="text-sm text-[#1e3d1e]">
+                  💡 <strong className="text-[#1a1a1a]">Vinkki:</strong> Aloita tuomalla jäsenlistasi Hallinto → Jäsenet → Tuo jäseniä (CSV/Excel)
                 </p>
               </div>
             </div>

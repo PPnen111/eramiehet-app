@@ -131,7 +131,7 @@ export default async function LaskuPage({
       <main className="min-h-screen bg-gray-100 px-4 py-8 print:bg-white print:p-0">
         {/* Back link – hidden when printing */}
         <div className="print-hide mb-4 mx-auto max-w-2xl">
-          <Link href="/hallinto" className="text-sm text-green-700 hover:text-green-900">
+          <Link href="/hallinto" className="text-sm text-[#2d6a2d] hover:text-green-900">
             ← Hallinto
           </Link>
         </div>
@@ -139,15 +139,15 @@ export default async function LaskuPage({
         {/* Invoice card */}
         <div className="invoice-card mx-auto max-w-2xl rounded-2xl bg-white shadow-lg overflow-hidden">
           {/* Header */}
-          <div className="bg-green-950 px-8 py-6">
+          <div className="bg-[#f5f0e8] px-8 py-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-medium uppercase tracking-widest text-green-400">Lasku</p>
-                <h1 className="mt-1 text-2xl font-bold text-white">{clubName}</h1>
+                <p className="text-xs font-medium uppercase tracking-widest text-[#2d6a2d]">Lasku</p>
+                <h1 className="mt-1 text-2xl font-bold text-[#1a1a1a]">{clubName}</h1>
               </div>
               <div className="text-right">
-                <p className="text-xs text-green-400">Päivämäärä</p>
-                <p className="text-sm font-medium text-white">{today}</p>
+                <p className="text-xs text-[#2d6a2d]">Päivämäärä</p>
+                <p className="text-sm font-medium text-[#1a1a1a]">{today}</p>
               </div>
             </div>
           </div>

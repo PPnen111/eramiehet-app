@@ -24,12 +24,12 @@ export default async function UusiTapahtumaPage() {
   if (!profile.active_club_id) redirect('/dashboard')
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/tapahtumat" className="text-sm text-green-400 hover:text-green-300">
+        <Link href="/tapahtumat" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           ← Tapahtumat
         </Link>
-        <h1 className="text-2xl font-bold text-white">Luo tapahtuma</h1>
+        <h1 className="text-2xl font-bold text-[#1a1a1a]">Luo tapahtuma</h1>
         <CreateEventForm clubId={profile.active_club_id} userId={user.id} />
       </div>
     </main>

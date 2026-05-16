@@ -40,19 +40,19 @@ export default async function KarttatunnuksetPage() {
   const credentials = (raw ?? []) as unknown as CredentialRow[]
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">
+        <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           ← Takaisin
         </Link>
 
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-white">Karttatunnukset</h1>
+          <h1 className="text-2xl font-bold text-[#1a1a1a]">Karttatunnukset</h1>
           {isAdmin && <AddCredentialForm clubId={profile.club_id} />}
         </div>
 
         {credentials.length === 0 ? (
-          <p className="text-sm text-green-600">Ei karttatunnuksia.</p>
+          <p className="text-sm text-[#888888]">Ei karttatunnuksia.</p>
         ) : (
           <div className="space-y-4">
             {credentials.map((cred) => (

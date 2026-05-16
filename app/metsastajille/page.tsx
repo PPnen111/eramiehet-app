@@ -65,10 +65,10 @@ export default async function MetsastajillePage() {
 
   if (!profile) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+      <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
         <div className="mx-auto max-w-2xl space-y-4">
-          <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
-          <p className="text-green-300">Profiilia ei löydy.</p>
+          <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Takaisin</Link>
+          <p className="text-[#1e3d1e]">Profiilia ei löydy.</p>
         </div>
       </main>
     )
@@ -101,15 +101,15 @@ export default async function MetsastajillePage() {
   }, {})
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
-        <Link href="/dashboard" className="text-sm text-green-400 hover:text-green-300">← Takaisin</Link>
-        <h1 className="text-2xl font-bold text-white">Metsästäjille</h1>
+        <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Takaisin</Link>
+        <h1 className="text-2xl font-bold text-[#1a1a1a]">Metsästäjille</h1>
 
         {docsWithUrls.length === 0 && (
-          <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
-            <FolderOpen size={32} className="text-green-700" strokeWidth={1.5} />
-            <p className="text-sm text-green-600">Ei dokumentteja.</p>
+          <div className="flex flex-col items-center gap-2 rounded-2xl border border-[#e0d8cc] bg-white/[0.02] py-10 text-center">
+            <FolderOpen size={32} className="text-[#2d6a2d]" strokeWidth={1.5} />
+            <p className="text-sm text-[#888888]">Ei dokumentteja.</p>
           </div>
         )}
 
@@ -119,7 +119,7 @@ export default async function MetsastajillePage() {
           const CatIcon = categoryIcon[cat] ?? FileText
           return (
             <section key={cat}>
-              <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-green-400">
+              <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
                 <CatIcon size={14} strokeWidth={2} />
                 {categoryLabel[cat]}
               </h2>
@@ -127,9 +127,9 @@ export default async function MetsastajillePage() {
                 {items.map((doc) => (
                   <div
                     key={doc.id}
-                    className="flex items-center justify-between rounded-xl border border-green-800 bg-white/5 px-4 py-3"
+                    className="flex items-center justify-between rounded-xl border border-[#e0d8cc] bg-white px-4 py-3"
                   >
-                    <p className="font-medium text-white">{doc.name}</p>
+                    <p className="font-medium text-[#1a1a1a]">{doc.name}</p>
                     {doc.url ? (() => {
                       const isPdf = doc.name.toLowerCase().endsWith('.pdf') || doc.storage_path.toLowerCase().endsWith('.pdf')
                       const href = isPdf ? doc.url + '#toolbar=1' : doc.url
@@ -139,14 +139,14 @@ export default async function MetsastajillePage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           {...(!isPdf ? { download: doc.name } : {})}
-                          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-green-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 transition-colors"
+                          className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#1e3d1e] transition-colors"
                         >
                           {isPdf ? <ExternalLink size={12} /> : <Download size={12} />}
                           {isPdf ? 'Avaa' : 'Lataa'}
                         </a>
                       )
                     })() : (
-                      <span className="text-xs text-green-700">Ei saatavilla</span>
+                      <span className="text-xs text-[#2d6a2d]">Ei saatavilla</span>
                     )}
                   </div>
                 ))}

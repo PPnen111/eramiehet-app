@@ -16,7 +16,7 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="rounded-lg border border-green-700 bg-transparent px-3 py-1.5 text-sm font-medium text-green-400 transition-colors hover:border-green-500 hover:text-green-300"
+      className="rounded-lg border border-[#e0d8cc] bg-transparent px-3 py-1.5 text-sm font-medium text-[#2d6a2d] transition-colors hover:border-[#2d6a2d] hover:text-[#1e3d1e]"
     >
       Kirjaudu ulos
     </button>

@@ -79,7 +79,7 @@ function parseBooking(b: BookingRow): ParsedBooking {
 
 const statusBadge: Record<string, { label: string; cls: string }> = {
   pending: { label: 'Odottaa', cls: 'bg-orange-500/30 text-orange-300' },
-  confirmed: { label: 'Vahvistettu', cls: 'bg-green-800 text-green-200' },
+  confirmed: { label: 'Vahvistettu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
   cancelled: { label: 'Peruutettu', cls: 'bg-red-900/60 text-red-300' },
 }
 
@@ -243,13 +243,13 @@ export default function TabBookings({ clubId }: Props) {
   // Count active (non-cancelled) bookings
   const activeCount = bookings.filter((b) => b.status !== 'cancelled').length
 
-  if (loading) return <p className="text-sm text-green-500">Ladataan...</p>
+  if (loading) return <p className="text-sm text-[#4a4a4a]">Ladataan...</p>
 
   const inputCls =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
   const selectCls =
-    'w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500'
-  const labelCls = 'mb-1 block text-sm text-green-300'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]'
+  const labelCls = 'mb-1 block text-sm text-[#1e3d1e]'
 
   return (
     <div className="space-y-5">
@@ -260,7 +260,7 @@ export default function TabBookings({ clubId }: Props) {
             <div
               key={t.id}
               className={`rounded-xl px-4 py-3 text-sm font-medium ${
-                t.type === 'success' ? 'bg-green-800/60 text-green-200' : 'bg-red-900/60 text-red-200'
+                t.type === 'success' ? 'bg-[#eaf3de] text-[#1a1a1a]' : 'bg-red-900/60 text-red-200'
               }`}
             >
               {t.message}
@@ -275,8 +275,8 @@ export default function TabBookings({ clubId }: Props) {
           onClick={() => setFilterLocation('all')}
           className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
             filterLocation === 'all'
-              ? 'bg-green-700 text-white'
-              : 'bg-white/5 text-green-400 hover:bg-white/10'
+              ? 'bg-[#1e3d1e] text-white'
+              : 'bg-white text-[#2d6a2d] hover:bg-[#f0ebe3]'
           }`}
         >
           Kaikki ({activeCount})
@@ -291,13 +291,13 @@ export default function TabBookings({ clubId }: Props) {
               onClick={() => setFilterLocation(loc.value)}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 filterLocation === loc.value
-                  ? 'bg-green-700 text-white'
-                  : 'bg-white/5 text-green-400 hover:bg-white/10'
+                  ? 'bg-[#1e3d1e] text-white'
+                  : 'bg-white text-[#2d6a2d] hover:bg-[#f0ebe3]'
               }`}
             >
               {loc.label}
               {count > 0 && (
-                <span className="ml-1 rounded-full bg-white/20 px-1.5 py-0.5 text-[10px]">
+                <span className="ml-1 rounded-full bg-[#f0ebe3] px-1.5 py-0.5 text-[10px]">
                   {count}
                 </span>
               )}
@@ -308,7 +308,7 @@ export default function TabBookings({ clubId }: Props) {
 
       {/* Booking list */}
       {filtered.length === 0 ? (
-        <p className="text-sm text-green-600">Ei varauksia.</p>
+        <p className="text-sm text-[#888888]">Ei varauksia.</p>
       ) : (
         <div className="space-y-2">
           {filtered.map((b) => {
@@ -323,27 +323,27 @@ export default function TabBookings({ clubId }: Props) {
                     ? 'border-red-900/40 bg-red-900/5 opacity-60'
                     : b.status === 'pending'
                       ? 'border-orange-800/40 bg-orange-900/5'
-                      : 'border-green-800 bg-white/5'
+                      : 'border-[#e0d8cc] bg-white'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className={`font-medium ${isCancelled ? 'text-red-400 line-through' : 'text-white'}`}>
+                      <p className={`font-medium ${isCancelled ? 'text-red-400 line-through' : 'text-[#1a1a1a]'}`}>
                         {formatDate(b.starts_on)} – {formatDate(b.ends_on)}
                       </p>
                       <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${badge.cls}`}>
                         {badge.label}
                       </span>
-                      <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-green-400">
+                      <span className="rounded-full bg-[#f0ebe3] px-2 py-0.5 text-xs text-[#2d6a2d]">
                         {locationLabel[b.location] ?? b.location}
                       </span>
                     </div>
-                    <p className="mt-0.5 text-sm text-green-300">
+                    <p className="mt-0.5 text-sm text-[#1e3d1e]">
                       {b.booker_name ?? b.profile_name ?? '—'}
                     </p>
                     {b.note && (
-                      <p className="mt-0.5 text-xs text-green-500">{b.note}</p>
+                      <p className="mt-0.5 text-xs text-[#4a4a4a]">{b.note}</p>
                     )}
                   </div>
                   <div className="flex shrink-0 items-center gap-1">
@@ -351,7 +351,7 @@ export default function TabBookings({ clubId }: Props) {
                       <button
                         onClick={() => openInvoiceModal(b)}
                         title="Lähetä lasku"
-                        className="rounded-md p-1.5 text-amber-500 hover:bg-amber-900/30 hover:text-amber-300 transition-colors"
+                        className="rounded-md p-1.5 text-[#b45309] hover:bg-[#fef3c7] hover:text-[#92400e] transition-colors"
                       >
                         <Receipt size={13} />
                       </button>
@@ -359,7 +359,7 @@ export default function TabBookings({ clubId }: Props) {
                     <button
                       onClick={() => openEdit(b)}
                       title="Muokkaa"
-                      className="rounded-md p-1.5 text-green-600 hover:bg-green-900/40 hover:text-green-300 transition-colors"
+                      className="rounded-md p-1.5 text-[#888888] hover:bg-white hover:text-[#1e3d1e] transition-colors"
                     >
                       <Pencil size={13} />
                     </button>
@@ -368,7 +368,7 @@ export default function TabBookings({ clubId }: Props) {
                         onClick={() => void deleteBooking(b.id)}
                         disabled={busy === b.id}
                         title="Peruuta varaus"
-                        className="rounded-md p-1.5 text-stone-600 hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
+                        className="rounded-md p-1.5 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
                       >
                         {busy === b.id ? <span className="text-xs">...</span> : <Trash2 size={13} />}
                       </button>
@@ -385,14 +385,14 @@ export default function TabBookings({ clubId }: Props) {
       {editing && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/50" onClick={() => setEditing(null)}>
           <div
-            className="h-full w-full max-w-md overflow-y-auto bg-gradient-to-b from-green-950 to-stone-950 p-6"
+            className="h-full w-full max-w-md overflow-y-auto bg-[#f5f0e8] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-white">Muokkaa varausta</h2>
+              <h2 className="text-lg font-bold text-[#1a1a1a]">Muokkaa varausta</h2>
               <button
                 onClick={() => setEditing(null)}
-                className="rounded-lg p-1.5 text-green-400 hover:bg-white/10"
+                className="rounded-lg p-1.5 text-[#2d6a2d] hover:bg-[#f0ebe3]"
               >
                 <X size={18} />
               </button>
@@ -476,13 +476,13 @@ export default function TabBookings({ clubId }: Props) {
                 <button
                   onClick={() => void saveEdit()}
                   disabled={editBusy}
-                  className="flex-1 rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+                  className="flex-1 rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
                 >
                   {editBusy ? 'Tallennetaan...' : 'Tallenna'}
                 </button>
                 <button
                   onClick={() => setEditing(null)}
-                  className="rounded-lg border border-green-800 px-4 py-2.5 text-sm text-green-300 hover:bg-white/5"
+                  className="rounded-lg border border-[#e0d8cc] px-4 py-2.5 text-sm text-[#1e3d1e] hover:bg-white"
                 >
                   Peruuta
                 </button>
@@ -496,10 +496,10 @@ export default function TabBookings({ clubId }: Props) {
       {invoiceBookingId && (
         <>
           <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setInvoiceBookingId(null)} />
-          <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-6 shadow-2xl space-y-3">
+          <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] p-6 shadow-2xl space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="font-bold text-white">Lähetä lasku varaajalle</h2>
-              <button onClick={() => setInvoiceBookingId(null)} className="text-green-500 hover:text-green-300"><X size={16} /></button>
+              <h2 className="font-bold text-[#1a1a1a]">Lähetä lasku varaajalle</h2>
+              <button onClick={() => setInvoiceBookingId(null)} className="text-[#4a4a4a] hover:text-[#1e3d1e]"><X size={16} /></button>
             </div>
             <div><label className={labelCls}>Varaajan sähköposti *</label><input type="email" value={invoiceEmail} onChange={(e) => setInvoiceEmail(e.target.value)} className={inputCls} placeholder="varaaja@esimerkki.fi" /></div>
             <div><label className={labelCls}>Laskun kuvaus</label><input type="text" value={invoiceDesc} onChange={(e) => setInvoiceDesc(e.target.value)} className={inputCls} /></div>
@@ -507,10 +507,10 @@ export default function TabBookings({ clubId }: Props) {
             <div><label className={labelCls}>Eräpäivä</label><input type="date" value={invoiceDue} onChange={(e) => setInvoiceDue(e.target.value)} className={inputCls} /></div>
             {invoiceError && <p className="rounded-lg bg-red-900/40 px-3 py-2 text-sm text-red-300">{invoiceError}</p>}
             <div className="flex gap-2">
-              <button onClick={() => void sendInvoice()} disabled={invoiceBusy} className="flex-1 rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50">
+              <button onClick={() => void sendInvoice()} disabled={invoiceBusy} className="flex-1 rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50">
                 {invoiceBusy ? 'Lähetetään...' : 'Lähetä lasku'}
               </button>
-              <button onClick={() => setInvoiceBookingId(null)} className="rounded-lg border border-green-800 px-4 py-2.5 text-sm text-green-300 hover:bg-white/5">
+              <button onClick={() => setInvoiceBookingId(null)} className="rounded-lg border border-[#e0d8cc] px-4 py-2.5 text-sm text-[#1e3d1e] hover:bg-white">
                 Peruuta
               </button>
             </div>

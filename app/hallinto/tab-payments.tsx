@@ -53,8 +53,8 @@ type Toast = {
 type FilterType = 'all' | 'unpaid' | 'overdue' | 'paid'
 
 const statusConfig: Record<string, { label: string; cls: string }> = {
-  paid: { label: 'Maksettu', cls: 'bg-green-800 text-green-200' },
-  pending: { label: 'Odottaa', cls: 'bg-yellow-900 text-yellow-200' },
+  paid: { label: 'Maksettu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
+  pending: { label: 'Odottaa', cls: 'bg-[#fef3c7] text-[#92400e]' },
   overdue: { label: 'Myöhässä', cls: 'bg-red-900 text-red-200' },
 }
 
@@ -458,18 +458,18 @@ export default function TabPayments({ clubId }: Props) {
   const bulkPreviewValid = !isNaN(bulkCents) && bulkCents > 0 && bulkDescription.length > 0
   const activeCount = members.length
 
-  if (loading) return <p className="text-sm text-green-500">Ladataan...</p>
+  if (loading) return <p className="text-sm text-[#4a4a4a]">Ladataan...</p>
 
   const inputCls =
-    'w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white placeholder-green-600 outline-none focus:border-green-500'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
   const selectCls =
-    'w-full rounded-lg border border-green-800 bg-green-950 px-3 py-2 text-sm text-white outline-none focus:border-green-500'
-  const labelCls = 'mb-1 block text-sm text-green-300'
+    'w-full rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]'
+  const labelCls = 'mb-1 block text-sm text-[#1e3d1e]'
   const tabBtn = (active: boolean) =>
     `flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${
       active
-        ? 'bg-green-700 text-white'
-        : 'bg-white/5 text-green-400 hover:bg-white/10'
+        ? 'bg-[#1e3d1e] text-white'
+        : 'bg-white text-[#2d6a2d] hover:bg-[#f0ebe3]'
     }`
 
   const filterBtn = (f: FilterType, label: string, count?: number, badgeCls?: string) => (
@@ -477,8 +477,8 @@ export default function TabPayments({ clubId }: Props) {
       onClick={() => setFilter(f)}
       className={`relative rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
         filter === f
-          ? 'bg-green-700 text-white'
-          : 'bg-white/5 text-green-400 hover:bg-white/10'
+          ? 'bg-[#1e3d1e] text-white'
+          : 'bg-white text-[#2d6a2d] hover:bg-[#f0ebe3]'
       }`}
     >
       {label}
@@ -503,7 +503,7 @@ export default function TabPayments({ clubId }: Props) {
             <div
               key={t.id}
               className={`rounded-xl px-4 py-3 text-sm font-medium ${
-                t.type === 'success' ? 'bg-green-800/60 text-green-200' : 'bg-red-900/60 text-red-200'
+                t.type === 'success' ? 'bg-[#eaf3de] text-[#1a1a1a]' : 'bg-red-900/60 text-red-200'
               }`}
             >
               {t.message}
@@ -516,21 +516,21 @@ export default function TabPayments({ clubId }: Props) {
       {!formOpen ? (
         <button
           onClick={() => setFormOpen(true)}
-          className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+          className="rounded-xl bg-[#1e3d1e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] transition-colors"
         >
           + Luo uusi lasku
         </button>
       ) : (
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-white">Luo uusi lasku</h2>
+            <h2 className="font-semibold text-[#1a1a1a]">Luo uusi lasku</h2>
             <button
               onClick={() => {
                 setFormOpen(false)
                 resetSingleForm()
                 resetBulkForm()
               }}
-              className="text-xs text-green-500 hover:text-green-300"
+              className="text-xs text-[#4a4a4a] hover:text-[#1e3d1e]"
             >
               Sulje
             </button>
@@ -646,7 +646,7 @@ export default function TabPayments({ clubId }: Props) {
                   type="button"
                   disabled={singleBusy !== null}
                   onClick={() => { singleActionRef.current = 'save'; void handleSingleSubmit() }}
-                  className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+                  className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
                 >
                   {singleBusy === 'save' ? 'Tallennetaan...' : 'Tallenna'}
                 </button>
@@ -654,7 +654,7 @@ export default function TabPayments({ clubId }: Props) {
                   type="button"
                   disabled={singleBusy !== null}
                   onClick={() => { singleActionRef.current = 'email'; void handleSingleSubmit() }}
-                  className="flex-1 rounded-lg border border-green-700 py-2 text-sm font-semibold text-green-300 hover:bg-green-900/40 disabled:opacity-50 transition-colors"
+                  className="flex-1 rounded-lg border border-[#e0d8cc] py-2 text-sm font-semibold text-[#1e3d1e] hover:bg-white disabled:opacity-50 transition-colors"
                 >
                   {singleBusy === 'email' ? 'Lähetetään...' : 'Tallenna ja lähetä sähköpostilla'}
                 </button>
@@ -662,7 +662,7 @@ export default function TabPayments({ clubId }: Props) {
                   type="button"
                   disabled={singleBusy !== null}
                   onClick={() => { singleActionRef.current = 'pdf'; void handleSingleSubmit() }}
-                  className="flex-1 rounded-lg border border-green-700 py-2 text-sm font-semibold text-green-300 hover:bg-green-900/40 disabled:opacity-50 transition-colors"
+                  className="flex-1 rounded-lg border border-[#e0d8cc] py-2 text-sm font-semibold text-[#1e3d1e] hover:bg-white disabled:opacity-50 transition-colors"
                 >
                   {singleBusy === 'pdf' ? 'Tallennetaan...' : 'Tallenna ja tulosta PDF'}
                 </button>
@@ -733,19 +733,19 @@ export default function TabPayments({ clubId }: Props) {
 
               {/* Preview */}
               {bulkPreviewValid && (
-                <div className="rounded-lg border border-green-700/50 bg-green-900/20 px-4 py-3 text-sm">
-                  <p className="font-medium text-green-300">Esikatselu</p>
-                  <p className="mt-1 text-green-400">
-                    Lähetetään <span className="font-semibold text-white">{activeCount}</span> aktiiviselle
+                <div className="rounded-lg border border-[#e0d8cc]/50 bg-white px-4 py-3 text-sm">
+                  <p className="font-medium text-[#1e3d1e]">Esikatselu</p>
+                  <p className="mt-1 text-[#2d6a2d]">
+                    Lähetetään <span className="font-semibold text-[#1a1a1a]">{activeCount}</span> aktiiviselle
                     jäsenelle
                   </p>
-                  <p className="text-green-400">
+                  <p className="text-[#2d6a2d]">
                     Yhteensä:{' '}
-                    <span className="font-semibold text-white">
+                    <span className="font-semibold text-[#1a1a1a]">
                       {formatEuros(bulkCents * activeCount)}
                     </span>
                   </p>
-                  <p className="mt-1 text-xs text-green-600">
+                  <p className="mt-1 text-xs text-[#888888]">
                     Duplikaatit (sama kuvaus + sama vuosi) ohitetaan automaattisesti.
                   </p>
                 </div>
@@ -760,7 +760,7 @@ export default function TabPayments({ clubId }: Props) {
                   type="button"
                   disabled={bulkBusy !== null}
                   onClick={() => void handleBulk(false)}
-                  className="flex-1 rounded-lg bg-green-700 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50 transition-colors"
+                  className="flex-1 rounded-lg bg-[#1e3d1e] py-2 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
                 >
                   {bulkBusy === 'create' ? 'Luodaan...' : 'Luo laskut kaikille'}
                 </button>
@@ -768,7 +768,7 @@ export default function TabPayments({ clubId }: Props) {
                   type="button"
                   disabled={bulkBusy !== null}
                   onClick={() => void handleBulk(true)}
-                  className="flex-1 rounded-lg border border-green-700 py-2 text-sm font-semibold text-green-300 hover:bg-green-900/40 disabled:opacity-50 transition-colors"
+                  className="flex-1 rounded-lg border border-[#e0d8cc] py-2 text-sm font-semibold text-[#1e3d1e] hover:bg-white disabled:opacity-50 transition-colors"
                 >
                   {bulkBusy === 'create-email' ? 'Lähetetään...' : 'Luo ja lähetä sähköpostilla'}
                 </button>
@@ -802,7 +802,7 @@ export default function TabPayments({ clubId }: Props) {
 
       {/* ── Payment list ── */}
       {filteredPayments.length === 0 ? (
-        <p className="text-sm text-green-600">
+        <p className="text-sm text-[#888888]">
           {filter === 'all' ? 'Ei maksuja.' : 'Ei maksuja tässä näkymässä.'}
         </p>
       ) : (
@@ -822,10 +822,10 @@ export default function TabPayments({ clubId }: Props) {
                 key={p.id}
                 className={`rounded-xl border p-3 transition-colors ${
                   isPaid
-                    ? 'border-green-900/50 bg-green-900/10'
+                    ? 'border-[#e0d8cc]/50 bg-white'
                     : isOD
                       ? 'border-red-800/60 bg-red-900/10'
-                      : 'border-green-800 bg-white/5'
+                      : 'border-[#e0d8cc] bg-white'
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -835,8 +835,8 @@ export default function TabPayments({ clubId }: Props) {
                     disabled={isPaid}
                     className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
                       isPaid
-                        ? 'border-green-600 bg-green-700 text-white cursor-default'
-                        : 'border-green-700 bg-transparent text-transparent hover:border-green-500 hover:bg-green-900/40 cursor-pointer'
+                        ? 'border-green-600 bg-[#1e3d1e] text-white cursor-default'
+                        : 'border-[#e0d8cc] bg-transparent text-transparent hover:border-green-500 hover:bg-white cursor-pointer'
                     }`}
                     title={isPaid ? 'Maksettu' : 'Merkitse maksetuksi'}
                   >
@@ -846,22 +846,22 @@ export default function TabPayments({ clubId }: Props) {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <p className={`truncate font-medium ${isPaid ? 'text-green-500 line-through' : 'text-white'}`}>
+                        <p className={`truncate font-medium ${isPaid ? 'text-[#4a4a4a] line-through' : 'text-[#1a1a1a]'}`}>
                           {p.description}
                         </p>
-                        <p className="text-xs text-green-400">
+                        <p className="text-xs text-[#2d6a2d]">
                           {profileName ?? '—'}
                           {p.due_date && ` · eräpäivä ${formatDate(p.due_date)}`}
                           {p.reference_number && ` · viite ${p.reference_number}`}
                         </p>
                         {p.sent_at && (
-                          <p className="text-xs text-green-600">
+                          <p className="text-xs text-[#888888]">
                             Lähetetty {formatDate(p.sent_at)}
                           </p>
                         )}
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className={`font-semibold ${isPaid ? 'text-green-500' : 'text-white'}`}>
+                        <p className={`font-semibold ${isPaid ? 'text-[#4a4a4a]' : 'text-[#1a1a1a]'}`}>
                           {formatEuros(p.amount_cents)}
                         </p>
                         <span
@@ -876,7 +876,7 @@ export default function TabPayments({ clubId }: Props) {
                       {!isPaid && (
                         <button
                           onClick={() => openPdfModal(p)}
-                          className="rounded-lg bg-green-800 px-3 py-1 text-xs font-semibold text-white hover:bg-green-700"
+                          className="rounded-lg bg-[#1e3d1e] px-3 py-1 text-xs font-semibold text-white hover:bg-[#1e3d1e]"
                         >
                           Lähetä PDF-lasku
                         </button>
@@ -886,7 +886,7 @@ export default function TabPayments({ clubId }: Props) {
                         href={`/api/invoice-pdf/preview?payment_id=${p.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-lg border border-green-800 px-3 py-1 text-xs font-semibold text-green-400 hover:bg-white/5"
+                        className="rounded-lg border border-[#e0d8cc] px-3 py-1 text-xs font-semibold text-[#2d6a2d] hover:bg-white"
                       >
                         Lataa PDF
                       </a>
@@ -924,17 +924,17 @@ export default function TabPayments({ clubId }: Props) {
       {pdfModal && (
         <>
           <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setPdfModal(null)} />
-          <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-green-700 bg-green-950 p-6 shadow-2xl space-y-3">
+          <div className="fixed inset-x-4 top-1/2 z-50 mx-auto max-w-sm -translate-y-1/2 rounded-2xl border border-[#e0d8cc] bg-[#f5f0e8] p-6 shadow-2xl space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="font-bold text-white">Lähetä PDF-lasku</h2>
-              <button onClick={() => setPdfModal(null)} className="text-green-500 hover:text-green-300"><X size={16} /></button>
+              <h2 className="font-bold text-[#1a1a1a]">Lähetä PDF-lasku</h2>
+              <button onClick={() => setPdfModal(null)} className="text-[#4a4a4a] hover:text-[#1e3d1e]"><X size={16} /></button>
             </div>
-            <div><label className="mb-1 block text-xs text-green-400">Vastaanottajan nimi</label><input type="text" value={pdfName} onChange={(e) => setPdfName(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" /></div>
-            <div><label className="mb-1 block text-xs text-green-400">Sähköposti *</label><input type="email" value={pdfEmail} onChange={(e) => setPdfEmail(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" placeholder="vastaanottaja@esimerkki.fi" /></div>
-            <div><label className="mb-1 block text-xs text-green-400">Osoite</label><input type="text" value={pdfAddress} onChange={(e) => setPdfAddress(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" /></div>
-            <div><label className="mb-1 block text-xs text-green-400">Postinumero ja -toimipaikka</label><input type="text" value={pdfPostal} onChange={(e) => setPdfPostal(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" /></div>
-            <div><label className="mb-1 block text-xs text-green-400">Lisätiedot</label><input type="text" value={pdfNotes} onChange={(e) => setPdfNotes(e.target.value)} className="w-full rounded-lg border border-green-800 bg-white/10 px-3 py-2 text-sm text-white outline-none focus:border-green-500" /></div>
-            <button onClick={() => void sendPdfInvoice()} disabled={pdfBusy || !pdfEmail.trim()} className="w-full rounded-lg bg-green-700 py-2.5 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50">
+            <div><label className="mb-1 block text-xs text-[#2d6a2d]">Vastaanottajan nimi</label><input type="text" value={pdfName} onChange={(e) => setPdfName(e.target.value)} className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]" /></div>
+            <div><label className="mb-1 block text-xs text-[#2d6a2d]">Sähköposti *</label><input type="email" value={pdfEmail} onChange={(e) => setPdfEmail(e.target.value)} className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]" placeholder="vastaanottaja@esimerkki.fi" /></div>
+            <div><label className="mb-1 block text-xs text-[#2d6a2d]">Osoite</label><input type="text" value={pdfAddress} onChange={(e) => setPdfAddress(e.target.value)} className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]" /></div>
+            <div><label className="mb-1 block text-xs text-[#2d6a2d]">Postinumero ja -toimipaikka</label><input type="text" value={pdfPostal} onChange={(e) => setPdfPostal(e.target.value)} className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]" /></div>
+            <div><label className="mb-1 block text-xs text-[#2d6a2d]">Lisätiedot</label><input type="text" value={pdfNotes} onChange={(e) => setPdfNotes(e.target.value)} className="w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] outline-none focus:border-[#2d6a2d]" /></div>
+            <button onClick={() => void sendPdfInvoice()} disabled={pdfBusy || !pdfEmail.trim()} className="w-full rounded-lg bg-[#1e3d1e] py-2.5 text-sm font-semibold text-white hover:bg-[#162d16] disabled:opacity-50">
               {pdfBusy ? 'Lähetetään...' : 'Lähetä PDF-lasku →'}
             </button>
           </div>

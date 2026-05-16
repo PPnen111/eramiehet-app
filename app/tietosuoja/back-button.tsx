@@ -8,7 +8,7 @@ export default function BackButton() {
   return (
     <button
       onClick={() => router.back()}
-      className="text-sm text-green-400 hover:text-green-300"
+      className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]"
     >
       ← Takaisin
     </button>

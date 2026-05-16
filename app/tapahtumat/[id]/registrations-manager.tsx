@@ -44,7 +44,7 @@ export default function RegistrationsManager({ eventId, registrations }: Props) 
   }
 
   if (registrations.length === 0) {
-    return <p className="text-sm text-green-600">Ei ilmoittautumisia.</p>
+    return <p className="text-sm text-[#888888]">Ei ilmoittautumisia.</p>
   }
 
   return (
@@ -58,17 +58,17 @@ export default function RegistrationsManager({ eventId, registrations }: Props) 
         return (
           <div
             key={reg.id}
-            className="flex items-center justify-between gap-3 rounded-lg border border-green-900 bg-white/[0.03] px-3 py-2"
+            className="flex items-center justify-between gap-3 rounded-lg border border-[#e0d8cc] bg-white/[0.03] px-3 py-2"
           >
             <div>
-              <p className="text-sm font-medium text-white">{name}</p>
-              <p className="text-xs text-green-600">{formatDate(reg.created_at)}</p>
+              <p className="text-sm font-medium text-[#1a1a1a]">{name}</p>
+              <p className="text-xs text-[#888888]">{formatDate(reg.created_at)}</p>
             </div>
             <button
               onClick={() => void removeRegistration(reg.id)}
               disabled={deleting === reg.id}
               title="Poista ilmoittautuminen"
-              className="rounded-md p-1.5 text-stone-500 hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
+              className="rounded-md p-1.5 text-[#888888] hover:bg-red-900/40 hover:text-red-400 disabled:opacity-40 transition-colors"
             >
               {deleting === reg.id ? <span className="text-xs">...</span> : <Trash2 size={14} />}
             </button>

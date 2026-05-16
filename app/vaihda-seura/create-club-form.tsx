@@ -43,9 +43,9 @@ export default function CreateClubForm() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex w-full items-center gap-4 rounded-2xl border border-dashed border-green-700 bg-transparent p-5 text-left text-green-400 transition-all hover:border-green-500 hover:bg-white/5 hover:text-green-300"
+        className="flex w-full items-center gap-4 rounded-2xl border border-dashed border-[#e0d8cc] bg-transparent p-5 text-left text-[#2d6a2d] transition-all hover:border-green-500 hover:bg-white hover:text-[#1e3d1e]"
       >
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-green-700 text-green-400">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#e0d8cc] text-[#2d6a2d]">
           <PlusCircle size={22} strokeWidth={1.5} />
         </div>
         <span className="font-medium">Luo uusi seura</span>
@@ -54,11 +54,11 @@ export default function CreateClubForm() {
   }
 
   return (
-    <div className="rounded-2xl border border-green-700 bg-white/5 p-5">
-      <h2 className="mb-4 font-semibold text-white">Luo uusi seura</h2>
+    <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
+      <h2 className="mb-4 font-semibold text-[#1a1a1a]">Luo uusi seura</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div>
-          <label className="mb-1.5 block text-sm text-green-300" htmlFor="club-name">
+          <label className="mb-1.5 block text-sm text-[#1e3d1e]" htmlFor="club-name">
             Seuran nimi
           </label>
           <input
@@ -69,7 +69,7 @@ export default function CreateClubForm() {
             placeholder="esim. Metsäkylän Erämiehet"
             minLength={3}
             required
-            className="w-full rounded-xl border border-green-700 bg-green-950/60 px-4 py-3 text-sm text-white placeholder-green-600 focus:border-green-500 focus:outline-none"
+            className="w-full rounded-xl border border-[#e0d8cc] bg-[#f5f0e8]/60 px-4 py-3 text-sm text-[#1a1a1a] placeholder-[#888888] focus:border-[#2d6a2d] focus:outline-none"
           />
         </div>
         {error && <p className="text-sm text-red-400">{error}</p>}
@@ -78,7 +78,7 @@ export default function CreateClubForm() {
             type="button"
             onClick={() => { setOpen(false); setError(null); setName('') }}
             disabled={loading}
-            className="flex-1 rounded-xl border border-green-800 py-3 text-sm text-green-400 transition-colors hover:bg-green-900/30 disabled:opacity-50"
+            className="flex-1 rounded-xl border border-[#e0d8cc] py-3 text-sm text-[#2d6a2d] transition-colors hover:bg-white disabled:opacity-50"
           >
             Peruuta
           </button>

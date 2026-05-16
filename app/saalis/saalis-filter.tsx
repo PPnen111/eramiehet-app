@@ -73,19 +73,19 @@ export default function SaalisFilter({ saaliset, userId, isAdmin, elainLabels, e
     <div
       key={s.id}
       className={compact
-        ? 'rounded-xl border border-green-900 bg-white/[0.03] p-3 opacity-60'
-        : 'rounded-2xl border border-green-800 bg-white/5 p-4'
+        ? 'rounded-xl border border-[#e0d8cc] bg-white/[0.03] p-3 opacity-60'
+        : 'rounded-2xl border border-[#e0d8cc] bg-white p-4'
       }
     >
       <div className="flex items-start justify-between gap-2">
         <div className="space-y-1">
           {compact ? (
             <>
-              <p className="font-medium text-white">
+              <p className="font-medium text-[#1a1a1a]">
                 {elainLabels[s.elain] ?? s.elain}
                 {s.maara > 1 && ` (${s.maara} kpl)`}
               </p>
-              <p className="text-xs text-green-500">
+              <p className="text-xs text-[#4a4a4a]">
                 {formatDate(s.pvm)}
                 {s.reporter_name && ` — ${s.reporter_name}`}
               </p>
@@ -93,23 +93,23 @@ export default function SaalisFilter({ saaliset, userId, isAdmin, elainLabels, e
           ) : (
             <>
               <div className="flex flex-wrap items-center gap-2">
-                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${elainBadge[s.elain] ?? 'bg-stone-700 text-stone-200'}`}>
+                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${elainBadge[s.elain] ?? 'bg-[#1e3d1e] text-[#1a1a1a]'}`}>
                   {elainLabels[s.elain] ?? s.elain}
                 </span>
-                {s.maara > 1 && <span className="text-xs text-green-400">{s.maara} kpl</span>}
+                {s.maara > 1 && <span className="text-xs text-[#2d6a2d]">{s.maara} kpl</span>}
                 {sukupuoliLabel[s.sukupuoli] && (
-                  <span className="text-xs text-green-500">{sukupuoliLabel[s.sukupuoli]}</span>
+                  <span className="text-xs text-[#4a4a4a]">{sukupuoliLabel[s.sukupuoli]}</span>
                 )}
                 {ikaLabel[s.ika_luokka] && (
-                  <span className="text-xs text-green-500">{ikaLabel[s.ika_luokka]}</span>
+                  <span className="text-xs text-[#4a4a4a]">{ikaLabel[s.ika_luokka]}</span>
                 )}
               </div>
-              <p className="text-sm text-green-300">
+              <p className="text-sm text-[#1e3d1e]">
                 {formatDate(s.pvm)}
-                {s.reporter_name && <span className="ml-2 text-green-500">— {s.reporter_name}</span>}
+                {s.reporter_name && <span className="ml-2 text-[#4a4a4a]">— {s.reporter_name}</span>}
               </p>
-              {s.paikka && <p className="text-xs text-green-500">📍 {s.paikka}</p>}
-              {s.kuvaus && <p className="mt-1 text-sm text-green-400">{s.kuvaus}</p>}
+              {s.paikka && <p className="text-xs text-[#4a4a4a]">📍 {s.paikka}</p>}
+              {s.kuvaus && <p className="mt-1 text-sm text-[#2d6a2d]">{s.kuvaus}</p>}
             </>
           )}
         </div>
@@ -127,7 +127,7 @@ export default function SaalisFilter({ saaliset, userId, isAdmin, elainLabels, e
         <select
           value={elainFilter}
           onChange={(e) => setElainFilter(e.target.value)}
-          className="rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-xs text-white outline-none focus:border-green-500"
+          className="rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1.5 text-xs text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
         >
           <option value="">Kaikki eläimet</option>
           {elainOptions.map((e) => (
@@ -138,7 +138,7 @@ export default function SaalisFilter({ saaliset, userId, isAdmin, elainLabels, e
         <select
           value={yearFilter}
           onChange={(e) => setYearFilter(e.target.value)}
-          className="rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-xs text-white outline-none focus:border-green-500"
+          className="rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1.5 text-xs text-[#1a1a1a] outline-none focus:border-[#2d6a2d]"
         >
           <option value="">Kaikki vuodet</option>
           {years.map((y) => (
@@ -151,13 +151,13 @@ export default function SaalisFilter({ saaliset, userId, isAdmin, elainLabels, e
           value={paikkaFilter}
           onChange={(e) => setPaikkaFilter(e.target.value)}
           placeholder="Hae paikkaa..."
-          className="rounded-lg border border-green-800 bg-green-950 px-2 py-1.5 text-xs text-white placeholder-green-700 outline-none focus:border-green-500"
+          className="rounded-lg border border-[#e0d8cc] bg-[#f5f0e8] px-2 py-1.5 text-xs text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]"
         />
 
         {hasFilters && (
           <button
             onClick={() => { setElainFilter(''); setYearFilter(''); setPaikkaFilter('') }}
-            className="rounded-lg border border-green-800 px-2 py-1.5 text-xs text-green-500 hover:text-green-300 transition-colors"
+            className="rounded-lg border border-[#e0d8cc] px-2 py-1.5 text-xs text-[#4a4a4a] hover:text-[#1e3d1e] transition-colors"
           >
             Tyhjennä
           </button>
@@ -167,9 +167,9 @@ export default function SaalisFilter({ saaliset, userId, isAdmin, elainLabels, e
       {hasFilters ? (
         // Filtered view — flat list
         filtered.length === 0 ? (
-          <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
-            <Target size={32} className="text-green-700" strokeWidth={1.5} />
-            <p className="text-sm text-green-600">Ei tuloksia.</p>
+          <div className="flex flex-col items-center gap-2 rounded-2xl border border-[#e0d8cc] bg-white/[0.02] py-10 text-center">
+            <Target size={32} className="text-[#2d6a2d]" strokeWidth={1.5} />
+            <p className="text-sm text-[#888888]">Ei tuloksia.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -180,13 +180,13 @@ export default function SaalisFilter({ saaliset, userId, isAdmin, elainLabels, e
         // Default view — split by year
         <>
           <section>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-400">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
               {thisYear}
             </h2>
             {thisYearSaalis.length === 0 ? (
-              <div className="flex flex-col items-center gap-2 rounded-2xl border border-green-900 bg-white/[0.02] py-10 text-center">
-                <Target size={32} className="text-green-700" strokeWidth={1.5} />
-                <p className="text-sm text-green-600">Ei saalisilmoituksia tänä vuonna.</p>
+              <div className="flex flex-col items-center gap-2 rounded-2xl border border-[#e0d8cc] bg-white/[0.02] py-10 text-center">
+                <Target size={32} className="text-[#2d6a2d]" strokeWidth={1.5} />
+                <p className="text-sm text-[#888888]">Ei saalisilmoituksia tänä vuonna.</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -197,7 +197,7 @@ export default function SaalisFilter({ saaliset, userId, isAdmin, elainLabels, e
 
           {olderSaalis.length > 0 && (
             <section>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-600">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#888888]">
                 Aiemmat
               </h2>
               <div className="space-y-2">

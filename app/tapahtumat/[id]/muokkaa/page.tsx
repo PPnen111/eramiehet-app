@@ -53,15 +53,15 @@ export default async function MuokkaaPage({
   if (event.club_id !== clubId) notFound()
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
         <Link
           href={`/tapahtumat/${id}`}
-          className="text-sm text-green-400 hover:text-green-300"
+          className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]"
         >
           ← Takaisin tapahtumaan
         </Link>
-        <h1 className="text-2xl font-bold text-white">Muokkaa tapahtumaa</h1>
+        <h1 className="text-2xl font-bold text-[#1a1a1a]">Muokkaa tapahtumaa</h1>
         <EditEventForm
           eventId={event.id}
           initialTitle={event.title}

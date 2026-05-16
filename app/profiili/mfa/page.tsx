@@ -101,46 +101,46 @@ export default function MfaSetupPage() {
     setSuccess('2FA poistettu käytöstä')
   }
 
-  const inputCls = 'w-full rounded-lg border border-green-800 bg-white/10 px-4 py-3 text-center text-2xl tracking-[0.5em] text-white placeholder-green-600 outline-none focus:border-green-500 font-mono'
+  const inputCls = 'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-4 py-3 text-center text-2xl tracking-[0.5em] text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d] font-mono'
   const isEnrolled = factors.length > 0
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 flex items-center justify-center">
-        <p className="text-green-500">Ladataan...</p>
+      <main className="min-h-screen bg-[#f5f0e8] flex items-center justify-center">
+        <p className="text-[#4a4a4a]">Ladataan...</p>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-green-950 to-stone-950 px-4 py-8">
+    <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-md space-y-6">
-        <Link href="/profiili" className="text-sm text-green-400 hover:text-green-300">← Profiili</Link>
+        <Link href="/profiili" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Profiili</Link>
 
         <div className="flex items-center gap-3">
-          <Shield size={24} className="text-green-400" />
-          <h1 className="text-xl font-bold text-white">Kaksivaiheinen tunnistautuminen</h1>
+          <Shield size={24} className="text-[#2d6a2d]" />
+          <h1 className="text-xl font-bold text-[#1a1a1a]">Kaksivaiheinen tunnistautuminen</h1>
         </div>
 
-        {success && <p className="rounded-lg bg-green-900/40 px-4 py-3 text-sm text-green-300">{success}</p>}
+        {success && <p className="rounded-lg bg-white px-4 py-3 text-sm text-[#1e3d1e]">{success}</p>}
         {error && <p className="rounded-lg bg-red-900/40 px-4 py-3 text-sm text-red-300">{error}</p>}
 
         {/* Status */}
-        <div className="rounded-2xl border border-green-800 bg-white/5 p-5">
+        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
           {isEnrolled ? (
             <div className="flex items-center gap-3">
-              <CheckCircle size={20} className="text-green-400" />
+              <CheckCircle size={20} className="text-[#2d6a2d]" />
               <div>
-                <p className="font-semibold text-white">2FA on käytössä</p>
-                <p className="text-xs text-green-500">Kirjautuminen vaatii koodin sovelluksesta</p>
+                <p className="font-semibold text-[#1a1a1a]">2FA on käytössä</p>
+                <p className="text-xs text-[#4a4a4a]">Kirjautuminen vaatii koodin sovelluksesta</p>
               </div>
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <AlertTriangle size={20} className="text-yellow-400" />
+              <AlertTriangle size={20} className="text-[#b45309]" />
               <div>
-                <p className="font-semibold text-white">2FA ei ole käytössä</p>
-                <p className="text-xs text-green-500">Suosittelemme ottamaan käyttöön</p>
+                <p className="font-semibold text-[#1a1a1a]">2FA ei ole käytössä</p>
+                <p className="text-xs text-[#4a4a4a]">Suosittelemme ottamaan käyttöön</p>
               </div>
             </div>
           )}
@@ -155,20 +155,20 @@ export default function MfaSetupPage() {
 
         {/* QR Code + verification */}
         {enrolling && qrCode && (
-          <div className="rounded-2xl border border-green-800 bg-white/5 p-5 space-y-4">
-            <p className="text-sm text-green-300">Skannaa QR-koodi Google Authenticator tai Authy -sovelluksella:</p>
+          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+            <p className="text-sm text-[#1e3d1e]">Skannaa QR-koodi Google Authenticator tai Authy -sovelluksella:</p>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <div className="flex justify-center">
               <img src={qrCode} alt="2FA QR code" className="rounded-lg bg-white p-2" width={200} height={200} />
             </div>
             {secret && (
-              <div className="rounded-lg bg-green-900/30 px-3 py-2 text-center">
-                <p className="text-xs text-green-500 mb-1">Tai syötä koodi käsin:</p>
-                <p className="font-mono text-sm text-white tracking-wider break-all">{secret}</p>
+              <div className="rounded-lg bg-white px-3 py-2 text-center">
+                <p className="text-xs text-[#4a4a4a] mb-1">Tai syötä koodi käsin:</p>
+                <p className="font-mono text-sm text-[#1a1a1a] tracking-wider break-all">{secret}</p>
               </div>
             )}
             <div>
-              <p className="mb-2 text-sm text-green-300">Syötä 6-numeroinen koodi vahvistaaksesi:</p>
+              <p className="mb-2 text-sm text-[#1e3d1e]">Syötä 6-numeroinen koodi vahvistaaksesi:</p>
               <input
                 type="text"
                 value={code}
