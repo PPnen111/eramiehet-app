@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Hammer, Target, Users, Crosshair, Trophy, MoreHorizontal, CalendarX, Plus } from 'lucide-react'
+import { Hammer, Target, Users, Crosshair, Trophy, MoreHorizontal, Plus, Calendar } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { isBoardOrAbove } from '@/lib/auth'
 import DeleteEventButton from './delete-event-button'
+import EmptyState from '@/app/components/empty-state'
 
 const typeLabels: Record<string, string> = {
   talkoot: 'Talkoot',
@@ -15,12 +16,12 @@ const typeLabels: Record<string, string> = {
 }
 
 const typeBadge: Record<string, string> = {
-  talkoot: 'bg-[#fde9a8] text-[#92400e]',
+  talkoot: 'bg-[#fef3c7] text-[#92400e]',
   ampumaharjoitus: 'bg-[#e6f1fb] text-[#185fa5]',
-  kokous: 'bg-purple-900 text-purple-200',
-  metsastyspaiva: 'bg-[#f0ebe3] text-[#1a1a1a]',
+  kokous: 'bg-[#f3f0ff] text-[#5b21b6]',
+  metsastyspaiva: 'bg-[#eaf3de] text-[#3b6d11]',
   kilpailu: 'bg-[#fef3c7] text-[#92400e]',
-  muu: 'bg-[#1e3d1e] text-[#4a4a4a]',
+  muu: 'bg-[#f0ebe3] text-[#4a4a4a]',
 }
 
 const typeIcon: Record<string, React.ComponentType<{ size?: number }>> = {
@@ -81,7 +82,7 @@ export default async function TapahtumatPage() {
         </Link>
 
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-bold text-[#1a1a1a]">Tapahtumat</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">Tapahtumat</h1>
           {isAdmin && (
             <Link
               href="/tapahtumat/uusi"
@@ -99,9 +100,22 @@ export default async function TapahtumatPage() {
             Tulevat
           </h2>
           {upcoming.length === 0 ? (
-            <div className="flex flex-col items-center gap-2 rounded-2xl border border-[#e0d8cc] bg-white/[0.02] py-10 text-center">
-              <CalendarX size={32} className="text-[#2d6a2d]" strokeWidth={1.5} />
-              <p className="text-sm text-[#888888]">Ei tulevia tapahtumia.</p>
+            <div className="card-shadow rounded-2xl bg-white">
+              <EmptyState
+                icon={<Calendar size={22} />}
+                title="Ei tapahtumia"
+                subtitle="Luo ensimmäinen tapahtuma seurallesi."
+                action={
+                  isAdmin && (
+                    <Link
+                      href="/tapahtumat/uusi"
+                      className="inline-block rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162d16] transition-colors"
+                    >
+                      + Luo tapahtuma
+                    </Link>
+                  )
+                }
+              />
             </div>
           ) : (
             <div className="space-y-3">
@@ -121,7 +135,7 @@ export default async function TapahtumatPage() {
                         const TypeIcon = typeIcon[event.type] ?? MoreHorizontal
                         return (
                           <span
-                            className={`mb-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                            className={`mb-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
                               typeBadge[event.type] ?? typeBadge.muu
                             }`}
                           >

@@ -104,7 +104,7 @@ export default async function MetsastajillePage() {
     <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
         <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Takaisin</Link>
-        <h1 className="text-2xl font-bold text-[#1a1a1a]">Metsästäjille</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">Metsästäjille</h1>
 
         {docsWithUrls.length === 0 && (
           <div className="flex flex-col items-center gap-2 rounded-2xl border border-[#e0d8cc] bg-white/[0.02] py-10 text-center">

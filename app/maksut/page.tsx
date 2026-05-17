@@ -57,12 +57,12 @@ export default async function MaksutPage() {
     <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
         <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Takaisin</Link>
-        <h1 className="text-2xl font-bold text-[#1a1a1a]">Maksut</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">Maksut</h1>
 
         {unpaid.length > 0 && (
           <div className="rounded-2xl border border-[#fcd34d] bg-[#fef3c7] px-4 py-3">
             <p className="text-sm text-[#92400e]">Avoimet maksut yhteensä</p>
-            <p className="text-2xl font-bold text-[#1a1a1a]">{formatEuros(totalUnpaidCents)}</p>
+            <p className="text-2xl font-bold tracking-tight text-[#1a1a1a]">{formatEuros(totalUnpaidCents)}</p>
           </div>
         )}
 

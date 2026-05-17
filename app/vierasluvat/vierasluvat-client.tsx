@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Ticket, X, Check, AlertCircle, ChevronDown } from 'lucide-react'
+import EmptyState from '@/app/components/empty-state'
 
 export type MemberOption = {
   id: string
@@ -68,8 +69,8 @@ export default function VierasluvatClient({
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Ticket size={22} className="text-[#2d6a2d]" />
-            <h1 className="text-2xl font-bold text-[#1a1a1a]">Vierasluvat</h1>
-            <span className="rounded-full bg-[#eaf3de] px-2.5 py-0.5 text-xs font-medium text-[#1a1a1a]">
+            <h1 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">Vierasluvat</h1>
+            <span className="rounded-full bg-[#eaf3de] px-2 py-0.5 text-[10px] font-medium text-[#3b6d11]">
               {active.length}
             </span>
           </div>
@@ -90,8 +91,22 @@ export default function VierasluvatClient({
             Aktiiviset luvat
           </h2>
           {active.length === 0 ? (
-            <div className="rounded-2xl border border-[#e0d8cc] bg-white/[0.02] py-10 text-center text-sm text-[#888888]">
-              Ei aktiivisia vieraslupia.
+            <div className="card-shadow rounded-2xl bg-white">
+              <EmptyState
+                icon={<Ticket size={22} />}
+                title="Ei aktiivisia vieraslupia"
+                subtitle="Myönnä ensimmäinen vieraslupa."
+                action={
+                  canManage && (
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className="rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162d16] transition-colors"
+                    >
+                      Myönnä uusi lupa
+                    </button>
+                  )
+                }
+              />
             </div>
           ) : (
             <div className="space-y-3">
@@ -156,14 +171,14 @@ function PermitCard({
 
   const statusBadge =
     permit.status === 'cancelled'
-      ? { label: 'Peruutettu', cls: 'bg-[#1e3d1e] text-[#4a4a4a]' }
+      ? { label: 'Peruutettu', cls: 'bg-[#fef2f2] text-[#991b1b]' }
       : !permit.is_active
-      ? { label: 'Päättynyt', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' }
+      ? { label: 'Päättynyt', cls: 'bg-[#f0ebe3] text-[#4a4a4a]' }
       : permit.payment_status === 'paid'
-      ? { label: '✅ Maksettu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' }
+      ? { label: '✅ Maksettu', cls: 'bg-[#eaf3de] text-[#3b6d11]' }
       : permit.payment_status === 'pending'
       ? { label: '⏳ Odottaa maksua', cls: 'bg-[#fef3c7] text-[#92400e]' }
-      : { label: 'Ei laskutettu', cls: 'bg-[#1e3d1e] text-[#4a4a4a]' }
+      : { label: 'Ei laskutettu', cls: 'bg-[#f0ebe3] text-[#4a4a4a]' }
 
   const cancel = async () => {
     if (!confirm('Haluatko varmasti peruuttaa tämän vierasluvan?')) return
@@ -180,7 +195,7 @@ function PermitCard({
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="font-semibold text-[#1a1a1a]">{permit.guest_name}</h3>
-            <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${statusBadge.cls}`}>
+            <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${statusBadge.cls}`}>
               {statusBadge.label}
             </span>
           </div>

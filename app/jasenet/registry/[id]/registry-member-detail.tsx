@@ -59,7 +59,7 @@ export default function RegistryMemberDetail({ member }: Props) {
 
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-[#1a1a1a]">{form.full_name ?? '—'}</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">{form.full_name ?? '—'}</h1>
             <p className="mt-1 text-xs text-[#1e40af]">📋 Ei sovellustunnusta</p>
           </div>
           <div className="flex gap-2">

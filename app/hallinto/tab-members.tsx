@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { Trash2, Mail, ChevronRight, ChevronDown, UserPlus } from 'lucide-react'
+import { Trash2, Mail, ChevronRight, ChevronDown, UserPlus, Users } from 'lucide-react'
 import PlanLimitModal from '@/app/components/plan-limit-modal'
+import EmptyState from '@/app/components/empty-state'
 import { createClient } from '@/lib/supabase/browser'
 import { formatDate } from '@/lib/format'
 import type { AdminMember } from './page'
@@ -357,10 +358,32 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
             )
           })}
           {loadingMembers && rest.length === 0 && (
-            <p className="px-4 py-6 text-sm text-[#888888]">Ladataan jäseniä...</p>
+            <div className="space-y-2 p-3">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-3 px-1 py-2">
+                  <div className="skeleton w-9 h-9 rounded-xl flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="skeleton h-3 w-2/3 mb-2" />
+                    <div className="skeleton h-2 w-1/3" />
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
           {!loadingMembers && rest.length === 0 && (
-            <p className="px-4 py-6 text-sm text-[#888888]">Ei jäseniä.</p>
+            <EmptyState
+              icon={<Users size={22} />}
+              title="Ei jäseniä vielä"
+              subtitle="Lisää jäseniä tai tuo heidät Excel-tiedostosta."
+              action={
+                <button
+                  onClick={() => setAddMemberOpen(true)}
+                  className="rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162d16] transition-colors"
+                >
+                  + Lisää jäsen
+                </button>
+              }
+            />
           )}
         </div>
       </section>

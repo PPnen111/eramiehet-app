@@ -2,8 +2,9 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/browser'
-import { X } from 'lucide-react'
+import { X, FileText } from 'lucide-react'
 import PlanLimitModal from '@/app/components/plan-limit-modal'
+import EmptyState from '@/app/components/empty-state'
 
 type Document = {
   id: string
@@ -119,7 +120,21 @@ export default function TabDocuments({ clubId }: Props) {
     }
   }
 
-  if (loading) return <p className="text-sm text-[#4a4a4a]">Ladataan...</p>
+  if (loading) {
+    return (
+      <div className="space-y-2">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="card-shadow rounded-2xl p-4 flex items-center gap-3 bg-white">
+            <div className="skeleton w-9 h-9 rounded-xl flex-shrink-0" />
+            <div className="flex-1">
+              <div className="skeleton h-3 w-2/3 mb-2" />
+              <div className="skeleton h-2 w-1/3" />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   const inputClass =
     'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
@@ -195,7 +210,21 @@ export default function TabDocuments({ clubId }: Props) {
         )}
 
         {docs.length === 0 ? (
-          <p className="text-sm text-[#888888]">Ei dokumentteja.</p>
+          <EmptyState
+            icon={<FileText size={22} />}
+            title="Ei dokumentteja"
+            subtitle="Lisää seuran dokumentteja jaettavaksi jäsenille."
+            action={
+              !formOpen && (
+                <button
+                  onClick={() => setFormOpen(true)}
+                  className="rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162d16] transition-colors"
+                >
+                  + Lisää dokumentti
+                </button>
+              )
+            }
+          />
         ) : (
           <div className="space-y-2">
             {docs.map((doc) => (
