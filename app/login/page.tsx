@@ -88,9 +88,9 @@ export default function LoginPage() {
         <div className="mb-8 text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/hirvi-white-transparent.png"
+            src="https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/hirvi-green-transparent.png"
             alt="JahtiPro"
-            className="h-12 w-auto mx-auto mb-6"
+            className="h-16 w-auto mx-auto mb-6"
           />
         </div>
 
