@@ -155,6 +155,9 @@ export default function BudgetTab({ clubs }: Props) {
       {/* ═══ YHTEENVETO ═══ */}
       {sub === 'yhteenveto' && (
         <div className="space-y-4">
+          <div className="rounded-xl border border-green-800 bg-white/5 px-4 py-3 text-xs text-green-300">
+            <span className="font-semibold text-white">Hinnoittelu:</span> 129 € + 2 € / jäsen / vuosi · maksimi 599 € / vuosi · sis. ALV 25,5 %
+          </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
             <div className="rounded-xl border border-green-800 bg-white/5 p-3 text-center">
               <p className="text-lg font-bold text-white">{data.revenue.mrr_cents > 0 ? eur(data.revenue.mrr_cents) : 'Ei vielä'}</p>

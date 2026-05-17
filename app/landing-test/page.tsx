@@ -243,6 +243,7 @@ export default function LandingTestPage() {
             <h3 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">JahtiPro</h3>
             <p className="mt-2 text-[#2d6a2d]">129 € + 2 € / jäsen / vuosi</p>
             <p className="text-xs text-[#888888]">Maksimi 599 € / vuosi</p>
+            <p className="text-xs text-[#888888]">sis. ALV 25,5 %</p>
 
             <div className="mt-6 grid gap-2 sm:grid-cols-3">
               {[

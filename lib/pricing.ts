@@ -2,6 +2,8 @@ export const PRICING = {
   base: 129,
   perMember: 2,
   max: 599,
+  vatPercent: 25.5,
+  vatNote: 'sis. ALV 25,5 %',
 } as const
 
 export function calculatePrice(memberCount: number): number {
@@ -10,7 +12,7 @@ export function calculatePrice(memberCount: number): number {
 }
 
 export function formatPrice(memberCount: number): string {
-  return `${calculatePrice(memberCount)} €/vuosi`
+  return `${calculatePrice(memberCount)} €/vuosi (${PRICING.vatNote})`
 }
 
 export function calculatePriceCents(memberCount: number): number {
