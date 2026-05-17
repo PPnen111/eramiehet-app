@@ -318,12 +318,12 @@ export default function TabBookings({ clubId }: Props) {
             return (
               <div
                 key={b.id}
-                className={`rounded-xl border p-3 transition-colors ${
+                className={`card-shadow rounded-xl p-3 transition-colors ${
                   isCancelled
-                    ? 'border-[#fecaca] bg-[#fef2f2] opacity-60'
+                    ? 'border border-[#fecaca] bg-[#fef2f2] opacity-60'
                     : b.status === 'pending'
-                      ? 'border-orange-800/40 bg-orange-900/5'
-                      : 'border-[#e0d8cc] bg-white'
+                      ? 'border border-orange-800/40 bg-orange-900/5'
+                      : 'bg-white'
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">

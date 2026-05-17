@@ -178,7 +178,7 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
               Henkilötiedot
             </h2>
 
-            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
+            <div className="card-shadow rounded-2xl bg-white p-4 space-y-3">
               <Field label="Nimi">
                 <input
                   value={form.full_name ?? ''}
@@ -228,7 +228,7 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
             <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
               Osoitetiedot
             </h2>
-            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
+            <div className="card-shadow rounded-2xl bg-white p-4 space-y-3">
               <Field label="Postitusosoite">
                 <input
                   value={form.street_address ?? ''}
@@ -261,7 +261,7 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
               </Field>
             </div>
 
-            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
+            <div className="card-shadow rounded-2xl bg-white p-4 space-y-3">
               <Field label="Laskutustapa">
                 <input
                   value={form.billing_method ?? ''}
@@ -285,7 +285,7 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
             <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
               Jäsenyys
             </h2>
-            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4 space-y-3">
+            <div className="card-shadow rounded-2xl bg-white p-4 space-y-3">
               <Field label="Rooli seurassa">
                 <select
                   value={form.role}
@@ -326,7 +326,7 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
             <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">
               Maksut ({member.payments.length})
             </h2>
-            <div className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+            <div className="card-shadow rounded-2xl bg-white p-4">
               {member.payments.length === 0 ? (
                 <p className="text-sm text-[#2d6a2d]">Ei maksuja.</p>
               ) : (

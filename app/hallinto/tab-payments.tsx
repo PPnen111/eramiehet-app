@@ -521,7 +521,7 @@ export default function TabPayments({ clubId }: Props) {
           + Luo uusi lasku
         </button>
       ) : (
-        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+        <div className="card-shadow rounded-2xl bg-white p-5 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-[#1a1a1a]">Luo uusi lasku</h2>
             <button
@@ -820,12 +820,12 @@ export default function TabPayments({ clubId }: Props) {
             return (
               <div
                 key={p.id}
-                className={`rounded-xl border p-3 transition-colors ${
+                className={`card-shadow rounded-xl p-3 transition-colors ${
                   isPaid
-                    ? 'border-[#e0d8cc]/50 bg-white'
+                    ? 'bg-white'
                     : isOD
-                      ? 'border-[#fca5a5] bg-[#fef2f2]'
-                      : 'border-[#e0d8cc] bg-white'
+                      ? 'border border-[#fca5a5] bg-[#fef2f2]'
+                      : 'bg-white'
                 }`}
               >
                 <div className="flex items-start gap-3">

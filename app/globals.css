@@ -82,6 +82,23 @@ body {
   animation: fade-in 0.15s ease-out both;
 }
 
+.card-shadow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10),
+              0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.card-shadow-hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10),
+              0 1px 4px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card-shadow-hover:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14),
+              0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
 .light-theme {
   --background: #f5f0e8;
   --background-secondary: #ffffff;

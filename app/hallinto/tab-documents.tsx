@@ -136,7 +136,7 @@ export default function TabDocuments({ clubId }: Props) {
             + Lisää dokumentti
           </button>
         ) : (
-          <div className="rounded-2xl border border-[#e0d8cc] bg-white p-5">
+          <div className="card-shadow rounded-2xl bg-white p-5">
             <h2 className="mb-4 font-semibold text-[#1a1a1a]">Lataa dokumentti</h2>
             <form onSubmit={handleUpload} className="space-y-3">
               <div>
@@ -201,7 +201,7 @@ export default function TabDocuments({ clubId }: Props) {
             {docs.map((doc) => (
               <div
                 key={doc.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-[#e0d8cc] bg-white px-4 py-3"
+                className="card-shadow flex items-center justify-between gap-3 rounded-xl bg-white px-4 py-3"
               >
                 <div className="min-w-0">
                   <p className="truncate font-medium text-[#1a1a1a]">{doc.name}</p>

@@ -372,7 +372,7 @@ export default async function DashboardPage() {
           <div className="mb-4 space-y-2">
             <Link
               href="/operaattori"
-              className="flex items-center gap-3 rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 text-sm font-semibold text-[#1e3d1e] hover:bg-[#f0ebe3] transition-colors"
+              className="card-shadow-hover flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-[#1e3d1e] hover:bg-[#f0ebe3]"
             >
               <Building2 size={16} />
               <div className="flex-1">
@@ -390,7 +390,7 @@ export default async function DashboardPage() {
             </Link>
             <Link
               href="/profiili/mfa"
-              className="flex items-center gap-3 rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 text-sm text-[#1a1a1a] hover:bg-[#f0ebe3] transition-colors"
+              className="card-shadow-hover flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-sm text-[#1a1a1a] hover:bg-[#f0ebe3]"
             >
               <Shield size={16} />
               <span>Kaksivaiheinen tunnistautuminen (2FA)</span>
@@ -403,7 +403,7 @@ export default async function DashboardPage() {
           <div className="mb-4">
             <Link
               href="/kehitys"
-              className="flex items-center gap-3 rounded-xl border border-[#e0d8cc] bg-white px-4 py-3 hover:bg-[#f0ebe3] transition-colors"
+              className="card-shadow-hover flex items-center gap-3 rounded-xl bg-white px-4 py-3 hover:bg-[#f0ebe3]"
             >
               <div className="flex-1">
                 <p className="text-sm font-semibold text-[#1a1a1a]">🗺️ Kehityssuunnitelma</p>
@@ -439,7 +439,7 @@ export default async function DashboardPage() {
             {myGroups.map((g) => (
               <div
                 key={g.id}
-                className="rounded-xl border border-[#e0d8cc] bg-white px-4 py-3"
+                className="card-shadow rounded-xl bg-white px-4 py-3"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
@@ -464,7 +464,7 @@ export default async function DashboardPage() {
         )}
 
         {/* Vierasluvat */}
-        <div className="mb-4 rounded-2xl border border-[#e0d8cc] bg-white p-5 shadow-sm">
+        <div className="card-shadow mb-4 rounded-2xl bg-white p-5">
           <div className="mb-3 flex items-center gap-2">
             <Ticket size={18} className="text-[#2d6a2d]" />
             <h2 className="font-semibold text-[#1a1a1a]">Vierasluvat</h2>
@@ -523,7 +523,7 @@ export default async function DashboardPage() {
               <Link
                 key={mod.href}
                 href={mod.href}
-                className="group rounded-2xl border border-[#e0d8cc] bg-white p-4 shadow-sm transition-all duration-150 hover:bg-[#f0ebe3] hover:-translate-y-0.5 hover:shadow-md"
+                className="card-shadow-hover group rounded-2xl bg-white p-4 hover:bg-[#f0ebe3]"
               >
                 <div className="mb-2 text-[#2d6a2d] transition-colors group-hover:text-[#1e3d1e]">
                   <Icon size={24} strokeWidth={1.5} />
