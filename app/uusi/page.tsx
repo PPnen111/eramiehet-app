@@ -82,8 +82,13 @@ export default function UusiPage() {
       <div className="mx-auto max-w-lg">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[#1a1a1a]">JahtiPro</h1>
-          <p className="mt-2 text-lg text-[#1e3d1e]">Aloita ilmainen 14 päivän kokeilu</p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/hirvi-green-transparent.png"
+            alt="JahtiPro"
+            className="h-12 w-auto mx-auto"
+          />
+          <p className="mt-3 text-lg text-[#1e3d1e]">Aloita ilmainen 14 päivän kokeilu</p>
           <p className="mt-1 text-sm text-[#4a4a4a]">Ei luottokorttia &bull; Ei sitoumuksia &bull; Valmis 5 minuutissa</p>
         </div>
 

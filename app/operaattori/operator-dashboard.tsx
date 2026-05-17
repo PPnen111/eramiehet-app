@@ -438,8 +438,13 @@ export default function OperatorDashboard() {
           Takaisin
         </Link>
         <div className="flex items-center gap-3 mb-4">
-          <Building2 size={22} className="text-green-400" />
-          <h1 className="text-xl font-bold text-white">JahtiPro Operaattori</h1>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/hirvi-white-transparent.png"
+            alt="JahtiPro"
+            className="h-8 w-auto"
+          />
+          <h1 className="text-xl font-bold text-white">Operaattori</h1>
         </div>
 
         {/* Tabs */}

@@ -86,7 +86,12 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-[#f5f0e8] px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[#1a1a1a]">JahtiPro</h1>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/hirvi-white-transparent.png"
+            alt="JahtiPro"
+            className="h-12 w-auto mx-auto mb-6"
+          />
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-xl">
