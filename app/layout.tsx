@@ -9,8 +9,22 @@ import PWARegister from "./components/pwa-register";
 import PWAInstallPrompt from "./components/pwa-install-prompt";
 
 export const metadata: Metadata = {
-  title: "JahtiPro",
-  description: "Metsästysseuran hallintajärjestelmä",
+  title: 'JahtiPro — Metsästysseuran hallintasovellus',
+  description:
+    'Vähemmän hallintoa, enemmän metsästystä. JahtiPro kokoaa jäsenrekisterin, maksut, vierasluvat ja tapahtumat yhteen paikkaan.',
+  icons: {
+    icon: 'https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/favicon.ico',
+    apple: 'https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/apple-touch-icon.png',
+  },
+  openGraph: {
+    title: 'JahtiPro — Metsästysseuran hallintasovellus',
+    description: 'Vähemmän hallintoa, enemmän metsästystä.',
+    images: [
+      'https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/og-image.png',
+    ],
+    locale: 'fi_FI',
+    type: 'website',
+  },
 };
 
 // Inline script that runs BEFORE any React/Supabase JS loads.
@@ -34,12 +48,15 @@ export default function RootLayout({
     <html lang="fi">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#0a2e14" />
+        <meta name="theme-color" content="#1e3d1e" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="JahtiPro" />
-        <link rel="apple-touch-icon" href="/icon-192.png" />
+        <link
+          rel="apple-touch-icon"
+          href="https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/apple-touch-icon.png"
+        />
         <script dangerouslySetInnerHTML={{ __html: recoveryScript }} />
       </head>
       <body className="antialiased">

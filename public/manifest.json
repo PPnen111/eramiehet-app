@@ -4,19 +4,13 @@
   "description": "Metsästysseuran hallintasovellus",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#0a2e14",
-  "theme_color": "#0a2e14",
+  "background_color": "#f5f0e8",
+  "theme_color": "#1e3d1e",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "https://jpljpvkooeoriyfopesr.supabase.co/storage/v1/object/public/assets/apple-touch-icon.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
