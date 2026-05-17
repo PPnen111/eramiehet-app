@@ -42,30 +42,24 @@ const TESTIMONIALS = [
   },
 ]
 
-const PLANS = [
+const PRICING_EXAMPLES: { members: number; price: string; desc: string; badge?: string; highlight: boolean }[] = [
   {
-    name: 'Perus',
-    price: '19',
-    desc: 'Pienille seuroille',
-    features: ['Jäsenrekisteri (max 50)', 'Tapahtumat', 'Saalisilmoitukset', 'Eräkartano', 'Asiakirjat'],
-    cta: 'Valitse Perus',
+    members: 30,
+    price: '189',
+    desc: 'Pienelle seuralle',
     highlight: false,
   },
   {
-    name: 'Standardi',
-    price: '39',
-    desc: 'Kasvavalle seuralle',
-    badge: 'Suosituin',
+    members: 100,
+    price: '329',
+    desc: 'Keskikokoinen seura',
+    badge: 'Esimerkki',
     highlight: true,
-    features: ['Kaikki Perus-ominaisuudet', 'Rajaton jäsenmäärä', 'Maksuseuranta', 'Prioriteettituki'],
-    cta: 'Valitse Standardi',
   },
   {
-    name: 'Pro',
-    price: '79',
-    desc: 'Suurille seuroille',
-    features: ['Kaikki Standardi-ominaisuudet', 'Vuosikooste ja raportit', 'Taloussuunnittelu', 'Automaattiset muistutukset', 'Jäsentilastot'],
-    cta: 'Valitse Pro',
+    members: 235,
+    price: '599',
+    desc: 'Maksimi',
     highlight: false,
   },
 ]
@@ -184,11 +178,14 @@ export default function LandingV2() {
         <div className="mx-auto max-w-4xl">
           <p className="mb-2 text-center text-xs font-bold uppercase tracking-[0.2em] text-[#888888]">Hinnoittelu</p>
           <h2 className="mb-2 text-center text-3xl font-extrabold text-stone-900">Selvä hinta, ei yllätyksiä</h2>
-          <p className="mb-12 text-center text-[#888888]">Kaikki päivitykset sisältyvät kuukausimaksuun.</p>
+          <p className="text-center text-[#888888]">
+            129 € + 2 € / jäsen / vuosi · maksimi 599 € / vuosi
+          </p>
+          <p className="mb-12 text-center text-xs text-[#888888]">sis. ALV 25,5 % · Kaikki ominaisuudet käytössä</p>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {PLANS.map(({ name, price, desc, badge, highlight, features, cta }) => (
+            {PRICING_EXAMPLES.map(({ members, price, desc, badge, highlight }) => (
               <div
-                key={name}
+                key={members}
                 className={`relative flex flex-col rounded-2xl p-6 ${
                   highlight
                     ? 'border-2 border-green-600 bg-[#1e3d1e] text-white shadow-xl'
@@ -201,30 +198,22 @@ export default function LandingV2() {
                   </span>
                 )}
                 <div>
-                  <p className={`font-bold ${highlight ? 'text-[#1a1a1a]' : 'text-[#888888]'}`}>{name}</p>
-                  <p className={`mt-0.5 text-xs ${highlight ? 'text-[#1a1a1a]' : 'text-[#888888]'}`}>{desc}</p>
+                  <p className={`font-bold ${highlight ? 'text-white' : 'text-stone-700'}`}>{members} jäsentä</p>
+                  <p className={`mt-0.5 text-xs ${highlight ? 'text-green-100' : 'text-[#888888]'}`}>{desc}</p>
                   <p className="mt-4 flex items-baseline gap-1">
                     <span className="text-4xl font-black">{price}€</span>
-                    <span className={`text-sm ${highlight ? 'text-[#1a1a1a]' : 'text-[#888888]'}`}>/kk</span>
+                    <span className={`text-sm ${highlight ? 'text-green-100' : 'text-[#888888]'}`}>/v</span>
                   </p>
+                  <p className={`mt-1 text-xs ${highlight ? 'text-green-100' : 'text-[#888888]'}`}>sis. ALV 25,5 %</p>
                 </div>
                 <ul className="mt-5 flex-1 space-y-2.5">
-                  {features.map((f) => (
-                    <li key={f} className={`flex items-start gap-2 text-sm ${highlight ? 'text-[#1a1a1a]' : 'text-[#888888]'}`}>
-                      <Check size={14} className={`mt-0.5 shrink-0 ${highlight ? 'text-[#1e3d1e]' : 'text-[#888888]'}`} strokeWidth={2.5} />
+                  {['Kaikki ominaisuudet', 'Rajaton jäsenmäärä', 'Suomalainen tuki'].map((f) => (
+                    <li key={f} className={`flex items-start gap-2 text-sm ${highlight ? 'text-white' : 'text-stone-700'}`}>
+                      <Check size={14} className={`mt-0.5 shrink-0 ${highlight ? 'text-green-300' : 'text-[#888888]'}`} strokeWidth={2.5} />
                       {f}
                     </li>
                   ))}
                 </ul>
-                <button
-                  className={`mt-7 w-full rounded-xl py-3 text-sm font-bold transition-all ${
-                    highlight
-                      ? 'bg-white text-[#1e3d1e] hover:bg-green-50'
-                      : 'border border-stone-200 text-stone-700 hover:border-green-300 hover:text-[#2d6a2d]'
-                  }`}
-                >
-                  {cta}
-                </button>
               </div>
             ))}
           </div>

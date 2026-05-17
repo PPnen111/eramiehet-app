@@ -81,7 +81,7 @@ export default function TilausPage() {
           </p>
           <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#1a1a1a]">JahtiPro</h1>
           <p className="mt-2 text-sm text-[#2d6a2d]">
-            {PRICING.base} € + {PRICING.perMember} € / jäsen / vuosi · maksimi {PRICING.max} € / vuosi
+            {PRICING.base} € + {PRICING.perMember} € / jäsen / vuosi · maksimi {PRICING.max} € / vuosi · {PRICING.vatNote}
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export default function TilausPage() {
               <p className="text-xs uppercase tracking-wider text-[#888888]">Vuosihinta</p>
               <p className="text-4xl font-extrabold tracking-tight text-[#1a1a1a]">{yearPrice} €</p>
               <p className="mt-0.5 text-sm text-[#2d6a2d]">noin {monthlyPrice} €/kk</p>
-              <p className="mt-1 text-[10px] text-[#888888]">sis. alv 0%</p>
+              <p className="mt-1 text-[10px] text-[#888888]">{PRICING.vatNote}</p>
             </div>
           </div>
 

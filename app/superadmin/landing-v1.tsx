@@ -22,24 +22,10 @@ const FEATURES = [
   { icon: Mail, title: 'Kutsujärjestelmä', desc: 'Kutsu uusi jäsen yhdellä klikkauksella.' },
 ]
 
-const PLANS = [
-  {
-    name: 'Perus',
-    price: '19',
-    features: ['Jäsenrekisteri (max 50)', 'Tapahtumat', 'Saalisilmoitukset', 'Eräkartano', 'Asiakirjat'],
-  },
-  {
-    name: 'Standardi',
-    price: '39',
-    badge: 'Suosituin',
-    highlight: true,
-    features: ['Kaikki Perus-ominaisuudet', 'Rajaton jäsenmäärä', 'Maksuseuranta', 'Prioriteettituki'],
-  },
-  {
-    name: 'Pro',
-    price: '79',
-    features: ['Kaikki Standardi-ominaisuudet', 'Vuosikooste ja raportit', 'Taloussuunnittelu', 'Automaattiset muistutukset', 'Jäsentilastot'],
-  },
+const PRICING_EXAMPLES = [
+  { members: 30, price: 189 },
+  { members: 100, price: 329, highlight: true },
+  { members: 235, price: 599, badge: 'Maksimi' },
 ]
 
 export default function LandingV1() {
@@ -121,11 +107,14 @@ export default function LandingV1() {
       {/* Pricing */}
       <div className="border-t border-[#e0d8cc] px-8 py-16">
         <h2 className="mb-2 text-center text-2xl font-bold">Yksinkertainen hinnoittelu</h2>
-        <p className="mb-10 text-center text-sm text-[#2d6a2d]">Yksi kuukausimaksu, kaikki ominaisuudet käytössä.</p>
+        <p className="text-center text-sm text-[#2d6a2d]">
+          129 € + 2 € / jäsen / vuosi · maksimi 599 € / vuosi
+        </p>
+        <p className="mb-10 text-center text-xs text-[#888888]">sis. ALV 25,5 % · Kaikki ominaisuudet käytössä</p>
         <div className="mx-auto grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
-          {PLANS.map(({ name, price, badge, highlight, features }) => (
+          {PRICING_EXAMPLES.map(({ members, price, highlight, badge }) => (
             <div
-              key={name}
+              key={members}
               className={`relative rounded-2xl border p-6 ${
                 highlight
                   ? 'border-green-500 bg-white ring-1 ring-green-500/30'
@@ -137,28 +126,26 @@ export default function LandingV1() {
                   {badge}
                 </span>
               )}
-              <p className="font-semibold text-[#1e3d1e]">{name}</p>
+              <p className="font-semibold text-[#1e3d1e]">{members} jäsentä</p>
               <p className="mt-3 flex items-baseline gap-1">
                 <span className="text-3xl font-extrabold text-[#1a1a1a]">{price}€</span>
-                <span className="text-sm text-[#4a4a4a]">/kk</span>
+                <span className="text-sm text-[#4a4a4a]">/v</span>
               </p>
+              <p className="mt-1 text-xs text-[#888888]">sis. ALV 25,5 %</p>
               <ul className="mt-4 space-y-2">
-                {features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-[#1e3d1e]">
-                    <Check size={13} className="mt-0.5 shrink-0 text-[#4a4a4a]" strokeWidth={2.5} />
-                    {f}
-                  </li>
-                ))}
+                <li className="flex items-start gap-2 text-sm text-[#1e3d1e]">
+                  <Check size={13} className="mt-0.5 shrink-0 text-[#4a4a4a]" strokeWidth={2.5} />
+                  Kaikki ominaisuudet
+                </li>
+                <li className="flex items-start gap-2 text-sm text-[#1e3d1e]">
+                  <Check size={13} className="mt-0.5 shrink-0 text-[#4a4a4a]" strokeWidth={2.5} />
+                  Rajaton jäsenmäärä
+                </li>
+                <li className="flex items-start gap-2 text-sm text-[#1e3d1e]">
+                  <Check size={13} className="mt-0.5 shrink-0 text-[#4a4a4a]" strokeWidth={2.5} />
+                  Suomalainen tuki
+                </li>
               </ul>
-              <button
-                className={`mt-6 w-full rounded-xl py-2.5 text-sm font-semibold transition-colors ${
-                  highlight
-                    ? 'bg-green-600 text-white hover:bg-green-500'
-                    : 'border border-[#e0d8cc] text-[#1e3d1e] hover:border-green-500 hover:text-[#1a1a1a]'
-                }`}
-              >
-                Valitse {name}
-              </button>
             </div>
           ))}
         </div>

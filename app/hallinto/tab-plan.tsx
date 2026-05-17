@@ -76,6 +76,7 @@ export default function TabPlan({ clubId, clubName: _clubName }: Props) {
               {PRICING.base} € + {PRICING.perMember} € / jäsen / vuosi
             </p>
             <p className="text-xs text-[#888888]">Maksimi {PRICING.max} € / vuosi</p>
+            <p className="text-xs text-[#888888]">Hinnat {PRICING.vatNote}</p>
 
             <div className="mt-4 rounded-xl bg-[#f0ebe3] px-4 py-3">
               <p className="text-xs uppercase tracking-wider text-[#888888]">
@@ -85,6 +86,7 @@ export default function TabPlan({ clubId, clubName: _clubName }: Props) {
                 <span className="font-semibold">{memberCount}</span> jäsentä →{' '}
                 <span className="font-bold tracking-tight">{annualPrice} €/vuosi</span>
               </p>
+              <p className="mt-0.5 text-[10px] text-[#888888]">{PRICING.vatNote}</p>
             </div>
 
             <p className="mt-3 text-xs text-[#4a4a4a]">Kaikki ominaisuudet sisältyvät hintaan.</p>
