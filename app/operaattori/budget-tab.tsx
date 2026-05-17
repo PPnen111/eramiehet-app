@@ -18,10 +18,10 @@ type Invoice = { id: string; club_id: string; plan: string; plan_label: string; 
 type ClubOption = { id: string; name: string }
 type SubTab = 'yhteenveto' | 'tulot' | 'kulut' | 'ennuste'
 
+// Dynamic pricing: base 129 € + 2 €/jäsen, max 599 €/v. For scenario
+// modelling, this average price assumes ~100 members per club.
 const PLANS = [
-  { value: 'start', label: 'Jahti Start', cents: 22500 },
-  { value: 'plus', label: 'Jahti Plus', cents: 39500 },
-  { value: 'pro', label: 'Jahti Pro', cents: 62500 },
+  { value: 'jahti', label: 'JahtiPro', cents: 32900 },
 ]
 const EXPENSE_CATS = ['infrastruktuuri', 'markkinointi', 'henkilöstö', 'myynti', 'hallinto', 'muu']
 const RECURRINGS = [{ value: 'kertaluonteinen', label: 'Kertaluonteinen' }, { value: 'kuukausittain', label: 'Kuukausittain' }, { value: 'vuosittain', label: 'Vuosittain' }]
@@ -48,7 +48,7 @@ export default function BudgetTab({ clubs }: Props) {
 
   // Forecast scenario
   const [scenNewPerMonth, setScenNewPerMonth] = useState(5)
-  const [scenPlan, setScenPlan] = useState('plus')
+  const [scenPlan, setScenPlan] = useState('jahti')
   const [scenChurn, setScenChurn] = useState(1)
 
   const showToast = (m: string) => { setToast(m); setTimeout(() => setToast(null), 4000) }
@@ -88,7 +88,7 @@ export default function BudgetTab({ clubs }: Props) {
 
   // Invoice
   const openNewInvoice = () => {
-    const plan = PLANS[1]
+    const plan = PLANS[0]
     setIvf({ club_id: '', plan: plan.value, amount_cents: plan.cents, due_date: new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10), billing_email: '', billing_period_start: '', billing_period_end: '', notes: '' })
     setInvoiceForm(true)
   }
@@ -106,7 +106,7 @@ export default function BudgetTab({ clubs }: Props) {
 
   // Scenario calc
   const scenario = useMemo(() => {
-    const avgPrice = PLANS.find((p) => p.value === scenPlan)?.cents ?? 39500
+    const avgPrice = PLANS.find((p) => p.value === scenPlan)?.cents ?? 32900
     const monthlyPrice = Math.round(avgPrice / 12)
     const planValues = data?.revenue.by_plan ? Object.values(data.revenue.by_plan) as { count: number; arr_cents: number }[] : []
     const currentClubs = planValues.reduce((s, p) => s + p.count, 0)

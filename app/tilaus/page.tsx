@@ -3,67 +3,34 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Check } from 'lucide-react'
-
-const PLANS = [
-  {
-    id: 'perus',
-    name: 'Perus',
-    price: 249,
-    monthly: 21,
-    description: 'Pienille seuroille',
-    features: [
-      'Jäsenrekisteri (enintään 30 jäsentä)',
-      'Tapahtumakalenteri',
-      'Saalisilmoitukset',
-      'Eräkartanon varaukset',
-      'Sähköpostituki',
-    ],
-  },
-  {
-    id: 'standardi',
-    name: 'Standardi',
-    price: 399,
-    monthly: 33,
-    description: 'Suosituin valinta',
-    highlight: true,
-    features: [
-      'Jäsenrekisteri (enintään 100 jäsentä)',
-      'Tapahtumakalenteri',
-      'Saalisilmoitukset',
-      'Eräkartanon varaukset',
-      'Laskutus ja maksuseuranta',
-      'CSV-jäsentuonti',
-      'Dokumenttien hallinta',
-      'Prioriteettituki',
-    ],
-  },
-  {
-    id: 'pro',
-    name: 'Pro',
-    price: 599,
-    monthly: 50,
-    description: 'Suurille seuroille',
-    features: [
-      'Rajoittamaton jäsenmäärä',
-      'Kaikki Standardi-ominaisuudet',
-      'Monipaikkainen jaostorakenne',
-      'Räätälöity raportointi',
-      'Puhelintuki',
-      'Käyttöönottoapu',
-    ],
-  },
-]
+import { PRICING, calculatePrice } from '@/lib/pricing'
 
 type ToastState = { message: string; type: 'success' | 'error' } | null
 
+const FEATURES = [
+  'Jäsenrekisteri (rajaton)',
+  'Tapahtumakalenteri',
+  'Saalisilmoitukset',
+  'Eräkartanon varaukset',
+  'Laskutus ja maksuseuranta',
+  'CSV- ja Excel-jäsentuonti',
+  'Dokumenttien hallinta',
+  'Vierasluvat',
+  'Karttatunnukset',
+  'Sähköpostituki',
+]
+
 export default function TilausPage() {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+  const [memberCount, setMemberCount] = useState(50)
   const [contactName, setContactName] = useState('')
   const [contactEmail, setContactEmail] = useState('')
   const [contactMessage, setContactMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
   const [submitted, setSubmitted] = useState(false)
+
+  const yearPrice = calculatePrice(memberCount)
+  const monthlyPrice = (yearPrice / 12).toFixed(2).replace('.', ',')
 
   function showToast(message: string, type: 'success' | 'error') {
     setToast({ message, type })
@@ -84,8 +51,8 @@ export default function TilausPage() {
         body: JSON.stringify({
           name: contactName.trim(),
           email: contactEmail.trim(),
-          plan: selectedPlan,
-          message: contactMessage.trim(),
+          plan: 'jahti',
+          message: `${memberCount} jäsentä → ${yearPrice} €/v. ${contactMessage.trim()}`.trim(),
         }),
       })
       const data = await res.json() as { error?: string }
@@ -103,7 +70,7 @@ export default function TilausPage() {
 
   return (
     <main className="min-h-screen bg-[#f5f0e8] px-4 py-8 pb-24">
-      <div className="mx-auto max-w-4xl space-y-8">
+      <div className="mx-auto max-w-3xl space-y-8">
         <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">
           ← Takaisin
         </Link>
@@ -112,71 +79,69 @@ export default function TilausPage() {
           <p className="text-xs font-semibold uppercase tracking-widest text-[#4a4a4a]">
             Tilaus
           </p>
-          <h1 className="mt-1 text-2xl font-bold text-[#1a1a1a]">Valitse tilausvaihtoehto</h1>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#1a1a1a]">JahtiPro</h1>
           <p className="mt-2 text-sm text-[#2d6a2d]">
-            Laskutus vuosittain. Hinnat sis. alv 0%.
+            {PRICING.base} € + {PRICING.perMember} € / jäsen / vuosi · maksimi {PRICING.max} € / vuosi
           </p>
         </div>
 
-        {/* Pricing cards */}
-        <div className="grid gap-4 sm:grid-cols-3">
-          {PLANS.map((plan) => (
-            <button
-              key={plan.id}
-              onClick={() => setSelectedPlan(plan.id)}
-              className={`relative rounded-2xl border p-5 text-left transition-all ${
-                selectedPlan === plan.id
-                  ? plan.highlight
-                    ? 'border-green-400 bg-[#1e3d1e]'
-                    : 'border-green-500 bg-[#f0ebe3]'
-                  : plan.highlight
-                  ? 'border-green-600 bg-[#eaf3de] hover:border-green-500'
-                  : 'border-[#e0d8cc] bg-white hover:border-[#e0d8cc]'
-              }`}
-            >
-              {plan.highlight && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-green-400 px-3 py-0.5 text-xs font-bold text-green-950">
-                  Suosituin
-                </span>
-              )}
-              <div className="mb-3">
-                <p className="text-lg font-bold text-[#1a1a1a]">{plan.name}</p>
-                <p className="text-xs text-[#2d6a2d]">{plan.description}</p>
+        {/* Pricing calculator card */}
+        <div className="card-shadow rounded-2xl bg-white p-6">
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-[#2d6a2d]">
+                Seuranne jäsenmäärä
+              </label>
+              <input
+                type="range"
+                min={1}
+                max={300}
+                step={1}
+                value={memberCount}
+                onChange={(e) => setMemberCount(Number(e.target.value) || 0)}
+                className="w-full accent-[#2d6a2d]"
+              />
+              <div className="mt-2 flex items-center gap-2">
+                <input
+                  type="number"
+                  min={1}
+                  value={memberCount}
+                  onChange={(e) => setMemberCount(Math.max(1, Number(e.target.value) || 0))}
+                  className="w-20 rounded-xl border border-[#e0d8cc] bg-white px-2 py-1 text-sm text-[#1a1a1a] focus:border-[#2d6a2d] focus:outline-none"
+                />
+                <span className="text-sm text-[#4a4a4a]">jäsentä</span>
               </div>
-              <div className="mb-1">
-                <span className="text-3xl font-extrabold text-[#1a1a1a]">{plan.price} €</span>
-                <span className="text-sm text-[#2d6a2d]"> / vuosi</span>
-              </div>
-              <p className="mb-0.5 text-sm text-[#2d6a2d]">(noin {plan.monthly} €/kk)</p>
-              <p className="mb-4 text-xs text-[#888888]">sis. alv 0%</p>
-              <ul className="space-y-1.5">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-[#1a1a1a]">
-                    <Check size={14} className="mt-0.5 shrink-0 text-[#2d6a2d]" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              {selectedPlan === plan.id && (
-                <div className="mt-4 rounded-lg bg-green-400 py-1.5 text-center text-xs font-bold text-green-950">
-                  Valittu ✓
-                </div>
-              )}
-            </button>
-          ))}
+            </div>
+
+            <div className="flex flex-col justify-center rounded-2xl bg-[#f0ebe3] p-4 text-center">
+              <p className="text-xs uppercase tracking-wider text-[#888888]">Vuosihinta</p>
+              <p className="text-4xl font-extrabold tracking-tight text-[#1a1a1a]">{yearPrice} €</p>
+              <p className="mt-0.5 text-sm text-[#2d6a2d]">noin {monthlyPrice} €/kk</p>
+              <p className="mt-1 text-[10px] text-[#888888]">sis. alv 0%</p>
+            </div>
+          </div>
+
+          <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+            {FEATURES.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm text-[#1a1a1a]">
+                <Check size={14} className="mt-0.5 shrink-0 text-[#2d6a2d]" />
+                {f}
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Contact form */}
-        <div className="rounded-2xl border border-[#e0d8cc] bg-white p-6">
-          <h2 className="mb-1 text-lg font-bold text-[#1a1a1a]">Ota yhteyttä</h2>
+        <div className="card-shadow rounded-2xl bg-white p-6">
+          <h2 className="mb-1 text-lg font-bold tracking-tight text-[#1a1a1a]">Ota yhteyttä</h2>
           <p className="mb-5 text-sm text-[#2d6a2d]">
             Lähetä meille viesti niin otamme yhteyttä tilauksen aktivoimiseksi.
           </p>
 
           {submitted ? (
-            <div className="rounded-xl bg-[#1e3d1e]/50 p-5 text-center">
+            <div className="rounded-xl bg-[#eaf3de] p-5 text-center">
               <p className="text-lg font-bold text-[#1a1a1a]">Viesti lähetetty!</p>
-              <p className="mt-1 text-sm text-[#1e3d1e]">
+              <p className="mt-1 text-sm text-[#3b6d11]">
                 Otamme sinuun yhteyttä pian.
               </p>
             </div>
@@ -213,35 +178,13 @@ export default function TilausPage() {
 
               <div>
                 <label className="mb-1 block text-xs font-semibold text-[#2d6a2d]">
-                  Valittu paketti
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {PLANS.map((plan) => (
-                    <button
-                      key={plan.id}
-                      type="button"
-                      onClick={() => setSelectedPlan(plan.id)}
-                      className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                        selectedPlan === plan.id
-                          ? 'border-green-400 bg-[#1e3d1e] text-white'
-                          : 'border-[#e0d8cc] text-[#2d6a2d] hover:border-green-600'
-                      }`}
-                    >
-                      {plan.name} — {plan.price} €/v
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-[#2d6a2d]">
                   Lisätietoja (valinnainen)
                 </label>
                 <textarea
                   value={contactMessage}
                   onChange={(e) => setContactMessage(e.target.value)}
                   rows={3}
-                  placeholder="Seuran nimi, jäsenmäärä, kysymyksiä..."
+                  placeholder="Seuran nimi, kysymyksiä..."
                   className="w-full rounded-xl border border-[#e0d8cc] bg-white px-3 py-2.5 text-sm text-[#1a1a1a] placeholder-[#888888] focus:border-[#2d6a2d] focus:outline-none"
                 />
               </div>
@@ -249,7 +192,7 @@ export default function TilausPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-xl bg-green-500 py-3 text-sm font-bold text-green-950 hover:bg-green-400 disabled:opacity-50 transition-colors"
+                className="w-full rounded-xl bg-[#1e3d1e] py-3 text-sm font-bold text-white hover:bg-[#162d16] disabled:opacity-50 transition-colors"
               >
                 {submitting ? 'Lähetetään...' : 'Lähetä yhteydenotto'}
               </button>
