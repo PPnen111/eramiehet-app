@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     await admin.from('subscriptions').insert({
       club_id: clubId,
       status: 'trial',
-      plan: 'start',
+      plan: 'jahti',
       trial_starts_at: new Date().toISOString(),
       trial_ends_at: new Date(Date.now() + 14 * 86400000).toISOString(),
     })

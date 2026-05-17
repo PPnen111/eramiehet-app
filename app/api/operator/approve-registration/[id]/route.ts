@@ -72,7 +72,7 @@ export async function POST(
   await admin.from('subscriptions').insert({
     club_id: clubId,
     status: 'trial',
-    plan: 'start',
+    plan: 'jahti',
     trial_starts_at: new Date().toISOString(),
     trial_ends_at: trialEnds,
   })

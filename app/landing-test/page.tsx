@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   Users, CreditCard, Target, Calendar, Home, FileText,
-  ChevronDown, Menu, X, CheckCircle, XCircle,
+  ChevronDown, Menu, X, CheckCircle,
   ClipboardList, MessageSquare, Coins, BookOpen, Building, Ticket, Shield,
 } from 'lucide-react'
 
@@ -234,31 +234,53 @@ export default function LandingTestPage() {
 
       {/* ═══ PRICING ═══ */}
       <section id="pricing" className="py-20 px-4">
-        <div className="mx-auto max-w-5xl text-center">
+        <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold text-[#1a1a1a]">Selkeä hinnoittelu</h2>
-          <p className="mt-2 text-[#2d6a2d]">Valitse seurallesi sopiva paketti. Kaikki paketit sisältävät 14 pv ilmaisen kokeilun.</p>
-          <div className="mt-10 grid gap-6 sm:grid-cols-3">
-            {[
-              { name: 'Jahti Start', price: '225', monthly: '18,75', popular: false, features: ['50 jäsentä', '100 MB tallennustila', '1 vuokrattava kohde', '10 dokumenttia', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat'], missing: ['Vierasluvat', 'Useita vuokrattavia kohteita', 'Laaja raportointi'] },
-              { name: 'Jahti Plus', price: '395', monthly: '32,92', popular: true, features: ['150 jäsentä', '500 MB tallennustila', '3 vuokrattavaa kohdetta', '50 dokumenttia', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat', 'Useita vuokrattavia kohteita', 'Vierasluvat'], missing: ['Laaja raportointi'] },
-              { name: 'Jahti Pro', price: '625', monthly: '52,08', popular: false, features: ['Rajaton jäsenmäärä', '5 GB tallennustila', 'Rajaton kohteet', 'Rajaton dokumentit', 'Jäsenhallinta', 'Maksut ja laskutus', 'Saalisilmoitukset', 'Tapahtumat', 'Useita vuokrattavia kohteita', 'Vierasluvat', 'Laaja raportointi (tulossa)'], missing: [] },
-            ].map((p, i) => (
-              <div key={i} className={`rounded-2xl border p-6 text-left relative ${p.popular ? 'border-green-500 bg-white ring-2 ring-green-500/30' : 'border-[#e0d8cc] bg-white'}`}>
-                {p.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-green-600 px-3 py-0.5 text-xs font-bold text-white">Suosituin</span>}
-                <h3 className="text-lg font-bold text-[#1a1a1a]">{p.name}</h3>
-                <ul className="mt-6 space-y-2">
-                  {p.features.map((f, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-[#1a1a1a]"><CheckCircle size={14} className="text-[#2d6a2d] shrink-0" />{f}</li>
-                  ))}
-                  {p.missing.map((m, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-[#888888]"><XCircle size={14} className="text-[#1e3d1e] shrink-0" />{m}</li>
-                  ))}
-                </ul>
-                <Link href="/uusi" className={`mt-6 block rounded-xl py-3 text-center text-sm font-bold transition-colors ${p.popular ? 'bg-green-600 text-white hover:bg-green-500' : 'border border-[#e0d8cc] text-[#1e3d1e] hover:bg-white'}`}>
-                  Aloita kokeilu
-                </Link>
-              </div>
-            ))}
+          <p className="mt-2 text-[#2d6a2d]">
+            Yksi paketti, kaikki ominaisuudet. 14 pv ilmainen kokeilu.
+          </p>
+          <div className="mt-10 rounded-2xl bg-white p-8 text-left ring-2 ring-green-500/30 card-shadow">
+            <h3 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">JahtiPro</h3>
+            <p className="mt-2 text-[#2d6a2d]">129 € + 2 € / jäsen / vuosi</p>
+            <p className="text-xs text-[#888888]">Maksimi 599 € / vuosi</p>
+
+            <div className="mt-6 grid gap-2 sm:grid-cols-3">
+              {[
+                { members: 30, price: 189 },
+                { members: 100, price: 329 },
+                { members: 235, price: 599 },
+              ].map((ex) => (
+                <div key={ex.members} className="rounded-xl bg-[#f0ebe3] px-3 py-2 text-center text-sm">
+                  <p className="text-[#888888]">{ex.members} jäsentä</p>
+                  <p className="font-bold tracking-tight text-[#1a1a1a]">{ex.price} €/v</p>
+                </div>
+              ))}
+            </div>
+
+            <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+              {[
+                'Jäsenhallinta',
+                'Maksut ja laskutus',
+                'Saalisilmoitukset',
+                'Tapahtumat',
+                'Vierasluvat',
+                'Useita vuokrattavia kohteita',
+                'Dokumentit',
+                'Rajaton jäsenmäärä',
+              ].map((f) => (
+                <li key={f} className="flex items-center gap-2 text-sm text-[#1a1a1a]">
+                  <CheckCircle size={14} className="text-[#2d6a2d] shrink-0" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+
+            <Link
+              href="/uusi"
+              className="mt-8 block rounded-xl bg-green-600 py-3 text-center text-sm font-bold text-white hover:bg-green-500 transition-colors"
+            >
+              Aloita 14 pv ilmainen kokeilu
+            </Link>
           </div>
         </div>
       </section>

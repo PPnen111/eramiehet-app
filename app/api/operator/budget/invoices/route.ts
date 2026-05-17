@@ -18,15 +18,15 @@ export async function GET() {
   return NextResponse.json({ invoices: data ?? [] })
 }
 
-const PLAN_LABELS: Record<string, string> = { start: 'Jahti Start', plus: 'Jahti Plus', pro: 'Jahti Pro' }
+const PLAN_LABELS: Record<string, string> = { jahti: 'JahtiPro' }
 
 export async function POST(req: NextRequest) {
   if (!(await verifySuperadmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const body = (await req.json()) as Record<string, unknown>
   const admin = createAdminClient()
 
-  const plan = (body.plan as string) ?? 'start'
-  const planLabel = PLAN_LABELS[plan] ?? plan
+  const plan = (body.plan as string) ?? 'jahti'
+  const planLabel = PLAN_LABELS[plan] ?? 'JahtiPro'
   const amountCents = (body.amount_cents as number) ?? 0
   const dueDate = (body.due_date as string) ?? new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10)
   const billingEmail = (body.billing_email as string) ?? null

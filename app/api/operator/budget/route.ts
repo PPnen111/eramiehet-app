@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { calculatePriceCents } from '@/lib/pricing'
 
 async function verifySuperadmin() {
   const supabase = await createClient()
@@ -11,41 +12,49 @@ async function verifySuperadmin() {
   return user
 }
 
-const PLAN_PRICES: Record<string, number> = { start: 22500, plus: 39500, pro: 62500 }
-
 export async function GET() {
   if (!(await verifySuperadmin())) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const admin = createAdminClient()
   const yearStart = `${new Date().getFullYear()}-01-01`
-  const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
   const currentMonth = new Date().toISOString().slice(0, 7)
 
-  const [{ data: subs }, { data: invoices }, { data: expenses }, { data: goals }, { data: clubs }] = await Promise.all([
+  const [{ data: subs }, { data: invoices }, { data: expenses }, { data: goals }, { data: clubs }, { data: memberRows }] = await Promise.all([
     admin.from('subscriptions').select('club_id, status, plan, price_per_year'),
     admin.from('jahtipro_invoices').select('*').order('created_at', { ascending: false }),
     admin.from('budget_expenses').select('*').order('month', { ascending: false }),
     admin.from('budget_goals').select('*').order('year, month'),
     admin.from('clubs').select('id'),
+    admin.from('member_registry').select('club_id'),
   ])
 
   const subList = (subs ?? []) as { club_id: string; status: string; plan: string | null; price_per_year: number | null }[]
   const invoiceList = (invoices ?? []) as { id: string; club_id: string; plan: string; amount_cents: number; status: string; paid_at: string | null }[]
   const expenseList = (expenses ?? []) as { id: string; category: string; name: string; amount_cents: number; recurring: string; month: string; notes: string | null; created_at: string }[]
   const goalList = (goals ?? []) as { id: string; year: number; month: number; target_clubs: number; target_mrr_cents: number; target_arr_cents: number }[]
+  const memberList = (memberRows ?? []) as { club_id: string }[]
 
-  // Revenue
+  // Member counts per club
+  const memberCountByClub = new Map<string, number>()
+  for (const m of memberList) {
+    memberCountByClub.set(m.club_id, (memberCountByClub.get(m.club_id) ?? 0) + 1)
+  }
+
+  // Revenue — dynamic pricing per club: calculatePrice(member_count)
   const activeSubs = subList.filter((s) => s.status === 'active')
-  const arrCents = activeSubs.reduce((sum, s) => sum + (s.price_per_year ?? 0), 0)
+  const arrCents = activeSubs.reduce(
+    (sum, s) => sum + calculatePriceCents(memberCountByClub.get(s.club_id) ?? 0),
+    0,
+  )
   const mrrCents = Math.round(arrCents / 12)
 
-  const byPlan: Record<string, { count: number; arr_cents: number }> = { start: { count: 0, arr_cents: 0 }, plus: { count: 0, arr_cents: 0 }, pro: { count: 0, arr_cents: 0 } }
+  // Active subscriptions grouped under a single 'jahti' bucket
+  const byPlan: Record<string, { count: number; arr_cents: number }> = {
+    jahti: { count: 0, arr_cents: 0 },
+  }
   for (const s of activeSubs) {
-    const p = s.plan ?? 'start'
-    if (byPlan[p]) {
-      byPlan[p].count++
-      byPlan[p].arr_cents += s.price_per_year ?? PLAN_PRICES[p] ?? 0
-    }
+    byPlan.jahti.count++
+    byPlan.jahti.arr_cents += calculatePriceCents(memberCountByClub.get(s.club_id) ?? 0)
   }
 
   const paidThisYear = invoiceList.filter((i) => i.status === 'paid' && i.paid_at && i.paid_at >= yearStart).reduce((s, i) => s + i.amount_cents, 0)
@@ -69,11 +78,11 @@ export async function GET() {
     catMap.set(e.category, (catMap.get(e.category) ?? 0) + e.amount_cents)
   }
 
-  // Profitability
+  // Profitability — avg revenue per active club
   const burnRate = thisMonthCents
   const grossProfit = mrrCents - burnRate
-  const avgPlanPrice = Object.values(PLAN_PRICES).reduce((a, b) => a + b, 0) / 3
-  const breakEvenClubs = burnRate > 0 ? Math.ceil(burnRate / (avgPlanPrice / 12)) : 0
+  const avgMonthlyPerClub = activeSubs.length > 0 ? Math.round(mrrCents / activeSubs.length) : 0
+  const breakEvenClubs = burnRate > 0 && avgMonthlyPerClub > 0 ? Math.ceil(burnRate / avgMonthlyPerClub) : 0
   const runwayMonths = burnRate > 0 && mrrCents < burnRate ? 0 : 999
 
   // Forecast
