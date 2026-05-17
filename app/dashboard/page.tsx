@@ -302,7 +302,7 @@ export default async function DashboardPage() {
               href="/profiili"
               className="group inline-flex items-center gap-1.5 hover:opacity-80 transition-opacity"
             >
-              <h1 className="text-2xl font-bold text-[#1a1a1a]">
+              <h1 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">
                 {displayName}
               </h1>
               <Pencil size={13} className="text-[#2d6a2d] group-hover:text-[#1e3d1e] transition-colors" />
@@ -311,7 +311,7 @@ export default async function DashboardPage() {
               <p className="mt-0.5 text-sm text-[#4a4a4a]">{clubName}</p>
             )}
             {role && (
-              <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#eaf3de] px-2.5 py-0.5 text-xs font-medium text-[#3b6d11]">
+              <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#eaf3de] px-2 py-0.5 text-[10px] font-medium text-[#3b6d11]">
                 {RoleIcon && <RoleIcon size={11} />}
                 {roleLabel[role] ?? role}
               </span>
@@ -467,8 +467,8 @@ export default async function DashboardPage() {
         <div className="card-shadow mb-4 rounded-2xl bg-white p-5">
           <div className="mb-3 flex items-center gap-2">
             <Ticket size={18} className="text-[#2d6a2d]" />
-            <h2 className="font-semibold text-[#1a1a1a]">Vierasluvat</h2>
-            <span className="rounded-full bg-[#eaf3de] px-2 py-0.5 text-xs font-medium text-[#3b6d11]">
+            <h2 className="font-bold tracking-tight text-[#1a1a1a]">Vierasluvat</h2>
+            <span className="rounded-full bg-[#eaf3de] px-2 py-0.5 text-[10px] font-medium text-[#3b6d11]">
               {guestPermitCount}
             </span>
           </div>

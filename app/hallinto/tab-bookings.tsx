@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { Pencil, Trash2, X, Receipt } from 'lucide-react'
+import { Pencil, Trash2, X, Receipt, Home } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
+import EmptyState from '@/app/components/empty-state'
 import { formatDate } from '@/lib/format'
 
 const LOCATIONS = [
@@ -78,9 +79,9 @@ function parseBooking(b: BookingRow): ParsedBooking {
 }
 
 const statusBadge: Record<string, { label: string; cls: string }> = {
-  pending: { label: 'Odottaa', cls: 'bg-orange-500/30 text-orange-300' },
-  confirmed: { label: 'Vahvistettu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
-  cancelled: { label: 'Peruutettu', cls: 'bg-[#fee2e2] text-[#991b1b]' },
+  pending: { label: 'Odottaa', cls: 'bg-[#fef3c7] text-[#92400e]' },
+  confirmed: { label: 'Vahvistettu', cls: 'bg-[#eaf3de] text-[#3b6d11]' },
+  cancelled: { label: 'Peruutettu', cls: 'bg-[#fef2f2] text-[#991b1b]' },
 }
 
 const locationLabel: Record<string, string> = Object.fromEntries(
@@ -308,7 +309,11 @@ export default function TabBookings({ clubId }: Props) {
 
       {/* Booking list */}
       {filtered.length === 0 ? (
-        <p className="text-sm text-[#888888]">Ei varauksia.</p>
+        <EmptyState
+          icon={<Home size={22} />}
+          title="Ei varauksia"
+          subtitle="Varauskalenteri on tyhjä."
+        />
       ) : (
         <div className="space-y-2">
           {filtered.map((b) => {
@@ -332,7 +337,7 @@ export default function TabBookings({ clubId }: Props) {
                       <p className={`font-medium ${isCancelled ? 'text-[#991b1b] line-through' : 'text-[#1a1a1a]'}`}>
                         {formatDate(b.starts_on)} – {formatDate(b.ends_on)}
                       </p>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${badge.cls}`}>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${badge.cls}`}>
                         {badge.label}
                       </span>
                       <span className="rounded-full bg-[#f0ebe3] px-2 py-0.5 text-xs text-[#2d6a2d]">

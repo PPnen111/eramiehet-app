@@ -18,10 +18,10 @@ const STATUS_OPTIONS = [
 ]
 
 const ROLE_BADGE: Record<string, string> = {
-  admin: 'bg-[#fef3c7]/60 text-[#92400e]',
-  board_member: 'bg-[#e6f1fb]/60 text-[#185fa5]',
-  member: 'bg-[#f0ebe3] text-[#1e3d1e]',
-  superadmin: 'bg-purple-900/60 text-purple-300',
+  admin: 'bg-[#fef3c7] text-[#92400e]',
+  board_member: 'bg-[#f3f0ff] text-[#5b21b6]',
+  member: 'bg-[#eaf3de] text-[#3b6d11]',
+  superadmin: 'bg-[#f3f0ff] text-[#5b21b6]',
 }
 
 const PAYMENT_STATUS_STYLE: Record<string, string> = {
@@ -140,17 +140,17 @@ export default function MemberDetailClient({ member, currentUserId, callerRole }
         {/* Profile header */}
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#1a1a1a]">{member.full_name ?? '—'}</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">{member.full_name ?? '—'}</h1>
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${ROLE_BADGE[member.role] ?? 'bg-[#1e3d1e] text-[#4a4a4a]'}`}>
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${ROLE_BADGE[member.role] ?? 'bg-[#f0ebe3] text-[#4a4a4a]'}`}>
                 {roleLabel}
               </span>
               {member.has_logged_in ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#f0ebe3] px-2 py-0.5 text-xs font-medium text-[#1e3d1e]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#eaf3de] px-2 py-0.5 text-[10px] font-medium text-[#3b6d11]">
                   ✅ Kirjautunut
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#1e3d1e] px-2 py-0.5 text-xs font-medium text-[#4a4a4a]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#f0ebe3] px-2 py-0.5 text-[10px] font-medium text-[#4a4a4a]">
                   ⏳ Ei kirjautunut
                 </span>
               )}

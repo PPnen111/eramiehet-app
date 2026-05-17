@@ -2,8 +2,9 @@
 
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { Trash2, Check, Bell, X } from 'lucide-react'
+import { Trash2, Check, Bell, X, CreditCard } from 'lucide-react'
 import { createClient } from '@/lib/supabase/browser'
+import EmptyState from '@/app/components/empty-state'
 import { formatDate, formatEuros } from '@/lib/format'
 import { generateReferenceNumber } from '@/lib/utils/reference-number'
 
@@ -53,7 +54,7 @@ type Toast = {
 type FilterType = 'all' | 'unpaid' | 'overdue' | 'paid'
 
 const statusConfig: Record<string, { label: string; cls: string }> = {
-  paid: { label: 'Maksettu', cls: 'bg-[#1e3d1e] text-[#1a1a1a]' },
+  paid: { label: 'Maksettu', cls: 'bg-[#eaf3de] text-[#3b6d11]' },
   pending: { label: 'Odottaa', cls: 'bg-[#fef3c7] text-[#92400e]' },
   overdue: { label: 'Myöhässä', cls: 'bg-[#fef2f2] text-[#991b1b]' },
 }
@@ -458,7 +459,21 @@ export default function TabPayments({ clubId }: Props) {
   const bulkPreviewValid = !isNaN(bulkCents) && bulkCents > 0 && bulkDescription.length > 0
   const activeCount = members.length
 
-  if (loading) return <p className="text-sm text-[#4a4a4a]">Ladataan...</p>
+  if (loading) {
+    return (
+      <div className="space-y-2">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="card-shadow rounded-2xl p-4 flex items-center gap-3 bg-white">
+            <div className="skeleton w-9 h-9 rounded-xl flex-shrink-0" />
+            <div className="flex-1">
+              <div className="skeleton h-3 w-2/3 mb-2" />
+              <div className="skeleton h-2 w-1/3" />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   const inputCls =
     'w-full rounded-lg border border-[#e0d8cc] bg-[#f0ebe3] px-3 py-2 text-sm text-[#1a1a1a] placeholder-[#888888] outline-none focus:border-[#2d6a2d]'
@@ -802,9 +817,25 @@ export default function TabPayments({ clubId }: Props) {
 
       {/* ── Payment list ── */}
       {filteredPayments.length === 0 ? (
-        <p className="text-sm text-[#888888]">
-          {filter === 'all' ? 'Ei maksuja.' : 'Ei maksuja tässä näkymässä.'}
-        </p>
+        filter === 'all' ? (
+          <EmptyState
+            icon={<CreditCard size={22} />}
+            title="Ei maksuja"
+            subtitle="Lähetä ensimmäinen lasku jäsenille."
+            action={
+              !formOpen && (
+                <button
+                  onClick={() => setFormOpen(true)}
+                  className="rounded-lg bg-[#1e3d1e] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162d16] transition-colors"
+                >
+                  + Luo lasku
+                </button>
+              )
+            }
+          />
+        ) : (
+          <p className="text-sm text-[#888888]">Ei maksuja tässä näkymässä.</p>
+        )
       ) : (
         <div className="space-y-2">
           {filteredPayments.map((p) => {
@@ -865,7 +896,7 @@ export default function TabPayments({ clubId }: Props) {
                           {formatEuros(p.amount_cents)}
                         </p>
                         <span
-                          className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${cfg.cls}`}
+                          className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${cfg.cls}`}
                         >
                           {cfg.label}
                         </span>

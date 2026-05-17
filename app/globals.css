@@ -99,6 +99,23 @@ body {
   transform: translateY(-1px);
 }
 
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0ebe3 25%,
+    #e8e2d8 50%,
+    #f0ebe3 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 .light-theme {
   --background: #f5f0e8;
   --background-secondary: #ffffff;

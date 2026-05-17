@@ -54,7 +54,7 @@ export default async function HallintoPage() {
     <main className="min-h-screen bg-[#f5f0e8] px-4 py-8">
       <div className="mx-auto max-w-2xl space-y-6">
         <Link href="/dashboard" className="text-sm text-[#2d6a2d] hover:text-[#1e3d1e]">← Takaisin</Link>
-        <h1 className="text-2xl font-bold text-[#1a1a1a]">Hallinto</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">Hallinto</h1>
         <AdminPanel clubId={clubId} initialMembers={initialMembers} isAdmin={effectiveRole === 'admin' || effectiveRole === 'superadmin'} />
       </div>
     </main>
