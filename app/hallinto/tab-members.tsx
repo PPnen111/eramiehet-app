@@ -147,7 +147,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
   return (
     <div className="space-y-6">
       {/* Import section */}
-      <section className="rounded-2xl border border-[#e0d8cc] bg-white p-4">
+      <section className="card-shadow rounded-2xl bg-white p-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Tuo jäseniä</h2>
@@ -303,7 +303,7 @@ export default function TabMembers({ clubId, initialMembers }: Props) {
           <p className="mb-3 rounded-lg bg-white px-3 py-2 text-sm text-[#1e3d1e]">{inviteAllResult}</p>
         )}
 
-        <div className="divide-y divide-green-900/40 rounded-2xl border border-[#e0d8cc] bg-white overflow-hidden">
+        <div className="card-shadow divide-y divide-green-900/40 rounded-2xl bg-white overflow-hidden">
           {rest.map((m) => {
             const targetHref = m.profile_id ? `/jasenet/${m.profile_id}` : `/jasenet/registry/${m.id}`
             return (

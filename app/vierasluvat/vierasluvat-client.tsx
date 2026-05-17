@@ -175,7 +175,7 @@ function PermitCard({
   }
 
   return (
-    <div className={`rounded-2xl border border-[#e0d8cc] bg-white p-4 ${dimmed ? 'opacity-70' : ''}`}>
+    <div className={`card-shadow rounded-2xl bg-white p-4 ${dimmed ? 'opacity-70' : ''}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">

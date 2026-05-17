@@ -77,7 +77,7 @@ export default function RegistryMemberDetail({ member }: Props) {
         )}
 
         {/* Henkilötiedot */}
-        <section className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+        <section className="card-shadow rounded-2xl bg-white p-5 space-y-4">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Henkilötiedot</h2>
           <div><label className={labelCls}>Nimi *</label><input type="text" value={form.full_name ?? ''} onChange={(e) => set('full_name', e.target.value)} className={inputCls} /></div>
           <div className="grid grid-cols-2 gap-3">
@@ -92,7 +92,7 @@ export default function RegistryMemberDetail({ member }: Props) {
         </section>
 
         {/* Osoitetiedot */}
-        <section className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+        <section className="card-shadow rounded-2xl bg-white p-5 space-y-4">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Osoitetiedot</h2>
           <div><label className={labelCls}>Katuosoite</label><input type="text" value={form.street_address ?? ''} onChange={(e) => set('street_address', e.target.value)} className={inputCls} /></div>
           <div className="grid grid-cols-3 gap-3">
@@ -103,7 +103,7 @@ export default function RegistryMemberDetail({ member }: Props) {
         </section>
 
         {/* Laskutus */}
-        <section className="rounded-2xl border border-[#e0d8cc] bg-white p-5 space-y-4">
+        <section className="card-shadow rounded-2xl bg-white p-5 space-y-4">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-[#2d6a2d]">Laskutus</h2>
           <div>
             <label className={labelCls}>Laskutustapa</label>
