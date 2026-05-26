@@ -3,6 +3,8 @@ import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 const SEED_CLUB_ID = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jahtipro.fi'
+const LOGIN_URL = `${APP_URL}/login`
 
 function generatePassword(): string {
   const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789'
@@ -77,7 +79,7 @@ export async function POST(req: NextRequest) {
 
   if (existingProfile) {
     return NextResponse.json(
-      { error: 'Tällä sähköpostilla on jo tunnus. Kirjaudu osoitteessa jahtipro.fi/login' },
+      { error: `Tällä sähköpostilla on jo tunnus. Kirjaudu osoitteessa ${LOGIN_URL}` },
       { status: 409 },
     )
   }
@@ -96,7 +98,7 @@ export async function POST(req: NextRequest) {
     if (authError || !authData?.user) {
       if (authError?.message?.includes('already been registered') || authError?.code === 'email_exists') {
         return NextResponse.json(
-          { error: 'Tällä sähköpostilla on jo tunnus. Kirjaudu osoitteessa jahtipro.fi/login' },
+          { error: `Tällä sähköpostilla on jo tunnus. Kirjaudu osoitteessa ${LOGIN_URL}` },
           { status: 409 },
         )
       }
@@ -185,7 +187,7 @@ export async function POST(req: NextRequest) {
 <tr><td style="padding:4px 12px 4px 0;color:#6b7280;">Sähköposti:</td><td><strong>${email}</strong></td></tr>
 <tr><td style="padding:4px 12px 4px 0;color:#6b7280;">Salasana:</td><td><strong>${password}</strong></td></tr>
 </table>
-<a href="https://jahtipro.fi/login" style="background-color:#16a34a;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;margin:16px 0;font-weight:bold;">Kirjaudu JahtiProhon →</a>
+<a href="${LOGIN_URL}" style="background-color:#16a34a;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block;margin:16px 0;font-weight:bold;">Kirjaudu JahtiProhon →</a>
 <p>Demo-tunnus on voimassa 14 päivää (${expiryDate}).</p>
 <p>Demo Erämiehet -seurassa on valmiina esimerkkidataa jonka avulla voit tutustua kaikkiin ominaisuuksiin.</p>
 <p style="margin-top:24px;">Jos sinulla on kysyttävää, ota yhteyttä: <a href="mailto:info@jahtipro.fi">info@jahtipro.fi</a></p>

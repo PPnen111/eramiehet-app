@@ -10,6 +10,9 @@ export default function DemoPage() {
   const [error, setError] = useState('')
   const [done, setDone] = useState(false)
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jahtipro.fi'
+  const loginUrl = `${appUrl}/login`
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
@@ -39,7 +42,7 @@ export default function DemoPage() {
             Tarkista sähköpostisi <span className="font-semibold text-[#1a1a1a]">{email}</span> — kirjautumistiedot ovat matkalla.
           </p>
           <a
-            href="https://jahtipro.fi/login"
+            href={loginUrl}
             className="inline-block rounded-xl bg-green-600 px-8 py-3.5 text-base font-bold text-white hover:bg-green-500 transition-colors"
           >
             Kirjaudu JahtiProhon →
@@ -89,7 +92,7 @@ export default function DemoPage() {
 
         <p className="mt-6 text-center text-sm text-[#888888]">
           Onko sinulla jo tili?{' '}
-          <Link href="/login" className="text-[#2d6a2d] hover:text-[#1e3d1e]">Kirjaudu sisään</Link>
+          <a href={loginUrl} className="text-[#2d6a2d] hover:text-[#1e3d1e]">Kirjaudu sisään</a>
         </p>
       </div>
     </main>
