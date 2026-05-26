@@ -64,8 +64,13 @@ export default function LoginPage() {
     setLoading(true)
     setMessage('')
 
+    // Recovery tokens arrive as a URL hash (#access_token=...&type=recovery),
+    // which only a client page can read — never route this through the
+    // server-side /auth/callback route. Use a stable canonical origin so the
+    // redirect target stays on Supabase's allowed-redirect list.
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      redirectTo: `${baseUrl}/reset-password`,
     })
 
     setLoading(false)
