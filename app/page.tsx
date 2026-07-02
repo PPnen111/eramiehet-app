@@ -58,12 +58,20 @@ export default function Home() {
           alt="JahtiPro"
           className="h-8 md:h-9 w-auto object-contain brightness-110 contrast-110 drop-shadow-[0_0_6px_rgba(34,197,94,0.4)]"
         />
-        <a
-          href="/login"
-          className="rounded-xl border border-[#e0d8cc] px-4 py-2 text-sm text-[#1a1a1a] transition hover:bg-[#f0ebe3]"
-        >
-          Kirjaudu sisään (beta)
-        </a>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/skenaario"
+            className="rounded-xl border border-[#e0d8cc] px-4 py-2 text-sm text-[#1a1a1a] transition hover:bg-[#f0ebe3]"
+          >
+            Skenaariot →
+          </Link>
+          <a
+            href="/login"
+            className="rounded-xl border border-[#e0d8cc] px-4 py-2 text-sm text-[#1a1a1a] transition hover:bg-[#f0ebe3]"
+          >
+            Kirjaudu sisään (beta)
+          </a>
+        </div>
       </header>
 
       {/* ── SECTION 1: HERO ─────────────────────────────────────────────── */}
